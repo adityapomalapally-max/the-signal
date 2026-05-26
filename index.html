@@ -1,0 +1,1969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Signal — NFL Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0c0f14;
+  --bg-elevated: #12151c;
+  --bg-card: #161a23;
+  --bg-card-hover: #1b1f2a;
+  --surface: #1e2230;
+  --border: rgba(255,255,255,0.05);
+  --border-subtle: rgba(255,255,255,0.03);
+  --border-hover: rgba(255,255,255,0.1);
+  --gold: #c9a84c;
+  --gold-soft: #d4b65e;
+  --gold-muted: rgba(201,168,76,0.08);
+  --gold-glow: rgba(201,168,76,0.15);
+  --cream: #e8dcc8;
+  --teal: #4ecdc4;
+  --teal-muted: rgba(78,205,196,0.1);
+  --red: #e74c3c;
+  --red-muted: rgba(231,76,60,0.1);
+  --green: #2ecc71;
+  --green-muted: rgba(46,204,113,0.1);
+  --blue: #5b9bd5;
+  --text: #e2e0dc;
+  --text-secondary: #8a8780;
+  --text-muted: #5c5955;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans: 'DM Sans', -apple-system, sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; line-height: 1.6; }
+::selection { background: var(--gold); color: var(--bg); }
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 10px; }
+a { color: inherit; text-decoration: none; }
+
+/* ===== RANKINGS TICKER ===== */
+.ticker-bar {
+  height: 36px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.ticker-tabs {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+  background: var(--bg-elevated);
+  border-right: 1px solid var(--border);
+}
+
+.ticker-tab {
+  padding: 0 14px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.ticker-tab:first-child {
+  padding-left: 20px;
+  background: var(--gold);
+  color: var(--bg);
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  cursor: default;
+  border-bottom-color: transparent;
+}
+
+.ticker-tab:hover { color: var(--text-secondary); }
+.ticker-tab.active { color: var(--gold); border-bottom-color: var(--gold); background: var(--gold-muted); }
+
+.ticker-scroll-area {
+  flex: 1;
+  overflow: hidden;
+  margin-left: 320px;
+}
+
+.ticker-scroll {
+  display: flex;
+  gap: 0;
+  animation: tickerScroll 50s linear infinite;
+  white-space: nowrap;
+}
+
+.ticker-player {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 20px;
+  font-size: 12px;
+  border-right: 1px solid var(--border);
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.ticker-rank {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--gold);
+  font-weight: 600;
+  min-width: 20px;
+}
+
+.ticker-name { font-weight: 600; color: var(--text); }
+.ticker-team { font-family: var(--mono); font-size: 10px; color: var(--text-muted); }
+
+@keyframes tickerScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ===== NAV ===== */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(12,15,20,0.92);
+  backdrop-filter: blur(24px) saturate(1.2);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 48px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  cursor: pointer;
+}
+
+.logo-the {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-right: 6px;
+}
+
+.logo-signal {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+
+.logo-signal em { font-style: italic; color: var(--gold); }
+
+.nav-center {
+  display: flex;
+  gap: 0;
+  align-items: center;
+}
+
+.nav-item {
+  padding: 20px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.3px;
+  transition: color 0.2s;
+  position: relative;
+  cursor: pointer;
+}
+
+.nav-item:hover { color: var(--text); }
+.nav-item.active { color: var(--gold); }
+.nav-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: var(--gold);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.nav-search:hover { border-color: var(--border-hover); }
+.nav-search kbd {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 2px 5px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-muted);
+}
+
+.nav-subscribe {
+  padding: 8px 20px;
+  background: var(--gold);
+  color: var(--bg);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-block;
+}
+
+.nav-subscribe:hover { background: var(--gold-soft); transform: translateY(-1px); }
+
+/* ===== PAGE SECTIONS ===== */
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+/* ===== HERO LAYOUT ===== */
+.hero-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 0;
+  min-height: 480px;
+  border-bottom: 1px solid var(--border);
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.hero-feature {
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.3s;
+}
+
+.hero-feature:hover { background: var(--bg-card); }
+
+.hero-feature::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201,168,76,0.03) 0%, transparent 40%),
+              linear-gradient(to top, var(--bg) 0%, transparent 60%);
+  z-index: 1;
+}
+
+.hero-bg-pattern {
+  position: absolute;
+  top: 0; right: 0;
+  width: 60%;
+  height: 100%;
+  opacity: 0.03;
+  background: repeating-linear-gradient(-45deg, var(--gold) 0px, var(--gold) 1px, transparent 1px, transparent 20px);
+}
+
+.hero-content { position: relative; z-index: 2; }
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.hero-tag-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding: 4px 10px;
+  background: var(--gold-muted);
+  border-radius: 3px;
+}
+
+.hero-tag-date {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.hero-headline {
+  font-family: var(--serif);
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  margin-bottom: 16px;
+  max-width: 640px;
+}
+
+.hero-headline em { font-style: italic; color: var(--gold-soft); }
+
+.hero-excerpt {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  max-width: 520px;
+  margin-bottom: 20px;
+}
+
+.hero-byline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.byline-author { font-weight: 600; color: var(--text); }
+.byline-sep { color: var(--text-muted); font-size: 10px; }
+.byline-time { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+
+/* Hero Sidebar */
+.hero-sidebar { display: flex; flex-direction: column; }
+
+.hero-sidebar-header {
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.sidebar-story {
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+}
+
+.sidebar-story:hover { background: var(--bg-card); }
+
+.sidebar-story-num {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gold);
+  opacity: 0.15;
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  line-height: 1;
+}
+
+.sidebar-story-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: inline-block;
+}
+
+.tag-analysis { color: var(--gold); }
+.tag-injury { color: var(--red); }
+.tag-fantasy { color: var(--teal); }
+.tag-draft { color: var(--blue); }
+.tag-news { color: var(--text-secondary); }
+.tag-film { color: #a78bfa; }
+
+.sidebar-story h3 {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text);
+  margin-bottom: 5px;
+  padding-right: 30px;
+}
+
+.sidebar-story-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.sidebar-story-meta span { color: var(--text-secondary); font-weight: 500; }
+
+/* ===== SECTION DIVIDERS ===== */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 48px;
+  border-bottom: 1px solid var(--border);
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.section-divider-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+.section-divider-line { flex: 1; height: 1px; background: var(--border); }
+
+.section-divider-action {
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+
+.section-divider-action:hover { color: var(--gold); }
+
+/* ===== NEWS FEED ===== */
+.news-feed {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-bottom: 1px solid var(--border);
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.news-card {
+  padding: 32px 36px;
+  border-right: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.25s;
+}
+
+.news-card:last-child { border-right: none; }
+.news-card:hover { background: var(--bg-card); }
+
+.news-card-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.news-card-tag .live-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--red);
+  animation: livepulse 1.5s ease infinite;
+}
+
+@keyframes livepulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.news-card h3 {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 12px;
+  letter-spacing: -0.2px;
+}
+
+.news-card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.news-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.news-card-footer .author { color: var(--text-secondary); font-weight: 500; }
+.read-time { font-family: var(--mono); font-size: 10px; }
+
+/* ===== CONTENT LAYOUT (Analysis + Sidebar) ===== */
+.content-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  border-bottom: 1px solid var(--border);
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.content-main { border-right: 1px solid var(--border); }
+
+.analysis-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 32px;
+  align-items: start;
+  padding: 32px 48px;
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.analysis-card:hover { background: var(--bg-card); }
+
+.analysis-text .analysis-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.analysis-text h3 {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 10px;
+  letter-spacing: -0.2px;
+}
+
+.analysis-text p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.analysis-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.analysis-meta .author { color: var(--text-secondary); font-weight: 500; }
+.analysis-meta .sep { font-size: 8px; opacity: 0.4; }
+
+.analysis-visual {
+  width: 160px;
+  height: 120px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 12px;
+  gap: 4px;
+}
+
+.chart-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--gold);
+  opacity: 0.3;
+  transition: opacity 0.3s;
+}
+
+.analysis-card:hover .chart-bar { opacity: 0.6; }
+
+/* ===== RIGHT SIDEBAR ===== */
+.sidebar-section {
+  padding: 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-section-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar-section-title .view-all {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--gold);
+  cursor: pointer;
+}
+
+.player-quick {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.player-quick:last-child { border-bottom: none; }
+.player-quick:hover { opacity: 0.8; }
+
+.player-initials {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+  color: white;
+}
+
+.player-quick-info { flex: 1; min-width: 0; }
+.player-quick-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-quick-detail { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+.player-quick-status {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.status-healthy { background: var(--green-muted); color: var(--green); }
+.status-quest { background: var(--gold-muted); color: var(--gold); }
+.status-out { background: var(--red-muted); color: var(--red); }
+.status-ir { background: rgba(139,92,246,0.1); color: #8b5cf6; }
+
+/* ===== TOOLS STRIP ===== */
+.tools-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--border);
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.tool-item {
+  padding: 36px 32px;
+  border-right: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  color: var(--text);
+}
+
+.tool-item:last-child { border-right: none; }
+
+.tool-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+
+.tool-item:hover { background: var(--bg-card); }
+.tool-item:hover::after { transform: scaleX(1); }
+
+.tool-icon { font-size: 24px; margin-bottom: 14px; }
+
+.tool-item h4 {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  letter-spacing: -0.2px;
+}
+
+.tool-item p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+.tool-badge {
+  display: inline-block;
+  margin-top: 12px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+
+.badge-live { background: var(--green-muted); color: var(--green); }
+.badge-soon { background: var(--gold-muted); color: var(--gold); }
+.badge-new { background: var(--teal-muted); color: var(--teal); }
+
+/* ===== PLAYERS PAGE ===== */
+.players-header {
+  padding: 48px 48px 32px;
+}
+
+.players-header h1 {
+  font-family: var(--serif);
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.players-header p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin-bottom: 24px;
+}
+
+.players-search-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.players-search-input {
+  flex: 1;
+  min-width: 240px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--sans);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.players-search-input:focus { border-color: var(--gold); }
+.players-search-input::placeholder { color: var(--text-muted); }
+
+.position-filter { display: flex; gap: 4px; }
+
+.pos-btn {
+  padding: 8px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.pos-btn:hover { border-color: var(--border-hover); color: var(--text-secondary); }
+.pos-btn.active { background: var(--gold-muted); border-color: var(--gold); color: var(--gold); }
+
+.players-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 48px;
+}
+
+.players-table th {
+  padding: 14px 24px;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.players-table td {
+  padding: 14px 24px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.players-table tr { cursor: pointer; transition: background 0.2s; }
+.players-table tbody tr:hover { background: var(--bg-card); }
+
+.player-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.player-cell-name { font-weight: 600; }
+
+/* ===== MEDICAL CARDS ===== */
+.medical-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.medical-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.medical-card h4 { font-size: 15px; font-weight: 600; }
+
+.severity {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.severity.high { background: var(--red-muted); color: var(--red); }
+.severity.moderate { background: var(--gold-muted); color: var(--gold); }
+.severity.low { background: var(--green-muted); color: var(--green); }
+
+.medical-detail {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.impact-meter { margin-bottom: 16px; }
+
+.impact-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.impact-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--surface);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.impact-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.8s ease;
+}
+
+.impact-fill.high { background: var(--red); }
+.impact-fill.moderate { background: var(--gold); }
+.impact-fill.low { background: var(--green); }
+
+.medical-source {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.source-verified {
+  color: var(--teal);
+  font-weight: 500;
+}
+
+/* ===== PLAYER PROFILE MODAL ===== */
+.profile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 80px 20px 40px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  overflow-y: auto;
+}
+
+.profile-overlay.open { opacity: 1; pointer-events: auto; }
+
+.profile-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 640px;
+  animation: modalIn 0.3s ease;
+  overflow: hidden;
+}
+
+@keyframes modalIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.profile-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.profile-player-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: white;
+}
+
+.profile-name-block h2 { font-family: var(--serif); font-size: 22px; font-weight: 700; }
+
+.team-line {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.team-line span { color: var(--gold); font-weight: 600; }
+
+.profile-close {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-close:hover { border-color: var(--border-hover); color: var(--text); }
+
+.profile-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+
+.profile-tab {
+  padding: 14px 24px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.profile-tab:hover { color: var(--text-secondary); }
+.profile-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+.profile-content { padding: 24px; }
+
+/* ===== FOOTER ===== */
+.site-footer {
+  max-width: 1440px;
+  margin: 0 auto;
+  border-top: 1px solid var(--border);
+}
+
+.footer-main {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  padding: 48px;
+  gap: 40px;
+}
+
+.footer-brand p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 12px;
+  line-height: 1.6;
+}
+
+.footer-col h5 {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.footer-col a {
+  display: block;
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 4px 0;
+  transition: color 0.2s;
+}
+
+.footer-col a:hover { color: var(--gold); }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 48px;
+  border-top: 1px solid var(--border);
+}
+
+.footer-copy { font-size: 12px; color: var(--text-muted); }
+
+.footer-socials { display: flex; gap: 12px; }
+
+.social-link {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.social-link:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-muted); }
+
+/* ===== FADE IN ===== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1100px) {
+  .hero-layout { grid-template-columns: 1fr; }
+  .hero-sidebar { display: none; }
+  .content-layout { grid-template-columns: 1fr; }
+  .content-layout .right-sidebar { display: none; }
+  .tools-strip { grid-template-columns: 1fr 1fr; }
+  .footer-main { grid-template-columns: 1fr 1fr; }
+  .ticker-tabs { display: none; }
+  .ticker-scroll-area { margin-left: 0 !important; }
+}
+
+@media (max-width: 768px) {
+  .nav-main { padding: 0 20px; }
+  .nav-center { display: none; }
+  .hero-feature { padding: 32px 20px; }
+  .hero-headline { font-size: 28px; }
+  .news-feed { grid-template-columns: 1fr; }
+  .news-card { border-right: none; border-bottom: 1px solid var(--border); }
+  .section-divider { padding: 20px; }
+  .analysis-card { padding: 24px 20px; grid-template-columns: 1fr; }
+  .analysis-visual { display: none; }
+  .tools-strip { grid-template-columns: 1fr; }
+  .tool-item { border-right: none; border-bottom: 1px solid var(--border); }
+  .footer-main { grid-template-columns: 1fr; padding: 32px 20px; }
+  .footer-bottom { flex-direction: column; gap: 16px; text-align: center; padding: 24px 20px; }
+  .players-header { padding: 32px 20px 24px; }
+  .players-table th, .players-table td { padding: 12px 14px; font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== RANKINGS TICKER ===== -->
+<div class="ticker-bar">
+  <div class="ticker-tabs">
+    <div class="ticker-tab">Rankings</div>
+    <div class="ticker-tab active" data-pos="overall">Overall</div>
+    <div class="ticker-tab" data-pos="qb">QB</div>
+    <div class="ticker-tab" data-pos="rb">RB</div>
+    <div class="ticker-tab" data-pos="wr">WR</div>
+    <div class="ticker-tab" data-pos="te">TE</div>
+  </div>
+  <div class="ticker-scroll-area" style="margin-left: 320px;">
+    <div class="ticker-scroll" id="tickerContent"></div>
+  </div>
+</div>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav">
+  <div class="nav-main">
+    <a class="nav-logo" onclick="switchPage('home')">
+      <span class="logo-the">THE</span>
+      <span class="logo-signal">Sign<em>al</em></span>
+    </a>
+    <div class="nav-center">
+      <a class="nav-item active" data-page="home" onclick="switchPage('home')">Home</a>
+      <a class="nav-item" data-page="players" onclick="switchPage('players')">Players</a>
+      <a class="nav-item" data-page="medicals" onclick="switchPage('medicals')">Medicals</a>
+      <a class="nav-item" data-page="fantasy" onclick="switchPage('fantasy')">Fantasy</a>
+      <a class="nav-item" data-page="draft" onclick="switchPage('draft')">Draft Lab</a>
+      <a class="nav-item" data-page="film" onclick="switchPage('film')">Film</a>
+    </div>
+    <div class="nav-right">
+      <div class="nav-search" onclick="switchPage('players'); setTimeout(()=>document.getElementById('playerSearchGlobal').focus(), 100)">
+        <span>Search players...</span>
+        <kbd>⌘K</kbd>
+      </div>
+      <a class="nav-subscribe" href="https://substack.com/@adityapomalapally" target="_blank">Substack</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================= -->
+<!-- ======== HOME PAGE ========== -->
+<!-- ============================= -->
+<div class="page-section active" id="page-home">
+
+  <!-- HERO -->
+  <div class="hero-layout">
+    <a class="hero-feature" href="https://substack.com/@adityapomalapally" target="_blank" id="heroLink">
+      <div class="hero-bg-pattern"></div>
+      <div class="hero-content">
+        <div class="hero-tag">
+          <span class="hero-tag-label">Latest from Substack</span>
+          <span class="hero-tag-date" id="heroDate">May 26, 2026</span>
+        </div>
+        <h1 class="hero-headline" id="heroTitle">Why <em>Production Over Expected</em> Changes Everything About Draft Evaluation</h1>
+        <p class="hero-excerpt" id="heroExcerpt">Traditional college stats lie. Context-adjusted production reveals the prospects that actually translate to the NFL — and the model has a 92% accuracy rate within one tier to prove it.</p>
+        <div class="hero-byline">
+          <span class="byline-author">Adi</span>
+          <span class="byline-sep">·</span>
+          <span class="byline-time">Read on Substack →</span>
+        </div>
+      </div>
+    </a>
+
+    <div class="hero-sidebar">
+      <div class="hero-sidebar-header">Top Stories</div>
+      <div class="sidebar-story" onclick="switchPage('medicals')">
+        <span class="sidebar-story-num">01</span>
+        <div class="sidebar-story-tag tag-injury">Injury Intel</div>
+        <h3>Malik Nabers ACL Recovery: What the Combined Tear Means for His 2026 Return</h3>
+        <div class="sidebar-story-meta">Source: <span>Orthopedic Research</span> · 8 min</div>
+      </div>
+      <div class="sidebar-story">
+        <span class="sidebar-story-num">02</span>
+        <div class="sidebar-story-tag tag-fantasy">Fantasy</div>
+        <h3>Dynasty Breakout Candidates for 2026 — 10 Names to Target Now</h3>
+        <div class="sidebar-story-meta">By <span>Adi</span> · 6 min</div>
+      </div>
+      <div class="sidebar-story">
+        <span class="sidebar-story-num">03</span>
+        <div class="sidebar-story-tag tag-film">Film Room</div>
+        <h3>Bijan Robinson's Contact Balance: The Metric That Separates Elite</h3>
+        <div class="sidebar-story-meta">By <span>Adi</span> · 10 min</div>
+      </div>
+      <div class="sidebar-story">
+        <span class="sidebar-story-num">04</span>
+        <div class="sidebar-story-tag tag-news">News</div>
+        <h3>Eagles Offense Expected to Have Shanahan/McVay Influences in 2026</h3>
+        <div class="sidebar-story-meta">Via <span>Jeff McLane</span> · 3 min</div>
+      </div>
+      <div class="sidebar-story" id="substackSidebarStory">
+        <span class="sidebar-story-num">05</span>
+        <div class="sidebar-story-tag tag-analysis">Substack</div>
+        <h3 id="sidebarSubstackTitle">2026 Big Board — Post-Combine WR Rankings</h3>
+        <div class="sidebar-story-meta" id="sidebarSubstackMeta">By <span>Adi</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEWS WIRE -->
+  <div class="section-divider fade-in">
+    <span class="section-divider-label">NFL News Wire</span>
+    <span class="section-divider-line"></span>
+    <span class="section-divider-action">View all →</span>
+  </div>
+
+  <div class="news-feed fade-in">
+    <div class="news-card">
+      <div class="news-card-tag tag-news"><span class="live-dot"></span> Breaking</div>
+      <h3>Deshaun Watson Has "Hit It Off" With Todd Monken During Browns Mini-Camp</h3>
+      <p>Watson's early chemistry with new OC Monken could reshape Cleveland's offensive identity heading into 2026.</p>
+      <div class="news-card-footer">
+        <span>Via <span class="author">Jeremy Fowler, ESPN</span></span>
+        <span class="read-time">2 min</span>
+      </div>
+    </div>
+    <div class="news-card" onclick="switchPage('medicals')">
+      <div class="news-card-tag tag-injury">Injury Update</div>
+      <h3>Malik Nabers ACL Update: Second Surgery, Scar Tissue Cleanup — What It Means for Week 1</h3>
+      <p>Nabers underwent a second procedure to remove scar tissue from his torn ACL/meniscus repair. HC Harbaugh says return is "not simple." Full medical breakdown inside.</p>
+      <div class="news-card-footer">
+        <span>Source: <span class="author">Bleacher Report, Newsweek</span></span>
+        <span class="read-time">7 min</span>
+      </div>
+    </div>
+    <div class="news-card">
+      <div class="news-card-tag tag-fantasy">Fantasy Intel</div>
+      <h3>Jacoby Brissett Absent From Voluntary OTAs Seeking Pay Raise — Fantasy Impact?</h3>
+      <p>Brissett's holdout creates downstream opportunity. What this means for QB room and skill position values.</p>
+      <div class="news-card-footer">
+        <span>Via <span class="author">Ian Rapoport, NFL Network</span></span>
+        <span class="read-time">4 min</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALYSIS + SIDEBAR -->
+  <div class="section-divider fade-in">
+    <span class="section-divider-label">Analysis & Takes</span>
+    <span class="section-divider-line"></span>
+    <span class="section-divider-action">View all →</span>
+  </div>
+
+  <div class="content-layout">
+    <div class="content-main">
+      <div class="analysis-card fade-in" id="substackAnalysis">
+        <div class="analysis-text">
+          <span class="analysis-tag tag-analysis">Latest on Substack</span>
+          <h3 id="substackAnalysisTitle">The Speed Back Problem: Why the Model Missed De'Von Achane</h3>
+          <p id="substackAnalysisExcerpt">Our initial framework undervalued speed-specific skills that don't show up in traditional metrics. The fix led to archetype-specific evaluation for RBs.</p>
+          <div class="analysis-meta">
+            <span class="author">Adi</span>
+            <span class="sep">·</span>
+            <span id="substackAnalysisDate">May 24</span>
+            <span class="sep">·</span>
+            <span>Read on Substack →</span>
+          </div>
+        </div>
+        <div class="analysis-visual">
+          <div class="chart-placeholder">
+            <div class="chart-bar" style="width:45%"></div>
+            <div class="chart-bar" style="width:78%"></div>
+            <div class="chart-bar" style="width:92%"></div>
+            <div class="chart-bar" style="width:60%"></div>
+            <div class="chart-bar" style="width:85%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="analysis-card fade-in" onclick="openProfile('collins')">
+        <div class="analysis-text">
+          <span class="analysis-tag tag-injury">Medical Intel</span>
+          <h3>ACL Recovery Timelines: Separating the Myths From the Data</h3>
+          <p>What sports medicine research actually says about return-to-play timelines, re-injury rates, and performance post-ACL — sourced from physicians, not headlines.</p>
+          <div class="analysis-meta">
+            <span class="author">Medical Intel</span>
+            <span class="sep">·</span>
+            <span>May 22</span>
+            <span class="sep">·</span>
+            <span>9 min read</span>
+          </div>
+        </div>
+        <div class="analysis-visual">
+          <div class="chart-placeholder">
+            <div class="chart-bar" style="width:90%;background:var(--red);opacity:0.25;"></div>
+            <div class="chart-bar" style="width:70%;background:var(--red);opacity:0.2;"></div>
+            <div class="chart-bar" style="width:50%;background:var(--gold);opacity:0.25;"></div>
+            <div class="chart-bar" style="width:30%;background:var(--green);opacity:0.25;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="analysis-card fade-in">
+        <div class="analysis-text">
+          <span class="analysis-tag tag-draft">Draft Lab</span>
+          <h3>GENERATIONAL vs. Elite: Why the Label Matters and Who Actually Earns It</h3>
+          <p>Grade inflation is killing draft analysis. Here's the framework for why "GENERATIONAL" should only be saved for prospects who truly break the model.</p>
+          <div class="analysis-meta">
+            <span class="author">Adi</span>
+            <span class="sep">·</span>
+            <span>May 20</span>
+            <span class="sep">·</span>
+            <span>15 min read</span>
+          </div>
+        </div>
+        <div class="analysis-visual">
+          <div class="chart-placeholder">
+            <div class="chart-bar" style="width:100%;background:var(--blue);opacity:0.3;"></div>
+            <div class="chart-bar" style="width:72%;background:var(--blue);opacity:0.2;"></div>
+            <div class="chart-bar" style="width:88%;background:var(--blue);opacity:0.25;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="analysis-card fade-in">
+        <div class="analysis-text">
+          <span class="analysis-tag tag-film">Film Room</span>
+          <h3>CeeDee Lamb's Route Tree Expansion: What Film Shows About His 2026 Ceiling</h3>
+          <p>An All-22 breakdown of Lamb's route diversity, how Dallas is scheming him differently post-extension, and what that means for production.</p>
+          <div class="analysis-meta">
+            <span class="author">Adi</span>
+            <span class="sep">·</span>
+            <span>May 18</span>
+            <span class="sep">·</span>
+            <span>8 min read</span>
+          </div>
+        </div>
+        <div class="analysis-visual">
+          <div class="chart-placeholder">
+            <div class="chart-bar" style="width:65%;background:#a78bfa;opacity:0.3;"></div>
+            <div class="chart-bar" style="width:85%;background:#a78bfa;opacity:0.2;"></div>
+            <div class="chart-bar" style="width:95%;background:#a78bfa;opacity:0.2;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="right-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">
+          <span>Injury Watch</span>
+          <span class="view-all" onclick="switchPage('medicals')">View all</span>
+        </div>
+        <div class="player-quick" onclick="openProfile('nabers')">
+          <div class="player-initials" style="background:linear-gradient(135deg,#1e3a5f,#2563eb);">MN</div>
+          <div class="player-quick-info">
+            <div class="player-quick-name">Malik Nabers</div>
+            <div class="player-quick-detail">WR · NYG · ACL/Meniscus</div>
+          </div>
+          <span class="player-quick-status status-out">Rehab</span>
+        </div>
+        <div class="player-quick" onclick="openProfile('collins')">
+          <div class="player-initials" style="background:linear-gradient(135deg,#03202f,#008c96);">NC</div>
+          <div class="player-quick-info">
+            <div class="player-quick-name">Nico Collins</div>
+            <div class="player-quick-detail">WR · HOU · Concussion Hx</div>
+          </div>
+          <span class="player-quick-status status-quest">Monitor</span>
+        </div>
+        <div class="player-quick" onclick="openProfile('allen')">
+          <div class="player-initials" style="background:linear-gradient(135deg,#00338d,#c60c30);">JA</div>
+          <div class="player-quick-info">
+            <div class="player-quick-name">Josh Allen</div>
+            <div class="player-quick-detail">QB · BUF · Elbow</div>
+          </div>
+          <span class="player-quick-status status-healthy">Cleared</span>
+        </div>
+        <div class="player-quick" onclick="openProfile('jackson')">
+          <div class="player-initials" style="background:linear-gradient(135deg,#241773,#000);">LJ</div>
+          <div class="player-quick-info">
+            <div class="player-quick-name">Lamar Jackson</div>
+            <div class="player-quick-detail">QB · BAL · Knee</div>
+          </div>
+          <span class="player-quick-status status-healthy">Full Go</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title"><span>From Substack</span></div>
+        <div id="substackSidebar">
+          <p style="font-size:12px;color:var(--text-muted);font-family:var(--mono);">Loading latest posts...</p>
+        </div>
+      </div>
+
+      <div class="sidebar-section" style="background:var(--bg-elevated);">
+        <p style="font-family:var(--serif);font-style:italic;font-size:15px;line-height:1.65;color:var(--cream);margin-bottom:10px;">
+          Signal over noise — curating the smartest voices in football so you don't have to sift through the rage bait.
+        </p>
+        <p style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;">— Adi, Founder</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLS STRIP -->
+  <div class="section-divider fade-in">
+    <span class="section-divider-label">Tools & Resources</span>
+    <span class="section-divider-line"></span>
+  </div>
+
+  <div class="tools-strip fade-in">
+    <a href="https://sleeper-analytics.vercel.app" class="tool-item" target="_blank">
+      <div class="tool-icon">⚡</div>
+      <h4>Sleeper Analytics</h4>
+      <p>Power rankings, AI trade advice, what-if scenarios, optimal lineups.</p>
+      <span class="tool-badge badge-live">● Live</span>
+    </a>
+    <div class="tool-item" onclick="switchPage('players')">
+      <div class="tool-icon">👤</div>
+      <h4>Player Profiles</h4>
+      <p>Searchable database with medical histories and performance metrics.</p>
+      <span class="tool-badge badge-live">● Live</span>
+    </div>
+    <div class="tool-item" onclick="switchPage('medicals')">
+      <div class="tool-icon">🩺</div>
+      <h4>Medical Database</h4>
+      <p>Player injury profiles sourced from verified sports physicians.</p>
+      <span class="tool-badge badge-new">Beta</span>
+    </div>
+    <div class="tool-item" onclick="switchPage('draft')">
+      <div class="tool-icon">📊</div>
+      <h4>Draft Model</h4>
+      <p>92% accuracy POE-based prospect evaluation system.</p>
+      <span class="tool-badge badge-soon">Coming Soon</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= -->
+<!-- ======= PLAYERS PAGE ======== -->
+<!-- ============================= -->
+<div class="page-section" id="page-players">
+  <div style="max-width:1440px;margin:0 auto;">
+    <div class="players-header">
+      <h1>Player Database</h1>
+      <p>Comprehensive profiles with medical histories, performance metrics, and sourced analysis. Click any player to view their full profile.</p>
+      <div class="players-search-bar">
+        <input type="text" class="players-search-input" id="playerSearchGlobal" placeholder="Search by name, team, or position..." oninput="filterPlayers(this.value)">
+        <div class="position-filter">
+          <button class="pos-btn active" data-filter="all" onclick="filterByPos('all', this)">All</button>
+          <button class="pos-btn" data-filter="QB" onclick="filterByPos('QB', this)">QB</button>
+          <button class="pos-btn" data-filter="RB" onclick="filterByPos('RB', this)">RB</button>
+          <button class="pos-btn" data-filter="WR" onclick="filterByPos('WR', this)">WR</button>
+          <button class="pos-btn" data-filter="TE" onclick="filterByPos('TE', this)">TE</button>
+        </div>
+      </div>
+    </div>
+    <table class="players-table">
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Pos</th>
+          <th>Team</th>
+          <th>Age</th>
+          <th>Status</th>
+          <th>Fantasy Rank</th>
+        </tr>
+      </thead>
+      <tbody id="playersTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============================= -->
+<!-- ======= MEDICALS PAGE ======= -->
+<!-- ============================= -->
+<div class="page-section" id="page-medicals">
+  <div style="max-width:1440px;margin:0 auto;">
+    <div class="players-header">
+      <h1>Medical Database</h1>
+      <p>Injury analysis sourced from vetted sports physicians. Understand how injuries actually impact player performance and fantasy value.</p>
+      <div class="players-search-bar">
+        <input type="text" class="players-search-input" placeholder="Search injuries, players..." oninput="filterMedicals(this.value)">
+      </div>
+    </div>
+    <div id="medicalsContent" style="padding:0 48px 48px;"></div>
+  </div>
+</div>
+
+<!-- ============================= -->
+<!-- ====== FANTASY PAGE ========= -->
+<!-- ============================= -->
+<div class="page-section" id="page-fantasy">
+  <div style="max-width:1440px;margin:0 auto;">
+    <div class="players-header">
+      <h1>Fantasy Football</h1>
+      <p>Data-driven tools and analysis built for serious fantasy competitors. Powered by your deployed analytics platform and original research.</p>
+    </div>
+    <div class="tools-strip" style="border-top:1px solid var(--border);">
+      <a href="https://sleeper-analytics.vercel.app" class="tool-item" target="_blank">
+        <div class="tool-icon">⚡</div>
+        <h4>Sleeper Analytics</h4>
+        <p>Full-featured analytics platform — power rankings, AI trade advice, what-if scenarios, optimal lineups.</p>
+        <span class="tool-badge badge-live">● Live — Open Tool</span>
+      </a>
+      <div class="tool-item">
+        <div class="tool-icon">🔄</div>
+        <h4>Trade Analyzer</h4>
+        <p>Evaluate trade offers with multi-dimensional value scoring and roster context.</p>
+        <span class="tool-badge badge-soon">Coming Soon</span>
+      </div>
+      <div class="tool-item">
+        <div class="tool-icon">📋</div>
+        <h4>Draft Board</h4>
+        <p>Custom rankings with ADP comparison, tier breaks, and value-based picks.</p>
+        <span class="tool-badge badge-soon">Coming Soon</span>
+      </div>
+      <div class="tool-item">
+        <div class="tool-icon">🏆</div>
+        <h4>Roster Optimizer</h4>
+        <p>Weekly start/sit recommendations based on matchup data and projections.</p>
+        <span class="tool-badge badge-soon">Coming Soon</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DRAFT LAB ===== -->
+<div class="page-section" id="page-draft">
+  <div style="max-width:1440px;margin:0 auto;">
+    <div class="players-header">
+      <h1>Draft Lab</h1>
+      <p>The Predictive Model — 92% accuracy POE-based prospect evaluation. Archetype-specific frameworks for WRs and RBs, validated against complete 3-year NFL outcome data.</p>
+    </div>
+    <div style="padding:48px;text-align:center;color:var(--text-muted);font-family:var(--mono);font-size:13px;">Full draft model interface coming soon. Current analysis available on the home page.</div>
+  </div>
+</div>
+
+<!-- ===== FILM ===== -->
+<div class="page-section" id="page-film">
+  <div style="max-width:1440px;margin:0 auto;">
+    <div class="players-header">
+      <h1>Film Room</h1>
+      <p>Breakdowns grounded in actual game film. No box score narratives — just what the tape shows.</p>
+    </div>
+    <div style="padding:48px;text-align:center;color:var(--text-muted);font-family:var(--mono);font-size:13px;">Film breakdowns coming soon. Current analysis available on the home page.</div>
+  </div>
+</div>
+
+<!-- ===== PLAYER PROFILE MODAL ===== -->
+<div class="profile-overlay" id="profileOverlay" onclick="if(event.target===this)closeProfile()">
+  <div class="profile-modal">
+    <div class="profile-modal-header">
+      <div class="profile-player-info">
+        <div class="profile-avatar" id="profileAvatar">MN</div>
+        <div class="profile-name-block">
+          <h2 id="profileName">Malik Nabers</h2>
+          <div class="team-line" id="profileTeamLine">WR · New York Giants · <span>#1</span> · 2nd Year</div>
+        </div>
+      </div>
+      <button class="profile-close" onclick="closeProfile()">✕</button>
+    </div>
+    <div class="profile-tabs">
+      <div class="profile-tab active" onclick="switchProfileTab('medical', this)">Medical</div>
+      <div class="profile-tab" onclick="switchProfileTab('overview', this)">Overview</div>
+      <div class="profile-tab" onclick="switchProfileTab('stats', this)">Stats</div>
+      <div class="profile-tab" onclick="switchProfileTab('fantasy', this)">Fantasy</div>
+    </div>
+    <div class="profile-content" id="profileContent"></div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<div class="site-footer">
+  <div class="footer-main">
+    <div class="footer-brand">
+      <a class="nav-logo" onclick="switchPage('home')" style="cursor:pointer;">
+        <span class="logo-the">THE</span>
+        <span class="logo-signal">Sign<em>al</em></span>
+      </a>
+      <p>Curating the smartest voices in football. Signal over noise, always.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Sections</h5>
+      <a href="#" onclick="switchPage('home')">Home</a>
+      <a href="#" onclick="switchPage('players')">Player Profiles</a>
+      <a href="#" onclick="switchPage('medicals')">Medical Database</a>
+      <a href="#" onclick="switchPage('draft')">Draft Lab</a>
+    </div>
+    <div class="footer-col">
+      <h5>Fantasy</h5>
+      <a href="https://sleeper-analytics.vercel.app" target="_blank">Sleeper Analytics</a>
+      <a href="#" onclick="switchPage('fantasy')">Trade Analyzer</a>
+      <a href="#" onclick="switchPage('fantasy')">Rankings</a>
+    </div>
+    <div class="footer-col">
+      <h5>Connect</h5>
+      <a href="https://substack.com/@adityapomalapally" target="_blank">Substack</a>
+      <a href="#">Twitter / X</a>
+      <a href="#">Instagram</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 The Signal. Built with intention by Adi.</span>
+    <div class="footer-socials">
+      <div class="social-link">𝕏</div>
+      <div class="social-link">📸</div>
+      <a class="social-link" href="https://substack.com/@adityapomalapally" target="_blank" style="text-decoration:none;">📝</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const rankingsData = {
+  overall: [
+    { rank: 1, name: 'Bijan Robinson', team: 'ATL', pos: 'RB' },
+    { rank: 2, name: 'Jahmyr Gibbs', team: 'DET', pos: 'RB' },
+    { rank: 3, name: 'Christian McCaffrey', team: 'SF', pos: 'RB' },
+    { rank: 4, name: "Ja'Marr Chase", team: 'CIN', pos: 'WR' },
+    { rank: 5, name: 'Jaxon Smith-Njigba', team: 'SEA', pos: 'WR' },
+    { rank: 6, name: 'Puka Nacua', team: 'LAR', pos: 'WR' },
+    { rank: 7, name: "De'Von Achane", team: 'MIA', pos: 'RB' },
+    { rank: 8, name: 'Jonathan Taylor', team: 'IND', pos: 'RB' },
+    { rank: 9, name: 'Amon-Ra St. Brown', team: 'DET', pos: 'WR' },
+    { rank: 10, name: 'James Cook III', team: 'BUF', pos: 'RB' },
+  ],
+  qb: [
+    { rank: 1, name: 'Josh Allen', team: 'BUF', pos: 'QB' },
+    { rank: 2, name: 'Lamar Jackson', team: 'BAL', pos: 'QB' },
+    { rank: 3, name: 'Jalen Hurts', team: 'PHI', pos: 'QB' },
+    { rank: 4, name: 'Joe Burrow', team: 'CIN', pos: 'QB' },
+    { rank: 5, name: 'Patrick Mahomes', team: 'KC', pos: 'QB' },
+    { rank: 6, name: 'Jayden Daniels', team: 'WAS', pos: 'QB' },
+    { rank: 7, name: 'Justin Herbert', team: 'LAC', pos: 'QB' },
+    { rank: 8, name: 'Brock Purdy', team: 'SF', pos: 'QB' },
+    { rank: 9, name: 'Baker Mayfield', team: 'TB', pos: 'QB' },
+    { rank: 10, name: 'Kyler Murray', team: 'ARI', pos: 'QB' },
+  ],
+  rb: [
+    { rank: 1, name: 'Bijan Robinson', team: 'ATL', pos: 'RB' },
+    { rank: 2, name: 'Jahmyr Gibbs', team: 'DET', pos: 'RB' },
+    { rank: 3, name: 'Christian McCaffrey', team: 'SF', pos: 'RB' },
+    { rank: 4, name: "De'Von Achane", team: 'MIA', pos: 'RB' },
+    { rank: 5, name: 'Jonathan Taylor', team: 'IND', pos: 'RB' },
+    { rank: 6, name: 'James Cook III', team: 'BUF', pos: 'RB' },
+    { rank: 7, name: 'Josh Jacobs', team: 'GB', pos: 'RB' },
+    { rank: 8, name: 'Derrick Henry', team: 'BAL', pos: 'RB' },
+    { rank: 9, name: 'Chase Brown', team: 'CIN', pos: 'RB' },
+    { rank: 10, name: 'Jeremiyah Love', team: 'ARI', pos: 'RB' },
+  ],
+  wr: [
+    { rank: 1, name: "Ja'Marr Chase", team: 'CIN', pos: 'WR' },
+    { rank: 2, name: 'Jaxon Smith-Njigba', team: 'SEA', pos: 'WR' },
+    { rank: 3, name: 'Puka Nacua', team: 'LAR', pos: 'WR' },
+    { rank: 4, name: 'Amon-Ra St. Brown', team: 'DET', pos: 'WR' },
+    { rank: 5, name: 'Justin Jefferson', team: 'MIN', pos: 'WR' },
+    { rank: 6, name: 'CeeDee Lamb', team: 'DAL', pos: 'WR' },
+    { rank: 7, name: 'Drake London', team: 'ATL', pos: 'WR' },
+    { rank: 8, name: 'Rashee Rice', team: 'KC', pos: 'WR' },
+    { rank: 9, name: 'Chris Olave', team: 'NO', pos: 'WR' },
+    { rank: 10, name: 'George Pickens', team: 'DAL', pos: 'WR' },
+  ],
+  te: [
+    { rank: 1, name: 'Trey McBride', team: 'ARI', pos: 'TE' },
+    { rank: 2, name: 'Brock Bowers', team: 'LV', pos: 'TE' },
+    { rank: 3, name: 'Sam LaPorta', team: 'DET', pos: 'TE' },
+    { rank: 4, name: 'Travis Kelce', team: 'KC', pos: 'TE' },
+    { rank: 5, name: 'George Kittle', team: 'SF', pos: 'TE' },
+    { rank: 6, name: 'Kyle Pitts', team: 'ATL', pos: 'TE' },
+    { rank: 7, name: 'Dalton Kincaid', team: 'BUF', pos: 'TE' },
+    { rank: 8, name: 'Mark Andrews', team: 'BAL', pos: 'TE' },
+    { rank: 9, name: 'Evan Engram', team: 'JAX', pos: 'TE' },
+    { rank: 10, name: 'Jake Ferguson', team: 'DAL', pos: 'TE' },
+  ]
+};
+
+const playersDB = [
+  { id:'nabers', name:'Malik Nabers', pos:'WR', team:'NYG', age:22, status:'Rehab (ACL)', statusClass:'status-out', fRank:'WR15', initials:'MN', color:'linear-gradient(135deg,#1e3a5f,#2563eb)' },
+  { id:'robinson', name:'Bijan Robinson', pos:'RB', team:'ATL', age:23, status:'Healthy', statusClass:'status-healthy', fRank:'RB1', initials:'BR', color:'linear-gradient(135deg,#a71930,#000)' },
+  { id:'chase', name:"Ja'Marr Chase", pos:'WR', team:'CIN', age:25, status:'Healthy', statusClass:'status-healthy', fRank:'WR1', initials:'JC', color:'linear-gradient(135deg,#fb4f14,#000)' },
+  { id:'jsn', name:'Jaxon Smith-Njigba', pos:'WR', team:'SEA', age:23, status:'Healthy', statusClass:'status-healthy', fRank:'WR2', initials:'JS', color:'linear-gradient(135deg,#002244,#69be28)' },
+  { id:'collins', name:'Nico Collins', pos:'WR', team:'HOU', age:27, status:'Healthy', statusClass:'status-healthy', fRank:'WR8', initials:'NC', color:'linear-gradient(135deg,#03202f,#008c96)' },
+  { id:'lamb', name:'CeeDee Lamb', pos:'WR', team:'DAL', age:27, status:'Healthy', statusClass:'status-healthy', fRank:'WR6', initials:'CL', color:'linear-gradient(135deg,#041e42,#869397)' },
+  { id:'gibbs', name:'Jahmyr Gibbs', pos:'RB', team:'DET', age:23, status:'Healthy', statusClass:'status-healthy', fRank:'RB2', initials:'JG', color:'linear-gradient(135deg,#0076b6,#b0b7bc)' },
+  { id:'achane', name:"De'Von Achane", pos:'RB', team:'MIA', age:23, status:'Healthy', statusClass:'status-healthy', fRank:'RB4', initials:'DA', color:'linear-gradient(135deg,#008e97,#f58220)' },
+  { id:'allen', name:'Josh Allen', pos:'QB', team:'BUF', age:30, status:'Healthy', statusClass:'status-healthy', fRank:'QB1', initials:'JA', color:'linear-gradient(135deg,#00338d,#c60c30)' },
+  { id:'mcbride', name:'Trey McBride', pos:'TE', team:'ARI', age:25, status:'Healthy', statusClass:'status-healthy', fRank:'TE1', initials:'TM', color:'linear-gradient(135deg,#97233f,#000)' },
+  { id:'jlove', name:'Jeremiyah Love', pos:'RB', team:'ARI', age:21, status:'Healthy', statusClass:'status-healthy', fRank:'RB10', initials:'JL', color:'linear-gradient(135deg,#97233f,#ffb612)' },
+  { id:'jeanty', name:'Ashton Jeanty', pos:'RB', team:'LV', age:21, status:'Healthy', statusClass:'status-healthy', fRank:'RB11', initials:'AJ', color:'linear-gradient(135deg,#000,#a5acaf)' },
+  { id:'jackson', name:'Lamar Jackson', pos:'QB', team:'BAL', age:29, status:'Healthy', statusClass:'status-healthy', fRank:'QB2', initials:'LJ', color:'linear-gradient(135deg,#241773,#000)' },
+  { id:'nacua', name:'Puka Nacua', pos:'WR', team:'LAR', age:24, status:'Healthy', statusClass:'status-healthy', fRank:'WR3', initials:'PN', color:'linear-gradient(135deg,#003594,#ffd100)' },
+  { id:'bowers', name:'Brock Bowers', pos:'TE', team:'LV', age:23, status:'Healthy', statusClass:'status-healthy', fRank:'TE2', initials:'BB', color:'linear-gradient(135deg,#000,#a5acaf)' },
+];
+
+const medicalDB = {
+  nabers: {
+    name:'Malik Nabers', team:'WR · New York Giants · #1 · 3rd Year', initials:'MN', color:'linear-gradient(135deg,#1e3a5f,#2563eb)',
+    currentStatus: 'Rehabbing torn ACL + meniscus. Second cleanup surgery (scar tissue removal) performed ~May 2026. Week 1 availability uncertain — HC John Harbaugh says recovery is "not simple." Target is training camp but no guarantee.',
+    injuries: [
+      { title:'ACL + Meniscus Tear — Right Knee (Week 4, Sept 28, 2025)', severity:'high', severityLabel:'Major — Season-Ending', detail:'Tore ACL and meniscus while running a deep route vs. the Los Angeles Chargers. Stepped awkwardly with right leg before jumping for a Jaxson Dart pass. Carted off the field, placed on IR. Surgery performed ~late October 2025 (delayed one month post-injury). A second arthroscopic procedure was performed in May 2026 to remove scar tissue causing knee stiffness — a common complication after combined ACL/meniscus repairs (arthrofibrosis). HC Harbaugh stated the goal is Week 1 readiness but noted recovery is "not a simple" process. Research context: NFL WRs return to play after ACL reconstruction at a 60–69% rate, with an average return timeline of 10.9–13.6 months. Among WRs who do return, studies show significantly decreased targets, receptions, receiving yards, and TDs compared to pre-injury production and matched controls. Career length post-ACLR is shortened by an average of 1.9 seasons. Combined ACL + meniscus injuries carry added complexity and longer recovery timelines. Subsequent ACL injury risk (either knee) is approximately 25% within the first 2-3 years post-reconstruction.', impact:75, impactClass:'high', source:'CBS Sports, Newsweek, Bleacher Report, SIC Score — Orthopedic research: Arthroscopy, Sports Medicine and Rehabilitation (2021); OJSM (2021)' },
+      { title:'Concussion (Week 4, Oct 2024)', severity:'moderate', severityLabel:'Resolved — History Noted', detail:'Sustained concussion in Week 4 of rookie season, missed 1 game. Cleared through protocol in approximately 10 days. No prior documented concussion history at LSU. While this was an isolated incident with full clearance, any concussion history is worth monitoring given Nabers\' contested catch profile. He ranked top-5 in contested targets among all rookies in 2024. Research context: NFL RBs and WRs return to play at a high rate after concussion (89% return same season, missing an average of 1.5 games). Performance metrics generally show no significant acute decline post-concussion. However, Harvard\'s Football Players Health Study found WRs are 70% more likely to report long-term cognitive impairment compared to lowest-risk positions. Same-season repeat concussion risk is 5.3–8.3% for players who\'ve already had one.', impact:20, impactClass:'low', source:'NFL Injury Reports, CBS Sports — Research: Orthopedic Journal of Sports Medicine; Harvard Football Players Health Study' },
+      { title:'Toe Injury (Late 2024, June 2025)', severity:'low', severityLabel:'Recurring — Monitor', detail:'Dealt with toe injury in December 2024 (limited practice, listed questionable multiple weeks). Reappeared during June 2025 OTAs, limiting participation. Giants were out of playoff contention in 2024 so the late-season limitations were partly precautionary. Toe injuries in speed WRs can linger and affect burst off the line — worth monitoring but no structural concern reported.', impact:10, impactClass:'low', source:'SIC Score, CBS Sports' },
+      { title:'Shoulder / Back (Training Camp 2025)', severity:'low', severityLabel:'Resolved', detail:'Landed on shoulder early in 2025 training camp, sat out practices. Also dealt with a minor back issue that kept him out ~2 weeks in August 2025. Both were precautionary holds and he returned to full practice. No long-term concern.', impact:5, impactClass:'low', source:'CBS Sports' }
+    ]
+  },
+  collins: {
+    name:'Nico Collins', team:'WR · Houston Texans · #12 · 5th Year', initials:'NC', color:'linear-gradient(135deg,#03202f,#008c96)',
+    currentStatus: 'Healthy entering 2026. Cleared from final concussion (Jan 2026 playoffs) — participated in Pro Bowl flag football game 3 weeks later. Three consecutive 1,000-yard seasons. Primary concern is soft-tissue injury pattern: hamstring issues and multiple concussions have cost him 7 full games and parts of 5 others over the past two seasons.',
+    injuries: [
+      { title:'Concussion #2 — Playoff Wild Card vs. Steelers (Jan 13, 2026)', severity:'moderate', severityLabel:'Resolved — Pattern Concern', detail:'Suffered second concussion of the 2025 season during the Texans\' wild-card win at Pittsburgh. Fell on his face after catching a slant route, immediately put hands to his face. Carted to locker room, ruled out. Unable to practice all week and was ruled out for the divisional round loss at New England. Cleared ~3 weeks post-injury, participated in Pro Bowl flag football. Research context: The risk of a same-season repeat concussion in the NFL is 5.3–8.3% for players who\'ve already sustained one. Players with multiple concussions within a season typically miss more time from subsequent concussions (median 12 days vs. 8 for first). Long-term, WRs are 70% more likely than low-risk positions to report cognitive impairment later in life (Harvard FPHS). Two concussions in one season is a notable pattern that warrants close monitoring.', impact:40, impactClass:'moderate', source:'ESPN, NY Post, SIC Score — Research: Neurosurgery (2022 — ScienceDirect); Harvard Football Players Health Study' },
+      { title:'Concussion #1 — Week 7 vs. Seahawks (Oct 21, 2025)', severity:'moderate', severityLabel:'Resolved', detail:'Head slammed on turf during a catch attempt in the fourth quarter of Monday Night Football at Seattle. Taken to blue tent, then locker room. Ruled out with concussion. Missed Week 8 vs. 49ers. Returned Week 9 vs. Broncos and played the remainder of the regular season without issue. At time of injury, Collins was leading the Texans in receiving yards by a significant margin.', impact:20, impactClass:'low', source:'ESPN, SI Texans Daily, SIC Score' },
+      { title:'Hamstring Strain — Week 5 vs. Bills (Oct 6, 2024)', severity:'moderate', severityLabel:'Resolved — Recurrence Risk', detail:'Suffered hamstring strain while catching a 67-yard touchdown vs. Buffalo. Initially deemed "day-to-day," later changed to "week-to-week." Placed on IR, missed 4 games (Weeks 6–10). Activated from IR Week 10, returned to action Week 11 vs. Cowboys. Still finished with 68 receptions for 1,006 yards and 7 TDs in just 12 games — his second consecutive 1,000-yard season. Key context: This was a re-aggravation — Collins entered the Bills game already dealing with a hamstring issue. Hamstring injuries in WRs have a recurrence rate of approximately 12–33% within the first year of return, particularly when the initial injury involves re-aggravation. The fact that Collins suffered it on a max-effort play (67-yard TD) suggests the speed demands of his role create ongoing risk for this specific muscle group.', impact:30, impactClass:'moderate', source:'NFL.com, ESPN, PFN, Click2Houston — Research: BJSM hamstring recurrence meta-analyses' },
+      { title:'Hamstring (2023 Season)', severity:'low', severityLabel:'Resolved', detail:'Dealt with hamstring tightness during the 2023 season. Did not miss significant time. However, the 2024 re-aggravation of the same muscle group suggests a potential pattern. Collins\' explosive playing style — 4.44 40-yard dash, 6\'4" 222 lbs with deep-threat role — places significant strain on the hamstring complex.', impact:10, impactClass:'low', source:'RotoWire, PFF' }
+    ]
+  }
+};
+
+// ===== TICKER =====
+function renderTicker(pos) {
+  const data = rankingsData[pos];
+  const c = document.getElementById('tickerContent');
+  const items = data.map(p => `<div class="ticker-player"><span class="ticker-rank">#${p.rank}</span><span class="ticker-name">${p.name}</span><span class="ticker-team">${p.team}</span></div>`).join('');
+  c.innerHTML = items + items;
+}
+
+document.querySelectorAll('.ticker-tab[data-pos]').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.ticker-tab[data-pos]').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    renderTicker(tab.dataset.pos);
+  });
+});
+
+renderTicker('overall');
+
+// ===== PAGE SWITCHING =====
+function switchPage(page) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.dataset.page === page));
+  window.scrollTo(0, 0);
+  if (page === 'players') renderPlayersTable();
+  if (page === 'medicals') renderMedicals();
+}
+
+// ===== PLAYERS TABLE =====
+let currentPosFilter = 'all';
+
+function renderPlayersTable(search = '') {
+  const tbody = document.getElementById('playersTableBody');
+  let filtered = playersDB;
+  if (currentPosFilter !== 'all') filtered = filtered.filter(p => p.pos === currentPosFilter);
+  if (search) filtered = filtered.filter(p => (p.name + p.team + p.pos).toLowerCase().includes(search.toLowerCase()));
+  tbody.innerHTML = filtered.map(p => `
+    <tr onclick="openProfile('${p.id}')">
+      <td><div class="player-cell"><div class="player-initials" style="background:${p.color};">${p.initials}</div><div><div class="player-cell-name">${p.name}</div></div></div></td>
+      <td><span style="font-family:var(--mono);font-size:12px;color:var(--text-muted);">${p.pos}</span></td>
+      <td>${p.team}</td>
+      <td>${p.age}</td>
+      <td><span class="player-quick-status ${p.statusClass}">${p.status}</span></td>
+      <td><span style="font-family:var(--mono);font-size:12px;color:var(--gold);">${p.fRank}</span></td>
+    </tr>
+  `).join('');
+}
+
+function filterPlayers(val) { renderPlayersTable(val); }
+function filterByPos(pos, btn) {
+  currentPosFilter = pos;
+  document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPlayersTable(document.getElementById('playerSearchGlobal').value);
+}
+
+// ===== MEDICALS =====
+function renderMedicals(search = '') {
+  const container = document.getElementById('medicalsContent');
+  let html = '';
+  Object.entries(medicalDB).forEach(([id, player]) => {
+    if (search && !(player.name + player.injuries.map(i => i.title).join(' ')).toLowerCase().includes(search.toLowerCase())) return;
+    html += `<div style="margin-bottom:32px;">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;cursor:pointer;" onclick="openProfile('${id}')">
+        <div class="player-initials" style="background:${player.color};width:44px;height:44px;font-size:14px;">${player.initials}</div>
+        <div><div style="font-family:var(--serif);font-size:22px;font-weight:600;">${player.name}</div>
+        <div style="font-size:13px;color:var(--text-secondary);">${player.team}</div></div>
+      </div>`;
+    if (player.currentStatus) {
+      html += `<div class="medical-card" style="border-left:3px solid var(--gold);margin-bottom:20px;">
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">Current Status</div>
+        <div class="medical-detail" style="margin-bottom:0;">${player.currentStatus}</div>
+      </div>`;
+    }
+    player.injuries.forEach(inj => {
+      html += `<div class="medical-card">
+        <div class="medical-card-header"><h4>${inj.title}</h4><span class="severity ${inj.severity}">${inj.severityLabel}</span></div>
+        <div class="medical-detail">${inj.detail}</div>
+        <div class="impact-meter"><div class="impact-label">Career Impact</div><div class="impact-bar"><div class="impact-fill ${inj.impactClass}" style="width:${inj.impact}%"></div></div></div>
+        <div class="medical-source">Source: <span class="source-verified">✓ ${inj.source}</span></div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  if (!html) html = '<p style="color:var(--text-muted);font-family:var(--mono);font-size:13px;padding:24px 0;">No matching medical records found.</p>';
+  container.innerHTML = html;
+}
+
+function filterMedicals(val) { renderMedicals(val); }
+
+// ===== PLAYER PROFILE MODAL =====
+function openProfile(id) {
+  const overlay = document.getElementById('profileOverlay');
+  const player = playersDB.find(p => p.id === id);
+  const medical = medicalDB[id];
+  if (!player) return;
+  document.getElementById('profileAvatar').style.background = player.color;
+  document.getElementById('profileAvatar').textContent = player.initials;
+  document.getElementById('profileName').textContent = player.name;
+  document.getElementById('profileTeamLine').innerHTML = `${player.pos} · ${player.team} · <span>${player.fRank}</span>`;
+  let content = '';
+  if (medical) {
+    if (medical.currentStatus) {
+      content += `<div class="medical-card" style="border-left:3px solid var(--gold);margin-bottom:16px;">
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">Current Status</div>
+        <div class="medical-detail" style="margin-bottom:0;">${medical.currentStatus}</div>
+      </div>`;
+    }
+    medical.injuries.forEach(inj => {
+      content += `<div class="medical-card">
+        <div class="medical-card-header"><h4>${inj.title}</h4><span class="severity ${inj.severity}">${inj.severityLabel}</span></div>
+        <div class="medical-detail">${inj.detail}</div>
+        <div class="impact-meter"><div class="impact-label">Career Impact</div><div class="impact-bar"><div class="impact-fill ${inj.impactClass}" style="width:${inj.impact}%"></div></div></div>
+        <div class="medical-source">Source: <span class="source-verified">✓ ${inj.source}</span></div>
+      </div>`;
+    });
+  } else {
+    content = `<div class="medical-card"><div class="medical-detail">No medical records on file for ${player.name}. Player currently listed as <strong>${player.status}</strong>.</div></div>`;
+  }
+  document.getElementById('profileContent').innerHTML = content;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProfile() {
+  document.getElementById('profileOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function switchProfileTab(tab, el) {
+  document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ===== SUBSTACK INTEGRATION =====
+async function loadSubstack() {
+  try {
+    const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://mlamscookbook.substack.com/feed');
+    const data = await res.json();
+    if (data.items && data.items.length > 0) {
+      // Hero
+      const latest = data.items[0];
+      document.getElementById('heroTitle').textContent = latest.title;
+      const excerpt = latest.description ? latest.description.replace(/<[^>]+>/g, '').substring(0, 200) + '...' : '';
+      document.getElementById('heroExcerpt').textContent = excerpt;
+      document.getElementById('heroDate').textContent = new Date(latest.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      document.getElementById('heroLink').href = latest.link;
+
+      // Analysis section — 2nd post
+      if (data.items[1]) {
+        const second = data.items[1];
+        const el = document.getElementById('substackAnalysis');
+        document.getElementById('substackAnalysisTitle').textContent = second.title;
+        const excerpt2 = second.description ? second.description.replace(/<[^>]+>/g, '').substring(0, 180) + '...' : '';
+        document.getElementById('substackAnalysisExcerpt').textContent = excerpt2;
+        document.getElementById('substackAnalysisDate').textContent = new Date(second.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        el.onclick = () => window.open(second.link, '_blank');
+      }
+
+      // Top stories sidebar — 5th slot
+      if (data.items[2]) {
+        const third = data.items[2];
+        document.getElementById('sidebarSubstackTitle').textContent = third.title;
+        document.getElementById('sidebarSubstackMeta').innerHTML = `<span>Adi</span> · ${new Date(third.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+        document.getElementById('substackSidebarStory').onclick = () => window.open(third.link, '_blank');
+      }
+
+      // Right sidebar — remaining posts
+      const sidebar = document.getElementById('substackSidebar');
+      sidebar.innerHTML = data.items.slice(1, 5).map(item => `
+        <a href="${item.link}" target="_blank" style="display:block;padding:10px 0;border-bottom:1px solid var(--border-subtle);text-decoration:none;color:var(--text);transition:opacity 0.2s;">
+          <div style="font-family:var(--serif);font-size:14px;font-weight:600;line-height:1.35;margin-bottom:4px;">${item.title}</div>
+          <div style="font-size:11px;color:var(--text-muted);">${new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
+        </a>
+      `).join('');
+    }
+  } catch (e) {
+    document.getElementById('heroTitle').textContent = 'Latest analysis on Substack';
+    document.getElementById('heroExcerpt').textContent = 'Read the latest scouting reports, tactical analysis, and player evaluations.';
+  }
+}
+
+loadSubstack();
+
+// ===== SCROLL ANIMATIONS =====
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ===== KEYBOARD SHORTCUTS =====
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    switchPage('players');
+    setTimeout(() => document.getElementById('playerSearchGlobal').focus(), 100);
+  }
+  if (e.key === 'Escape') closeProfile();
+});
+</script>
+</body>
+</html>
