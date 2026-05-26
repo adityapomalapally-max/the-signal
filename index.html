@@ -1325,7 +1325,7 @@ a { color: inherit; text-decoration: none; }
         </div>
       </div>
 
-      <div class="analysis-card fade-in" onclick="openProfile('collins')">
+      <div class="analysis-card fade-in" onclick="switchPage('medicals');setTimeout(()=>{document.getElementById('medicalSearchInput').value='Nabers';filterMedicals('Nabers');},100)">
         <div class="analysis-text">
           <span class="analysis-tag tag-injury">Medical Intel</span>
           <h3>ACL Recovery Timelines: Separating the Myths From the Data</h3>
@@ -1348,7 +1348,7 @@ a { color: inherit; text-decoration: none; }
         </div>
       </div>
 
-      <div class="analysis-card fade-in">
+      <div class="analysis-card fade-in" onclick="switchPage('draft')">
         <div class="analysis-text">
           <span class="analysis-tag tag-draft">Draft Lab</span>
           <h3>GENERATIONAL vs. Elite: Why the Label Matters and Who Actually Earns It</h3>
@@ -1370,7 +1370,7 @@ a { color: inherit; text-decoration: none; }
         </div>
       </div>
 
-      <div class="analysis-card fade-in">
+      <div class="analysis-card fade-in" onclick="switchPage('medicals');setTimeout(()=>{document.getElementById('medicalSearchInput').value='Lamb';filterMedicals('Lamb');},100)">
         <div class="analysis-text">
           <span class="analysis-tag tag-film">Film Room</span>
           <h3>CeeDee Lamb's Route Tree Expansion: What Film Shows About His 2026 Ceiling</h3>
@@ -1526,9 +1526,9 @@ a { color: inherit; text-decoration: none; }
   <div style="max-width:1440px;margin:0 auto;">
     <div class="players-header">
       <h1>Medical Database</h1>
-      <p>Injury analysis sourced from vetted sports physicians. Understand how injuries actually impact player performance and fantasy value.</p>
+      <p>Research-backed injury analysis. Search any player to view their complete medical profile, current status, and evidence-based recovery projections.</p>
       <div class="players-search-bar">
-        <input type="text" class="players-search-input" placeholder="Search injuries, players..." oninput="filterMedicals(this.value)">
+        <input type="text" class="players-search-input" id="medicalSearchInput" placeholder="Search player name..." oninput="filterMedicals(this.value)" autocomplete="off">
       </div>
     </div>
     <div id="medicalsContent" style="padding:0 48px 48px;"></div>
@@ -1743,7 +1743,7 @@ const playersDB = [
 
 const medicalDB = {
   nabers: {
-    name:'Malik Nabers', team:'WR · New York Giants · #1 · 3rd Year', initials:'MN', color:'linear-gradient(135deg,#1e3a5f,#2563eb)',
+    name:'Malik Nabers', team:'WR · New York Giants · #1 · 3rd Year', initials:'MN', color:'linear-gradient(135deg,#1e3a5f,#2563eb)', trending: true,
     currentStatus: 'Rehabbing torn ACL + meniscus. Second cleanup surgery (scar tissue removal) performed ~May 2026. Week 1 availability uncertain — HC John Harbaugh says recovery is "not simple." Target is training camp but no guarantee.',
     injuries: [
       { title:'ACL + Meniscus Tear — Right Knee (Week 4, Sept 28, 2025)', severity:'high', severityLabel:'Major — Season-Ending', detail:'Tore ACL and meniscus while running a deep route vs. the Los Angeles Chargers. Stepped awkwardly with right leg before jumping for a Jaxson Dart pass. Carted off the field, placed on IR. Surgery performed ~late October 2025 (delayed one month post-injury). A second arthroscopic procedure was performed in May 2026 to remove scar tissue causing knee stiffness — a common complication after combined ACL/meniscus repairs (arthrofibrosis). HC Harbaugh stated the goal is Week 1 readiness but noted recovery is "not a simple" process. Research context: NFL WRs return to play after ACL reconstruction at a 60–69% rate, with an average return timeline of 10.9–13.6 months. Among WRs who do return, studies show significantly decreased targets, receptions, receiving yards, and TDs compared to pre-injury production and matched controls. Career length post-ACLR is shortened by an average of 1.9 seasons. Combined ACL + meniscus injuries carry added complexity and longer recovery timelines. Subsequent ACL injury risk (either knee) is approximately 25% within the first 2-3 years post-reconstruction.', impact:75, impactClass:'high', source:'CBS Sports, Newsweek, Bleacher Report, SIC Score — Orthopedic research: Arthroscopy, Sports Medicine and Rehabilitation (2021); OJSM (2021)' },
@@ -1753,13 +1753,72 @@ const medicalDB = {
     ]
   },
   collins: {
-    name:'Nico Collins', team:'WR · Houston Texans · #12 · 5th Year', initials:'NC', color:'linear-gradient(135deg,#03202f,#008c96)',
+    name:'Nico Collins', team:'WR · Houston Texans · #12 · 5th Year', initials:'NC', color:'linear-gradient(135deg,#03202f,#008c96)', trending: true,
     currentStatus: 'Healthy entering 2026. Cleared from final concussion (Jan 2026 playoffs) — participated in Pro Bowl flag football game 3 weeks later. Three consecutive 1,000-yard seasons. Primary concern is soft-tissue injury pattern: hamstring issues and multiple concussions have cost him 7 full games and parts of 5 others over the past two seasons.',
     injuries: [
       { title:'Concussion #2 — Playoff Wild Card vs. Steelers (Jan 13, 2026)', severity:'moderate', severityLabel:'Resolved — Pattern Concern', detail:'Suffered second concussion of the 2025 season during the Texans\' wild-card win at Pittsburgh. Fell on his face after catching a slant route, immediately put hands to his face. Carted to locker room, ruled out. Unable to practice all week and was ruled out for the divisional round loss at New England. Cleared ~3 weeks post-injury, participated in Pro Bowl flag football. Research context: The risk of a same-season repeat concussion in the NFL is 5.3–8.3% for players who\'ve already sustained one. Players with multiple concussions within a season typically miss more time from subsequent concussions (median 12 days vs. 8 for first). Long-term, WRs are 70% more likely than low-risk positions to report cognitive impairment later in life (Harvard FPHS). Two concussions in one season is a notable pattern that warrants close monitoring.', impact:40, impactClass:'moderate', source:'ESPN, NY Post, SIC Score — Research: Neurosurgery (2022 — ScienceDirect); Harvard Football Players Health Study' },
       { title:'Concussion #1 — Week 7 vs. Seahawks (Oct 21, 2025)', severity:'moderate', severityLabel:'Resolved', detail:'Head slammed on turf during a catch attempt in the fourth quarter of Monday Night Football at Seattle. Taken to blue tent, then locker room. Ruled out with concussion. Missed Week 8 vs. 49ers. Returned Week 9 vs. Broncos and played the remainder of the regular season without issue. At time of injury, Collins was leading the Texans in receiving yards by a significant margin.', impact:20, impactClass:'low', source:'ESPN, SI Texans Daily, SIC Score' },
       { title:'Hamstring Strain — Week 5 vs. Bills (Oct 6, 2024)', severity:'moderate', severityLabel:'Resolved — Recurrence Risk', detail:'Suffered hamstring strain while catching a 67-yard touchdown vs. Buffalo. Initially deemed "day-to-day," later changed to "week-to-week." Placed on IR, missed 4 games (Weeks 6–10). Activated from IR Week 10, returned to action Week 11 vs. Cowboys. Still finished with 68 receptions for 1,006 yards and 7 TDs in just 12 games — his second consecutive 1,000-yard season. Key context: This was a re-aggravation — Collins entered the Bills game already dealing with a hamstring issue. Hamstring injuries in WRs have a recurrence rate of approximately 12–33% within the first year of return, particularly when the initial injury involves re-aggravation. The fact that Collins suffered it on a max-effort play (67-yard TD) suggests the speed demands of his role create ongoing risk for this specific muscle group.', impact:30, impactClass:'moderate', source:'NFL.com, ESPN, PFN, Click2Houston — Research: BJSM hamstring recurrence meta-analyses' },
       { title:'Hamstring (2023 Season)', severity:'low', severityLabel:'Resolved', detail:'Dealt with hamstring tightness during the 2023 season. Did not miss significant time. However, the 2024 re-aggravation of the same muscle group suggests a potential pattern. Collins\' explosive playing style — 4.44 40-yard dash, 6\'4" 222 lbs with deep-threat role — places significant strain on the hamstring complex.', impact:10, impactClass:'low', source:'RotoWire, PFF' }
+    ]
+  },
+  chase: {
+    name:"Ja'Marr Chase", team:'WR · Cincinnati Bengals · #1 · 5th Year', initials:'JC', color:'linear-gradient(135deg,#fb4f14,#000)',
+    currentStatus: 'Healthy entering 2026. Won the receiving triple crown in 2024 (117 rec, 1,708 yds, 17 TD). No significant injuries in 2025. Durable profile — has played 16+ games in 3 of 4 NFL seasons.',
+    injuries: [
+      { title:'Hip Fracture / Labral Tear (Oct 2022)', severity:'moderate', severityLabel:'Resolved — History Noted', detail:'Suffered a hairline fracture in his hip during Week 6 vs. the Saints in 2022, which worsened by Week 7. Missed 4 games (Weeks 8–11), returned Week 13 vs. the Chiefs. Still finished with 87 receptions and 1,046 yards despite missing time. The hip is a complex joint for WRs — route-running generates significant rotational force through the hip. Full recovery with no recurrence through 2023-2025 suggests the injury healed well.', impact:15, impactClass:'low', source:'Sportskeeda, ESPN' },
+      { title:'Shoulder AC Joint Sprain (Dec 2023)', severity:'low', severityLabel:'Resolved', detail:'Injured shoulder in Week 15 of 2023. Played through it for the final two regular season games and postseason. AC joint sprains are common contact injuries — most resolve in 2-6 weeks without surgery. Did not affect his 2024 production (triple crown season).', impact:5, impactClass:'low', source:'Sportskeeda, NFL Injury Reports' }
+    ]
+  },
+  nacua: {
+    name:'Puka Nacua', team:'WR · Los Angeles Rams · #12 · 3rd Year', initials:'PN', color:'linear-gradient(135deg,#003594,#ffd100)', trending: true,
+    currentStatus: 'Healthy entering 2026. Led NFL in receiving yards per game (95.3) — all-time record. Injury-prone label persists from college (broken foot, ankle issues at BYU) and 2024 PCL injury. Finished 2025 strong despite missing time with ankle and rib injuries.',
+    injuries: [
+      { title:'Low Ankle Sprain — Week 6 vs. Ravens (Oct 2025)', severity:'moderate', severityLabel:'Resolved', detail:'Sustained left ankle injury during the Rams\' victory over Baltimore. Attempted to return in the third quarter but had no targets after re-entry. HC McVay described him as "day-to-day." Missed Week 7 game vs. Jaguars in London. Benefited from Week 8 bye for additional recovery. Returned Week 9 vs. Saints. Ankle sprains are a recurring theme for Nacua — he dealt with multiple ankle issues at BYU and this is at least his second notable ankle injury in the NFL.', impact:25, impactClass:'moderate', source:'Newsweek, PFN, SIC Score' },
+      { title:'PCL Injury — Preseason/Week 1 (2024)', severity:'high', severityLabel:'Significant — Missed 6 Games', detail:'Suffered a PCL injury during 2024 preseason that was aggravated in Week 1. Missed Weeks 2-7. Despite missing 6 games, still produced 79 catches for 990 yards and 3 TDs. PCL injuries are less common than ACL tears but can affect cutting ability and change-of-direction. The fact that Nacua returned to elite production suggests good structural recovery, but the injury history pattern (college foot fracture, ankle injuries, PCL) is a durability concern.', impact:35, impactClass:'moderate', source:'SIC Score, Rams official' },
+      { title:'Rib Injury — Week 9 (Nov 2025)', severity:'low', severityLabel:'Resolved', detail:'Suffered rib injury in third quarter vs. Saints. Could have re-entered but was held out precautionarily with the Rams ahead. Scans showed positive results. Returned Week 10 vs. 49ers without missing a game.', impact:5, impactClass:'low', source:'Rams official, SIC Score' },
+      { title:'College Injury History (BYU)', severity:'moderate', severityLabel:'Pattern Concern', detail:'At BYU, Nacua dealt with a broken foot, an ankle injury, and another leg injury that limited his college production and contributed to his fifth-round draft selection. His 2023 rookie year was the first full healthy season of his career. The persistent lower-body injury pattern — foot, ankle, knee (PCL) — suggests structural vulnerability in the lower extremities that warrants ongoing monitoring.', impact:20, impactClass:'moderate', source:'PlayerProfiler, BYU records' }
+    ]
+  },
+  lamb: {
+    name:'CeeDee Lamb', team:'WR · Dallas Cowboys · #88 · 6th Year', initials:'CL', color:'linear-gradient(135deg,#041e42,#869397)',
+    currentStatus: 'Healthy entering 2026. Coming off his worst fantasy season since his rookie year due to a high ankle sprain in 2025. Prior to that, had been one of the most durable WRs in the league with three consecutive 100+ reception seasons.',
+    injuries: [
+      { title:'High Ankle Sprain (2025)', severity:'moderate', severityLabel:'Resolved — Affected Production', detail:'Suffered a high ankle sprain during the 2025 season that significantly hampered his production. High ankle sprains are more severe than low ankle sprains, typically requiring 6-8 weeks for full recovery. WRs are particularly affected because the injury limits push-off explosiveness, route-running crispness, and the ability to create separation. Lamb\'s fantasy output dropped notably, marking his worst season since his rookie year. Research shows high ankle sprains in NFL skill players cause an average 4-week absence and residual performance effects for 2-4 weeks after return.', impact:30, impactClass:'moderate', source:'PlayerProfiler Dynasty Rankings, NFL Injury Reports' },
+      { title:'General Durability (2021-2024)', severity:'low', severityLabel:'Iron Man', detail:'Prior to the 2025 ankle sprain, Lamb was one of the most durable WRs in football. Played all 17 games in 2023 (135 rec, 1,749 yds, 12 TD) and 2024 (101 rec, 1,194 yds, 8 TD). Three consecutive seasons with 100+ receptions. His durability profile prior to the ankle injury was elite.', impact:0, impactClass:'low', source:'NFL Stats' }
+    ]
+  },
+  robinson: {
+    name:'Bijan Robinson', team:'RB · Atlanta Falcons · #7 · 4th Year', initials:'BR', color:'linear-gradient(135deg,#a71930,#000)',
+    currentStatus: 'Healthy entering 2026. First-team All-Pro in 2025. No significant NFL injuries to date. One of the most durable RBs in football — has not missed a game due to injury in his NFL career. College history includes elbow dislocation (2021) and shoulder injury (2022) at Texas.',
+    injuries: [
+      { title:'Shoulder Injury — Week 3, 2024', severity:'low', severityLabel:'Resolved — No Games Missed', detail:'Appeared on injury report with shoulder issue in Week 3 of 2024. Did not miss any games. Robinson has shown remarkable durability for a high-volume RB, which is notable given the position\'s inherent injury risk. Through 3 NFL seasons: 3,910 rushing yards, 1,738 receiving yards, 34 total TDs. His workload (304 carries + 61 targets in 2024 alone) puts him at elevated soft-tissue injury risk going forward.', impact:5, impactClass:'low', source:'PlayerProfiler, Fantasy Football Calculator' },
+      { title:'Elbow Dislocation + Surgery (Nov 2021, Texas)', severity:'moderate', severityLabel:'Resolved — College', detail:'Left elbow dislocation during a game at Texas. Required surgery, cleared for return in late February 2022. No recurrence or lingering effects in the NFL. Elbow dislocations are uncommon for RBs but can occur on awkward falls or tackles.', impact:5, impactClass:'low', source:'The Injury Expertz, Texas Athletics' },
+      { title:'Hamstring/Groin History (High School)', severity:'low', severityLabel:'Resolved — Pre-College', detail:'Dealt with recurring hamstring, groin, knee, and hip strains during high school (2015-2019) at Salpointe Catholic in Tucson. Also had a right fibula fracture in 2013 that required surgery. All resolved before college career. These are worth noting only as baseline history — no recurrence pattern in college or NFL.', impact:0, impactClass:'low', source:'The Injury Expertz' }
+    ]
+  },
+  achane: {
+    name:"De'Von Achane", team:'RB · Miami Dolphins · #28 · 3rd Year', initials:'DA', color:'linear-gradient(135deg,#008e97,#f58220)', trending: true,
+    currentStatus: 'Healthy entering 2026. Achane\'s elite speed (4.32 40-yard dash, 5\'9" 188 lbs) makes him an electrifying playmaker but also raises durability questions. His small frame has led to multiple injuries in his first two seasons. When healthy, he\'s been one of the most explosive backs in the NFL.',
+    injuries: [
+      { title:'Knee Injury (2024)', severity:'moderate', severityLabel:'Resolved — Missed Time', detail:'Dealt with a knee injury during the 2024 season that caused him to miss multiple games. Despite availability issues, Achane\'s per-game production when healthy was elite. His size (5\'9" 188 lbs) is both his greatest asset (speed, agility) and his greatest risk factor. Research on undersized NFL RBs shows they tend to have shorter career windows but can be highly productive when healthy. Achane\'s breakaway speed (top-5 in the NFL in max speed) means he absorbs fewer direct hits than power backs, which partially offsets the size concern.', impact:25, impactClass:'moderate', source:'NFL Injury Reports, Miami Dolphins' },
+      { title:'Knee / Concussion (Rookie, 2023)', severity:'moderate', severityLabel:'Resolved', detail:'Missed time during his rookie season with knee and concussion injuries. Despite playing only 11 games, averaged 7.8 yards per carry — the highest in the NFL. His injury pattern suggests the biggest risk isn\'t any single major injury but rather accumulation of smaller ailments that limit availability. Fantasy managers should draft him understanding the weekly volatility.', impact:20, impactClass:'low', source:'NFL.com, ESPN' }
+    ]
+  },
+  allen: {
+    name:'Josh Allen', team:'QB · Buffalo Bills · #17 · 8th Year', initials:'JA', color:'linear-gradient(135deg,#00338d,#c60c30)',
+    currentStatus: 'Healthy entering 2026. Allen\'s rushing style (700+ yards in multiple seasons) creates elevated injury risk for a franchise QB. Has been remarkably durable despite his physical playing style — has started 16+ games in every season since 2020.',
+    injuries: [
+      { title:'Elbow Injury (2024)', severity:'low', severityLabel:'Managed — No Games Missed', detail:'Dealt with an elbow issue during the 2024 season that was monitored but did not cause him to miss any starts. Allen\'s throwing mechanics and rushing volume (he\'s rushed 500+ times in his career) place significant stress on his elbow and shoulder. QB elbow injuries can range from UCL stress to nerve compression. Allen has shown the ability to manage through minor ailments.', impact:10, impactClass:'low', source:'NFL Injury Reports, Bills official' },
+      { title:'General Durability Profile', severity:'low', severityLabel:'Iron Man — With Caveats', detail:'Allen has started 100+ regular season games and has not missed significant time due to injury. However, his playing style — he leads all QBs in rushing attempts since 2018 — statistically elevates his injury risk compared to pocket passers. Research shows mobile QBs who rush 100+ times per season have a ~15% higher rate of lower-body injuries. Allen\'s 6\'5" 237 lb frame provides some protection, but the cumulative toll of contact is a long-term monitoring point. Fastest, youngest player to reach 300 total touchdowns in NFL history.', impact:10, impactClass:'low', source:'ESPN, Buffalo Bills, NFL Stats' }
+    ]
+  },
+  gibbs: {
+    name:'Jahmyr Gibbs', team:'RB · Detroit Lions · #26 · 3rd Year', initials:'JG', color:'linear-gradient(135deg,#0076b6,#b0b7bc)',
+    currentStatus: 'Healthy entering 2026. Gibbs has been one of the most durable young RBs in football — no significant injuries in his first two NFL seasons. His role-share with David Montgomery (prior to Montgomery\'s departure) may have helped preserve his health by limiting his total touch count.',
+    injuries: [
+      { title:'Hamstring Tightness (2024)', severity:'low', severityLabel:'Resolved — No Games Missed', detail:'Appeared on injury reports with hamstring tightness during the 2024 season but did not miss any games. Hamstring issues are common for explosive speed backs — Gibbs ran a 4.36 40-yard dash at the combine. His relatively modest rushing volume (compared to bell-cow backs) has kept him fresh. With Montgomery gone, Gibbs is expected to see a larger workload in 2026, which could change his injury calculus.', impact:5, impactClass:'low', source:'NFL Injury Reports, Detroit Lions' },
+      { title:'College Durability (Alabama/Georgia Tech)', severity:'low', severityLabel:'Clean', detail:'No significant injuries during his college career at Georgia Tech (2020-2021) or Alabama (2022). Gibbs\' 5\'9" 200 lb frame and elusive running style mean he avoids big hits more often than power backs, which bodes well for longevity.', impact:0, impactClass:'low', source:'College records' }
     ]
   }
 };
@@ -1824,31 +1883,93 @@ function filterByPos(pos, btn) {
 function renderMedicals(search = '') {
   const container = document.getElementById('medicalsContent');
   let html = '';
-  Object.entries(medicalDB).forEach(([id, player]) => {
-    if (search && !(player.name + player.injuries.map(i => i.title).join(' ')).toLowerCase().includes(search.toLowerCase())) return;
-    html += `<div style="margin-bottom:32px;">
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;cursor:pointer;" onclick="openProfile('${id}')">
-        <div class="player-initials" style="background:${player.color};width:44px;height:44px;font-size:14px;">${player.initials}</div>
-        <div><div style="font-family:var(--serif);font-size:22px;font-weight:600;">${player.name}</div>
-        <div style="font-size:13px;color:var(--text-secondary);">${player.team}</div></div>
-      </div>`;
-    if (player.currentStatus) {
-      html += `<div class="medical-card" style="border-left:3px solid var(--gold);margin-bottom:20px;">
-        <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">Current Status</div>
-        <div class="medical-detail" style="margin-bottom:0;">${player.currentStatus}</div>
-      </div>`;
-    }
-    player.injuries.forEach(inj => {
-      html += `<div class="medical-card">
-        <div class="medical-card-header"><h4>${inj.title}</h4><span class="severity ${inj.severity}">${inj.severityLabel}</span></div>
-        <div class="medical-detail">${inj.detail}</div>
-        <div class="impact-meter"><div class="impact-label">Career Impact</div><div class="impact-bar"><div class="impact-fill ${inj.impactClass}" style="width:${inj.impact}%"></div></div></div>
-        <div class="medical-source">Source: <span class="source-verified">✓ ${inj.source}</span></div>
+
+  if (!search) {
+    // Default view: trending injuries + browse prompt
+    const trending = Object.entries(medicalDB).filter(([id, p]) => p.trending);
+    const allPlayers = Object.entries(medicalDB);
+
+    html += `<div style="margin-bottom:40px;">
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;">Trending Injuries</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;">`;
+
+    trending.forEach(([id, player]) => {
+      const topInj = player.injuries[0];
+      html += `<div class="medical-card" style="cursor:pointer;transition:background 0.2s;" onclick="document.getElementById('medicalSearchInput').value='${player.name}';filterMedicals('${player.name}');" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background=''">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div class="player-initials" style="background:${player.color};width:40px;height:40px;font-size:12px;">${player.initials}</div>
+          <div>
+            <div style="font-weight:600;font-size:14px;">${player.name}</div>
+            <div style="font-size:11px;color:var(--text-muted);">${player.team}</div>
+          </div>
+          <span class="severity ${topInj.severity}" style="margin-left:auto;">${topInj.severityLabel}</span>
+        </div>
+        <h4 style="font-size:13px;font-weight:600;margin-bottom:6px;">${topInj.title}</h4>
+        <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">${topInj.detail.substring(0, 150)}...</p>
       </div>`;
     });
-    html += '</div>';
-  });
-  if (!html) html = '<p style="color:var(--text-muted);font-family:var(--mono);font-size:13px;padding:24px 0;">No matching medical records found.</p>';
+
+    html += `</div></div>`;
+
+    // All players with medical profiles
+    html += `<div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px;">All Medical Profiles (${allPlayers.length})</div>`;
+    html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;margin-bottom:32px;">`;
+
+    allPlayers.forEach(([id, player]) => {
+      const injCount = player.injuries.length;
+      const topSev = player.injuries.reduce((max, i) => i.impact > max.impact ? i : max, player.injuries[0]);
+      html += `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:background 0.2s;" onclick="document.getElementById('medicalSearchInput').value='${player.name}';filterMedicals('${player.name}');" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background='var(--bg-card)'">
+        <div class="player-initials" style="background:${player.color};width:34px;height:34px;font-size:11px;">${player.initials}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${player.name}</div>
+          <div style="font-size:11px;color:var(--text-muted);">${injCount} record${injCount !== 1 ? 's' : ''}</div>
+        </div>
+        <span class="severity ${topSev.severity}" style="font-size:9px;">${topSev.severityLabel.split(' ')[0]}</span>
+      </div>`;
+    });
+
+    html += `</div>`;
+  } else {
+    // Search results: show full profiles
+    const results = Object.entries(medicalDB).filter(([id, player]) =>
+      (player.name + player.team + player.injuries.map(i => i.title).join(' ')).toLowerCase().includes(search.toLowerCase())
+    );
+
+    if (results.length === 0) {
+      html = `<div style="text-align:center;padding:48px 0;">
+        <p style="font-family:var(--serif);font-size:20px;color:var(--text-secondary);margin-bottom:8px;">No medical records found for "${search}"</p>
+        <p style="font-size:13px;color:var(--text-muted);">Try searching by player name. We're continuously adding new profiles.</p>
+      </div>`;
+    }
+
+    results.forEach(([id, player]) => {
+      html += `<div style="margin-bottom:40px;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;cursor:pointer;" onclick="openProfile('${id}')">
+          <div class="player-initials" style="background:${player.color};width:48px;height:48px;font-size:15px;">${player.initials}</div>
+          <div style="flex:1;">
+            <div style="font-family:var(--serif);font-size:24px;font-weight:600;">${player.name}</div>
+            <div style="font-size:13px;color:var(--text-secondary);">${player.team}</div>
+          </div>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);cursor:pointer;" onclick="event.stopPropagation();document.getElementById('medicalSearchInput').value='';filterMedicals('');">✕ Clear</span>
+        </div>`;
+      if (player.currentStatus) {
+        html += `<div class="medical-card" style="border-left:3px solid var(--gold);margin-bottom:20px;">
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">Current Status</div>
+          <div class="medical-detail" style="margin-bottom:0;">${player.currentStatus}</div>
+        </div>`;
+      }
+      player.injuries.forEach(inj => {
+        html += `<div class="medical-card">
+          <div class="medical-card-header"><h4>${inj.title}</h4><span class="severity ${inj.severity}">${inj.severityLabel}</span></div>
+          <div class="medical-detail">${inj.detail}</div>
+          <div class="impact-meter"><div class="impact-label">Career Impact</div><div class="impact-bar"><div class="impact-fill ${inj.impactClass}" style="width:${inj.impact}%"></div></div></div>
+          <div class="medical-source">Source: <span class="source-verified">✓ ${inj.source}</span></div>
+        </div>`;
+      });
+      html += '</div>';
+    });
+  }
+
   container.innerHTML = html;
 }
 
