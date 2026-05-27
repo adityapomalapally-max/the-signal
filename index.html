@@ -483,11 +483,12 @@ a { color: inherit; text-decoration: none; }
 .news-card {
   padding: 32px 36px;
   border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-subtle);
   cursor: pointer;
   transition: background 0.25s;
 }
 
-.news-card:last-child { border-right: none; }
+.news-card:nth-child(3n) { border-right: none; }
 .news-card:hover { background: var(--bg-card); }
 
 .news-card-tag {
@@ -1259,7 +1260,12 @@ a { color: inherit; text-decoration: none; }
   <div class="section-divider fade-in">
     <span class="section-divider-label">NFL News Wire</span>
     <span class="section-divider-line"></span>
-    <span class="section-divider-action">View all →</span>
+    <div style="display:flex;gap:4px;">
+      <button class="pos-btn active" onclick="filterNews('all',this)">All</button>
+      <button class="pos-btn" onclick="filterNews('injury',this)">Injuries</button>
+      <button class="pos-btn" onclick="filterNews('fantasy',this)">Fantasy</button>
+    </div>
+    <span class="section-divider-action" id="newsTimestamp" style="font-family:var(--mono);font-size:9px;"></span>
   </div>
 
   <div class="news-feed fade-in" id="newsFeed">
@@ -1429,6 +1435,16 @@ a { color: inherit; text-decoration: none; }
         <div class="sidebar-section-title"><span>From Substack</span></div>
         <div id="substackSidebar">
           <p style="font-size:12px;color:var(--text-muted);font-family:var(--mono);">Loading latest posts...</p>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">
+          <span>🔥 Trending Players</span>
+          <span style="font-family:var(--sans);font-size:9px;letter-spacing:0;text-transform:none;color:var(--text-muted);">via Sleeper</span>
+        </div>
+        <div id="sleeperTrending">
+          <p style="font-size:12px;color:var(--text-muted);font-family:var(--mono);">Loading trending...</p>
         </div>
       </div>
 
@@ -1692,6 +1708,7 @@ async function initData() {
   renderTicker('overall');
   loadESPNNews();
   loadSubstack();
+  loadSleeperTrending();
 
   // Fade-in observer
   const observer = new IntersectionObserver((entries) => {
@@ -1897,61 +1914,140 @@ function switchProfileTab(tab, el) {
   el.classList.add('active');
 }
 
+// ===== SLEEPER PLAYER DB (cached) =====
+let sleeperPlayers = {};
+
+async function loadSleeperPlayerDB() {
+  const cacheKey = 'signal_sleeper_players';
+  const cacheExpiry = 'signal_sleeper_expiry';
+  const cached = localStorage.getItem(cacheKey);
+  const expiry = localStorage.getItem(cacheExpiry);
+
+  if (cached && expiry && Date.now() < parseInt(expiry)) {
+    sleeperPlayers = JSON.parse(cached);
+    return;
+  }
+
+  try {
+    const res = await fetch('https://api.sleeper.app/v1/players/nfl');
+    const data = await res.json();
+    sleeperPlayers = data;
+    localStorage.setItem(cacheKey, JSON.stringify(data));
+    localStorage.setItem(cacheExpiry, String(Date.now() + 86400000)); // 24hr
+  } catch (e) { console.warn('Sleeper player DB failed:', e); }
+}
+
+// ===== SLEEPER TRENDING =====
+async function loadSleeperTrending() {
+  try {
+    if (Object.keys(sleeperPlayers).length === 0) await loadSleeperPlayerDB();
+    const res = await fetch('https://api.sleeper.app/v1/players/nfl/trending/add?lookback_hours=48&limit=10');
+    const trending = await res.json();
+    const container = document.getElementById('sleeperTrending');
+    if (!trending || trending.length === 0) {
+      container.innerHTML = '<p style="font-size:12px;color:var(--text-muted);">No trending data available</p>';
+      return;
+    }
+
+    container.innerHTML = trending.map((t, i) => {
+      const p = sleeperPlayers[t.player_id];
+      if (!p || !p.first_name) return '';
+      const name = p.first_name + ' ' + p.last_name;
+      const pos = p.position || '';
+      const team = p.team || 'FA';
+      const injStatus = p.injury_status || '';
+      const initials = (p.first_name[0] || '') + (p.last_name[0] || '');
+      const ourPlayer = playersDB.find(x => x.name.toLowerCase().includes(p.last_name.toLowerCase()) && x.pos === pos);
+      const clickHandler = ourPlayer ? `onclick="openProfile('${ourPlayer.id}')"` : '';
+      const statusHtml = injStatus ? `<span style="font-family:var(--mono);font-size:8px;padding:2px 5px;border-radius:3px;background:var(--red-muted);color:var(--red);text-transform:uppercase;">${injStatus}</span>` : '';
+
+      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-subtle);cursor:${ourPlayer ? 'pointer' : 'default'};" ${clickHandler}>
+        <span style="font-family:var(--mono);font-size:10px;color:var(--gold);font-weight:600;min-width:18px;">${i + 1}</span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${name}</div>
+          <div style="font-size:10px;color:var(--text-muted);">${pos} · ${team} · +${t.count.toLocaleString()} adds</div>
+        </div>
+        ${statusHtml}
+      </div>`;
+    }).join('');
+  } catch (e) {
+    console.warn('Sleeper trending failed:', e);
+    document.getElementById('sleeperTrending').innerHTML = '<p style="font-size:12px;color:var(--text-muted);">Trending data unavailable</p>';
+  }
+}
+
+// ===== NEWS FILTERING =====
+let allNewsArticles = [];
+let currentNewsFilter = 'all';
+
+function filterNews(type, btn) {
+  currentNewsFilter = type;
+  document.querySelectorAll('.section-divider .pos-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderNewsCards();
+}
+
+function categorizeArticle(headline) {
+  const h = headline.toLowerCase();
+  if (h.includes('injur') || h.includes('concuss') || h.includes('acl') || h.includes('hamstring') || h.includes('out for') || h.includes('miss') || h.includes('surgery') || h.includes('ir ') || h.includes('rehab') || h.includes('sprain') || h.includes('fracture') || h.includes('tear') || h.includes('strain')) return 'injury';
+  if (h.includes('fantasy') || h.includes('trade') || h.includes('sign') || h.includes('contract') || h.includes('extension') || h.includes('waiv') || h.includes('roster') || h.includes('cut') || h.includes('release') || h.includes('draft')) return 'fantasy';
+  return 'news';
+}
+
+function renderNewsCards() {
+  const feed = document.getElementById('newsFeed');
+  let filtered = allNewsArticles;
+  if (currentNewsFilter !== 'all') filtered = filtered.filter(a => a.category === currentNewsFilter);
+  if (filtered.length === 0) filtered = allNewsArticles.slice(0, 3);
+
+  feed.innerHTML = filtered.slice(0, 6).map((article, i) => {
+    const tagMap = { injury: { label: 'Injury', cls: 'tag-injury' }, fantasy: { label: 'Fantasy Impact', cls: 'tag-fantasy' }, news: { label: 'NFL News', cls: 'tag-news' } };
+    const tag = tagMap[article.category] || tagMap.news;
+    const dotHtml = i === 0 && currentNewsFilter === 'all' ? '<span class="live-dot"></span>' : '';
+    return `<a class="news-card" href="${article.link}" target="_blank" style="text-decoration:none;color:var(--text);">
+      <div class="news-card-tag ${tag.cls}">${dotHtml} ${tag.label}</div>
+      <h3>${article.headline}</h3>
+      <p>${article.description}</p>
+      <div class="news-card-footer">
+        <span>Via <span class="author">ESPN</span></span>
+        <span class="read-time">${article.date}</span>
+      </div>
+    </a>`;
+  }).join('');
+}
+
 // ===== ESPN NEWS API =====
 async function loadESPNNews() {
   try {
-    const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/news?limit=6');
+    const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/news?limit=12');
     const data = await res.json();
     if (data.articles && data.articles.length > 0) {
-      const feed = document.getElementById('newsFeed');
-      const articles = data.articles.slice(0, 3);
-      feed.innerHTML = articles.map((article, i) => {
+      allNewsArticles = data.articles.map(article => {
         const headline = article.headline || '';
         const desc = article.description || '';
         const link = article.links && article.links.web ? article.links.web.href : '#';
-        const isInjury = headline.toLowerCase().includes('injur') || headline.toLowerCase().includes('concuss') || headline.toLowerCase().includes('acl') || headline.toLowerCase().includes('hamstring') || headline.toLowerCase().includes('out for') || headline.toLowerCase().includes('miss');
-        const isFantasy = headline.toLowerCase().includes('fantasy') || headline.toLowerCase().includes('trade') || headline.toLowerCase().includes('sign') || headline.toLowerCase().includes('contract');
-        let tagLabel = 'NFL News';
-        let tagClass = 'tag-news';
-        let dotHtml = '';
-        if (isInjury) { tagLabel = 'Injury'; tagClass = 'tag-injury'; }
-        else if (isFantasy) { tagLabel = 'Fantasy Impact'; tagClass = 'tag-fantasy'; }
-        else if (i === 0) { dotHtml = '<span class="live-dot"></span>'; tagLabel = 'Latest'; }
         const published = article.published ? new Date(article.published) : null;
-        const timeStr = published ? published.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
-        return `<a class="news-card" href="${link}" target="_blank" style="text-decoration:none;color:var(--text);">
-          <div class="news-card-tag ${tagClass}">${dotHtml} ${tagLabel}</div>
-          <h3>${headline}</h3>
-          <p>${desc.substring(0, 160)}${desc.length > 160 ? '...' : ''}</p>
-          <div class="news-card-footer">
-            <span>Via <span class="author">ESPN</span></span>
-            <span class="read-time">${timeStr}</span>
-          </div>
-        </a>`;
-      }).join('');
+        const dateStr = published ? published.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+        return {
+          headline,
+          description: desc.substring(0, 160) + (desc.length > 160 ? '...' : ''),
+          link,
+          date: dateStr,
+          category: categorizeArticle(headline + ' ' + desc)
+        };
+      });
+      renderNewsCards();
+      const ts = document.getElementById('newsTimestamp');
+      if (ts) ts.textContent = 'Updated: ' + new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
     }
   } catch (e) {
     console.log('ESPN API fallback:', e);
-    const feed = document.getElementById('newsFeed');
-    feed.innerHTML = `
-      <div class="news-card" onclick="switchPage('medicals')">
-        <div class="news-card-tag tag-injury">Injury Update</div>
-        <h3>Malik Nabers ACL Update: Second Surgery, Scar Tissue Cleanup</h3>
-        <p>Nabers underwent a second procedure to remove scar tissue from his torn ACL/meniscus repair. Full medical breakdown inside.</p>
-        <div class="news-card-footer"><span>Source: <span class="author">Medical Database</span></span><span class="read-time">May 2026</span></div>
-      </div>
-      <div class="news-card" onclick="switchPage('medicals')">
-        <div class="news-card-tag tag-injury">Medical Intel</div>
-        <h3>Christian McCaffrey: The Bilateral Achilles Question Nobody Wants to Answer</h3>
-        <p>CMC claims 'zero restrictions' but the data on bilateral Achilles tendonitis recovery paints a more complicated picture.</p>
-        <div class="news-card-footer"><span>Source: <span class="author">Medical Database</span></span><span class="read-time">May 2026</span></div>
-      </div>
-      <div class="news-card" onclick="switchPage('medicals')">
-        <div class="news-card-tag tag-fantasy">Fantasy Intel</div>
-        <h3>Justin Jefferson's Hamstring History: Dynasty Buy-Low or Sell Signal?</h3>
-        <p>Two hamstring injuries in three years for a WR who relies on explosive speed. We break down the recurrence data.</p>
-        <div class="news-card-footer"><span>Source: <span class="author">Medical Database</span></span><span class="read-time">May 2026</span></div>
-      </div>`;
+    allNewsArticles = [
+      { headline: 'Malik Nabers ACL Update: Second Surgery, Scar Tissue Cleanup', description: 'Nabers underwent a second procedure to remove scar tissue from his torn ACL/meniscus repair. Full medical breakdown inside.', link: '#', date: 'May 2026', category: 'injury' },
+      { headline: 'Christian McCaffrey: The Bilateral Achilles Question', description: 'CMC claims zero restrictions but the data on bilateral Achilles tendonitis recovery paints a complicated picture.', link: '#', date: 'May 2026', category: 'injury' },
+      { headline: "Justin Jefferson's Hamstring History: Dynasty Signal?", description: 'Two hamstring injuries in three years for a WR who relies on explosive speed. Breaking down the recurrence data.', link: '#', date: 'May 2026', category: 'fantasy' }
+    ];
+    renderNewsCards();
   }
 }
 
