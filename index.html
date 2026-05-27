@@ -1732,6 +1732,10 @@ const playersDB = [
   { id:'bowers', name:'Brock Bowers', pos:'TE', team:'LV', age:23, status:'Healthy', statusClass:'status-healthy', fRank:'TE2', initials:'BB', color:'linear-gradient(135deg,#000,#a5acaf)' },
   { id:'jefferson', name:'Justin Jefferson', pos:'WR', team:'MIN', age:26, status:'Healthy', statusClass:'status-healthy', fRank:'WR5', initials:'JJ', color:'linear-gradient(135deg,#4f2683,#ffc62f)' },
   { id:'cmc', name:'Christian McCaffrey', pos:'RB', team:'SF', age:29, status:'Monitor', statusClass:'status-quest', fRank:'RB3', initials:'CM', color:'linear-gradient(135deg,#aa0000,#b3995d)' },
+  { id:'stbrown', name:'Amon-Ra St. Brown', pos:'WR', team:'DET', age:26, status:'Healthy', statusClass:'status-healthy', fRank:'WR4', initials:'AB', color:'linear-gradient(135deg,#0076b6,#b0b7bc)' },
+  { id:'burrow', name:'Joe Burrow', pos:'QB', team:'CIN', age:29, status:'Rehab (Turf Toe)', statusClass:'status-out', fRank:'QB4', initials:'JB', color:'linear-gradient(135deg,#fb4f14,#000)' },
+  { id:'hurts', name:'Jalen Hurts', pos:'QB', team:'PHI', age:28, status:'Healthy', statusClass:'status-healthy', fRank:'QB3', initials:'JH', color:'linear-gradient(135deg,#004c54,#a5acaf)' },
+  { id:'henry', name:'Derrick Henry', pos:'RB', team:'BAL', age:32, status:'Healthy', statusClass:'status-healthy', fRank:'RB8', initials:'DH', color:'linear-gradient(135deg,#241773,#9e7c0c)' },
 ];
 
 const medicalDB = {
@@ -1831,6 +1835,61 @@ const medicalDB = {
       { title:'Bilateral Achilles Tendonitis (2024 Preseason — Week 9)', severity:'high', severityLabel:'Significant — Missed 8 Games', detail:'Initially listed as \'calf injury,\' later clarified as bilateral Achilles tendonitis — both legs. IR for first 8 games. Traveled to Germany for specialist treatment. When he returned Week 10, averaged only 4.0 ypc with max speed 17.4 mph — well below his pre-injury 20+ mph. This is an overuse injury that can recur. SI: \'You never bounce back fully from bilateral Achilles tendonitis.\'', impact:60, impactClass:'high', source:'ESPN, NBC Sports Bay Area, SI All49ers' },
       { title:'Calf Strain — Training Camp (2025)', severity:'moderate', severityLabel:'Resolved — Triggered Alarm', detail:'Calf issue days into 2025 camp. Alarming because 2024 Achilles was initially listed as \'calf injury.\' Shook it off, did not miss regular season. But the calf/Achilles connection will always raise flags.', impact:20, impactClass:'moderate', source:'ESPN, CBS Sports' },
       { title:'Hamstring / Ankle (Carolina, 2021)', severity:'moderate', severityLabel:'Resolved — Career Pattern', detail:'Grade 2 hamstring strain Week 3 (missed 5 games). Grade 2 ankle sprain Week 12 (IR, season over). McCaffrey\'s career defined by \'All-Pro or injured\' dichotomy since Panthers days.', impact:15, impactClass:'low', source:'Sportskeeda, ESPN' }
+    ]
+  },
+  stbrown: {
+    name:'Amon-Ra St. Brown', team:'WR · Detroit Lions · #14 · 5th Year', initials:'AB', color:'linear-gradient(135deg,#0076b6,#b0b7bc)',
+    currentStatus: 'Healthy entering 2026 after offseason knee cleanup surgery. Three consecutive seasons as WR3 or better in fantasy PPG. Dealt with ankle sprain (2025) and knee issue (late 2025) but played through both. One of the most consistent WRs in football.',
+    injuries: [
+      { title:'Knee Surgery — Offseason (Feb 2025)', severity:'moderate', severityLabel:'Resolved — Cleanup', detail:'Underwent knee surgery shortly after 2024 season ended. Described it as a cleanup to address lingering issues. Missed OTAs while rehabbing but said he would be ready for training camp. Played all 17 games in 2024 (115 rec, 1,263 yds, career-high 12 TD) despite the underlying issue. The knee was clearly something he managed all season.', impact:20, impactClass:'moderate', source:'SI, ESPN (Eric Woodyard), Sportskeeda' },
+      { title:'Ankle Sprain — Week 13 (Dec 2025)', severity:'moderate', severityLabel:'Resolved — Played Through', detail:'Ankle sprain sustained during 2025 season. Listed as non-participant in practice before Cowboys game. Lions teammates and coaches described him as someone who \'always plays\' — and he did. Also dealt with a knee issue in Weeks 16-17 but suited up for both games. St. Brown\'s durability despite nagging injuries is a defining trait.', impact:15, impactClass:'low', source:'Athlon Sports, Heavy, Pride of Detroit' }
+    ]
+  },
+  burrow: {
+    name:'Joe Burrow', team:'QB · Cincinnati Bengals · #9 · 6th Year', initials:'JB', color:'linear-gradient(135deg,#fb4f14,#000)', trending: true,
+    currentStatus: 'Recovering from Grade 3 turf toe surgery (Sept 2025). Has missed significant time in 3 of 6 NFL seasons. When healthy, elite — led NFL with 4,918 yds and 43 TD in 2024, winning 2nd Comeback Player of the Year. The question is always durability.',
+    injuries: [
+      { title:'Grade 3 Turf Toe — Week 2 vs. Jaguars (Sept 2025)', severity:'high', severityLabel:'Significant — Surgery Required', detail:'Sustained turf toe when sacked in second quarter. Right foot trapped under defender. Required surgery, estimated minimum 3-month recovery. Put potential return in mid-December 2025. This is Burrow\'s third season-ending or near-season-ending injury in 6 NFL years. Grade 3 turf toe involves a complete tear of the plantar plate — significantly impacts push-off and mobility for QBs.', impact:50, impactClass:'high', source:'ESPN, SIC Score, Yahoo Sports' },
+      { title:'Wrist Ligament Tear — Week 11 vs. Ravens (Nov 2023)', severity:'high', severityLabel:'Significant — Season-Ending Surgery', detail:'Felt a \'pop\' in his throwing hand while delivering a TD pass. Torn ligament in right wrist required season-ending surgery. Missed final 7 games. Returned in 2024 and admitted the wrist was \'still not 100%\' but threw for 4,918 yds and 43 TD anyway — winning Comeback Player of the Year for the second time.', impact:40, impactClass:'high', source:'Yahoo Sports, CBS Sports, SI' },
+      { title:'ACL/MCL/PCL/Meniscus Tear — Week 11 (Nov 2020)', severity:'high', severityLabel:'Resolved — Career-Defining', detail:'As a rookie, suffered devastating multi-ligament knee tear vs. Washington: torn ACL, MCL, PCL, and meniscus in left knee. Season-ending. Returned the following year and led the Bengals to the Super Bowl. This recovery remains one of the most impressive in recent NFL history, but the cumulative damage to Burrow\'s body is a long-term concern.', impact:30, impactClass:'moderate', source:'Sportskeeda, ESPN' },
+      { title:'Appendectomy — Training Camp (Aug 2022)', severity:'moderate', severityLabel:'Resolved — Emergency', detail:'Ruptured appendix requiring emergency surgery during training camp. Recovered in time for Week 1. Unusual for football injury profiles but worth noting as part of Burrow\'s extensive medical history.', impact:5, impactClass:'low', source:'ESPN' },
+      { title:'Calf Strain — Training Camp (July 2023)', severity:'low', severityLabel:'Resolved', detail:'Right calf strain at training camp. Did not miss regular season time. The calf issue preceded his wrist tear later that year.', impact:5, impactClass:'low', source:'SIC Score, Yahoo Sports' }
+    ]
+  },
+  jsn: {
+    name:'Jaxon Smith-Njigba', team:'WR · Seattle Seahawks · #11 · 3rd Year', initials:'JS', color:'linear-gradient(135deg,#002244,#69be28)',
+    currentStatus: 'Healthy entering 2026. Led NFL in receiving yards in 2025. Broke out in sophomore season after injury-limited time at Ohio State. Durability has been clean since entering the NFL — the college hamstring history appears fully behind him.',
+    injuries: [
+      { title:'Hamstring — Ohio State (2022 Season)', severity:'high', severityLabel:'Resolved — Limited College Production', detail:'Suffered a hamstring injury early in his final season at Ohio State that limited him to just 5 games. This significantly impacted his draft stock — fell to pick #20 despite being considered a top-5 talent. The hamstring issue was a major concern for NFL teams. However, JSN has shown zero recurrence in two full NFL seasons, suggesting the injury was a one-time setback. His 2025 season (NFL receiving yards leader) put those concerns fully to rest.', impact:10, impactClass:'low', source:'NFL Draft profiles, Ohio State records' }
+    ]
+  },
+  bowers: {
+    name:'Brock Bowers', team:'TE · Las Vegas Raiders · #89 · 2nd Year', initials:'BB', color:'linear-gradient(135deg,#000,#a5acaf)',
+    currentStatus: 'Healthy entering 2026. Set the all-time NFL rookie record for receiving yards by a TE in 2024. Durability was the one concern at Georgia — ankle injury in 2023 required surgery. Has been healthy throughout NFL career so far.',
+    injuries: [
+      { title:'Ankle Surgery (2023, Georgia)', severity:'moderate', severityLabel:'Resolved — College', detail:'Suffered an ankle injury during his final season at Georgia that required surgery. Missed time but returned for the College Football Playoff. The surgical repair appears fully healed — Bowers had no ankle issues during his record-breaking rookie season. TEs with ankle surgery history should be monitored long-term due to the position\'s blocking demands.', impact:10, impactClass:'low', source:'Georgia Athletics, NFL Draft profiles' }
+    ]
+  },
+  hurts: {
+    name:'Jalen Hurts', team:'QB · Philadelphia Eagles · #1 · 5th Year', initials:'JH', color:'linear-gradient(135deg,#004c54,#a5acaf)',
+    currentStatus: 'Healthy entering 2026. Concussion history is the primary concern — has suffered multiple concussions in his NFL career, including a significant one in 2024 that forced him to miss games during a playoff push.',
+    injuries: [
+      { title:'Concussion — Late 2024 Season', severity:'moderate', severityLabel:'Resolved — Pattern Concern', detail:'Suffered a concussion during the 2024 season that caused him to miss games during a critical stretch. Hurts\' rushing style (700+ yards multiple seasons) exposes him to more head contact than pocket passers. Research: QBs who rush frequently have elevated concussion risk. Multiple concussions raise long-term cognitive concerns and increase same-season repeat risk (5.3–8.3%).', impact:35, impactClass:'moderate', source:'NFL Injury Reports, ESPN' },
+      { title:'Knee / Shoulder Injuries (2022-2023)', severity:'moderate', severityLabel:'Resolved', detail:'Dealt with shoulder and knee issues at various points that limited his mobility but rarely caused him to miss starts. Hurts has shown remarkable toughness playing through injuries. However, his dual-threat style means the cumulative toll is higher than for traditional pocket QBs.', impact:15, impactClass:'low', source:'ESPN, NFL Injury Reports' }
+    ]
+  },
+  henry: {
+    name:'Derrick Henry', team:'RB · Baltimore Ravens · #22 · 11th Year', initials:'DH', color:'linear-gradient(135deg,#241773,#9e7c0c)',
+    currentStatus: 'Healthy entering 2026. Defying father time — rushed for 1,921 yards in 2024 (age 30), then remained productive in 2025. Jones fracture (2021) is the only significant injury in his career. His workload (2,000+ career carries) is historically unprecedented for a healthy RB at this age.',
+    injuries: [
+      { title:'Jones Fracture — Right Foot (Oct 2021)', severity:'high', severityLabel:'Resolved — Only Major Injury', detail:'Suffered a Jones fracture (5th metatarsal) in his right foot during the 2021 season. Missed 9 games. Returned for the playoffs and rushed for 195 yards in the wild-card round. Jones fractures in NFL players have a ~85% return-to-play rate but carry a 15-25% refracture risk. Henry has had zero recurrence in 4+ years, suggesting complete healing. For a power back with his workload, this durability profile is historically elite.', impact:15, impactClass:'low', source:'ESPN, Titans records, orthopedic research' }
+    ]
+  },
+  mcbride: {
+    name:'Trey McBride', team:'TE · Arizona Cardinals · #85 · 4th Year', initials:'TM', color:'linear-gradient(135deg,#97233f,#000)',
+    currentStatus: 'Healthy entering 2026. Consensus TE1 in fantasy for 2026. Has been remarkably durable — no significant injuries in his NFL career. Breakout 2024 season (111 rec, 1,146 yds) established him as an elite TE.',
+    injuries: [
+      { title:'General Durability', severity:'low', severityLabel:'Clean Profile', detail:'No significant injuries in 3 NFL seasons. McBride\'s durability is one of his most valuable traits for fantasy — TE is a position plagued by injuries (Kelce, Kittle, Pitts, Andrews have all missed significant time). McBride\'s clean medical profile is a competitive advantage.', impact:0, impactClass:'low', source:'NFL Injury Reports' }
     ]
   }
 };
