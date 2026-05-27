@@ -1304,12 +1304,12 @@ a { color: inherit; text-decoration: none; }
       <div class="analysis-card fade-in" id="substackAnalysis">
         <div class="analysis-text">
           <span class="analysis-tag tag-analysis">Latest on Substack</span>
-          <h3 id="substackAnalysisTitle">The Speed Back Problem: Why the Model Missed De'Von Achane</h3>
-          <p id="substackAnalysisExcerpt">Our initial framework undervalued speed-specific skills that don't show up in traditional metrics. The fix led to archetype-specific evaluation for RBs.</p>
+          <h3 id="substackAnalysisTitle">Loading latest from Substack...</h3>
+          <p id="substackAnalysisExcerpt">Check out the latest analysis and scouting reports on mlam's cookbook.</p>
           <div class="analysis-meta">
             <span class="author">Adi</span>
             <span class="sep">·</span>
-            <span id="substackAnalysisDate">May 24</span>
+            <span id="substackAnalysisDate"></span>
             <span class="sep">·</span>
             <span>Read on Substack →</span>
           </div>
@@ -1328,14 +1328,12 @@ a { color: inherit; text-decoration: none; }
       <div class="analysis-card fade-in" onclick="switchPage('medicals');setTimeout(()=>{document.getElementById('medicalSearchInput').value='Nabers';filterMedicals('Nabers');},100)">
         <div class="analysis-text">
           <span class="analysis-tag tag-injury">Medical Intel</span>
-          <h3>ACL Recovery Timelines: Separating the Myths From the Data</h3>
-          <p>What sports medicine research actually says about return-to-play timelines, re-injury rates, and performance post-ACL — sourced from physicians, not headlines.</p>
+          <h3>Malik Nabers ACL + Meniscus Tear: Full Medical Breakdown</h3>
+          <p>Complete injury profile with research-backed recovery data — WR return rates, re-injury risk, and what the second cleanup surgery means for his 2026 timeline.</p>
           <div class="analysis-meta">
-            <span class="author">Medical Intel</span>
+            <span class="author">Medical Database</span>
             <span class="sep">·</span>
-            <span>May 22</span>
-            <span class="sep">·</span>
-            <span>9 min read</span>
+            <span>View full profile →</span>
           </div>
         </div>
         <div class="analysis-visual">
@@ -1348,46 +1346,42 @@ a { color: inherit; text-decoration: none; }
         </div>
       </div>
 
-      <div class="analysis-card fade-in" onclick="switchPage('draft')">
+      <div class="analysis-card fade-in" onclick="switchPage('medicals');setTimeout(()=>{document.getElementById('medicalSearchInput').value='Collins';filterMedicals('Collins');},100)">
         <div class="analysis-text">
-          <span class="analysis-tag tag-draft">Draft Lab</span>
-          <h3>GENERATIONAL vs. Elite: Why the Label Matters and Who Actually Earns It</h3>
-          <p>Grade inflation is killing draft analysis. Here's the framework for why "GENERATIONAL" should only be saved for prospects who truly break the model.</p>
+          <span class="analysis-tag tag-injury">Medical Intel</span>
+          <h3>Nico Collins: Two Concussions in One Season — What the Research Says</h3>
+          <p>Collins suffered concussions in Week 7 and the playoff wild card. We break down repeat concussion risk rates, long-term cognitive data, and what it means for his 2026 value.</p>
           <div class="analysis-meta">
-            <span class="author">Adi</span>
+            <span class="author">Medical Database</span>
             <span class="sep">·</span>
-            <span>May 20</span>
-            <span class="sep">·</span>
-            <span>15 min read</span>
+            <span>View full profile →</span>
           </div>
         </div>
         <div class="analysis-visual">
           <div class="chart-placeholder">
-            <div class="chart-bar" style="width:100%;background:var(--blue);opacity:0.3;"></div>
-            <div class="chart-bar" style="width:72%;background:var(--blue);opacity:0.2;"></div>
-            <div class="chart-bar" style="width:88%;background:var(--blue);opacity:0.25;"></div>
+            <div class="chart-bar" style="width:100%;background:var(--gold);opacity:0.3;"></div>
+            <div class="chart-bar" style="width:72%;background:var(--gold);opacity:0.2;"></div>
+            <div class="chart-bar" style="width:88%;background:var(--gold);opacity:0.25;"></div>
           </div>
         </div>
       </div>
 
-      <div class="analysis-card fade-in" onclick="switchPage('medicals');setTimeout(()=>{document.getElementById('medicalSearchInput').value='Lamb';filterMedicals('Lamb');},100)">
+      <div class="analysis-card fade-in" onclick="switchPage('medicals');setTimeout(()=>{document.getElementById('medicalSearchInput').value='Nacua';filterMedicals('Nacua');},100)">
         <div class="analysis-text">
-          <span class="analysis-tag tag-film">Film Room</span>
-          <h3>CeeDee Lamb's Route Tree Expansion: What Film Shows About His 2026 Ceiling</h3>
-          <p>An All-22 breakdown of Lamb's route diversity, how Dallas is scheming him differently post-extension, and what that means for production.</p>
+          <span class="analysis-tag tag-injury">Medical Intel</span>
+          <h3>Puka Nacua's Durability Problem: College Foot Fracture → PCL → Ankle</h3>
+          <p>The all-time leader in receiving yards per game can't stay healthy. Breaking down his persistent lower-body injury pattern and what it means for dynasty.</p>
           <div class="analysis-meta">
-            <span class="author">Adi</span>
+            <span class="author">Medical Database</span>
             <span class="sep">·</span>
-            <span>May 18</span>
-            <span class="sep">·</span>
-            <span>8 min read</span>
+            <span>View full profile →</span>
           </div>
         </div>
         <div class="analysis-visual">
           <div class="chart-placeholder">
-            <div class="chart-bar" style="width:65%;background:#a78bfa;opacity:0.3;"></div>
-            <div class="chart-bar" style="width:85%;background:#a78bfa;opacity:0.2;"></div>
-            <div class="chart-bar" style="width:95%;background:#a78bfa;opacity:0.2;"></div>
+            <div class="chart-bar" style="width:65%;background:var(--teal);opacity:0.3;"></div>
+            <div class="chart-bar" style="width:85%;background:var(--teal);opacity:0.2;"></div>
+            <div class="chart-bar" style="width:95%;background:var(--teal);opacity:0.2;"></div>
           </div>
         </div>
       </div>
@@ -2021,49 +2015,72 @@ function switchProfileTab(tab, el) {
 
 // ===== SUBSTACK INTEGRATION =====
 async function loadSubstack() {
-  try {
-    const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://mlamscookbook.substack.com/feed');
-    const data = await res.json();
-    if (data.items && data.items.length > 0) {
-      // Hero
-      const latest = data.items[0];
-      document.getElementById('heroTitle').textContent = latest.title;
-      const excerpt = latest.description ? latest.description.replace(/<[^>]+>/g, '').substring(0, 200) + '...' : '';
-      document.getElementById('heroExcerpt').textContent = excerpt;
-      document.getElementById('heroDate').textContent = new Date(latest.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      document.getElementById('heroLink').href = latest.link;
-
-      // Analysis section — 2nd post
-      if (data.items[1]) {
-        const second = data.items[1];
-        const el = document.getElementById('substackAnalysis');
-        document.getElementById('substackAnalysisTitle').textContent = second.title;
-        const excerpt2 = second.description ? second.description.replace(/<[^>]+>/g, '').substring(0, 180) + '...' : '';
-        document.getElementById('substackAnalysisExcerpt').textContent = excerpt2;
-        document.getElementById('substackAnalysisDate').textContent = new Date(second.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        el.onclick = () => window.open(second.link, '_blank');
+  // Try multiple possible Substack RSS URLs
+  const feedUrls = [
+    'https://mlamscookbook.substack.com/feed',
+    'https://adityapomalapally.substack.com/feed',
+    'https://mlams-cookbook.substack.com/feed'
+  ];
+  const substackProfile = 'https://substack.com/@adityapomalapally';
+  
+  let data = null;
+  for (const feedUrl of feedUrls) {
+    try {
+      const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(feedUrl));
+      const json = await res.json();
+      if (json.status === 'ok' && json.items && json.items.length > 0) {
+        data = json;
+        break;
       }
+    } catch (e) { continue; }
+  }
 
-      // Top stories sidebar — 5th slot
-      if (data.items[2]) {
-        const third = data.items[2];
-        document.getElementById('sidebarSubstackTitle').textContent = third.title;
-        document.getElementById('sidebarSubstackMeta').innerHTML = `<span>Adi</span> · ${new Date(third.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
-        document.getElementById('substackSidebarStory').onclick = () => window.open(third.link, '_blank');
-      }
+  if (data && data.items && data.items.length > 0) {
+    // Hero — latest post
+    const latest = data.items[0];
+    document.getElementById('heroTitle').textContent = latest.title;
+    const excerpt = latest.description ? latest.description.replace(/<[^>]+>/g, '').substring(0, 200) + '...' : '';
+    document.getElementById('heroExcerpt').textContent = excerpt;
+    document.getElementById('heroDate').textContent = new Date(latest.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    document.getElementById('heroLink').href = latest.link;
 
-      // Right sidebar — remaining posts
-      const sidebar = document.getElementById('substackSidebar');
-      sidebar.innerHTML = data.items.slice(1, 5).map(item => `
-        <a href="${item.link}" target="_blank" style="display:block;padding:10px 0;border-bottom:1px solid var(--border-subtle);text-decoration:none;color:var(--text);transition:opacity 0.2s;">
-          <div style="font-family:var(--serif);font-size:14px;font-weight:600;line-height:1.35;margin-bottom:4px;">${item.title}</div>
-          <div style="font-size:11px;color:var(--text-muted);">${new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
-        </a>
-      `).join('');
+    // Analysis section — 2nd post (or 1st if only 1)
+    if (data.items.length > 1) {
+      const second = data.items[1];
+      document.getElementById('substackAnalysisTitle').textContent = second.title;
+      const excerpt2 = second.description ? second.description.replace(/<[^>]+>/g, '').substring(0, 180) + '...' : '';
+      document.getElementById('substackAnalysisExcerpt').textContent = excerpt2;
+      document.getElementById('substackAnalysisDate').textContent = new Date(second.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      document.getElementById('substackAnalysis').onclick = () => window.open(second.link, '_blank');
+    } else {
+      document.getElementById('substackAnalysisTitle').textContent = latest.title;
+      document.getElementById('substackAnalysisExcerpt').textContent = excerpt;
+      document.getElementById('substackAnalysis').onclick = () => window.open(latest.link, '_blank');
     }
-  } catch (e) {
-    document.getElementById('heroTitle').textContent = 'Latest analysis on Substack';
-    document.getElementById('heroExcerpt').textContent = 'Read the latest scouting reports, tactical analysis, and player evaluations.';
+
+    // Top stories sidebar — slot 5
+    const thirdPost = data.items[2] || data.items[0];
+    document.getElementById('sidebarSubstackTitle').textContent = thirdPost.title;
+    document.getElementById('sidebarSubstackMeta').innerHTML = `<span>Adi</span> · ${new Date(thirdPost.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+    document.getElementById('substackSidebarStory').onclick = () => window.open(thirdPost.link, '_blank');
+
+    // Right sidebar — remaining posts
+    const sidebar = document.getElementById('substackSidebar');
+    sidebar.innerHTML = data.items.slice(0, 5).map(item => `
+      <a href="${item.link}" target="_blank" style="display:block;padding:10px 0;border-bottom:1px solid var(--border-subtle);text-decoration:none;color:var(--text);transition:opacity 0.2s;">
+        <div style="font-family:var(--serif);font-size:14px;font-weight:600;line-height:1.35;margin-bottom:4px;">${item.title}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
+      </a>
+    `).join('');
+  } else {
+    // RSS failed — graceful fallback linking to profile
+    document.getElementById('heroTitle').textContent = "mlam's cookbook — Latest Analysis";
+    document.getElementById('heroExcerpt').textContent = 'Scouting reports, player evaluations, and NFL analytics. Read the latest on Substack.';
+    document.getElementById('heroLink').href = substackProfile;
+    document.getElementById('substackAnalysisTitle').textContent = 'Read more on Substack →';
+    document.getElementById('substackAnalysisExcerpt').textContent = 'Head to Substack for the latest posts from Adi.';
+    document.getElementById('substackAnalysis').onclick = () => window.open(substackProfile, '_blank');
+    document.getElementById('substackSidebar').innerHTML = `<a href="${substackProfile}" target="_blank" style="display:block;padding:10px 0;color:var(--gold);font-size:13px;">Visit Substack profile →</a>`;
   }
 }
 
