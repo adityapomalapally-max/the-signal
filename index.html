@@ -1650,250 +1650,57 @@ a { color: inherit; text-decoration: none; }
 </div>
 
 <script>
-// ===== DATA =====
-const rankingsData = {
-  overall: [
-    { rank: 1, name: 'Bijan Robinson', team: 'ATL', pos: 'RB' },
-    { rank: 2, name: 'Jahmyr Gibbs', team: 'DET', pos: 'RB' },
-    { rank: 3, name: 'Christian McCaffrey', team: 'SF', pos: 'RB' },
-    { rank: 4, name: "Ja'Marr Chase", team: 'CIN', pos: 'WR' },
-    { rank: 5, name: 'Jaxon Smith-Njigba', team: 'SEA', pos: 'WR' },
-    { rank: 6, name: 'Puka Nacua', team: 'LAR', pos: 'WR' },
-    { rank: 7, name: "De'Von Achane", team: 'MIA', pos: 'RB' },
-    { rank: 8, name: 'Jonathan Taylor', team: 'IND', pos: 'RB' },
-    { rank: 9, name: 'Amon-Ra St. Brown', team: 'DET', pos: 'WR' },
-    { rank: 10, name: 'James Cook III', team: 'BUF', pos: 'RB' },
-  ],
-  qb: [
-    { rank: 1, name: 'Josh Allen', team: 'BUF', pos: 'QB' },
-    { rank: 2, name: 'Lamar Jackson', team: 'BAL', pos: 'QB' },
-    { rank: 3, name: 'Jalen Hurts', team: 'PHI', pos: 'QB' },
-    { rank: 4, name: 'Joe Burrow', team: 'CIN', pos: 'QB' },
-    { rank: 5, name: 'Patrick Mahomes', team: 'KC', pos: 'QB' },
-    { rank: 6, name: 'Jayden Daniels', team: 'WAS', pos: 'QB' },
-    { rank: 7, name: 'Justin Herbert', team: 'LAC', pos: 'QB' },
-    { rank: 8, name: 'Brock Purdy', team: 'SF', pos: 'QB' },
-    { rank: 9, name: 'Baker Mayfield', team: 'TB', pos: 'QB' },
-    { rank: 10, name: 'Kyler Murray', team: 'ARI', pos: 'QB' },
-  ],
-  rb: [
-    { rank: 1, name: 'Bijan Robinson', team: 'ATL', pos: 'RB' },
-    { rank: 2, name: 'Jahmyr Gibbs', team: 'DET', pos: 'RB' },
-    { rank: 3, name: 'Christian McCaffrey', team: 'SF', pos: 'RB' },
-    { rank: 4, name: "De'Von Achane", team: 'MIA', pos: 'RB' },
-    { rank: 5, name: 'Jonathan Taylor', team: 'IND', pos: 'RB' },
-    { rank: 6, name: 'James Cook III', team: 'BUF', pos: 'RB' },
-    { rank: 7, name: 'Josh Jacobs', team: 'GB', pos: 'RB' },
-    { rank: 8, name: 'Derrick Henry', team: 'BAL', pos: 'RB' },
-    { rank: 9, name: 'Chase Brown', team: 'CIN', pos: 'RB' },
-    { rank: 10, name: 'Jeremiyah Love', team: 'ARI', pos: 'RB' },
-  ],
-  wr: [
-    { rank: 1, name: "Ja'Marr Chase", team: 'CIN', pos: 'WR' },
-    { rank: 2, name: 'Jaxon Smith-Njigba', team: 'SEA', pos: 'WR' },
-    { rank: 3, name: 'Puka Nacua', team: 'LAR', pos: 'WR' },
-    { rank: 4, name: 'Amon-Ra St. Brown', team: 'DET', pos: 'WR' },
-    { rank: 5, name: 'Justin Jefferson', team: 'MIN', pos: 'WR' },
-    { rank: 6, name: 'CeeDee Lamb', team: 'DAL', pos: 'WR' },
-    { rank: 7, name: 'Drake London', team: 'ATL', pos: 'WR' },
-    { rank: 8, name: 'Rashee Rice', team: 'KC', pos: 'WR' },
-    { rank: 9, name: 'Chris Olave', team: 'NO', pos: 'WR' },
-    { rank: 10, name: 'George Pickens', team: 'DAL', pos: 'WR' },
-  ],
-  te: [
-    { rank: 1, name: 'Trey McBride', team: 'ARI', pos: 'TE' },
-    { rank: 2, name: 'Brock Bowers', team: 'LV', pos: 'TE' },
-    { rank: 3, name: 'Sam LaPorta', team: 'DET', pos: 'TE' },
-    { rank: 4, name: 'Travis Kelce', team: 'KC', pos: 'TE' },
-    { rank: 5, name: 'George Kittle', team: 'SF', pos: 'TE' },
-    { rank: 6, name: 'Kyle Pitts', team: 'ATL', pos: 'TE' },
-    { rank: 7, name: 'Dalton Kincaid', team: 'BUF', pos: 'TE' },
-    { rank: 8, name: 'Mark Andrews', team: 'BAL', pos: 'TE' },
-    { rank: 9, name: 'Evan Engram', team: 'JAX', pos: 'TE' },
-    { rank: 10, name: 'Jake Ferguson', team: 'DAL', pos: 'TE' },
-  ]
-};
+// ===== JSON-DRIVEN DATA ARCHITECTURE =====
+// All data loaded from /data/*.json files
+// To add players/medicals/articles: edit the JSON files and push to git
 
-const playersDB = [
-  { id:'nabers', name:'Malik Nabers', pos:'WR', team:'NYG', age:22, status:'Rehab (ACL)', statusClass:'status-out', fRank:'WR15', initials:'MN', color:'linear-gradient(135deg,#1e3a5f,#2563eb)' },
-  { id:'robinson', name:'Bijan Robinson', pos:'RB', team:'ATL', age:23, status:'Healthy', statusClass:'status-healthy', fRank:'RB1', initials:'BR', color:'linear-gradient(135deg,#a71930,#000)' },
-  { id:'chase', name:"Ja'Marr Chase", pos:'WR', team:'CIN', age:25, status:'Healthy', statusClass:'status-healthy', fRank:'WR1', initials:'JC', color:'linear-gradient(135deg,#fb4f14,#000)' },
-  { id:'jsn', name:'Jaxon Smith-Njigba', pos:'WR', team:'SEA', age:23, status:'Healthy', statusClass:'status-healthy', fRank:'WR2', initials:'JS', color:'linear-gradient(135deg,#002244,#69be28)' },
-  { id:'collins', name:'Nico Collins', pos:'WR', team:'HOU', age:27, status:'Healthy', statusClass:'status-healthy', fRank:'WR8', initials:'NC', color:'linear-gradient(135deg,#03202f,#008c96)' },
-  { id:'lamb', name:'CeeDee Lamb', pos:'WR', team:'DAL', age:27, status:'Healthy', statusClass:'status-healthy', fRank:'WR6', initials:'CL', color:'linear-gradient(135deg,#041e42,#869397)' },
-  { id:'gibbs', name:'Jahmyr Gibbs', pos:'RB', team:'DET', age:23, status:'Healthy', statusClass:'status-healthy', fRank:'RB2', initials:'JG', color:'linear-gradient(135deg,#0076b6,#b0b7bc)' },
-  { id:'achane', name:"De'Von Achane", pos:'RB', team:'MIA', age:23, status:'Healthy', statusClass:'status-healthy', fRank:'RB4', initials:'DA', color:'linear-gradient(135deg,#008e97,#f58220)' },
-  { id:'allen', name:'Josh Allen', pos:'QB', team:'BUF', age:30, status:'Healthy', statusClass:'status-healthy', fRank:'QB1', initials:'JA', color:'linear-gradient(135deg,#00338d,#c60c30)' },
-  { id:'mcbride', name:'Trey McBride', pos:'TE', team:'ARI', age:25, status:'Healthy', statusClass:'status-healthy', fRank:'TE1', initials:'TM', color:'linear-gradient(135deg,#97233f,#000)' },
-  { id:'jlove', name:'Jeremiyah Love', pos:'RB', team:'ARI', age:21, status:'Healthy', statusClass:'status-healthy', fRank:'RB10', initials:'JL', color:'linear-gradient(135deg,#97233f,#ffb612)' },
-  { id:'jeanty', name:'Ashton Jeanty', pos:'RB', team:'LV', age:21, status:'Healthy', statusClass:'status-healthy', fRank:'RB11', initials:'AJ', color:'linear-gradient(135deg,#000,#a5acaf)' },
-  { id:'jackson', name:'Lamar Jackson', pos:'QB', team:'BAL', age:29, status:'Healthy', statusClass:'status-healthy', fRank:'QB2', initials:'LJ', color:'linear-gradient(135deg,#241773,#000)' },
-  { id:'nacua', name:'Puka Nacua', pos:'WR', team:'LAR', age:24, status:'Healthy', statusClass:'status-healthy', fRank:'WR3', initials:'PN', color:'linear-gradient(135deg,#003594,#ffd100)' },
-  { id:'bowers', name:'Brock Bowers', pos:'TE', team:'LV', age:23, status:'Healthy', statusClass:'status-healthy', fRank:'TE2', initials:'BB', color:'linear-gradient(135deg,#000,#a5acaf)' },
-  { id:'jefferson', name:'Justin Jefferson', pos:'WR', team:'MIN', age:26, status:'Healthy', statusClass:'status-healthy', fRank:'WR5', initials:'JJ', color:'linear-gradient(135deg,#4f2683,#ffc62f)' },
-  { id:'cmc', name:'Christian McCaffrey', pos:'RB', team:'SF', age:29, status:'Monitor', statusClass:'status-quest', fRank:'RB3', initials:'CM', color:'linear-gradient(135deg,#aa0000,#b3995d)' },
-  { id:'stbrown', name:'Amon-Ra St. Brown', pos:'WR', team:'DET', age:26, status:'Healthy', statusClass:'status-healthy', fRank:'WR4', initials:'AB', color:'linear-gradient(135deg,#0076b6,#b0b7bc)' },
-  { id:'burrow', name:'Joe Burrow', pos:'QB', team:'CIN', age:29, status:'Rehab (Turf Toe)', statusClass:'status-out', fRank:'QB4', initials:'JB', color:'linear-gradient(135deg,#fb4f14,#000)' },
-  { id:'hurts', name:'Jalen Hurts', pos:'QB', team:'PHI', age:28, status:'Healthy', statusClass:'status-healthy', fRank:'QB3', initials:'JH', color:'linear-gradient(135deg,#004c54,#a5acaf)' },
-  { id:'henry', name:'Derrick Henry', pos:'RB', team:'BAL', age:32, status:'Healthy', statusClass:'status-healthy', fRank:'RB8', initials:'DH', color:'linear-gradient(135deg,#241773,#9e7c0c)' },
-];
+let rankingsData = {};
+let playersDB = [];
+let medicalDB = {};
+let articlesDB = {};
 
-const medicalDB = {
-  nabers: {
-    name:'Malik Nabers', team:'WR · New York Giants · #1 · 3rd Year', initials:'MN', color:'linear-gradient(135deg,#1e3a5f,#2563eb)', trending: true,
-    currentStatus: 'Rehabbing torn ACL + meniscus. Second cleanup surgery (scar tissue removal) performed ~May 2026. Week 1 availability uncertain — HC John Harbaugh says recovery is "not simple." Target is training camp but no guarantee.',
-    injuries: [
-      { title:'ACL + Meniscus Tear — Right Knee (Week 4, Sept 28, 2025)', severity:'high', severityLabel:'Major — Season-Ending', detail:'Tore ACL and meniscus while running a deep route vs. the Los Angeles Chargers. Stepped awkwardly with right leg before jumping for a Jaxson Dart pass. Carted off the field, placed on IR. Surgery performed ~late October 2025 (delayed one month post-injury). A second arthroscopic procedure was performed in May 2026 to remove scar tissue causing knee stiffness — a common complication after combined ACL/meniscus repairs (arthrofibrosis). HC Harbaugh stated the goal is Week 1 readiness but noted recovery is "not a simple" process. Research context: NFL WRs return to play after ACL reconstruction at a 60–69% rate, with an average return timeline of 10.9–13.6 months. Among WRs who do return, studies show significantly decreased targets, receptions, receiving yards, and TDs compared to pre-injury production and matched controls. Career length post-ACLR is shortened by an average of 1.9 seasons. Combined ACL + meniscus injuries carry added complexity and longer recovery timelines. Subsequent ACL injury risk (either knee) is approximately 25% within the first 2-3 years post-reconstruction.', impact:75, impactClass:'high', source:'CBS Sports, Newsweek, Bleacher Report, SIC Score — Orthopedic research: Arthroscopy, Sports Medicine and Rehabilitation (2021); OJSM (2021)' },
-      { title:'Concussion (Week 4, Oct 2024)', severity:'moderate', severityLabel:'Resolved — History Noted', detail:'Sustained concussion in Week 4 of rookie season, missed 1 game. Cleared through protocol in approximately 10 days. No prior documented concussion history at LSU. While this was an isolated incident with full clearance, any concussion history is worth monitoring given Nabers\' contested catch profile. He ranked top-5 in contested targets among all rookies in 2024. Research context: NFL RBs and WRs return to play at a high rate after concussion (89% return same season, missing an average of 1.5 games). Performance metrics generally show no significant acute decline post-concussion. However, Harvard\'s Football Players Health Study found WRs are 70% more likely to report long-term cognitive impairment compared to lowest-risk positions. Same-season repeat concussion risk is 5.3–8.3% for players who\'ve already had one.', impact:20, impactClass:'low', source:'NFL Injury Reports, CBS Sports — Research: Orthopedic Journal of Sports Medicine; Harvard Football Players Health Study' },
-      { title:'Toe Injury (Late 2024, June 2025)', severity:'low', severityLabel:'Recurring — Monitor', detail:'Dealt with toe injury in December 2024 (limited practice, listed questionable multiple weeks). Reappeared during June 2025 OTAs, limiting participation. Giants were out of playoff contention in 2024 so the late-season limitations were partly precautionary. Toe injuries in speed WRs can linger and affect burst off the line — worth monitoring but no structural concern reported.', impact:10, impactClass:'low', source:'SIC Score, CBS Sports' },
-      { title:'Shoulder / Back (Training Camp 2025)', severity:'low', severityLabel:'Resolved', detail:'Landed on shoulder early in 2025 training camp, sat out practices. Also dealt with a minor back issue that kept him out ~2 weeks in August 2025. Both were precautionary holds and he returned to full practice. No long-term concern.', impact:5, impactClass:'low', source:'CBS Sports' }
-    ]
-  },
-  collins: {
-    name:'Nico Collins', team:'WR · Houston Texans · #12 · 5th Year', initials:'NC', color:'linear-gradient(135deg,#03202f,#008c96)', trending: true,
-    currentStatus: 'Healthy entering 2026. Cleared from final concussion (Jan 2026 playoffs) — participated in Pro Bowl flag football game 3 weeks later. Three consecutive 1,000-yard seasons. Primary concern is soft-tissue injury pattern: hamstring issues and multiple concussions have cost him 7 full games and parts of 5 others over the past two seasons.',
-    injuries: [
-      { title:'Concussion #2 — Playoff Wild Card vs. Steelers (Jan 13, 2026)', severity:'moderate', severityLabel:'Resolved — Pattern Concern', detail:'Suffered second concussion of the 2025 season during the Texans\' wild-card win at Pittsburgh. Fell on his face after catching a slant route, immediately put hands to his face. Carted to locker room, ruled out. Unable to practice all week and was ruled out for the divisional round loss at New England. Cleared ~3 weeks post-injury, participated in Pro Bowl flag football. Research context: The risk of a same-season repeat concussion in the NFL is 5.3–8.3% for players who\'ve already sustained one. Players with multiple concussions within a season typically miss more time from subsequent concussions (median 12 days vs. 8 for first). Long-term, WRs are 70% more likely than low-risk positions to report cognitive impairment later in life (Harvard FPHS). Two concussions in one season is a notable pattern that warrants close monitoring.', impact:40, impactClass:'moderate', source:'ESPN, NY Post, SIC Score — Research: Neurosurgery (2022 — ScienceDirect); Harvard Football Players Health Study' },
-      { title:'Concussion #1 — Week 7 vs. Seahawks (Oct 21, 2025)', severity:'moderate', severityLabel:'Resolved', detail:'Head slammed on turf during a catch attempt in the fourth quarter of Monday Night Football at Seattle. Taken to blue tent, then locker room. Ruled out with concussion. Missed Week 8 vs. 49ers. Returned Week 9 vs. Broncos and played the remainder of the regular season without issue. At time of injury, Collins was leading the Texans in receiving yards by a significant margin.', impact:20, impactClass:'low', source:'ESPN, SI Texans Daily, SIC Score' },
-      { title:'Hamstring Strain — Week 5 vs. Bills (Oct 6, 2024)', severity:'moderate', severityLabel:'Resolved — Recurrence Risk', detail:'Suffered hamstring strain while catching a 67-yard touchdown vs. Buffalo. Initially deemed "day-to-day," later changed to "week-to-week." Placed on IR, missed 4 games (Weeks 6–10). Activated from IR Week 10, returned to action Week 11 vs. Cowboys. Still finished with 68 receptions for 1,006 yards and 7 TDs in just 12 games — his second consecutive 1,000-yard season. Key context: This was a re-aggravation — Collins entered the Bills game already dealing with a hamstring issue. Hamstring injuries in WRs have a recurrence rate of approximately 12–33% within the first year of return, particularly when the initial injury involves re-aggravation. The fact that Collins suffered it on a max-effort play (67-yard TD) suggests the speed demands of his role create ongoing risk for this specific muscle group.', impact:30, impactClass:'moderate', source:'NFL.com, ESPN, PFN, Click2Houston — Research: BJSM hamstring recurrence meta-analyses' },
-      { title:'Hamstring (2023 Season)', severity:'low', severityLabel:'Resolved', detail:'Dealt with hamstring tightness during the 2023 season. Did not miss significant time. However, the 2024 re-aggravation of the same muscle group suggests a potential pattern. Collins\' explosive playing style — 4.44 40-yard dash, 6\'4" 222 lbs with deep-threat role — places significant strain on the hamstring complex.', impact:10, impactClass:'low', source:'RotoWire, PFF' }
-    ]
-  },
-  chase: {
-    name:"Ja'Marr Chase", team:'WR · Cincinnati Bengals · #1 · 5th Year', initials:'JC', color:'linear-gradient(135deg,#fb4f14,#000)',
-    currentStatus: 'Healthy entering 2026. Won the receiving triple crown in 2024 (117 rec, 1,708 yds, 17 TD). No significant injuries in 2025. Durable profile — has played 16+ games in 3 of 4 NFL seasons.',
-    injuries: [
-      { title:'Hip Fracture / Labral Tear (Oct 2022)', severity:'moderate', severityLabel:'Resolved — History Noted', detail:'Suffered a hairline fracture in his hip during Week 6 vs. the Saints in 2022, which worsened by Week 7. Missed 4 games (Weeks 8–11), returned Week 13 vs. the Chiefs. Still finished with 87 receptions and 1,046 yards despite missing time. The hip is a complex joint for WRs — route-running generates significant rotational force through the hip. Full recovery with no recurrence through 2023-2025 suggests the injury healed well.', impact:15, impactClass:'low', source:'Sportskeeda, ESPN' },
-      { title:'Shoulder AC Joint Sprain (Dec 2023)', severity:'low', severityLabel:'Resolved', detail:'Injured shoulder in Week 15 of 2023. Played through it for the final two regular season games and postseason. AC joint sprains are common contact injuries — most resolve in 2-6 weeks without surgery. Did not affect his 2024 production (triple crown season).', impact:5, impactClass:'low', source:'Sportskeeda, NFL Injury Reports' }
-    ]
-  },
-  nacua: {
-    name:'Puka Nacua', team:'WR · Los Angeles Rams · #12 · 3rd Year', initials:'PN', color:'linear-gradient(135deg,#003594,#ffd100)', trending: true,
-    currentStatus: 'Healthy entering 2026. Led NFL in receiving yards per game (95.3) — all-time record. Injury-prone label persists from college (broken foot, ankle issues at BYU) and 2024 PCL injury. Finished 2025 strong despite missing time with ankle and rib injuries.',
-    injuries: [
-      { title:'Low Ankle Sprain — Week 6 vs. Ravens (Oct 2025)', severity:'moderate', severityLabel:'Resolved', detail:'Sustained left ankle injury during the Rams\' victory over Baltimore. Attempted to return in the third quarter but had no targets after re-entry. HC McVay described him as "day-to-day." Missed Week 7 game vs. Jaguars in London. Benefited from Week 8 bye for additional recovery. Returned Week 9 vs. Saints. Ankle sprains are a recurring theme for Nacua — he dealt with multiple ankle issues at BYU and this is at least his second notable ankle injury in the NFL.', impact:25, impactClass:'moderate', source:'Newsweek, PFN, SIC Score' },
-      { title:'PCL Injury — Preseason/Week 1 (2024)', severity:'high', severityLabel:'Significant — Missed 6 Games', detail:'Suffered a PCL injury during 2024 preseason that was aggravated in Week 1. Missed Weeks 2-7. Despite missing 6 games, still produced 79 catches for 990 yards and 3 TDs. PCL injuries are less common than ACL tears but can affect cutting ability and change-of-direction. The fact that Nacua returned to elite production suggests good structural recovery, but the injury history pattern (college foot fracture, ankle injuries, PCL) is a durability concern.', impact:35, impactClass:'moderate', source:'SIC Score, Rams official' },
-      { title:'Rib Injury — Week 9 (Nov 2025)', severity:'low', severityLabel:'Resolved', detail:'Suffered rib injury in third quarter vs. Saints. Could have re-entered but was held out precautionarily with the Rams ahead. Scans showed positive results. Returned Week 10 vs. 49ers without missing a game.', impact:5, impactClass:'low', source:'Rams official, SIC Score' },
-      { title:'College Injury History (BYU)', severity:'moderate', severityLabel:'Pattern Concern', detail:'At BYU, Nacua dealt with a broken foot, an ankle injury, and another leg injury that limited his college production and contributed to his fifth-round draft selection. His 2023 rookie year was the first full healthy season of his career. The persistent lower-body injury pattern — foot, ankle, knee (PCL) — suggests structural vulnerability in the lower extremities that warrants ongoing monitoring.', impact:20, impactClass:'moderate', source:'PlayerProfiler, BYU records' }
-    ]
-  },
-  lamb: {
-    name:'CeeDee Lamb', team:'WR · Dallas Cowboys · #88 · 6th Year', initials:'CL', color:'linear-gradient(135deg,#041e42,#869397)',
-    currentStatus: 'Healthy entering 2026. Coming off his worst fantasy season since his rookie year due to a high ankle sprain in 2025. Prior to that, had been one of the most durable WRs in the league with three consecutive 100+ reception seasons.',
-    injuries: [
-      { title:'High Ankle Sprain (2025)', severity:'moderate', severityLabel:'Resolved — Affected Production', detail:'Suffered a high ankle sprain during the 2025 season that significantly hampered his production. High ankle sprains are more severe than low ankle sprains, typically requiring 6-8 weeks for full recovery. WRs are particularly affected because the injury limits push-off explosiveness, route-running crispness, and the ability to create separation. Lamb\'s fantasy output dropped notably, marking his worst season since his rookie year. Research shows high ankle sprains in NFL skill players cause an average 4-week absence and residual performance effects for 2-4 weeks after return.', impact:30, impactClass:'moderate', source:'PlayerProfiler Dynasty Rankings, NFL Injury Reports' },
-      { title:'General Durability (2021-2024)', severity:'low', severityLabel:'Iron Man', detail:'Prior to the 2025 ankle sprain, Lamb was one of the most durable WRs in football. Played all 17 games in 2023 (135 rec, 1,749 yds, 12 TD) and 2024 (101 rec, 1,194 yds, 8 TD). Three consecutive seasons with 100+ receptions. His durability profile prior to the ankle injury was elite.', impact:0, impactClass:'low', source:'NFL Stats' }
-    ]
-  },
-  robinson: {
-    name:'Bijan Robinson', team:'RB · Atlanta Falcons · #7 · 4th Year', initials:'BR', color:'linear-gradient(135deg,#a71930,#000)',
-    currentStatus: 'Healthy entering 2026. First-team All-Pro in 2025. No significant NFL injuries to date. One of the most durable RBs in football — has not missed a game due to injury in his NFL career. College history includes elbow dislocation (2021) and shoulder injury (2022) at Texas.',
-    injuries: [
-      { title:'Shoulder Injury — Week 3, 2024', severity:'low', severityLabel:'Resolved — No Games Missed', detail:'Appeared on injury report with shoulder issue in Week 3 of 2024. Did not miss any games. Robinson has shown remarkable durability for a high-volume RB, which is notable given the position\'s inherent injury risk. Through 3 NFL seasons: 3,910 rushing yards, 1,738 receiving yards, 34 total TDs. His workload (304 carries + 61 targets in 2024 alone) puts him at elevated soft-tissue injury risk going forward.', impact:5, impactClass:'low', source:'PlayerProfiler, Fantasy Football Calculator' },
-      { title:'Elbow Dislocation + Surgery (Nov 2021, Texas)', severity:'moderate', severityLabel:'Resolved — College', detail:'Left elbow dislocation during a game at Texas. Required surgery, cleared for return in late February 2022. No recurrence or lingering effects in the NFL. Elbow dislocations are uncommon for RBs but can occur on awkward falls or tackles.', impact:5, impactClass:'low', source:'The Injury Expertz, Texas Athletics' },
-      { title:'Hamstring/Groin History (High School)', severity:'low', severityLabel:'Resolved — Pre-College', detail:'Dealt with recurring hamstring, groin, knee, and hip strains during high school (2015-2019) at Salpointe Catholic in Tucson. Also had a right fibula fracture in 2013 that required surgery. All resolved before college career. These are worth noting only as baseline history — no recurrence pattern in college or NFL.', impact:0, impactClass:'low', source:'The Injury Expertz' }
-    ]
-  },
-  achane: {
-    name:"De'Von Achane", team:'RB · Miami Dolphins · #28 · 3rd Year', initials:'DA', color:'linear-gradient(135deg,#008e97,#f58220)', trending: true,
-    currentStatus: 'Healthy entering 2026. Achane\'s elite speed (4.32 40-yard dash, 5\'9" 188 lbs) makes him an electrifying playmaker but also raises durability questions. His small frame has led to multiple injuries in his first two seasons. When healthy, he\'s been one of the most explosive backs in the NFL.',
-    injuries: [
-      { title:'Knee Injury (2024)', severity:'moderate', severityLabel:'Resolved — Missed Time', detail:'Dealt with a knee injury during the 2024 season that caused him to miss multiple games. Despite availability issues, Achane\'s per-game production when healthy was elite. His size (5\'9" 188 lbs) is both his greatest asset (speed, agility) and his greatest risk factor. Research on undersized NFL RBs shows they tend to have shorter career windows but can be highly productive when healthy. Achane\'s breakaway speed (top-5 in the NFL in max speed) means he absorbs fewer direct hits than power backs, which partially offsets the size concern.', impact:25, impactClass:'moderate', source:'NFL Injury Reports, Miami Dolphins' },
-      { title:'Knee / Concussion (Rookie, 2023)', severity:'moderate', severityLabel:'Resolved', detail:'Missed time during his rookie season with knee and concussion injuries. Despite playing only 11 games, averaged 7.8 yards per carry — the highest in the NFL. His injury pattern suggests the biggest risk isn\'t any single major injury but rather accumulation of smaller ailments that limit availability. Fantasy managers should draft him understanding the weekly volatility.', impact:20, impactClass:'low', source:'NFL.com, ESPN' }
-    ]
-  },
-  allen: {
-    name:'Josh Allen', team:'QB · Buffalo Bills · #17 · 8th Year', initials:'JA', color:'linear-gradient(135deg,#00338d,#c60c30)',
-    currentStatus: 'Healthy entering 2026. Allen\'s rushing style (700+ yards in multiple seasons) creates elevated injury risk for a franchise QB. Has been remarkably durable despite his physical playing style — has started 16+ games in every season since 2020.',
-    injuries: [
-      { title:'Elbow Injury (2024)', severity:'low', severityLabel:'Managed — No Games Missed', detail:'Dealt with an elbow issue during the 2024 season that was monitored but did not cause him to miss any starts. Allen\'s throwing mechanics and rushing volume (he\'s rushed 500+ times in his career) place significant stress on his elbow and shoulder. QB elbow injuries can range from UCL stress to nerve compression. Allen has shown the ability to manage through minor ailments.', impact:10, impactClass:'low', source:'NFL Injury Reports, Bills official' },
-      { title:'General Durability Profile', severity:'low', severityLabel:'Iron Man — With Caveats', detail:'Allen has started 100+ regular season games and has not missed significant time due to injury. However, his playing style — he leads all QBs in rushing attempts since 2018 — statistically elevates his injury risk compared to pocket passers. Research shows mobile QBs who rush 100+ times per season have a ~15% higher rate of lower-body injuries. Allen\'s 6\'5" 237 lb frame provides some protection, but the cumulative toll of contact is a long-term monitoring point. Fastest, youngest player to reach 300 total touchdowns in NFL history.', impact:10, impactClass:'low', source:'ESPN, Buffalo Bills, NFL Stats' }
-    ]
-  },
-  gibbs: {
-    name:'Jahmyr Gibbs', team:'RB · Detroit Lions · #26 · 3rd Year', initials:'JG', color:'linear-gradient(135deg,#0076b6,#b0b7bc)',
-    currentStatus: 'Healthy entering 2026. Gibbs has been one of the most durable young RBs in football — no significant injuries in his first two NFL seasons. His role-share with David Montgomery (prior to Montgomery\'s departure) may have helped preserve his health by limiting his total touch count.',
-    injuries: [
-      { title:'Hamstring Tightness (2024)', severity:'low', severityLabel:'Resolved — No Games Missed', detail:'Appeared on injury reports with hamstring tightness during the 2024 season but did not miss any games. Hamstring issues are common for explosive speed backs — Gibbs ran a 4.36 40-yard dash at the combine. His relatively modest rushing volume (compared to bell-cow backs) has kept him fresh. With Montgomery gone, Gibbs is expected to see a larger workload in 2026, which could change his injury calculus.', impact:5, impactClass:'low', source:'NFL Injury Reports, Detroit Lions' },
-      { title:'College Durability (Alabama/Georgia Tech)', severity:'low', severityLabel:'Clean', detail:'No significant injuries during his college career at Georgia Tech (2020-2021) or Alabama (2022). Gibbs\' 5\'9" 200 lb frame and elusive running style mean he avoids big hits more often than power backs, which bodes well for longevity.', impact:0, impactClass:'low', source:'College records' }
-    ]
-  },
-  jefferson: {
-    name:'Justin Jefferson', team:'WR · Minnesota Vikings · #18 · 6th Year', initials:'JJ', color:'linear-gradient(135deg,#4f2683,#ffc62f)', trending: true,
-    currentStatus: 'Healthy entering 2026. Coming off worst fantasy season as a pro in 2025, partly due to J.J. McCarthy transition at QB. Hamstring concerns linger — missed 7 games in 2023, dealt with hamstring strain again in 2025 training camp. Five consecutive 1,000-yard seasons to open career.',
-    injuries: [
-      { title:'Hamstring Strain — Training Camp (July 2025)', severity:'moderate', severityLabel:'Resolved — Recurring Pattern', detail:'Left hamstring strain at training camp, missed ~3 weeks of practice and all preseason games. Returned for Week 1. Jefferson himself said he was \'so scared\' of re-injury after the 2023 episode. Research: Hamstring recurrence rate for WRs is 12–33% within first year. Same muscle group as 2023 makes this a season-long concern.', impact:30, impactClass:'moderate', source:'Yahoo Sports, Newsweek, Vikings.com, CBS Sports' },
-      { title:'Hamstring — Missed 7 Games (2023)', severity:'high', severityLabel:'Significant — Missed 7 Games', detail:'Right hamstring injury in 2023, first significant injury of NFL career. Missed 7 games. Jefferson was visibly emotional about missing time. Despite it, still finished with 68 rec, 1,074 yds, 5 TD in 10 games — per-game ceiling remained elite.', impact:35, impactClass:'moderate', source:'ESPN, SI Inside The Vikings' },
-      { title:'Quad Contusion — Week 2 vs. 49ers (Sept 2024)', severity:'low', severityLabel:'Resolved — No Games Missed', detail:'Quad contusion from leg-to-leg contact with Fred Warner. Did not miss any games. Played all 17 in 2024: 103 rec, 1,533 yds, 10 TD.', impact:5, impactClass:'low', source:'SI, Purple PTSD' }
-    ]
-  },
-  cmc: {
-    name:'Christian McCaffrey', team:'RB · San Francisco 49ers · #23 · 9th Year', initials:'CM', color:'linear-gradient(135deg,#aa0000,#b3995d)', trending: true,
-    currentStatus: 'Healthy entering 2026 per Shanahan. Claims \'zero restrictions.\' But approaching 30 with bilateral Achilles tendonitis and PCL tear in 2024 — played only 4 games. Calf scare in 2025 preseason raised alarms but played through it. The defining question is durability.',
-    injuries: [
-      { title:'PCL Tear — Week 13 vs. Bills (Dec 2024)', severity:'high', severityLabel:'Significant — Season-Ending', detail:'Attempted to hurdle a defender, landed awkwardly, tearing PCL in right knee. Placed on IR. Only 4 games in 2024: 50 carries, 202 rush yds, 0 TD. PCL tears affect deceleration and cutting. McCaffrey said knee healed \'pretty quickly\' by early 2025 offseason.', impact:45, impactClass:'high', source:'ESPN, CBS Sports, Yahoo Sports' },
-      { title:'Bilateral Achilles Tendonitis (2024 Preseason — Week 9)', severity:'high', severityLabel:'Significant — Missed 8 Games', detail:'Initially listed as \'calf injury,\' later clarified as bilateral Achilles tendonitis — both legs. IR for first 8 games. Traveled to Germany for specialist treatment. When he returned Week 10, averaged only 4.0 ypc with max speed 17.4 mph — well below his pre-injury 20+ mph. This is an overuse injury that can recur. SI: \'You never bounce back fully from bilateral Achilles tendonitis.\'', impact:60, impactClass:'high', source:'ESPN, NBC Sports Bay Area, SI All49ers' },
-      { title:'Calf Strain — Training Camp (2025)', severity:'moderate', severityLabel:'Resolved — Triggered Alarm', detail:'Calf issue days into 2025 camp. Alarming because 2024 Achilles was initially listed as \'calf injury.\' Shook it off, did not miss regular season. But the calf/Achilles connection will always raise flags.', impact:20, impactClass:'moderate', source:'ESPN, CBS Sports' },
-      { title:'Hamstring / Ankle (Carolina, 2021)', severity:'moderate', severityLabel:'Resolved — Career Pattern', detail:'Grade 2 hamstring strain Week 3 (missed 5 games). Grade 2 ankle sprain Week 12 (IR, season over). McCaffrey\'s career defined by \'All-Pro or injured\' dichotomy since Panthers days.', impact:15, impactClass:'low', source:'Sportskeeda, ESPN' }
-    ]
-  },
-  stbrown: {
-    name:'Amon-Ra St. Brown', team:'WR · Detroit Lions · #14 · 5th Year', initials:'AB', color:'linear-gradient(135deg,#0076b6,#b0b7bc)',
-    currentStatus: 'Healthy entering 2026 after offseason knee cleanup surgery. Three consecutive seasons as WR3 or better in fantasy PPG. Dealt with ankle sprain (2025) and knee issue (late 2025) but played through both. One of the most consistent WRs in football.',
-    injuries: [
-      { title:'Knee Surgery — Offseason (Feb 2025)', severity:'moderate', severityLabel:'Resolved — Cleanup', detail:'Underwent knee surgery shortly after 2024 season ended. Described it as a cleanup to address lingering issues. Missed OTAs while rehabbing but said he would be ready for training camp. Played all 17 games in 2024 (115 rec, 1,263 yds, career-high 12 TD) despite the underlying issue. The knee was clearly something he managed all season.', impact:20, impactClass:'moderate', source:'SI, ESPN (Eric Woodyard), Sportskeeda' },
-      { title:'Ankle Sprain — Week 13 (Dec 2025)', severity:'moderate', severityLabel:'Resolved — Played Through', detail:'Ankle sprain sustained during 2025 season. Listed as non-participant in practice before Cowboys game. Lions teammates and coaches described him as someone who \'always plays\' — and he did. Also dealt with a knee issue in Weeks 16-17 but suited up for both games. St. Brown\'s durability despite nagging injuries is a defining trait.', impact:15, impactClass:'low', source:'Athlon Sports, Heavy, Pride of Detroit' }
-    ]
-  },
-  burrow: {
-    name:'Joe Burrow', team:'QB · Cincinnati Bengals · #9 · 6th Year', initials:'JB', color:'linear-gradient(135deg,#fb4f14,#000)', trending: true,
-    currentStatus: 'Recovering from Grade 3 turf toe surgery (Sept 2025). Has missed significant time in 3 of 6 NFL seasons. When healthy, elite — led NFL with 4,918 yds and 43 TD in 2024, winning 2nd Comeback Player of the Year. The question is always durability.',
-    injuries: [
-      { title:'Grade 3 Turf Toe — Week 2 vs. Jaguars (Sept 2025)', severity:'high', severityLabel:'Significant — Surgery Required', detail:'Sustained turf toe when sacked in second quarter. Right foot trapped under defender. Required surgery, estimated minimum 3-month recovery. Put potential return in mid-December 2025. This is Burrow\'s third season-ending or near-season-ending injury in 6 NFL years. Grade 3 turf toe involves a complete tear of the plantar plate — significantly impacts push-off and mobility for QBs.', impact:50, impactClass:'high', source:'ESPN, SIC Score, Yahoo Sports' },
-      { title:'Wrist Ligament Tear — Week 11 vs. Ravens (Nov 2023)', severity:'high', severityLabel:'Significant — Season-Ending Surgery', detail:'Felt a \'pop\' in his throwing hand while delivering a TD pass. Torn ligament in right wrist required season-ending surgery. Missed final 7 games. Returned in 2024 and admitted the wrist was \'still not 100%\' but threw for 4,918 yds and 43 TD anyway — winning Comeback Player of the Year for the second time.', impact:40, impactClass:'high', source:'Yahoo Sports, CBS Sports, SI' },
-      { title:'ACL/MCL/PCL/Meniscus Tear — Week 11 (Nov 2020)', severity:'high', severityLabel:'Resolved — Career-Defining', detail:'As a rookie, suffered devastating multi-ligament knee tear vs. Washington: torn ACL, MCL, PCL, and meniscus in left knee. Season-ending. Returned the following year and led the Bengals to the Super Bowl. This recovery remains one of the most impressive in recent NFL history, but the cumulative damage to Burrow\'s body is a long-term concern.', impact:30, impactClass:'moderate', source:'Sportskeeda, ESPN' },
-      { title:'Appendectomy — Training Camp (Aug 2022)', severity:'moderate', severityLabel:'Resolved — Emergency', detail:'Ruptured appendix requiring emergency surgery during training camp. Recovered in time for Week 1. Unusual for football injury profiles but worth noting as part of Burrow\'s extensive medical history.', impact:5, impactClass:'low', source:'ESPN' },
-      { title:'Calf Strain — Training Camp (July 2023)', severity:'low', severityLabel:'Resolved', detail:'Right calf strain at training camp. Did not miss regular season time. The calf issue preceded his wrist tear later that year.', impact:5, impactClass:'low', source:'SIC Score, Yahoo Sports' }
-    ]
-  },
-  jsn: {
-    name:'Jaxon Smith-Njigba', team:'WR · Seattle Seahawks · #11 · 3rd Year', initials:'JS', color:'linear-gradient(135deg,#002244,#69be28)',
-    currentStatus: 'Healthy entering 2026. Led NFL in receiving yards in 2025. Broke out in sophomore season after injury-limited time at Ohio State. Durability has been clean since entering the NFL — the college hamstring history appears fully behind him.',
-    injuries: [
-      { title:'Hamstring — Ohio State (2022 Season)', severity:'high', severityLabel:'Resolved — Limited College Production', detail:'Suffered a hamstring injury early in his final season at Ohio State that limited him to just 5 games. This significantly impacted his draft stock — fell to pick #20 despite being considered a top-5 talent. The hamstring issue was a major concern for NFL teams. However, JSN has shown zero recurrence in two full NFL seasons, suggesting the injury was a one-time setback. His 2025 season (NFL receiving yards leader) put those concerns fully to rest.', impact:10, impactClass:'low', source:'NFL Draft profiles, Ohio State records' }
-    ]
-  },
-  bowers: {
-    name:'Brock Bowers', team:'TE · Las Vegas Raiders · #89 · 2nd Year', initials:'BB', color:'linear-gradient(135deg,#000,#a5acaf)',
-    currentStatus: 'Healthy entering 2026. Set the all-time NFL rookie record for receiving yards by a TE in 2024. Durability was the one concern at Georgia — ankle injury in 2023 required surgery. Has been healthy throughout NFL career so far.',
-    injuries: [
-      { title:'Ankle Surgery (2023, Georgia)', severity:'moderate', severityLabel:'Resolved — College', detail:'Suffered an ankle injury during his final season at Georgia that required surgery. Missed time but returned for the College Football Playoff. The surgical repair appears fully healed — Bowers had no ankle issues during his record-breaking rookie season. TEs with ankle surgery history should be monitored long-term due to the position\'s blocking demands.', impact:10, impactClass:'low', source:'Georgia Athletics, NFL Draft profiles' }
-    ]
-  },
-  hurts: {
-    name:'Jalen Hurts', team:'QB · Philadelphia Eagles · #1 · 5th Year', initials:'JH', color:'linear-gradient(135deg,#004c54,#a5acaf)',
-    currentStatus: 'Healthy entering 2026. Concussion history is the primary concern — has suffered multiple concussions in his NFL career, including a significant one in 2024 that forced him to miss games during a playoff push.',
-    injuries: [
-      { title:'Concussion — Late 2024 Season', severity:'moderate', severityLabel:'Resolved — Pattern Concern', detail:'Suffered a concussion during the 2024 season that caused him to miss games during a critical stretch. Hurts\' rushing style (700+ yards multiple seasons) exposes him to more head contact than pocket passers. Research: QBs who rush frequently have elevated concussion risk. Multiple concussions raise long-term cognitive concerns and increase same-season repeat risk (5.3–8.3%).', impact:35, impactClass:'moderate', source:'NFL Injury Reports, ESPN' },
-      { title:'Knee / Shoulder Injuries (2022-2023)', severity:'moderate', severityLabel:'Resolved', detail:'Dealt with shoulder and knee issues at various points that limited his mobility but rarely caused him to miss starts. Hurts has shown remarkable toughness playing through injuries. However, his dual-threat style means the cumulative toll is higher than for traditional pocket QBs.', impact:15, impactClass:'low', source:'ESPN, NFL Injury Reports' }
-    ]
-  },
-  henry: {
-    name:'Derrick Henry', team:'RB · Baltimore Ravens · #22 · 11th Year', initials:'DH', color:'linear-gradient(135deg,#241773,#9e7c0c)',
-    currentStatus: 'Healthy entering 2026. Defying father time — rushed for 1,921 yards in 2024 (age 30), then remained productive in 2025. Jones fracture (2021) is the only significant injury in his career. His workload (2,000+ career carries) is historically unprecedented for a healthy RB at this age.',
-    injuries: [
-      { title:'Jones Fracture — Right Foot (Oct 2021)', severity:'high', severityLabel:'Resolved — Only Major Injury', detail:'Suffered a Jones fracture (5th metatarsal) in his right foot during the 2021 season. Missed 9 games. Returned for the playoffs and rushed for 195 yards in the wild-card round. Jones fractures in NFL players have a ~85% return-to-play rate but carry a 15-25% refracture risk. Henry has had zero recurrence in 4+ years, suggesting complete healing. For a power back with his workload, this durability profile is historically elite.', impact:15, impactClass:'low', source:'ESPN, Titans records, orthopedic research' }
-    ]
-  },
-  mcbride: {
-    name:'Trey McBride', team:'TE · Arizona Cardinals · #85 · 4th Year', initials:'TM', color:'linear-gradient(135deg,#97233f,#000)',
-    currentStatus: 'Healthy entering 2026. Consensus TE1 in fantasy for 2026. Has been remarkably durable — no significant injuries in his NFL career. Breakout 2024 season (111 rec, 1,146 yds) established him as an elite TE.',
-    injuries: [
-      { title:'General Durability', severity:'low', severityLabel:'Clean Profile', detail:'No significant injuries in 3 NFL seasons. McBride\'s durability is one of his most valuable traits for fantasy — TE is a position plagued by injuries (Kelce, Kittle, Pitts, Andrews have all missed significant time). McBride\'s clean medical profile is a competitive advantage.', impact:0, impactClass:'low', source:'NFL Injury Reports' }
-    ]
+const DATA_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? '.' : (window.location.origin + window.location.pathname.replace(/\/[^/]*$/, ''));
+
+async function loadJSON(path) {
+  try {
+    const res = await fetch(path + '?v=' + Date.now());
+    if (!res.ok) throw new Error(`${res.status}`);
+    return await res.json();
+  } catch (e) {
+    console.warn('Failed to load ' + path + ':', e);
+    return null;
   }
-};
+}
 
+async function initData() {
+  const [rankings, players, medicals, articles] = await Promise.all([
+    loadJSON('data/rankings.json'),
+    loadJSON('data/players.json'),
+    loadJSON('data/medicals.json'),
+    loadJSON('data/articles.json')
+  ]);
+
+  if (rankings) rankingsData = rankings;
+  if (players) playersDB = players;
+  if (medicals) medicalDB = medicals;
+  if (articles && articles.articles) {
+    articles.articles.forEach(a => { articlesDB[a.slug] = a; });
+  }
+
+  // Initialize UI after data loads
+  renderTicker('overall');
+  loadESPNNews();
+  loadSubstack();
+
+  // Fade-in observer
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+}
+
+// ===== TICKER =====
 // ===== TICKER =====
 function renderTicker(pos) {
   const data = rankingsData[pos];
@@ -1910,7 +1717,7 @@ document.querySelectorAll('.ticker-tab[data-pos]').forEach(tab => {
   });
 });
 
-renderTicker('overall');
+// initData handles renderTicker('overall')
 
 // ===== PAGE SWITCHING =====
 function switchPage(page) {
@@ -2148,8 +1955,6 @@ async function loadESPNNews() {
   }
 }
 
-loadESPNNews();
-
 // ===== SUBSTACK INTEGRATION =====
 async function loadSubstack() {
   // Try multiple possible Substack RSS URLs
@@ -2221,104 +2026,6 @@ async function loadSubstack() {
   }
 }
 
-loadSubstack();
-
-// ===== SCROLL ANIMATIONS =====
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
-document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-// ===== ARTICLES SYSTEM =====
-const articlesDB = {
-  'acl-recovery': {
-    title: 'ACL Recovery Timelines: Separating the Myths From the Data',
-    tag: 'Medical Intel',
-    tagClass: 'tag-injury',
-    author: 'Adi',
-    readTime: '9 min read',
-    content: `<p class="article-coming-soon">This article is being written. Here's what it will cover:</p>
-    <div class="article-outline">
-      <h4>What the Research Actually Says</h4>
-      <ul>
-        <li>NFL WR return-to-play rate post-ACL: 60–69% (compared to 79% for RBs)</li>
-        <li>Average return timeline: 10.9–13.6 months — not the "9-month miracle" narratives suggest</li>
-        <li>Career length shortened by ~1.9 seasons vs. matched controls</li>
-        <li>~25% subsequent ACL injury risk (either knee) within 2-3 years</li>
-      </ul>
-      <h4>Case Studies</h4>
-      <ul>
-        <li>Malik Nabers (2025) — ACL + meniscus combined tear, scar tissue complications</li>
-        <li>Odell Beckham Jr. — the cautionary tale of rushing return</li>
-        <li>Cooper Kupp — the success story of patient rehabilitation</li>
-      </ul>
-      <h4>The Fantasy Angle</h4>
-      <ul>
-        <li>How to price ACL-recovering WRs in dynasty</li>
-        <li>The "Year 2 bounce" — does it actually exist?</li>
-        <li>Historical ADP discount vs. actual production post-ACL</li>
-      </ul>
-    </div>`
-  },
-  'generational-vs-elite': {
-    title: 'GENERATIONAL vs. Elite: Why the Label Matters and Who Actually Earns It',
-    tag: 'Draft Lab',
-    tagClass: 'tag-draft',
-    author: 'Adi',
-    readTime: '15 min read',
-    content: `<p class="article-coming-soon">This article is being written. Here's what it will cover:</p>
-    <div class="article-outline">
-      <h4>The Problem with Grade Inflation</h4>
-      <ul>
-        <li>Every draft cycle produces 5+ "generational" prospects — mathematically impossible</li>
-        <li>How media incentives push analysts toward superlatives</li>
-        <li>The difference between a top-5 pick and a franchise-altering talent</li>
-      </ul>
-      <h4>The Framework</h4>
-      <ul>
-        <li>Production Over Expected (POE) — the metric that separates hype from reality</li>
-        <li>What "breaking the model" actually looks like in the data</li>
-        <li>Historical GENERATIONAL examples: Ja'Marr Chase, Calvin Johnson, Adrian Peterson</li>
-        <li>Players who were called generational but weren't: the cautionary list</li>
-      </ul>
-      <h4>The 92% Accuracy Model</h4>
-      <ul>
-        <li>How the predictive model handles tier assignment</li>
-        <li>Why context-adjusted production matters more than raw stats</li>
-        <li>Blind validation results: 12 of 15 elite players correctly identified</li>
-      </ul>
-    </div>`
-  },
-  'lamb-route-tree': {
-    title: "CeeDee Lamb's Route Tree Expansion: What Film Shows About His 2026 Ceiling",
-    tag: 'Film Room',
-    tagClass: 'tag-film',
-    author: 'Adi',
-    readTime: '8 min read',
-    content: `<p class="article-coming-soon">This article is being written. Here's what it will cover:</p>
-    <div class="article-outline">
-      <h4>The Route Tree Evolution</h4>
-      <ul>
-        <li>Lamb's 2024 route distribution vs. 2023 — where the changes happened</li>
-        <li>The addition of option routes and how it affected his separation metrics</li>
-        <li>Yards per route run (YPRR) trends by route type</li>
-      </ul>
-      <h4>Scheme Context</h4>
-      <ul>
-        <li>How Dallas adjusted post-extension to maximize Lamb's versatility</li>
-        <li>Slot vs. outside splits and what they mean for target share</li>
-        <li>The high ankle sprain impact — how it changed his route-running in 2025</li>
-      </ul>
-      <h4>2026 Projection</h4>
-      <ul>
-        <li>Healthy Lamb ceiling based on route diversity and target projection</li>
-        <li>Fantasy value: is WR6 too low?</li>
-        <li>Comparable WR profiles who expanded their route trees at the same career stage</li>
-      </ul>
-    </div>`
-  }
-};
 
 function openArticle(slug) {
   const article = articlesDB[slug];
@@ -2360,6 +2067,9 @@ document.addEventListener('keydown', e => {
   }
   if (e.key === 'Escape') closeProfile();
 });
+
+// ===== BOOT =====
+initData();
 </script>
 </body>
 </html>
