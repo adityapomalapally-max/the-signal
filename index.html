@@ -1325,15 +1325,15 @@ a { color: inherit; text-decoration: none; }
         </div>
       </div>
 
-      <div class="analysis-card fade-in" onclick="switchPage('medicals');setTimeout(()=>{document.getElementById('medicalSearchInput').value='Nabers';filterMedicals('Nabers');},100)">
+      <div class="analysis-card fade-in" onclick="openArticle('acl-recovery')">
         <div class="analysis-text">
           <span class="analysis-tag tag-injury">Medical Intel</span>
-          <h3>Malik Nabers ACL + Meniscus Tear: Full Medical Breakdown</h3>
-          <p>Complete injury profile with research-backed recovery data — WR return rates, re-injury risk, and what the second cleanup surgery means for his 2026 timeline.</p>
+          <h3>ACL Recovery Timelines: Separating the Myths From the Data</h3>
+          <p>What sports medicine research actually says about return-to-play timelines, re-injury rates, and performance post-ACL — sourced from physicians, not headlines.</p>
           <div class="analysis-meta">
-            <span class="author">Medical Database</span>
+            <span class="author">Adi</span>
             <span class="sep">·</span>
-            <span>View full profile →</span>
+            <span>9 min read</span>
           </div>
         </div>
         <div class="analysis-visual">
@@ -1346,42 +1346,42 @@ a { color: inherit; text-decoration: none; }
         </div>
       </div>
 
-      <div class="analysis-card fade-in" onclick="switchPage('medicals');setTimeout(()=>{document.getElementById('medicalSearchInput').value='Collins';filterMedicals('Collins');},100)">
+      <div class="analysis-card fade-in" onclick="openArticle('generational-vs-elite')">
         <div class="analysis-text">
-          <span class="analysis-tag tag-injury">Medical Intel</span>
-          <h3>Nico Collins: Two Concussions in One Season — What the Research Says</h3>
-          <p>Collins suffered concussions in Week 7 and the playoff wild card. We break down repeat concussion risk rates, long-term cognitive data, and what it means for his 2026 value.</p>
+          <span class="analysis-tag tag-draft">Draft Lab</span>
+          <h3>GENERATIONAL vs. Elite: Why the Label Matters and Who Actually Earns It</h3>
+          <p>Grade inflation is killing draft analysis. Here's the framework for why "GENERATIONAL" should only be saved for prospects who truly break the model.</p>
           <div class="analysis-meta">
-            <span class="author">Medical Database</span>
+            <span class="author">Adi</span>
             <span class="sep">·</span>
-            <span>View full profile →</span>
+            <span>15 min read</span>
           </div>
         </div>
         <div class="analysis-visual">
           <div class="chart-placeholder">
-            <div class="chart-bar" style="width:100%;background:var(--gold);opacity:0.3;"></div>
-            <div class="chart-bar" style="width:72%;background:var(--gold);opacity:0.2;"></div>
-            <div class="chart-bar" style="width:88%;background:var(--gold);opacity:0.25;"></div>
+            <div class="chart-bar" style="width:100%;background:var(--blue);opacity:0.3;"></div>
+            <div class="chart-bar" style="width:72%;background:var(--blue);opacity:0.2;"></div>
+            <div class="chart-bar" style="width:88%;background:var(--blue);opacity:0.25;"></div>
           </div>
         </div>
       </div>
 
-      <div class="analysis-card fade-in" onclick="switchPage('medicals');setTimeout(()=>{document.getElementById('medicalSearchInput').value='Nacua';filterMedicals('Nacua');},100)">
+      <div class="analysis-card fade-in" onclick="openArticle('lamb-route-tree')">
         <div class="analysis-text">
-          <span class="analysis-tag tag-injury">Medical Intel</span>
-          <h3>Puka Nacua's Durability Problem: College Foot Fracture → PCL → Ankle</h3>
-          <p>The all-time leader in receiving yards per game can't stay healthy. Breaking down his persistent lower-body injury pattern and what it means for dynasty.</p>
+          <span class="analysis-tag tag-film">Film Room</span>
+          <h3>CeeDee Lamb's Route Tree Expansion: What Film Shows About His 2026 Ceiling</h3>
+          <p>An All-22 breakdown of Lamb's route diversity, how Dallas is scheming him differently post-extension, and what that means for production.</p>
           <div class="analysis-meta">
-            <span class="author">Medical Database</span>
+            <span class="author">Adi</span>
             <span class="sep">·</span>
-            <span>View full profile →</span>
+            <span>8 min read</span>
           </div>
         </div>
         <div class="analysis-visual">
           <div class="chart-placeholder">
-            <div class="chart-bar" style="width:65%;background:var(--teal);opacity:0.3;"></div>
-            <div class="chart-bar" style="width:85%;background:var(--teal);opacity:0.2;"></div>
-            <div class="chart-bar" style="width:95%;background:var(--teal);opacity:0.2;"></div>
+            <div class="chart-bar" style="width:65%;background:#a78bfa;opacity:0.3;"></div>
+            <div class="chart-bar" style="width:85%;background:#a78bfa;opacity:0.2;"></div>
+            <div class="chart-bar" style="width:95%;background:#a78bfa;opacity:0.2;"></div>
           </div>
         </div>
       </div>
@@ -2092,6 +2092,127 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
 document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ===== ARTICLES SYSTEM =====
+const articlesDB = {
+  'acl-recovery': {
+    title: 'ACL Recovery Timelines: Separating the Myths From the Data',
+    tag: 'Medical Intel',
+    tagClass: 'tag-injury',
+    author: 'Adi',
+    readTime: '9 min read',
+    content: `<p class="article-coming-soon">This article is being written. Here's what it will cover:</p>
+    <div class="article-outline">
+      <h4>What the Research Actually Says</h4>
+      <ul>
+        <li>NFL WR return-to-play rate post-ACL: 60–69% (compared to 79% for RBs)</li>
+        <li>Average return timeline: 10.9–13.6 months — not the "9-month miracle" narratives suggest</li>
+        <li>Career length shortened by ~1.9 seasons vs. matched controls</li>
+        <li>~25% subsequent ACL injury risk (either knee) within 2-3 years</li>
+      </ul>
+      <h4>Case Studies</h4>
+      <ul>
+        <li>Malik Nabers (2025) — ACL + meniscus combined tear, scar tissue complications</li>
+        <li>Odell Beckham Jr. — the cautionary tale of rushing return</li>
+        <li>Cooper Kupp — the success story of patient rehabilitation</li>
+      </ul>
+      <h4>The Fantasy Angle</h4>
+      <ul>
+        <li>How to price ACL-recovering WRs in dynasty</li>
+        <li>The "Year 2 bounce" — does it actually exist?</li>
+        <li>Historical ADP discount vs. actual production post-ACL</li>
+      </ul>
+    </div>`
+  },
+  'generational-vs-elite': {
+    title: 'GENERATIONAL vs. Elite: Why the Label Matters and Who Actually Earns It',
+    tag: 'Draft Lab',
+    tagClass: 'tag-draft',
+    author: 'Adi',
+    readTime: '15 min read',
+    content: `<p class="article-coming-soon">This article is being written. Here's what it will cover:</p>
+    <div class="article-outline">
+      <h4>The Problem with Grade Inflation</h4>
+      <ul>
+        <li>Every draft cycle produces 5+ "generational" prospects — mathematically impossible</li>
+        <li>How media incentives push analysts toward superlatives</li>
+        <li>The difference between a top-5 pick and a franchise-altering talent</li>
+      </ul>
+      <h4>The Framework</h4>
+      <ul>
+        <li>Production Over Expected (POE) — the metric that separates hype from reality</li>
+        <li>What "breaking the model" actually looks like in the data</li>
+        <li>Historical GENERATIONAL examples: Ja'Marr Chase, Calvin Johnson, Adrian Peterson</li>
+        <li>Players who were called generational but weren't: the cautionary list</li>
+      </ul>
+      <h4>The 92% Accuracy Model</h4>
+      <ul>
+        <li>How the predictive model handles tier assignment</li>
+        <li>Why context-adjusted production matters more than raw stats</li>
+        <li>Blind validation results: 12 of 15 elite players correctly identified</li>
+      </ul>
+    </div>`
+  },
+  'lamb-route-tree': {
+    title: "CeeDee Lamb's Route Tree Expansion: What Film Shows About His 2026 Ceiling",
+    tag: 'Film Room',
+    tagClass: 'tag-film',
+    author: 'Adi',
+    readTime: '8 min read',
+    content: `<p class="article-coming-soon">This article is being written. Here's what it will cover:</p>
+    <div class="article-outline">
+      <h4>The Route Tree Evolution</h4>
+      <ul>
+        <li>Lamb's 2024 route distribution vs. 2023 — where the changes happened</li>
+        <li>The addition of option routes and how it affected his separation metrics</li>
+        <li>Yards per route run (YPRR) trends by route type</li>
+      </ul>
+      <h4>Scheme Context</h4>
+      <ul>
+        <li>How Dallas adjusted post-extension to maximize Lamb's versatility</li>
+        <li>Slot vs. outside splits and what they mean for target share</li>
+        <li>The high ankle sprain impact — how it changed his route-running in 2025</li>
+      </ul>
+      <h4>2026 Projection</h4>
+      <ul>
+        <li>Healthy Lamb ceiling based on route diversity and target projection</li>
+        <li>Fantasy value: is WR6 too low?</li>
+        <li>Comparable WR profiles who expanded their route trees at the same career stage</li>
+      </ul>
+    </div>`
+  }
+};
+
+function openArticle(slug) {
+  const article = articlesDB[slug];
+  if (!article) return;
+
+  const overlay = document.getElementById('profileOverlay');
+  document.getElementById('profileAvatar').style.background = 'var(--gold-muted)';
+  document.getElementById('profileAvatar').textContent = '📝';
+  document.getElementById('profileName').textContent = article.title;
+  document.getElementById('profileTeamLine').innerHTML = `<span class="${article.tagClass}" style="font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;">${article.tag}</span> · ${article.author} · ${article.readTime}`;
+
+  // Switch tabs to show "Article" instead of medical
+  document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.profile-tab')[1].classList.add('active');
+
+  document.getElementById('profileContent').innerHTML = `
+    <div style="max-width:560px;">
+      ${article.content}
+    </div>
+    <style>
+      .article-coming-soon { font-size:14px; color:var(--gold); font-style:italic; margin-bottom:20px; padding:12px 16px; background:var(--gold-muted); border-radius:6px; border-left:3px solid var(--gold); }
+      .article-outline h4 { font-family:var(--serif); font-size:17px; font-weight:600; margin:20px 0 10px; color:var(--text); }
+      .article-outline ul { list-style:none; padding:0; }
+      .article-outline li { padding:6px 0 6px 20px; font-size:14px; color:var(--text-secondary); line-height:1.6; position:relative; border-bottom:1px solid var(--border-subtle); }
+      .article-outline li::before { content:'—'; position:absolute; left:0; color:var(--text-muted); }
+      .article-outline li:last-child { border-bottom:none; }
+    </style>`;
+
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
 
 // ===== KEYBOARD SHORTCUTS =====
 document.addEventListener('keydown', e => {
