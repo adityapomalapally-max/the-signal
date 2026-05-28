@@ -1116,6 +1116,155 @@ a { color: inherit; text-decoration: none; }
 .social-link:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-muted); }
 
 /* ===== FADE IN ===== */
+
+/* ===== ARTICLE PAGE ===== */
+.article-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.article-back {
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+  margin-bottom: 32px;
+  transition: color 0.2s;
+}
+
+.article-back:hover { color: var(--gold); }
+
+.article-page-header { margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 32px; }
+
+.article-page-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 3px;
+  display: inline-block;
+  margin-bottom: 16px;
+}
+
+.article-page-title {
+  font-family: var(--serif);
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  margin-bottom: 16px;
+}
+
+.article-page-meta {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.article-page-author { font-weight: 600; color: var(--text); }
+
+.article-page-body {
+  font-size: 17px;
+  line-height: 1.85;
+  color: var(--text-secondary);
+}
+
+.article-page-body h2 {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 40px 0 16px;
+  letter-spacing: -0.3px;
+}
+
+.article-page-body h3 {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 32px 0 12px;
+}
+
+.article-page-body p { margin-bottom: 20px; }
+
+.article-page-body ul, .article-page-body ol {
+  margin: 16px 0 24px 24px;
+  color: var(--text-secondary);
+}
+
+.article-page-body li { margin-bottom: 8px; line-height: 1.7; }
+
+.article-page-body strong { color: var(--text); font-weight: 600; }
+.article-page-body em { color: var(--gold-soft); }
+
+.article-page-body blockquote {
+  border-left: 3px solid var(--gold);
+  padding: 16px 24px;
+  margin: 24px 0;
+  background: var(--gold-muted);
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: var(--cream);
+}
+
+.article-page-body .stat-callout {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin: 24px 0;
+}
+
+.article-page-body .stat-callout .stat-number {
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.article-page-body .stat-callout .stat-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.article-draft-notice {
+  background: var(--gold-muted);
+  border-left: 3px solid var(--gold);
+  padding: 16px 20px;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 32px;
+  font-size: 14px;
+  color: var(--gold);
+}
+
+.article-outline h4 {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 600;
+  margin: 28px 0 12px;
+  color: var(--text);
+}
+
+.article-outline ul { list-style: none; padding: 0; }
+
+.article-outline li {
+  padding: 10px 0 10px 20px;
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  position: relative;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.article-outline li::before { content: '—'; position: absolute; left: 0; color: var(--text-muted); }
+.article-outline li:last-child { border-bottom: none; }
+
+/* ===== FADE IN ===== */
 .fade-in {
   opacity: 0;
   transform: translateY(12px);
@@ -1599,6 +1748,25 @@ a { color: inherit; text-decoration: none; }
       <p>Breakdowns grounded in actual game film. No box score narratives — just what the tape shows.</p>
     </div>
     <div style="padding:48px;text-align:center;color:var(--text-muted);font-family:var(--mono);font-size:13px;">Film breakdowns coming soon. Current analysis available on the home page.</div>
+  </div>
+</div>
+
+<!-- ===== ARTICLE PAGE ===== -->
+<div class="page-section" id="page-article">
+  <div style="max-width:1440px;margin:0 auto;">
+    <div class="article-page">
+      <div class="article-back" onclick="switchPage('home')">← Back to Home</div>
+      <div class="article-page-header">
+        <span class="article-page-tag" id="articlePageTag">Medical Intel</span>
+        <h1 class="article-page-title" id="articlePageTitle">Loading...</h1>
+        <div class="article-page-meta">
+          <span class="article-page-author" id="articlePageAuthor">Adi</span>
+          <span class="byline-sep">·</span>
+          <span class="article-page-time" id="articlePageTime">9 min read</span>
+        </div>
+      </div>
+      <div class="article-page-body" id="articlePageBody"></div>
+    </div>
   </div>
 </div>
 
@@ -2127,32 +2295,55 @@ function openArticle(slug) {
   const article = articlesDB[slug];
   if (!article) return;
 
-  const overlay = document.getElementById('profileOverlay');
-  document.getElementById('profileAvatar').style.background = 'var(--gold-muted)';
-  document.getElementById('profileAvatar').textContent = '📝';
-  document.getElementById('profileName').textContent = article.title;
-  document.getElementById('profileTeamLine').innerHTML = `<span class="${article.tagClass}" style="font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;">${article.tag}</span> · ${article.author} · ${article.readTime}`;
+  // Update URL hash for shareability
+  window.location.hash = 'article/' + slug;
 
-  // Switch tabs to show "Article" instead of medical
-  document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.profile-tab')[1].classList.add('active');
+  // Set article page content
+  const tagColors = { 'tag-injury': 'var(--red-muted)', 'tag-draft': 'rgba(91,155,213,0.1)', 'tag-film': 'rgba(167,139,250,0.1)', 'tag-analysis': 'var(--gold-muted)', 'tag-fantasy': 'var(--teal-muted)' };
+  const tagTextColors = { 'tag-injury': 'var(--red)', 'tag-draft': 'var(--blue)', 'tag-film': '#a78bfa', 'tag-analysis': 'var(--gold)', 'tag-fantasy': 'var(--teal)' };
 
-  document.getElementById('profileContent').innerHTML = `
-    <div style="max-width:560px;">
-      ${article.content}
-    </div>
-    <style>
-      .article-coming-soon { font-size:14px; color:var(--gold); font-style:italic; margin-bottom:20px; padding:12px 16px; background:var(--gold-muted); border-radius:6px; border-left:3px solid var(--gold); }
-      .article-outline h4 { font-family:var(--serif); font-size:17px; font-weight:600; margin:20px 0 10px; color:var(--text); }
-      .article-outline ul { list-style:none; padding:0; }
-      .article-outline li { padding:6px 0 6px 20px; font-size:14px; color:var(--text-secondary); line-height:1.6; position:relative; border-bottom:1px solid var(--border-subtle); }
-      .article-outline li::before { content:'—'; position:absolute; left:0; color:var(--text-muted); }
-      .article-outline li:last-child { border-bottom:none; }
-    </style>`;
+  const tagEl = document.getElementById('articlePageTag');
+  tagEl.textContent = article.tag;
+  tagEl.style.background = tagColors[article.tagClass] || 'var(--gold-muted)';
+  tagEl.style.color = tagTextColors[article.tagClass] || 'var(--gold)';
 
-  overlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.getElementById('articlePageTitle').textContent = article.title;
+  document.getElementById('articlePageAuthor').textContent = article.author || 'Adi';
+  document.getElementById('articlePageTime').textContent = article.readTime || '';
+
+  let bodyHtml = '';
+  if (article.status === 'published' && article.content) {
+    bodyHtml = article.content;
+  } else {
+    // Draft state — show outline
+    bodyHtml = `<div class="article-draft-notice">This article is being written. Here's the outline of what it will cover.</div>`;
+    if (article.outline && article.outline.length) {
+      bodyHtml += `<div class="article-outline"><h4>What This Piece Will Cover</h4><ul>`;
+      article.outline.forEach(item => { bodyHtml += `<li>${item}</li>`; });
+      bodyHtml += `</ul></div>`;
+    }
+    if (article.content) bodyHtml += article.content;
+  }
+
+  document.getElementById('articlePageBody').innerHTML = bodyHtml;
+  switchPage('article');
 }
+
+// ===== HASH ROUTING =====
+function handleHashRoute() {
+  const hash = window.location.hash.slice(1);
+  if (hash.startsWith('article/')) {
+    const slug = hash.replace('article/', '');
+    // Wait for data to load if needed
+    if (Object.keys(articlesDB).length > 0) {
+      openArticle(slug);
+    } else {
+      setTimeout(() => openArticle(slug), 500);
+    }
+  }
+}
+
+window.addEventListener('hashchange', handleHashRoute);
 
 // ===== KEYBOARD SHORTCUTS =====
 document.addEventListener('keydown', e => {
@@ -2165,7 +2356,10 @@ document.addEventListener('keydown', e => {
 });
 
 // ===== BOOT =====
-initData();
+initData().then(() => {
+  // Check for hash route after data loads
+  if (window.location.hash) handleHashRoute();
+});
 </script>
 </body>
 </html>
