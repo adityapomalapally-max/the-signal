@@ -1,0 +1,149 @@
+{
+  "acl": {
+    "name": "ACL Tear",
+    "icon": "🦵",
+    "avgReturn": "10.9–13.6 months",
+    "returnRate": 65,
+    "returnRateLabel": "60–69% of WRs return",
+    "reinjuryRisk": 25,
+    "reinjuryLabel": "~25% re-tear risk (either knee) within 2-3 years",
+    "performanceImpact": 30,
+    "performanceLabel": "Significant decrease in targets, receptions, yards, TDs vs. pre-injury",
+    "careerImpact": "Career shortened by ~1.9 seasons vs. matched controls",
+    "fantasyImpact": "Dynasty value typically drops 40-60% immediately. Year 1 back averages WR30-40 production. Year 2 bounce is real but inconsistent.",
+    "keyStats": [
+      { "value": "65%", "label": "WR Return Rate" },
+      { "value": "12 mo", "label": "Avg Return Time" },
+      { "value": "25%", "label": "Re-Injury Risk" },
+      { "value": "-1.9", "label": "Seasons Lost" }
+    ],
+    "comparables": ["Malik Nabers (2025)", "Odell Beckham Jr. (2020)", "Cooper Kupp (2022)", "George Pickens (2021 — college)"],
+    "sources": "OJSM (2021), Arthroscopy Sports Medicine & Rehabilitation (2021)"
+  },
+  "achilles": {
+    "name": "Achilles Tear",
+    "icon": "🦶",
+    "avgReturn": "~11 months",
+    "returnRate": 38,
+    "returnRateLabel": "Only 38% of WRs return (lowest of all positions)",
+    "reinjuryRisk": 12,
+    "reinjuryLabel": "~12% re-rupture risk within 2 years",
+    "performanceImpact": 55,
+    "performanceLabel": "88% reduction in power ratings over 3 years post-injury for WRs",
+    "careerImpact": "Most career-threatening injury for skill players. Average of 1 additional NFL season if they return.",
+    "fantasyImpact": "Dynasty value craters 70-80%. Most WRs never return to fantasy relevance. TEs have slightly better outcomes (~55% return rate).",
+    "keyStats": [
+      { "value": "38%", "label": "WR Return Rate" },
+      { "value": "11 mo", "label": "Avg Return Time" },
+      { "value": "88%", "label": "Power Rating Drop" },
+      { "value": "55%", "label": "TE Return Rate" }
+    ],
+    "comparables": ["George Kittle (2026 — playoffs)", "Cam Akers (2021)", "Emmanuel Sanders (2019)"],
+    "sources": "American Journal of Sports Medicine, British Journal of Sports Medicine"
+  },
+  "concussion": {
+    "name": "Concussion",
+    "icon": "🧠",
+    "avgReturn": "~1.5 games missed",
+    "returnRate": 89,
+    "returnRateLabel": "89% return same season",
+    "reinjuryRisk": 8,
+    "reinjuryLabel": "5.3–8.3% same-season repeat risk after first concussion",
+    "performanceImpact": 5,
+    "performanceLabel": "No significant acute performance decline in most studies",
+    "careerImpact": "Players with 3+ concussions have elevated retirement risk. WRs 70% more likely to report long-term cognitive impairment (Harvard FPHS).",
+    "fantasyImpact": "Minimal short-term fantasy impact. Long-term dynasty concern only if pattern develops (3+ career concussions). Monitor contested catch rate as a risk indicator.",
+    "keyStats": [
+      { "value": "89%", "label": "Return Same Season" },
+      { "value": "1.5", "label": "Games Missed (avg)" },
+      { "value": "8%", "label": "Repeat Risk" },
+      { "value": "70%", "label": "WR Cognitive Risk↑" }
+    ],
+    "comparables": ["Nico Collins (2x in 2025)", "Chris Olave (recurring)", "Jalen Hurts (2024)", "Tua Tagovailoa (multiple)"],
+    "sources": "Neurosurgery (2022), Harvard Football Players Health Study, OJSM"
+  },
+  "hamstring": {
+    "name": "Hamstring Strain",
+    "icon": "🏃",
+    "avgReturn": "2–6 weeks",
+    "returnRate": 95,
+    "returnRateLabel": "~95% return same season",
+    "reinjuryRisk": 25,
+    "reinjuryLabel": "12–33% recurrence rate within first year (highest of any soft tissue injury)",
+    "performanceImpact": 10,
+    "performanceLabel": "Minimal production impact once fully healed. Main risk is the re-aggravation cycle.",
+    "careerImpact": "Not career-threatening on its own. Becomes a pattern concern when recurring — can lead to chronic management situations.",
+    "fantasyImpact": "Short-term: miss 1-4 games. Long-term dynasty concern only if recurrence pattern develops. Speed-dependent WRs (4.4 or faster) are higher recurrence risk.",
+    "keyStats": [
+      { "value": "95%", "label": "Return Rate" },
+      { "value": "2-6 wk", "label": "Recovery Time" },
+      { "value": "33%", "label": "Max Recurrence" },
+      { "value": "4.4s", "label": "Speed Risk Threshold" }
+    ],
+    "comparables": ["Justin Jefferson (2023 + 2025)", "Nico Collins (2024)", "Michael Thomas (chronic)"],
+    "sources": "BJSM hamstring meta-analyses, NFL injury data"
+  },
+  "high_ankle": {
+    "name": "High Ankle Sprain",
+    "icon": "🩹",
+    "avgReturn": "4–8 weeks",
+    "returnRate": 92,
+    "returnRateLabel": "~92% return same season",
+    "reinjuryRisk": 15,
+    "reinjuryLabel": "~15% same-season recurrence",
+    "performanceImpact": 20,
+    "performanceLabel": "Significant impact on WR route-running and RB cutting ability. Residual effects 2-4 weeks after return.",
+    "careerImpact": "Not career-threatening. But WRs playing through high ankle sprains show measurably decreased separation and burst metrics.",
+    "fantasyImpact": "Expect 3-6 weeks missed. When player returns, discount production ~20% for 2-3 weeks. High ankle sprains are more impactful than low ankle sprains for skill players.",
+    "keyStats": [
+      { "value": "92%", "label": "Return Rate" },
+      { "value": "6 wk", "label": "Avg Recovery" },
+      { "value": "20%", "label": "Production Dip" },
+      { "value": "2-4 wk", "label": "Residual Effects" }
+    ],
+    "comparables": ["CeeDee Lamb (2025)", "Jonathan Taylor (2022-2023)", "Puka Nacua (2025)"],
+    "sources": "NFL injury reports, orthopedic literature"
+  },
+  "turf_toe": {
+    "name": "Turf Toe (Grade 3)",
+    "icon": "👣",
+    "avgReturn": "3–6 months (with surgery)",
+    "returnRate": 80,
+    "returnRateLabel": "~80% return, but often with lingering issues",
+    "reinjuryRisk": 20,
+    "reinjuryLabel": "~20% chance of chronic issues requiring additional procedures",
+    "performanceImpact": 25,
+    "performanceLabel": "Affects push-off and acceleration. QBs lose mobility, WRs lose burst off the line.",
+    "careerImpact": "Grade 3 (complete plantar plate tear) is significantly worse than Grade 1-2. Can become a chronic issue if not managed properly.",
+    "fantasyImpact": "Expect 8-16 weeks missed. QBs often play through but with reduced mobility. Dynasty impact moderate — usually not career-ending but can linger for years.",
+    "keyStats": [
+      { "value": "80%", "label": "Return Rate" },
+      { "value": "4 mo", "label": "Avg Recovery" },
+      { "value": "20%", "label": "Chronic Risk" },
+      { "value": "G3", "label": "Worst Grade" }
+    ],
+    "comparables": ["Joe Burrow (2025)", "Deion Sanders (career-long)", "Patrick Mahomes (2023)"],
+    "sources": "Foot & Ankle International, NFL injury data"
+  },
+  "pcl": {
+    "name": "PCL Tear",
+    "icon": "🔗",
+    "avgReturn": "3–9 months",
+    "returnRate": 75,
+    "returnRateLabel": "~75% return to prior level",
+    "reinjuryRisk": 10,
+    "reinjuryLabel": "Lower re-tear risk than ACL, but affects deceleration long-term",
+    "performanceImpact": 20,
+    "performanceLabel": "Affects deceleration and cutting. Less devastating than ACL but still impactful for skill players.",
+    "careerImpact": "Better prognosis than ACL. Many players return to full production. Main concern is combined ligament damage.",
+    "fantasyImpact": "Dynasty discount of 20-30%. Most players return to near-prior production within one season. The key variable is whether other structures were also damaged.",
+    "keyStats": [
+      { "value": "75%", "label": "Full Return Rate" },
+      { "value": "6 mo", "label": "Avg Recovery" },
+      { "value": "10%", "label": "Re-Tear Risk" },
+      { "value": "Low", "label": "Career Threat" }
+    ],
+    "comparables": ["Christian McCaffrey (2024)", "Puka Nacua (2024)"],
+    "sources": "AJSM, orthopedic sports medicine literature"
+  }
+}

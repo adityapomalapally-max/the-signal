@@ -1363,6 +1363,8 @@ a { color: inherit; text-decoration: none; }
   .footer-bottom { flex-direction: column; gap: 16px; text-align: center; padding: 24px 20px; }
   .players-header { padding: 32px 20px 24px; }
   .players-table th, .players-table td { padding: 12px 14px; font-size: 13px; }
+  .article-page { padding: 24px 16px 60px; }
+  .article-page-title { font-size: 26px; }
 }
 </style>
 </head>
@@ -1768,13 +1770,41 @@ a { color: inherit; text-decoration: none; }
 <div class="page-section" id="page-medicals">
   <div style="max-width:1440px;margin:0 auto;">
     <div class="players-header">
-      <h1>Medical Database</h1>
-      <p>Research-backed injury analysis. Search any player to view their complete medical profile, current status, and evidence-based recovery projections.</p>
-      <div class="players-search-bar">
-        <input type="text" class="players-search-input" id="medicalSearchInput" placeholder="Search player name..." oninput="filterMedicals(this.value)" autocomplete="off">
+      <h1>Medical Intelligence</h1>
+      <p>Research-backed injury analysis. Use the Injury Impact Tool to understand how injuries affect NFL players, or search for individual medical profiles.</p>
+    </div>
+
+    <!-- INJURY IMPACT TOOL -->
+    <div style="padding:0 48px 32px;">
+      <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;">
+        <button class="pos-btn active" onclick="switchInjuryMode('injury',this)">By Injury Type</button>
+        <button class="pos-btn" onclick="switchInjuryMode('player',this)">By Player</button>
+      </div>
+
+      <div id="injuryToolContent">
+        <!-- Injury type selector grid -->
+        <div id="injuryTypeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:24px;"></div>
+        <!-- Results area -->
+        <div id="injuryToolResults"></div>
+      </div>
+
+      <div id="playerToolContent" style="display:none;">
+        <input type="text" class="players-search-input" id="injuryPlayerSearch" placeholder="Search player for injury risk profile..." oninput="searchInjuryPlayer(this.value)" autocomplete="off">
+        <div id="injuryPlayerResults" style="margin-top:16px;"></div>
       </div>
     </div>
-    <div id="medicalsContent" style="padding:0 48px 48px;"></div>
+
+    <!-- DIVIDER -->
+    <div class="section-divider">
+      <span class="section-divider-label">Medical Profiles</span>
+      <span class="section-divider-line"></span>
+    </div>
+
+    <!-- SEARCH & BROWSE -->
+    <div style="padding:24px 48px 0;">
+      <input type="text" class="players-search-input" id="medicalSearchInput" placeholder="Search player name..." oninput="filterMedicals(this.value)" autocomplete="off">
+    </div>
+    <div id="medicalsContent" style="padding:16px 48px 48px;"></div>
   </div>
 </div>
 
@@ -1821,9 +1851,126 @@ a { color: inherit; text-decoration: none; }
   <div style="max-width:1440px;margin:0 auto;">
     <div class="players-header">
       <h1>Draft Lab</h1>
-      <p>The Predictive Model — 92% accuracy POE-based prospect evaluation. Archetype-specific frameworks for WRs and RBs, validated against complete 3-year NFL outcome data.</p>
+      <p>The Predictive Model — a regression-based system analyzing historical draft data that achieved 92% accuracy within one tier on blind validation testing.</p>
     </div>
-    <div style="padding:48px;text-align:center;color:var(--text-muted);font-family:var(--mono);font-size:13px;">Full draft model interface coming soon. Current analysis available on the home page.</div>
+
+    <!-- Model overview stats -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:0 48px 40px;">
+      <div class="medical-card" style="text-align:center;padding:24px;">
+        <div style="font-family:var(--serif);font-size:36px;font-weight:700;color:var(--gold);">92%</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:6px;">Accuracy Within One Tier</div>
+      </div>
+      <div class="medical-card" style="text-align:center;padding:24px;">
+        <div style="font-family:var(--serif);font-size:36px;font-weight:700;color:var(--teal);">12/15</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:6px;">Elite Players Identified</div>
+      </div>
+      <div class="medical-card" style="text-align:center;padding:24px;">
+        <div style="font-family:var(--serif);font-size:36px;font-weight:700;color:var(--text);">50%+</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:6px;">POE Model Weight (WR)</div>
+      </div>
+      <div class="medical-card" style="text-align:center;padding:24px;">
+        <div style="font-family:var(--serif);font-size:36px;font-weight:700;color:var(--text);">2018–23</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:6px;">Training Data Range</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 380px;gap:0;border-top:1px solid var(--border);">
+      <!-- Main content -->
+      <div style="border-right:1px solid var(--border);padding:40px 48px;">
+        <h2 style="font-family:var(--serif);font-size:24px;font-weight:700;margin-bottom:20px;">The Production Over Expected (POE) Framework</h2>
+        <p style="font-size:15px;line-height:1.8;color:var(--text-secondary);margin-bottom:20px;">Traditional college stats lie. A receiver catching 80 balls in the SEC isn't the same as 80 balls in the MAC. A running back rushing for 1,200 yards behind an elite offensive line isn't the same as doing it behind a bottom-tier unit.</p>
+        <p style="font-size:15px;line-height:1.8;color:var(--text-secondary);margin-bottom:20px;">POE adjusts raw college production for contextual factors — conference strength, offensive line quality, QB talent, surrounding competition — to isolate what the prospect actually did vs. what anyone in their position would have done.</p>
+        <p style="font-size:15px;line-height:1.8;color:var(--text-secondary);margin-bottom:32px;">This became the highest-weighted variable in the WR model (over 50% of total weight), fundamentally proving that context-adjusted production is far more predictive than raw stats.</p>
+
+        <h3 style="font-family:var(--serif);font-size:20px;font-weight:600;margin-bottom:16px;color:var(--gold);">What POE Adjusts For</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px;">
+          <div class="medical-card" style="padding:16px;">
+            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Conference Strength</div>
+            <div style="font-size:13px;color:var(--text-secondary);">SEC production weighted differently than Group of 5</div>
+          </div>
+          <div class="medical-card" style="padding:16px;">
+            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">O-Line Quality</div>
+            <div style="font-size:13px;color:var(--text-secondary);">RB rushing yards adjusted for blocking grades</div>
+          </div>
+          <div class="medical-card" style="padding:16px;">
+            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">QB Talent</div>
+            <div style="font-size:13px;color:var(--text-secondary);">WR production adjusted for passer quality</div>
+          </div>
+          <div class="medical-card" style="padding:16px;">
+            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Surrounding Competition</div>
+            <div style="font-size:13px;color:var(--text-secondary);">Target share context — was he WR1 by default?</div>
+          </div>
+        </div>
+
+        <h3 style="font-family:var(--serif);font-size:20px;font-weight:600;margin-bottom:16px;">RB Archetype Framework</h3>
+        <p style="font-size:15px;line-height:1.8;color:var(--text-secondary);margin-bottom:16px;">After the model initially undervalued speed backs like De'Von Achane, the RB evaluation was rebuilt with archetype-specific criteria:</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px;">
+          <div class="medical-card" style="padding:16px;border-left:3px solid var(--gold);">
+            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Zone Backs</div>
+            <div style="font-size:12px;color:var(--text-secondary);">Vision, patience, one-cut ability. Key metric: yards after contact per attempt</div>
+          </div>
+          <div class="medical-card" style="padding:16px;border-left:3px solid var(--red);">
+            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Power Backs</div>
+            <div style="font-size:12px;color:var(--text-secondary);">Contact balance, short-yardage conversion. Key metric: broken tackle rate</div>
+          </div>
+          <div class="medical-card" style="padding:16px;border-left:3px solid var(--teal);">
+            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Receiving Backs</div>
+            <div style="font-size:12px;color:var(--text-secondary);">Route-running, catch radius. Key metric: yards per route run</div>
+          </div>
+          <div class="medical-card" style="padding:16px;border-left:3px solid var(--blue);">
+            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Speed Backs</div>
+            <div style="font-size:12px;color:var(--text-secondary);">Breakaway rate, acceleration. Key metric: speed build ratio</div>
+          </div>
+        </div>
+
+        <h3 style="font-family:var(--serif);font-size:20px;font-weight:600;margin-bottom:16px;">The GENERATIONAL Label</h3>
+        <p style="font-size:15px;line-height:1.8;color:var(--text-secondary);margin-bottom:12px;">GENERATIONAL is reserved only for prospects who truly <em>break</em> the model — players whose POE is so far above the regression line that the model can't explain them with contextual factors alone. In the 2018-2023 training data, only a handful of prospects earned this designation.</p>
+        <p style="font-size:15px;line-height:1.8;color:var(--text-secondary);"><span style="color:var(--gold);cursor:pointer;" onclick="openArticle('generational-vs-elite')">Read the full article on GENERATIONAL vs. Elite →</span></p>
+      </div>
+
+      <!-- Sidebar -->
+      <div>
+        <div class="sidebar-section">
+          <div class="sidebar-section-title"><span>Model Validation</span></div>
+          <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px;">Validated against complete 3-year NFL outcome data from 2018-2023 draft classes. Success defined as top-12 positional performance within first 3 NFL seasons.</div>
+          <div class="medical-card" style="padding:16px;margin-bottom:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:13px;">True Positives</span>
+              <span style="font-family:var(--mono);font-size:13px;color:var(--green);font-weight:600;">12 of 15</span>
+            </div>
+          </div>
+          <div class="medical-card" style="padding:16px;margin-bottom:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:13px;">Accuracy (within 1 tier)</span>
+              <span style="font-family:var(--mono);font-size:13px;color:var(--gold);font-weight:600;">92%</span>
+            </div>
+          </div>
+          <div class="medical-card" style="padding:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:13px;">Notable Miss</span>
+              <span style="font-family:var(--mono);font-size:13px;color:var(--red);font-weight:600;">JSN (undervalued)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title"><span>Key Input Metrics</span></div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">
+            <div style="padding:8px 0;border-bottom:1px solid var(--border-subtle);"><strong style="color:var(--text);">WR:</strong> POE (50%+ weight), YPRR, contested catch %, dominator rating, breakout age</div>
+            <div style="padding:8px 0;border-bottom:1px solid var(--border-subtle);"><strong style="color:var(--text);">RB:</strong> Archetype classification, breakaway rate, speed build ratio, contact balance metrics</div>
+            <div style="padding:8px 0;border-bottom:1px solid var(--border-subtle);"><strong style="color:var(--text);">Both:</strong> Binary breakout age threshold (19.5 years), medical/workload discount factors</div>
+            <div style="padding:8px 0;"><strong style="color:var(--text);">NFL Success:</strong> Top-12 positional scrimmage yards within 3 seasons</div>
+          </div>
+        </div>
+
+        <div class="sidebar-section" style="background:var(--bg-elevated);">
+          <p style="font-family:var(--serif);font-style:italic;font-size:15px;line-height:1.65;color:var(--cream);margin-bottom:10px;">
+            "GENERATIONAL should only be saved for ones who truly break the model."
+          </p>
+          <p style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;">— Adi</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1929,6 +2076,7 @@ let rankingsData = {};
 let playersDB = [];
 let medicalDB = {};
 let articlesDB = {};
+let injuryResearch = {};
 
 const DATA_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? '.' : (window.location.origin + window.location.pathname.replace(/\/[^/]*$/, ''));
@@ -1945,11 +2093,12 @@ async function loadJSON(path) {
 }
 
 async function initData() {
-  const [rankings, players, medicals, articles] = await Promise.all([
+  const [rankings, players, medicals, articles, injuries] = await Promise.all([
     loadJSON('data/rankings.json'),
     loadJSON('data/players.json'),
     loadJSON('data/medicals.json'),
-    loadJSON('data/articles.json')
+    loadJSON('data/articles.json'),
+    loadJSON('data/injury-research.json')
   ]);
 
   if (rankings) rankingsData = rankings;
@@ -1958,6 +2107,7 @@ async function initData() {
   if (articles && articles.articles) {
     articles.articles.forEach(a => { articlesDB[a.slug] = a; });
   }
+  if (injuries) injuryResearch = injuries;
 
   // Initialize UI after data loads
   renderTicker('overall');
@@ -2010,7 +2160,7 @@ function switchPage(page) {
   document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.dataset.page === page));
   window.scrollTo(0, 0);
   if (page === 'players') renderPlayersTable();
-  if (page === 'medicals') renderMedicals();
+  if (page === 'medicals') { renderMedicals(); renderInjuryTypeGrid(); }
 }
 
 // ===== PLAYERS TABLE =====
@@ -2317,6 +2467,188 @@ function findSleeperPlayer(player) {
     sp.first_name.toLowerCase() === firstName &&
     sp.position === player.pos
   ) || null;
+}
+
+// ===== INJURY IMPACT TOOL =====
+function renderInjuryTypeGrid() {
+  const grid = document.getElementById('injuryTypeGrid');
+  if (!grid) return;
+  grid.innerHTML = Object.entries(injuryResearch).map(([key, inj]) => `
+    <div class="medical-card" style="cursor:pointer;padding:16px;text-align:center;transition:all 0.2s;" onclick="showInjuryDetail('${key}')" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-size:28px;margin-bottom:8px;">${inj.icon}</div>
+      <div style="font-weight:600;font-size:14px;margin-bottom:4px;">${inj.name}</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);">Return: ${inj.returnRate}%</div>
+    </div>
+  `).join('');
+}
+
+function showInjuryDetail(key) {
+  const inj = injuryResearch[key];
+  if (!inj) return;
+  const results = document.getElementById('injuryToolResults');
+
+  // Find players in our DB with this injury type
+  const affectedPlayers = [];
+  Object.entries(medicalDB).forEach(([id, player]) => {
+    player.injuries.forEach(injury => {
+      const title = injury.title.toLowerCase();
+      const matchMap = {
+        acl: ['acl'], achilles: ['achilles'], concussion: ['concussion'],
+        hamstring: ['hamstring'], high_ankle: ['high ankle', 'high-ankle'],
+        turf_toe: ['turf toe'], pcl: ['pcl']
+      };
+      const keywords = matchMap[key] || [key];
+      if (keywords.some(k => title.includes(k))) {
+        affectedPlayers.push({ id, name: player.name, team: player.team, injury: injury.title, severity: injury.severity, severityLabel: injury.severityLabel, initials: player.initials, color: player.color });
+      }
+    });
+  });
+
+  results.innerHTML = `
+    <div style="margin-bottom:32px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
+        <span style="font-size:40px;">${inj.icon}</span>
+        <div>
+          <h2 style="font-family:var(--serif);font-size:28px;font-weight:700;">${inj.name}</h2>
+          <p style="font-size:14px;color:var(--text-secondary);">Average return: ${inj.avgReturn}</p>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;">
+        ${inj.keyStats.map(s => `
+          <div class="medical-card" style="text-align:center;padding:16px;">
+            <div style="font-family:var(--serif);font-size:26px;font-weight:700;color:var(--gold);">${s.value}</div>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-top:4px;">${s.label}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+        <div class="medical-card">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Return to Play</div>
+          <div class="impact-bar" style="margin-bottom:8px;"><div class="impact-fill ${inj.returnRate > 80 ? 'low' : inj.returnRate > 50 ? 'moderate' : 'high'}" style="width:${inj.returnRate}%"></div></div>
+          <div style="font-size:13px;color:var(--text-secondary);">${inj.returnRateLabel}</div>
+        </div>
+        <div class="medical-card">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Re-Injury Risk</div>
+          <div class="impact-bar" style="margin-bottom:8px;"><div class="impact-fill ${inj.reinjuryRisk > 20 ? 'high' : inj.reinjuryRisk > 10 ? 'moderate' : 'low'}" style="width:${inj.reinjuryRisk * 2}%"></div></div>
+          <div style="font-size:13px;color:var(--text-secondary);">${inj.reinjuryLabel}</div>
+        </div>
+      </div>
+
+      <div class="medical-card" style="margin-bottom:16px;">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Performance Impact</div>
+        <div style="font-size:15px;line-height:1.7;color:var(--text-secondary);">${inj.performanceLabel}</div>
+      </div>
+
+      <div class="medical-card" style="border-left:3px solid var(--gold);margin-bottom:16px;">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Fantasy Impact</div>
+        <div style="font-size:15px;line-height:1.7;color:var(--text-secondary);">${inj.fantasyImpact}</div>
+      </div>
+
+      <div class="medical-card" style="margin-bottom:16px;">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Career Impact</div>
+        <div style="font-size:15px;line-height:1.7;color:var(--text-secondary);">${inj.careerImpact}</div>
+      </div>
+
+      ${affectedPlayers.length > 0 ? `
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin:24px 0 12px;">Players in Our Database With This Injury (${affectedPlayers.length})</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;">
+          ${affectedPlayers.map(p => `
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:background 0.2s;" onclick="openProfile('${p.id}')" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background='var(--bg-card)'">
+              <div class="player-initials" style="background:${p.color};width:34px;height:34px;font-size:11px;">${p.initials}</div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-weight:600;font-size:13px;">${p.name}</div>
+                <div style="font-size:11px;color:var(--text-muted);">${p.injury}</div>
+              </div>
+              <span class="severity ${p.severity}" style="font-size:9px;">${p.severityLabel.split(' ')[0]}</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+
+      <div style="margin-top:20px;font-size:12px;color:var(--text-muted);">Sources: ${inj.sources}</div>
+
+      <div style="margin-top:16px;"><span style="font-size:13px;color:var(--gold);cursor:pointer;" onclick="document.getElementById('injuryToolResults').innerHTML='';renderInjuryTypeGrid();">← Back to all injury types</span></div>
+    </div>
+  `;
+
+  // Hide the grid when showing detail
+  document.getElementById('injuryTypeGrid').style.display = 'none';
+}
+
+function switchInjuryMode(mode, btn) {
+  document.querySelectorAll('.players-header + div .pos-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('injuryToolContent').style.display = mode === 'injury' ? 'block' : 'none';
+  document.getElementById('playerToolContent').style.display = mode === 'player' ? 'block' : 'none';
+  if (mode === 'injury') {
+    document.getElementById('injuryTypeGrid').style.display = 'grid';
+    document.getElementById('injuryToolResults').innerHTML = '';
+    renderInjuryTypeGrid();
+  }
+}
+
+function searchInjuryPlayer(query) {
+  const container = document.getElementById('injuryPlayerResults');
+  if (!query || query.length < 2) { container.innerHTML = ''; return; }
+
+  const results = Object.entries(medicalDB).filter(([id, p]) =>
+    p.name.toLowerCase().includes(query.toLowerCase())
+  );
+
+  if (results.length === 0) {
+    container.innerHTML = `<p style="color:var(--text-muted);font-size:13px;">No medical profiles found for "${query}". Try another name.</p>`;
+    return;
+  }
+
+  container.innerHTML = results.map(([id, player]) => {
+    const topInjury = player.injuries[0];
+    const totalInjuries = player.injuries.length;
+    const maxImpact = Math.max(...player.injuries.map(i => i.impact));
+    const riskLevel = maxImpact > 50 ? 'High' : maxImpact > 25 ? 'Moderate' : 'Low';
+    const riskColor = maxImpact > 50 ? 'var(--red)' : maxImpact > 25 ? 'var(--gold)' : 'var(--green)';
+
+    return `<div class="medical-card" style="margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+        <div class="player-initials" style="background:${player.color};width:44px;height:44px;font-size:14px;">${player.initials}</div>
+        <div style="flex:1;">
+          <div style="font-family:var(--serif);font-size:20px;font-weight:600;">${player.name}</div>
+          <div style="font-size:12px;color:var(--text-secondary);">${player.team}</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--serif);font-size:24px;font-weight:700;color:${riskColor};">${riskLevel}</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);text-transform:uppercase;">Injury Risk</div>
+        </div>
+      </div>
+      ${player.currentStatus ? `<div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:16px;padding:12px;background:var(--bg-elevated);border-radius:6px;">${player.currentStatus}</div>` : ''}
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;">
+        <div style="text-align:center;padding:12px;background:var(--bg-elevated);border-radius:6px;">
+          <div style="font-family:var(--serif);font-size:20px;font-weight:700;">${totalInjuries}</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);text-transform:uppercase;">Injuries</div>
+        </div>
+        <div style="text-align:center;padding:12px;background:var(--bg-elevated);border-radius:6px;">
+          <div style="font-family:var(--serif);font-size:20px;font-weight:700;color:${riskColor};">${maxImpact}%</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);text-transform:uppercase;">Max Impact</div>
+        </div>
+        <div style="text-align:center;padding:12px;background:var(--bg-elevated);border-radius:6px;">
+          <div style="font-family:var(--serif);font-size:20px;font-weight:700;">${player.injuries.filter(i => i.severity === 'high').length}</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);text-transform:uppercase;">Major</div>
+        </div>
+      </div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Injury History</div>
+      ${player.injuries.map(inj => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-subtle);">
+          <div>
+            <div style="font-size:13px;font-weight:600;">${inj.title}</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Impact: ${inj.impact}%</div>
+          </div>
+          <span class="severity ${inj.severity}" style="font-size:9px;">${inj.severityLabel.split('—')[0].trim()}</span>
+        </div>
+      `).join('')}
+      <div style="margin-top:12px;"><span style="font-size:13px;color:var(--gold);cursor:pointer;" onclick="openProfile('${id}')">View full medical profile →</span></div>
+    </div>`;
+  }).join('');
 }
 
 // ===== SLEEPER PLAYER DB (cached) =====
