@@ -2523,6 +2523,10 @@ function renderProfileTab(tab) {
       </div>`;
     }
   }
+
+  container.innerHTML = html;
+}
+
 function findSleeperPlayer(player) {
   if (Object.keys(sleeperPlayers).length === 0) return null;
   const lastName = player.name.split(' ').pop().toLowerCase();
