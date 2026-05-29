@@ -1911,7 +1911,7 @@ a { color: inherit; text-decoration: none; }
     </div>
   </div>
   <div class="footer-bottom">
-    <span class="footer-copy">© 2026 The Signal. Built with intention by Adi.</span>
+    <span class="footer-copy">© 2026 The Signal. Built with intention by Adi. <span id="footerLastUpdate" style="color:var(--text-muted);"></span></span>
     <div class="footer-socials">
       <div class="social-link">𝕏</div>
       <div class="social-link">📸</div>
@@ -1964,6 +1964,18 @@ async function initData() {
   loadESPNNews();
   loadSubstack();
   loadSleeperTrending();
+
+  // Load data freshness metadata
+  try {
+    const metaRes = await fetch('data/meta.json?v=' + Date.now());
+    if (metaRes.ok) {
+      const meta = await metaRes.json();
+      if (meta.lastUpdate) {
+        const el = document.getElementById('footerLastUpdate');
+        if (el) el.textContent = '· Data updated: ' + new Date(meta.lastUpdate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+      }
+    }
+  } catch (e) {}
 
   // Fade-in observer
   const observer = new IntersectionObserver((entries) => {
@@ -2332,24 +2344,52 @@ async function loadSleeperPlayerDB() {
 
 // ===== SLEEPER TRENDING =====
 async function loadSleeperTrending() {
+  const container = document.getElementById('sleeperTrending');
   try {
+    // Try cached data first (from GitHub Action)
+    let trending = null;
+    try {
+      const cached = await fetch('data/trending.json?v=' + Date.now());
+      if (cached.ok) trending = await cached.json();
+    } catch (e) {}
+
+    // If cached data has resolved names, use it directly
+    if (trending && trending.adds && trending.adds.length > 0 && trending.adds[0].name) {
+      container.innerHTML = trending.adds.slice(0, 10).map((t, i) => {
+        const ourPlayer = playersDB.find(x => t.name.toLowerCase().includes(x.name.split(' ').pop().toLowerCase()) && x.pos === t.position);
+        const clickHandler = ourPlayer ? `onclick="openProfile('${ourPlayer.id}')"` : '';
+        const statusHtml = t.injury_status ? `<span style="font-family:var(--mono);font-size:8px;padding:2px 5px;border-radius:3px;background:var(--red-muted);color:var(--red);text-transform:uppercase;">${t.injury_status}</span>` : '';
+        return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-subtle);cursor:${ourPlayer ? 'pointer' : 'default'};" ${clickHandler}>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--gold);font-weight:600;min-width:18px;">${i + 1}</span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.name}</div>
+            <div style="font-size:10px;color:var(--text-muted);">${t.position} · ${t.team} · +${t.count.toLocaleString()} adds</div>
+          </div>
+          ${statusHtml}
+        </div>`;
+      }).join('');
+      if (trending.updated) {
+        container.innerHTML += `<div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);margin-top:8px;">Updated: ${new Date(trending.updated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</div>`;
+      }
+      return;
+    }
+
+    // Fall back to live API
     if (Object.keys(sleeperPlayers).length === 0) await loadSleeperPlayerDB();
     const res = await fetch('https://api.sleeper.app/v1/players/nfl/trending/add?lookback_hours=48&limit=10');
-    const trending = await res.json();
-    const container = document.getElementById('sleeperTrending');
-    if (!trending || trending.length === 0) {
+    const liveData = await res.json();
+    if (!liveData || liveData.length === 0) {
       container.innerHTML = '<p style="font-size:12px;color:var(--text-muted);">No trending data available</p>';
       return;
     }
 
-    container.innerHTML = trending.map((t, i) => {
+    container.innerHTML = liveData.map((t, i) => {
       const p = sleeperPlayers[t.player_id];
       if (!p || !p.first_name) return '';
       const name = p.first_name + ' ' + p.last_name;
       const pos = p.position || '';
       const team = p.team || 'FA';
       const injStatus = p.injury_status || '';
-      const initials = (p.first_name[0] || '') + (p.last_name[0] || '');
       const ourPlayer = playersDB.find(x => x.name.toLowerCase().includes(p.last_name.toLowerCase()) && x.pos === pos);
       const clickHandler = ourPlayer ? `onclick="openProfile('${ourPlayer.id}')"` : '';
       const statusHtml = injStatus ? `<span style="font-family:var(--mono);font-size:8px;padding:2px 5px;border-radius:3px;background:var(--red-muted);color:var(--red);text-transform:uppercase;">${injStatus}</span>` : '';
@@ -2412,6 +2452,21 @@ function renderNewsCards() {
 // ===== ESPN NEWS API =====
 async function loadESPNNews() {
   try {
+    // Try cached data first (from GitHub Action)
+    try {
+      const cached = await fetch('data/news-cache.json?v=' + Date.now());
+      if (cached.ok) {
+        const newsData = await cached.json();
+        if (newsData.articles && newsData.articles.length > 0) {
+          allNewsArticles = newsData.articles;
+          renderNewsCards();
+          const ts = document.getElementById('newsTimestamp');
+          if (ts && newsData.updated) ts.textContent = 'Cached: ' + new Date(newsData.updated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+        }
+      }
+    } catch (e) {}
+
+    // Then try live API to get fresher data
     const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/news?limit=12');
     const data = await res.json();
     if (data.articles && data.articles.length > 0) {
