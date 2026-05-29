@@ -2351,112 +2351,178 @@ function renderProfileTab(tab) {
   }
 
   else if (tab === 'overview') {
-    // Physical profile
-    const hasPhysical = player.height || player.weight || player.fortyTime;
-    if (hasPhysical) {
-      html += `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:24px;">`;
-      if (player.height) html += `<div class="medical-card" style="text-align:center;padding:16px;"><div style="font-family:var(--serif);font-size:24px;font-weight:700;color:var(--text);">${player.height}</div><div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;">Height</div></div>`;
-      if (player.weight) html += `<div class="medical-card" style="text-align:center;padding:16px;"><div style="font-family:var(--serif);font-size:24px;font-weight:700;color:var(--text);">${player.weight}</div><div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;">Weight (lbs)</div></div>`;
-      if (player.fortyTime) html += `<div class="medical-card" style="text-align:center;padding:16px;"><div style="font-family:var(--serif);font-size:24px;font-weight:700;color:var(--gold);">${player.fortyTime}</div><div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;">40-Yard Dash</div></div>`;
-      if (player.age) html += `<div class="medical-card" style="text-align:center;padding:16px;"><div style="font-family:var(--serif);font-size:24px;font-weight:700;color:var(--text);">${player.age}</div><div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;">Age</div></div>`;
-      html += `</div>`;
-    }
+    // Athletic Profile — PlayerProfiler style
+    const metrics = [
+      { label: 'Speed Score', value: player.speedScore, pct: player.speedPct },
+      { label: 'Burst Score', value: player.burstScore, pct: player.burstPct },
+      { label: 'Agility Score', value: player.agilityScore, pct: player.agilityPct },
+      { label: 'Athleticism', value: player.athleticismScore, pct: player.athleticismPct }
+    ].filter(m => m.value);
 
-    // Draft & background
-    html += `<div class="medical-card" style="margin-bottom:12px;">`;
-    if (player.draft) html += `<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-subtle);"><span style="font-family:var(--mono);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Draft</span><span style="font-size:14px;font-weight:600;">${player.draft}</span></div>`;
-    if (player.college) html += `<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-subtle);"><span style="font-family:var(--mono);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">College</span><span style="font-size:14px;font-weight:600;">${player.college}</span></div>`;
-    html += `<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-subtle);"><span style="font-family:var(--mono);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Position</span><span style="font-size:14px;font-weight:600;">${player.pos}</span></div>`;
-    html += `<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-subtle);"><span style="font-family:var(--mono);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Team</span><span style="font-size:14px;font-weight:600;">${player.team}</span></div>`;
-    html += `<div style="display:flex;justify-content:space-between;padding:10px 0;"><span style="font-family:var(--mono);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Status</span><span class="player-quick-status ${player.statusClass}">${player.status}</span></div>`;
-    html += `</div>`;
-
-    // Sleeper data enrichment
-    const sleeperMatch = findSleeperPlayer(player);
-    if (sleeperMatch) {
-      html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin:20px 0 10px;">Sleeper Data</div>`;
-      html += `<div class="medical-card">`;
-      if (sleeperMatch.injury_status) html += `<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-subtle);"><span style="font-family:var(--mono);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Injury Status</span><span style="font-size:14px;font-weight:600;color:var(--red);">${sleeperMatch.injury_status}</span></div>`;
-      if (sleeperMatch.number) html += `<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-subtle);"><span style="font-family:var(--mono);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Jersey</span><span style="font-size:14px;font-weight:600;">#${sleeperMatch.number}</span></div>`;
-      if (sleeperMatch.years_exp !== undefined) html += `<div style="display:flex;justify-content:space-between;padding:10px 0;"><span style="font-family:var(--mono);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">NFL Experience</span><span style="font-size:14px;font-weight:600;">${sleeperMatch.years_exp} year${sleeperMatch.years_exp !== 1 ? 's' : ''}</span></div>`;
-      html += `</div>`;
-    }
-  }
-
-  else if (tab === 'stats') {
-    if (player.stats2024 || player.stats2025) {
-      if (player.stats2025) {
-        html += `<div class="medical-card" style="border-left:3px solid var(--teal);margin-bottom:12px;">
-          <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:8px;">2025 Season</div>
-          <div style="font-size:15px;line-height:1.7;color:var(--text);">${player.stats2025}</div>
-        </div>`;
-      }
-      if (player.stats2024) {
-        html += `<div class="medical-card" style="margin-bottom:12px;">
-          <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">2024 Season</div>
-          <div style="font-size:15px;line-height:1.7;color:var(--text-secondary);">${player.stats2024}</div>
-        </div>`;
-      }
-    } else {
-      html = `<div class="medical-card"><div class="medical-detail">Stats data is being compiled for ${player.name}. Check back soon.</div></div>`;
-    }
-
-    // Sleeper injury history
-    const sleeperMatch = findSleeperPlayer(player);
-    if (sleeperMatch && sleeperMatch.injury_notes) {
-      html += `<div class="medical-card" style="margin-top:12px;">
-        <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Sleeper Injury Note</div>
-        <div style="font-size:14px;color:var(--text-secondary);">${sleeperMatch.injury_notes}</div>
-      </div>`;
-    }
-  }
-
-  else if (tab === 'fantasy') {
-    // Fantasy ranking card
-    html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">`;
-    html += `<div class="medical-card" style="text-align:center;padding:20px;">
-      <div style="font-family:var(--serif);font-size:32px;font-weight:700;color:var(--gold);">${player.fRank}</div>
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;">Positional Rank</div>
-    </div>`;
-    // Find overall rank
-    const overall = rankingsData.overall ? rankingsData.overall.find(r => r.name.includes(player.name.split(' ').pop())) : null;
-    html += `<div class="medical-card" style="text-align:center;padding:20px;">
-      <div style="font-family:var(--serif);font-size:32px;font-weight:700;color:var(--text);">${overall ? '#' + overall.rank : '—'}</div>
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;">Overall Rank</div>
-    </div>`;
-    html += `</div>`;
-
-    // Position ranking context
-    const posKey = player.pos.toLowerCase();
-    const posRankings = rankingsData[posKey];
-    if (posRankings) {
-      html += `<div class="medical-card">
-        <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;">Consensus ${player.pos} Rankings</div>`;
-      posRankings.forEach(r => {
-        const isThisPlayer = r.name.includes(player.name.split(' ').pop()) || player.name.includes(r.name.split(' ').pop());
-        html += `<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border-subtle);${isThisPlayer ? 'background:var(--gold-muted);margin:0 -16px;padding:8px 16px;border-radius:6px;' : ''}">
-          <span style="font-family:var(--mono);font-size:11px;color:${isThisPlayer ? 'var(--gold)' : 'var(--text-muted)'};font-weight:600;min-width:24px;">${r.rank}</span>
-          <span style="font-size:13px;font-weight:${isThisPlayer ? '700' : '500'};color:${isThisPlayer ? 'var(--gold)' : 'var(--text)'};">${r.name}</span>
-          <span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-left:auto;">${r.team}</span>
+    if (metrics.length > 0) {
+      html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Athletic Profile</div>`;
+      html += `<div class="medical-card" style="margin-bottom:16px;padding:20px;">`;
+      metrics.forEach(m => {
+        const barColor = m.pct >= 80 ? 'var(--green)' : m.pct >= 50 ? 'var(--gold)' : 'var(--red)';
+        html += `<div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+            <span style="font-size:13px;font-weight:500;">${m.label}</span>
+            <span style="font-family:var(--mono);font-size:13px;font-weight:600;">${m.value} <span style="color:${barColor};font-size:11px;">(${m.pct}th)</span></span>
+          </div>
+          <div class="impact-bar"><div style="height:100%;width:${m.pct}%;background:${barColor};border-radius:3px;transition:width 0.8s;"></div></div>
         </div>`;
       });
       html += `</div>`;
     }
 
-    // Medical impact on fantasy
-    if (medical && medical.injuries.length > 0) {
-      const topInjury = medical.injuries[0];
-      html += `<div class="medical-card" style="border-left:3px solid var(--red);margin-top:12px;">
-        <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:8px;">Injury Risk Factor</div>
-        <div style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;">${topInjury.title}</div>
-        <div class="impact-bar"><div class="impact-fill ${topInjury.impactClass}" style="width:${topInjury.impact}%"></div></div>
+    // Workout Metrics Grid
+    const workoutMetrics = [
+      { label: '40-Yard', value: player.fortyTime, unit: 's' },
+      { label: 'Vertical', value: player.vertical, unit: '' },
+      { label: 'Broad Jump', value: player.broadJump, unit: '' },
+      { label: 'Hand Size', value: player.handSize, unit: '' },
+      { label: '3-Cone', value: player.threeConeDrill, unit: 's' },
+      { label: 'Shuttle', value: player.shuttle, unit: 's' },
+      { label: 'Bench', value: player.benchPress, unit: ' reps' },
+      { label: 'Catch Rad.', value: player.catchRadius, unit: '' }
+    ].filter(m => m.value);
+
+    if (workoutMetrics.length > 0) {
+      html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Workout Metrics</div>`;
+      html += `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;">`;
+      workoutMetrics.forEach(m => {
+        html += `<div class="medical-card" style="text-align:center;padding:12px 8px;">
+          <div style="font-family:var(--serif);font-size:18px;font-weight:700;color:var(--text);">${m.value}${m.unit}</div>
+          <div style="font-family:var(--mono);font-size:8px;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-top:3px;">${m.label}</div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    // College Production
+    const collegeProd = [
+      { label: 'Dominator Rating', value: player.collegeDominator, pct: player.dominatorPct },
+      { label: 'Breakout Age', value: player.breakoutAge, pct: player.breakoutPct }
+    ].filter(m => m.value);
+
+    if (collegeProd.length > 0) {
+      html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">College Production</div>`;
+      html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">`;
+      collegeProd.forEach(m => {
+        const barColor = m.pct >= 80 ? 'var(--green)' : m.pct >= 50 ? 'var(--gold)' : 'var(--red)';
+        html += `<div class="medical-card" style="padding:14px;">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">${m.label}</div>
+          <div style="font-family:var(--serif);font-size:22px;font-weight:700;margin-bottom:6px;">${m.value} <span style="font-size:12px;color:${barColor};">(${m.pct}th)</span></div>
+          <div class="impact-bar"><div style="height:100%;width:${m.pct}%;background:${barColor};border-radius:3px;"></div></div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    // Pro Comps
+    if (player.proComps && player.proComps.length > 0) {
+      html += `<div class="medical-card" style="border-left:3px solid var(--gold);margin-bottom:16px;">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">Pro Player Comparisons</div>
+        <div style="font-family:var(--serif);font-size:18px;font-weight:600;line-height:1.6;">${player.proComps.join(' &middot; ')}</div>
       </div>`;
+    }
+
+    // Bio
+    html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Background</div>`;
+    html += `<div class="medical-card">`;
+    const bioFields = [
+      { label: 'Draft', value: player.draft },
+      { label: 'College', value: player.college },
+      { label: 'Height / Weight', value: player.height && player.weight ? player.height + ' &middot; ' + player.weight + ' lbs' : null },
+      { label: 'Age', value: player.age },
+      { label: 'Experience', value: player.experience },
+      { label: 'Status', value: player.status, isStatus: true }
+    ].filter(f => f.value);
+    bioFields.forEach((f, i) => {
+      html += `<div style="display:flex;justify-content:space-between;padding:10px 0;${i < bioFields.length - 1 ? 'border-bottom:1px solid var(--border-subtle);' : ''}">
+        <span style="font-family:var(--mono);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">${f.label}</span>
+        ${f.isStatus ? '<span class="player-quick-status ' + player.statusClass + '">' + f.value + '</span>' : '<span style="font-size:14px;font-weight:600;">' + f.value + '</span>'}
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  else if (tab === 'stats') {
+    if (player.seasonStats && player.seasonStats.length > 0) {
+      const isQB = player.pos === 'QB';
+      const isRB = player.pos === 'RB';
+      html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Season-by-Season</div>`;
+      html += `<div style="overflow-x:auto;margin-bottom:20px;"><table style="width:100%;border-collapse:collapse;font-size:13px;">`;
+      if (isQB) {
+        html += '<thead><tr style="border-bottom:2px solid var(--border);">';
+        ['Year','G','Pass Yds','TD','INT','Rush Yds','Rush TD','Note'].forEach(h => html += '<th style="padding:8px 10px;text-align:left;font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap;">' + h + '</th>');
+        html += '</tr></thead><tbody>';
+        player.seasonStats.forEach(s => {
+          html += `<tr style="border-bottom:1px solid var(--border-subtle);"><td style="padding:8px 10px;font-weight:600;color:var(--gold);font-family:var(--mono);">${s.year}</td><td style="padding:8px 10px;">${s.games}</td><td style="padding:8px 10px;font-weight:600;">${s.passYds ? s.passYds.toLocaleString() : '—'}</td><td style="padding:8px 10px;color:var(--green);">${s.passTD || '—'}</td><td style="padding:8px 10px;color:var(--red);">${s.passINT || '—'}</td><td style="padding:8px 10px;">${s.rushYds || '—'}</td><td style="padding:8px 10px;">${s.rushTD || '—'}</td><td style="padding:8px 10px;font-size:11px;color:var(--text-muted);max-width:140px;">${s.note || ''}</td></tr>`;
+        });
+      } else if (isRB) {
+        html += '<thead><tr style="border-bottom:2px solid var(--border);">';
+        ['Year','G','Rush','Yds','TD','Rec','Rec Yds','Rec TD','Note'].forEach(h => html += '<th style="padding:8px 8px;text-align:left;font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap;">' + h + '</th>');
+        html += '</tr></thead><tbody>';
+        player.seasonStats.forEach(s => {
+          html += `<tr style="border-bottom:1px solid var(--border-subtle);"><td style="padding:8px;font-weight:600;color:var(--gold);font-family:var(--mono);">${s.year}</td><td style="padding:8px;">${s.games}</td><td style="padding:8px;">${s.rush || '—'}</td><td style="padding:8px;font-weight:600;">${s.rushYds ? s.rushYds.toLocaleString() : '—'}</td><td style="padding:8px;color:var(--green);">${s.rushTD || '—'}</td><td style="padding:8px;">${s.rec || '—'}</td><td style="padding:8px;">${s.recYds || '—'}</td><td style="padding:8px;color:var(--green);">${s.recTD || '—'}</td><td style="padding:8px;font-size:11px;color:var(--text-muted);max-width:120px;">${s.note || ''}</td></tr>`;
+        });
+      } else {
+        html += '<thead><tr style="border-bottom:2px solid var(--border);">';
+        ['Year','G','Rec','Yds','TD','Tgt','Catch%','YPRR','Note'].forEach(h => html += '<th style="padding:8px 8px;text-align:left;font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap;">' + h + '</th>');
+        html += '</tr></thead><tbody>';
+        player.seasonStats.forEach(s => {
+          html += `<tr style="border-bottom:1px solid var(--border-subtle);"><td style="padding:8px;font-weight:600;color:var(--gold);font-family:var(--mono);">${s.year}</td><td style="padding:8px;">${s.games}</td><td style="padding:8px;">${s.rec || '—'}</td><td style="padding:8px;font-weight:600;">${s.recYds ? s.recYds.toLocaleString() : '—'}</td><td style="padding:8px;color:var(--green);">${s.recTD || '—'}</td><td style="padding:8px;">${s.targets || '—'}</td><td style="padding:8px;">${s.catchPct || '—'}</td><td style="padding:8px;color:var(--teal);">${s.yprr || '—'}</td><td style="padding:8px;font-size:11px;color:var(--text-muted);max-width:120px;">${s.note || ''}</td></tr>`;
+        });
+      }
+      html += '</tbody></table></div>';
+    } else {
+      html = `<div class="medical-card"><div class="medical-detail">Season stats are being compiled for ${player.name}. Check back soon.</div></div>`;
     }
   }
 
-  container.innerHTML = html;
-}
+  else if (tab === 'fantasy') {
+    html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">`;
+    html += `<div class="medical-card" style="text-align:center;padding:20px;"><div style="font-family:var(--serif);font-size:32px;font-weight:700;color:var(--gold);">${player.fRank}</div><div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;">Positional Rank</div></div>`;
+    html += `<div class="medical-card" style="text-align:center;padding:20px;"><div style="font-family:var(--serif);font-size:32px;font-weight:700;color:var(--text);">${player.pos}</div><div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;">Position</div></div>`;
+    html += `</div>`;
 
+    if (player.seasonStats && player.seasonStats.length > 0) {
+      const latest = player.seasonStats[player.seasonStats.length - 1];
+      html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Latest Season (${latest.year})</div>`;
+      html += `<div class="medical-card" style="margin-bottom:16px;">`;
+      const isQB = player.pos === 'QB';
+      const isRB = player.pos === 'RB';
+      let keyMetrics;
+      if (isQB) keyMetrics = [{l:'Pass Yards',v:latest.passYds?latest.passYds.toLocaleString():'—'},{l:'Pass TD',v:latest.passTD||'—'},{l:'INT',v:latest.passINT||'—'},{l:'Rush Yards',v:latest.rushYds||'—'},{l:'Rush TD',v:latest.rushTD||'—'},{l:'Games',v:latest.games}];
+      else if (isRB) keyMetrics = [{l:'Rush Yards',v:latest.rushYds?latest.rushYds.toLocaleString():'—'},{l:'Rush TD',v:latest.rushTD||'—'},{l:'Receptions',v:latest.rec||'—'},{l:'Rec Yards',v:latest.recYds||'—'},{l:'Rec TD',v:latest.recTD||'—'},{l:'Games',v:latest.games}];
+      else keyMetrics = [{l:'Receptions',v:latest.rec||'—'},{l:'Rec Yards',v:latest.recYds?latest.recYds.toLocaleString():'—'},{l:'Rec TD',v:latest.recTD||'—'},{l:'Targets',v:latest.targets||'—'},{l:'Catch %',v:latest.catchPct||'—'},{l:'YPRR',v:latest.yprr||'—'},{l:'Games',v:latest.games}];
+      keyMetrics.forEach((m,i) => {
+        html += `<div style="display:flex;justify-content:space-between;padding:10px 0;${i<keyMetrics.length-1?'border-bottom:1px solid var(--border-subtle);':''}"><span style="font-size:13px;color:var(--text-secondary);">${m.l}</span><span style="font-family:var(--mono);font-size:14px;font-weight:600;">${m.v}</span></div>`;
+      });
+      html += `</div>`;
+      if (latest.note) html += `<div style="font-size:12px;color:var(--text-muted);font-style:italic;margin-bottom:16px;">${latest.note}</div>`;
+    }
+
+    if (medical && medical.injuries.length > 0) {
+      const maxImpact = Math.max(...medical.injuries.map(i => i.impact));
+      const riskLevel = maxImpact > 50 ? 'High' : maxImpact > 25 ? 'Moderate' : 'Low';
+      const riskColor = maxImpact > 50 ? 'var(--red)' : maxImpact > 25 ? 'var(--gold)' : 'var(--green)';
+      html += `<div class="medical-card" style="border-left:3px solid ${riskColor};">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;">Injury Risk</span><span style="font-family:var(--serif);font-size:18px;font-weight:700;color:${riskColor};">${riskLevel}</span></div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">${medical.injuries[0].title}</div>
+        <div class="impact-bar"><div class="impact-fill ${medical.injuries[0].impactClass}" style="width:${medical.injuries[0].impact}%"></div></div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">${medical.injuries.length} injuries on record</div>
+      </div>`;
+    }
+
+    if (player.proComps && player.proComps.length > 0) {
+      html += `<div class="medical-card" style="border-left:3px solid var(--gold);margin-top:12px;">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Player Comparisons</div>
+        <div style="font-size:15px;font-weight:600;">${player.proComps.join(' &middot; ')}</div>
+      </div>`;
+    }
+  }
 function findSleeperPlayer(player) {
   if (Object.keys(sleeperPlayers).length === 0) return null;
   const lastName = player.name.split(' ').pop().toLowerCase();
