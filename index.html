@@ -2282,40 +2282,97 @@ function renderProfileTab(tab) {
   }
 
   else if (tab === 'overview') {
-    // Athletic Profile — PlayerProfiler style
+    // ===== HELPERS (null-safe, honest labels) =====
     const isQBProfile = player.pos === 'QB';
-    let metrics;
-    if (isQBProfile) {
-      metrics = [
-        { label: 'Throw Velocity', value: player.throwVelocity ? player.throwVelocity + ' mph' : null, pct: player.throwVelocityPct },
-        { label: 'Burst Score', value: player.burstScore, pct: player.burstPct },
-        { label: 'Agility Score', value: player.agilityScore, pct: player.agilityPct },
-        { label: 'Athleticism', value: player.athleticismScore, pct: player.athleticismPct }
-      ].filter(m => m.value);
-    } else {
-      metrics = [
-        { label: 'Speed Score', value: player.speedScore, pct: player.speedPct },
-        { label: 'Burst Score', value: player.burstScore, pct: player.burstPct },
-        { label: 'Agility Score', value: player.agilityScore, pct: player.agilityPct },
-        { label: 'Athleticism', value: player.athleticismScore, pct: player.athleticismPct }
-      ].filter(m => m.value);
-    }
+    const ordinal = (n) => {
+      const s = ['th','st','nd','rd'], v = n % 100;
+      return n + (s[(v - 20) % 10] || s[v] || s[0]);
+    };
+    const pctSuffix = (pct) => (pct === null || pct === undefined) ? '' : ` (${ordinal(pct)})`;
+    const barW = (pct) => (pct === null || pct === undefined) ? 0 : pct;
+    const colorFor = (pct) => (pct === null || pct === undefined) ? 'var(--text-muted)'
+      : pct >= 80 ? 'var(--green)' : pct >= 50 ? 'var(--gold)' : 'var(--red)';
 
-    if (metrics.length > 0) {
-      html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Athletic Profile</div>`;
-      html += `<div class="medical-card" style="margin-bottom:16px;padding:20px;">`;
-      metrics.forEach(m => {
-        const barColor = m.pct >= 80 ? 'var(--green)' : m.pct >= 50 ? 'var(--gold)' : 'var(--red)';
-        html += `<div style="margin-bottom:14px;">
+    const TIP = {
+      speed: 'Speed Score = size-adjusted 40 time: (Weight×200)/40⁴. Rewards fast times at heavy weight.',
+      explosion: 'Explosion = Vertical + Broad Jump (standing, zero-inertia leap). NOT game-speed burst or acceleration.',
+      agility: 'Agility = 3-cone + 20-yd shuttle. Change-of-direction in a drill.',
+      ath: 'Athleticism = aggregate of 40, Explosion, Agility, with a size premium.',
+      throw: 'Throw Velocity = ball velocity measured at the combine (mph).',
+      forty: '40-yard dash time.',
+      breakout: 'Breakout Age = age of first dominant college season. Earlier is better; predictive cliff at 19.5.',
+      dominator: 'College Dominator = share of team receiving yards + TDs commanded in college.',
+      tgtshare: 'College Target Share = % of team targets commanded.',
+      ypc: 'Yards per carry in college.',
+      qbr: 'College QBR = passing efficiency rating in college.',
+      ypa: 'College Yards Per Attempt — passing efficiency.'
+    };
+
+    const renderBars = (title, items, footnote) => {
+      items = items.filter(m => m.value !== null && m.value !== undefined && m.value !== '');
+      if (!items.length) return '';
+      let h = `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">${title}</div>`;
+      h += `<div class="medical-card" style="margin-bottom:${footnote ? '8' : '16'}px;padding:20px;">`;
+      items.forEach(m => {
+        const c = colorFor(m.pct);
+        h += `<div style="margin-bottom:14px;" title="${(m.tip || '').replace(/"/g, '&quot;')}">
           <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-            <span style="font-size:13px;font-weight:500;">${m.label}</span>
-            <span style="font-family:var(--mono);font-size:13px;font-weight:600;">${m.value} <span style="color:${barColor};font-size:11px;">(${m.pct}th)</span></span>
+            <span style="font-size:13px;font-weight:500;cursor:help;border-bottom:1px dotted var(--text-muted);">${m.label}</span>
+            <span style="font-family:var(--mono);font-size:13px;font-weight:600;">${m.value}<span style="color:${c};font-size:11px;">${pctSuffix(m.pct)}</span></span>
           </div>
-          <div class="impact-bar"><div style="height:100%;width:${m.pct}%;background:${barColor};border-radius:3px;transition:width 0.8s;"></div></div>
+          <div class="impact-bar"><div style="height:100%;width:${barW(m.pct)}%;background:${c};border-radius:3px;transition:width 0.8s;"></div></div>
         </div>`;
       });
-      html += `</div>`;
+      h += `</div>`;
+      if (footnote) h += `<p style="font-size:11px;color:var(--text-muted);font-style:italic;margin:0 0 16px;">${footnote}</p>`;
+      return h;
+    };
+
+    // ===== PRODUCTION PROFILE (leads — most predictive per POE/SHAP) =====
+    let prod;
+    if (isQBProfile) {
+      prod = [
+        { label: 'College QBR', value: player.collegeQBR, pct: player.qbrPct, tip: TIP.qbr },
+        { label: 'College YPA', value: player.collegeYPA, pct: player.ypaPct, tip: TIP.ypa },
+        { label: 'Breakout Age', value: player.breakoutAge, pct: player.breakoutPct, tip: TIP.breakout }
+      ];
+    } else if (player.pos === 'RB') {
+      prod = [
+        { label: 'College Dominator', value: player.collegeDominator, pct: player.dominatorPct, tip: TIP.dominator },
+        { label: 'College YPC', value: player.collegeYPC, pct: player.ypcPct, tip: TIP.ypc },
+        { label: 'College Target Share', value: player.collegeTargetShare, pct: player.targetSharePct, tip: TIP.tgtshare },
+        { label: 'Breakout Age', value: player.breakoutAge, pct: player.breakoutPct, tip: TIP.breakout }
+      ];
+    } else { // WR / TE
+      prod = [
+        { label: 'College Dominator', value: player.collegeDominator, pct: player.dominatorPct, tip: TIP.dominator },
+        { label: 'College Target Share', value: player.collegeTargetShare, pct: player.targetSharePct, tip: TIP.tgtshare },
+        { label: 'Breakout Age', value: player.breakoutAge, pct: player.breakoutPct, tip: TIP.breakout }
+      ];
     }
+    html += renderBars('Production Profile', prod);
+
+    // ===== ATHLETIC PROFILE (measured at combine; secondary) =====
+    let ath;
+    if (isQBProfile) {
+      ath = [
+        { label: 'Throw Velocity', value: player.throwVelocity ? player.throwVelocity + ' mph' : null, pct: player.throwVelocityPct, tip: TIP.throw },
+        { label: '40-Yard Dash', value: player.fortyTime ? player.fortyTime + 's' : null, pct: null, tip: TIP.forty },
+        { label: 'Explosion (Vert+Broad)', value: player.burstScore, pct: player.burstPct, tip: TIP.explosion },
+        { label: 'Agility', value: player.agilityScore, pct: player.agilityPct, tip: TIP.agility },
+        { label: 'Athleticism', value: player.athleticismScore, pct: player.athleticismPct, tip: TIP.ath }
+      ];
+    } else {
+      ath = [
+        { label: 'Speed Score', value: player.speedScore, pct: player.speedPct, tip: TIP.speed },
+        { label: '40-Yard Dash', value: player.fortyTime ? player.fortyTime + 's' : null, pct: null, tip: TIP.forty },
+        { label: 'Explosion (Vert+Broad)', value: player.burstScore, pct: player.burstPct, tip: TIP.explosion },
+        { label: 'Agility', value: player.agilityScore, pct: player.agilityPct, tip: TIP.agility },
+        { label: 'Athleticism', value: player.athleticismScore, pct: player.athleticismPct, tip: TIP.ath }
+      ];
+    }
+    html += renderBars('Athletic Profile', ath,
+      'Explosion = standing vertical + broad jump, not game-speed burst. Hover any metric for its definition.');
 
     // Workout Metrics Grid
     const workoutMetrics = [
@@ -2336,35 +2393,6 @@ function renderProfileTab(tab) {
         html += `<div class="medical-card" style="text-align:center;padding:12px 8px;">
           <div style="font-family:var(--serif);font-size:18px;font-weight:700;color:var(--text);">${m.value}${m.unit}</div>
           <div style="font-family:var(--mono);font-size:8px;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-top:3px;">${m.label}</div>
-        </div>`;
-      });
-      html += `</div>`;
-    }
-
-    // College Production
-    let collegeProd;
-    if (isQBProfile) {
-      collegeProd = [
-        { label: 'College QBR', value: player.collegeQBR, pct: player.qbrPct },
-        { label: 'College YPA', value: player.collegeYPA, pct: player.ypaPct },
-        { label: 'Breakout Age', value: player.breakoutAge, pct: player.breakoutPct }
-      ].filter(m => m.value);
-    } else {
-      collegeProd = [
-        { label: 'Dominator Rating', value: player.collegeDominator, pct: player.dominatorPct },
-        { label: 'Breakout Age', value: player.breakoutAge, pct: player.breakoutPct }
-      ].filter(m => m.value);
-    }
-
-    if (collegeProd.length > 0) {
-      html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">College Production</div>`;
-      html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">`;
-      collegeProd.forEach(m => {
-        const barColor = m.pct >= 80 ? 'var(--green)' : m.pct >= 50 ? 'var(--gold)' : 'var(--red)';
-        html += `<div class="medical-card" style="padding:14px;">
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">${m.label}</div>
-          <div style="font-family:var(--serif);font-size:22px;font-weight:700;margin-bottom:6px;">${m.value} <span style="font-size:12px;color:${barColor};">(${m.pct}th)</span></div>
-          <div class="impact-bar"><div style="height:100%;width:${m.pct}%;background:${barColor};border-radius:3px;"></div></div>
         </div>`;
       });
       html += `</div>`;
