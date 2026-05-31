@@ -2308,12 +2308,23 @@ function renderProfileTab(tab) {
 
   else if (tab === 'overview') {
     // Athletic Profile — PlayerProfiler style
-    const metrics = [
-      { label: 'Speed Score', value: player.speedScore, pct: player.speedPct },
-      { label: 'Burst Score', value: player.burstScore, pct: player.burstPct },
-      { label: 'Agility Score', value: player.agilityScore, pct: player.agilityPct },
-      { label: 'Athleticism', value: player.athleticismScore, pct: player.athleticismPct }
-    ].filter(m => m.value);
+    const isQBProfile = player.pos === 'QB';
+    let metrics;
+    if (isQBProfile) {
+      metrics = [
+        { label: 'Throw Velocity', value: player.throwVelocity ? player.throwVelocity + ' mph' : null, pct: player.throwVelocityPct },
+        { label: 'Burst Score', value: player.burstScore, pct: player.burstPct },
+        { label: 'Agility Score', value: player.agilityScore, pct: player.agilityPct },
+        { label: 'Athleticism', value: player.athleticismScore, pct: player.athleticismPct }
+      ].filter(m => m.value);
+    } else {
+      metrics = [
+        { label: 'Speed Score', value: player.speedScore, pct: player.speedPct },
+        { label: 'Burst Score', value: player.burstScore, pct: player.burstPct },
+        { label: 'Agility Score', value: player.agilityScore, pct: player.agilityPct },
+        { label: 'Athleticism', value: player.athleticismScore, pct: player.athleticismPct }
+      ].filter(m => m.value);
+    }
 
     if (metrics.length > 0) {
       html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Athletic Profile</div>`;
@@ -2356,10 +2367,19 @@ function renderProfileTab(tab) {
     }
 
     // College Production
-    const collegeProd = [
-      { label: 'Dominator Rating', value: player.collegeDominator, pct: player.dominatorPct },
-      { label: 'Breakout Age', value: player.breakoutAge, pct: player.breakoutPct }
-    ].filter(m => m.value);
+    let collegeProd;
+    if (isQBProfile) {
+      collegeProd = [
+        { label: 'College QBR', value: player.collegeQBR, pct: player.qbrPct },
+        { label: 'College YPA', value: player.collegeYPA, pct: player.ypaPct },
+        { label: 'Breakout Age', value: player.breakoutAge, pct: player.breakoutPct }
+      ].filter(m => m.value);
+    } else {
+      collegeProd = [
+        { label: 'Dominator Rating', value: player.collegeDominator, pct: player.dominatorPct },
+        { label: 'Breakout Age', value: player.breakoutAge, pct: player.breakoutPct }
+      ].filter(m => m.value);
+    }
 
     if (collegeProd.length > 0) {
       html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">College Production</div>`;
