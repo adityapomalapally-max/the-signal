@@ -1461,35 +1461,8 @@ a { color: inherit; text-decoration: none; }
 
     <div class="hero-sidebar">
       <div class="hero-sidebar-header">Top Stories</div>
-      <div class="sidebar-story" onclick="switchPage('medicals')">
-        <span class="sidebar-story-num">01</span>
-        <div class="sidebar-story-tag tag-injury">Injury Intel</div>
-        <h3>Malik Nabers ACL Recovery: What the Combined Tear Means for His 2026 Return</h3>
-        <div class="sidebar-story-meta">Source: <span>Orthopedic Research</span> · 8 min</div>
-      </div>
-      <div class="sidebar-story">
-        <span class="sidebar-story-num">02</span>
-        <div class="sidebar-story-tag tag-fantasy">Fantasy</div>
-        <h3>Dynasty Breakout Candidates for 2026 — 10 Names to Target Now</h3>
-        <div class="sidebar-story-meta">By <span>Adi</span> · 6 min</div>
-      </div>
-      <div class="sidebar-story">
-        <span class="sidebar-story-num">03</span>
-        <div class="sidebar-story-tag tag-film">Film Room</div>
-        <h3>Bijan Robinson's Contact Balance: The Metric That Separates Elite</h3>
-        <div class="sidebar-story-meta">By <span>Adi</span> · 10 min</div>
-      </div>
-      <div class="sidebar-story">
-        <span class="sidebar-story-num">04</span>
-        <div class="sidebar-story-tag tag-news">News</div>
-        <h3>Eagles Offense Expected to Have Shanahan/McVay Influences in 2026</h3>
-        <div class="sidebar-story-meta">Via <span>Jeff McLane</span> · 3 min</div>
-      </div>
-      <div class="sidebar-story" id="substackSidebarStory">
-        <span class="sidebar-story-num">05</span>
-        <div class="sidebar-story-tag tag-analysis">Substack</div>
-        <h3 id="sidebarSubstackTitle">2026 Big Board — Post-Combine WR Rankings</h3>
-        <div class="sidebar-story-meta" id="sidebarSubstackMeta">By <span>Adi</span></div>
+      <div id="heroSidebarStories">
+        <p style="font-size:12px;color:var(--text-muted);font-family:var(--mono);">Loading...</p>
       </div>
     </div>
   </div>
@@ -2070,6 +2043,7 @@ async function initData() {
   loadSubstack();
   loadSleeperTrending();
   renderInjuryWatch();
+  renderHeroSidebar();
 
   // Load data freshness metadata
   try {
@@ -2115,6 +2089,7 @@ function switchPage(page) {
   document.getElementById('page-' + page).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.dataset.page === page));
   window.scrollTo(0, 0);
+  if (page !== 'article' && window.location.hash) history.replaceState(null, '', window.location.pathname);
   if (page === 'players') renderPlayersTable();
   if (page === 'medicals') { renderMedicals(); renderInjuryTypeGrid(); }
 }
@@ -2513,6 +2488,64 @@ function findSleeperPlayer(player) {
     sp.first_name.toLowerCase() === firstName &&
     sp.position === player.pos
   ) || null;
+}
+
+// ===== DYNAMIC HERO SIDEBAR =====
+function renderHeroSidebar() {
+  const container = document.getElementById('heroSidebarStories');
+  if (!container) return;
+
+  const stories = [];
+
+  // Pull from articles (published first, then drafts)
+  const articleList = Object.values(articlesDB);
+  articleList.forEach(a => {
+    stories.push({
+      title: a.title,
+      tag: a.tag,
+      tagClass: a.tagClass,
+      meta: `By <span>${a.author || 'Adi'}</span> · ${a.readTime || ''}`,
+      onclick: `openArticle('${a.slug}')`
+    });
+  });
+
+  // Fill remaining slots with top medical profiles (highest impact, non-healthy)
+  if (stories.length < 5) {
+    const medWatch = Object.entries(medicalDB)
+      .map(([id, med]) => {
+        const player = playersDB.find(p => p.id === id);
+        if (!player) return null;
+        const maxImpact = Math.max(...med.injuries.map(i => i.impact));
+        const topInjury = med.injuries[0];
+        return { id, player, topInjury, maxImpact, isNotHealthy: player.statusClass !== 'status-healthy' };
+      })
+      .filter(Boolean)
+      .sort((a, b) => {
+        if (a.isNotHealthy !== b.isNotHealthy) return a.isNotHealthy ? -1 : 1;
+        return b.maxImpact - a.maxImpact;
+      });
+
+    for (const m of medWatch) {
+      if (stories.length >= 5) break;
+      const shortInjury = m.topInjury.title.split('—')[0].split('(')[0].trim();
+      stories.push({
+        title: `${m.player.name}: ${shortInjury} — Medical Profile`,
+        tag: 'Injury Intel',
+        tagClass: 'tag-injury',
+        meta: `${m.player.pos} · ${m.player.team} · Impact: ${m.maxImpact}%`,
+        onclick: `openProfile('${m.id}')`
+      });
+    }
+  }
+
+  container.innerHTML = stories.slice(0, 5).map((s, i) => `
+    <div class="sidebar-story" onclick="${s.onclick}" style="cursor:pointer;">
+      <span class="sidebar-story-num">${String(i + 1).padStart(2, '0')}</span>
+      <div class="sidebar-story-tag ${s.tagClass}">${s.tag}</div>
+      <h3>${s.title}</h3>
+      <div class="sidebar-story-meta">${s.meta}</div>
+    </div>
+  `).join('');
 }
 
 // ===== DYNAMIC INJURY WATCH SIDEBAR =====
