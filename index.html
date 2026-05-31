@@ -1619,53 +1619,8 @@ a { color: inherit; text-decoration: none; }
           <span>Injury Watch</span>
           <span class="view-all" onclick="switchPage('medicals')">View all</span>
         </div>
-        <div class="player-quick" onclick="openProfile('nabers')">
-          <div class="player-initials" style="background:linear-gradient(135deg,#1e3a5f,#2563eb);">MN</div>
-          <div class="player-quick-info">
-            <div class="player-quick-name">Malik Nabers</div>
-            <div class="player-quick-detail">WR · NYG · ACL/Meniscus</div>
-          </div>
-          <span class="player-quick-status status-out">Rehab</span>
-        </div>
-        <div class="player-quick" onclick="openProfile('collins')">
-          <div class="player-initials" style="background:linear-gradient(135deg,#03202f,#008c96);">NC</div>
-          <div class="player-quick-info">
-            <div class="player-quick-name">Nico Collins</div>
-            <div class="player-quick-detail">WR · HOU · Concussion Hx</div>
-          </div>
-          <span class="player-quick-status status-quest">Monitor</span>
-        </div>
-        <div class="player-quick" onclick="openProfile('allen')">
-          <div class="player-initials" style="background:linear-gradient(135deg,#00338d,#c60c30);">JA</div>
-          <div class="player-quick-info">
-            <div class="player-quick-name">Josh Allen</div>
-            <div class="player-quick-detail">QB · BUF · Elbow</div>
-          </div>
-          <span class="player-quick-status status-healthy">Cleared</span>
-        </div>
-        <div class="player-quick" onclick="openProfile('jackson')">
-          <div class="player-initials" style="background:linear-gradient(135deg,#241773,#000);">LJ</div>
-          <div class="player-quick-info">
-            <div class="player-quick-name">Lamar Jackson</div>
-            <div class="player-quick-detail">QB · BAL · Knee</div>
-          </div>
-          <span class="player-quick-status status-healthy">Full Go</span>
-        </div>
-        <div class="player-quick" onclick="openProfile('cmc')">
-          <div class="player-initials" style="background:linear-gradient(135deg,#aa0000,#b3995d);">CM</div>
-          <div class="player-quick-info">
-            <div class="player-quick-name">Christian McCaffrey</div>
-            <div class="player-quick-detail">RB · SF · Achilles/PCL Hx</div>
-          </div>
-          <span class="player-quick-status status-quest">Monitor</span>
-        </div>
-        <div class="player-quick" onclick="openProfile('jefferson')">
-          <div class="player-initials" style="background:linear-gradient(135deg,#4f2683,#ffc62f);">JJ</div>
-          <div class="player-quick-info">
-            <div class="player-quick-name">Justin Jefferson</div>
-            <div class="player-quick-detail">WR · MIN · Hamstring Hx</div>
-          </div>
-          <span class="player-quick-status status-quest">Monitor</span>
+        <div id="injuryWatchSidebar">
+          <p style="font-size:12px;color:var(--text-muted);font-family:var(--mono);">Loading...</p>
         </div>
       </div>
 
@@ -2114,6 +2069,7 @@ async function initData() {
   loadESPNNews();
   loadSubstack();
   loadSleeperTrending();
+  renderInjuryWatch();
 
   // Load data freshness metadata
   try {
@@ -2537,6 +2493,41 @@ function findSleeperPlayer(player) {
     sp.first_name.toLowerCase() === firstName &&
     sp.position === player.pos
   ) || null;
+}
+
+// ===== DYNAMIC INJURY WATCH SIDEBAR =====
+function renderInjuryWatch() {
+  const container = document.getElementById('injuryWatchSidebar');
+  if (!container || Object.keys(medicalDB).length === 0) return;
+
+  // Sort players by top injury impact, show non-healthy players first
+  const watchList = Object.entries(medicalDB)
+    .map(([id, med]) => {
+      const player = playersDB.find(p => p.id === id);
+      if (!player) return null;
+      const maxImpact = Math.max(...med.injuries.map(i => i.impact));
+      const topInjury = med.injuries[0];
+      const isNotHealthy = player.statusClass !== 'status-healthy';
+      return { id, player, med, maxImpact, topInjury, isNotHealthy };
+    })
+    .filter(Boolean)
+    .sort((a, b) => {
+      if (a.isNotHealthy !== b.isNotHealthy) return a.isNotHealthy ? -1 : 1;
+      return b.maxImpact - a.maxImpact;
+    })
+    .slice(0, 6);
+
+  container.innerHTML = watchList.map(({ id, player, topInjury }) => {
+    const shortInjury = topInjury.title.split('—')[0].split('(')[0].trim();
+    return `<div class="player-quick" onclick="openProfile('${id}')">
+      <div class="player-initials" style="background:${player.color};">${player.initials}</div>
+      <div class="player-quick-info">
+        <div class="player-quick-name">${player.name}</div>
+        <div class="player-quick-detail">${player.pos} · ${player.team} · ${shortInjury}</div>
+      </div>
+      <span class="player-quick-status ${player.statusClass}">${player.status.split('(')[0].trim()}</span>
+    </div>`;
+  }).join('');
 }
 
 // ===== INJURY IMPACT TOOL =====
