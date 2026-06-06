@@ -685,6 +685,12 @@ a { color: inherit; text-decoration: none; }
   color: white;
 }
 
+.player-headshot {
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
 .player-quick-info { flex: 1; min-width: 0; }
 .player-quick-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .player-quick-detail { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
@@ -998,6 +1004,13 @@ a { color: inherit; text-decoration: none; }
   font-weight: 700;
   font-size: 16px;
   color: white;
+  overflow: hidden;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .profile-name-block h2 { font-family: var(--serif); font-size: 22px; font-weight: 700; }
@@ -2038,6 +2051,7 @@ async function initData() {
   if (injuries) injuryResearch = injuries;
 
   // Initialize UI after data loads
+  await loadSleeperPlayerDB();
   renderTicker('overall');
   loadESPNNews();
   loadSubstack();
@@ -2104,7 +2118,7 @@ function renderPlayersTable(search = '') {
   if (search) filtered = filtered.filter(p => (p.name + p.team + p.pos).toLowerCase().includes(search.toLowerCase()));
   tbody.innerHTML = filtered.map(p => `
     <tr onclick="openProfile('${p.id}')">
-      <td><div class="player-cell"><div class="player-initials" style="background:${p.color};">${p.initials}</div><div><div class="player-cell-name">${p.name}</div></div></div></td>
+      <td><div class="player-cell">${renderAvatar(p, 36, 12)}<div><div class="player-cell-name">${p.name}</div></div></div></td>
       <td><span style="font-family:var(--mono);font-size:12px;color:var(--text-muted);">${p.pos}</span></td>
       <td>${p.team}</td>
       <td>${p.age}</td>
@@ -2140,7 +2154,7 @@ function renderMedicals(search = '') {
       const topInj = player.injuries[0];
       html += `<div class="medical-card" style="cursor:pointer;transition:background 0.2s;" onclick="document.getElementById('medicalSearchInput').value='${player.name}';filterMedicals('${player.name}');" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background=''">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-          <div class="player-initials" style="background:${player.color};width:40px;height:40px;font-size:12px;">${player.initials}</div>
+          ${renderAvatar(player, 40, 12)}
           <div>
             <div style="font-weight:600;font-size:14px;">${player.name}</div>
             <div style="font-size:11px;color:var(--text-muted);">${player.team}</div>
@@ -2162,7 +2176,7 @@ function renderMedicals(search = '') {
       const injCount = player.injuries.length;
       const topSev = player.injuries.reduce((max, i) => i.impact > max.impact ? i : max, player.injuries[0]);
       html += `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:background 0.2s;" onclick="document.getElementById('medicalSearchInput').value='${player.name}';filterMedicals('${player.name}');" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background='var(--bg-card)'">
-        <div class="player-initials" style="background:${player.color};width:34px;height:34px;font-size:11px;">${player.initials}</div>
+        ${renderAvatar(player, 34, 11)}
         <div style="flex:1;min-width:0;">
           <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${player.name}</div>
           <div style="font-size:11px;color:var(--text-muted);">${injCount} record${injCount !== 1 ? 's' : ''}</div>
@@ -2188,7 +2202,7 @@ function renderMedicals(search = '') {
     results.forEach(([id, player]) => {
       html += `<div style="margin-bottom:40px;">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;cursor:pointer;" onclick="openProfile('${id}')">
-          <div class="player-initials" style="background:${player.color};width:48px;height:48px;font-size:15px;">${player.initials}</div>
+          ${renderAvatar(player, 48, 15)}
           <div style="flex:1;">
             <div style="font-family:var(--serif);font-size:24px;font-weight:600;">${player.name}</div>
             <div style="font-size:13px;color:var(--text-secondary);">${player.team}</div>
@@ -2227,8 +2241,16 @@ function openProfile(id) {
   if (!player) return;
   currentProfileId = id;
 
-  document.getElementById('profileAvatar').style.background = player.color;
-  document.getElementById('profileAvatar').textContent = player.initials;
+  const avatarEl = document.getElementById('profileAvatar');
+  const hsUrl = getHeadshotUrl(player);
+  if (hsUrl) {
+    avatarEl.style.background = player.color;
+    avatarEl.innerHTML = `<img src="${hsUrl}" alt="${player.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.remove();this.parentElement.textContent='${player.initials}';">`;
+  } else {
+    avatarEl.style.background = player.color;
+    avatarEl.innerHTML = '';
+    avatarEl.textContent = player.initials;
+  }
   document.getElementById('profileName').textContent = player.name;
   document.getElementById('profileTeamLine').innerHTML = `${player.pos} · ${player.team} · <span>${player.fRank}</span>${player.experience ? ' · ' + player.experience : ''}`;
 
@@ -2518,6 +2540,23 @@ function findSleeperPlayer(player) {
   ) || null;
 }
 
+// ===== HEADSHOTS (via Sleeper CDN) =====
+function getHeadshotUrl(player) {
+  const sp = findSleeperPlayer(player);
+  if (!sp) return null;
+  return `https://sleepercdn.com/content/nfl/players/thumb/${sp.player_id}.jpg`;
+}
+
+function renderAvatar(player, size, fontSize) {
+  size = size || 36;
+  fontSize = fontSize || 12;
+  const url = getHeadshotUrl(player);
+  if (url) {
+    return `<img class="player-headshot" src="${url}" alt="${player.name}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${size <= 36 ? 8 : 12}px;" onerror="this.outerHTML='<div class=\\'player-initials\\' style=\\'background:${player.color};width:${size}px;height:${size}px;font-size:${fontSize}px;\\'>${player.initials}</div>'">`;
+  }
+  return `<div class="player-initials" style="background:${player.color};width:${size}px;height:${size}px;font-size:${fontSize}px;">${player.initials}</div>`;
+}
+
 // ===== DYNAMIC HERO SIDEBAR =====
 function renderHeroSidebar() {
   const container = document.getElementById('heroSidebarStories');
@@ -2601,7 +2640,7 @@ function renderInjuryWatch() {
   container.innerHTML = watchList.map(({ id, player, topInjury }) => {
     const shortInjury = topInjury.title.split('—')[0].split('(')[0].trim();
     return `<div class="player-quick" onclick="openProfile('${id}')">
-      <div class="player-initials" style="background:${player.color};">${player.initials}</div>
+      ${renderAvatar(player, 36, 12)}
       <div class="player-quick-info">
         <div class="player-quick-name">${player.name}</div>
         <div class="player-quick-detail">${player.pos} · ${player.team} · ${shortInjury}</div>
@@ -2641,7 +2680,7 @@ function showInjuryDetail(key) {
       };
       const keywords = matchMap[key] || [key];
       if (keywords.some(k => title.includes(k))) {
-        affectedPlayers.push({ id, name: player.name, team: player.team, injury: injury.title, severity: injury.severity, severityLabel: injury.severityLabel, initials: player.initials, color: player.color });
+        affectedPlayers.push({ id, name: player.name, pos: player.pos, team: player.team, injury: injury.title, severity: injury.severity, severityLabel: injury.severityLabel, initials: player.initials, color: player.color });
       }
     });
   });
@@ -2698,7 +2737,7 @@ function showInjuryDetail(key) {
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;">
           ${affectedPlayers.map(p => `
             <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:background 0.2s;" onclick="openProfile('${p.id}')" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background='var(--bg-card)'">
-              <div class="player-initials" style="background:${p.color};width:34px;height:34px;font-size:11px;">${p.initials}</div>
+              ${renderAvatar(p, 34, 11)}
               <div style="flex:1;min-width:0;">
                 <div style="font-weight:600;font-size:13px;">${p.name}</div>
                 <div style="font-size:11px;color:var(--text-muted);">${p.injury}</div>
@@ -2753,7 +2792,7 @@ function searchInjuryPlayer(query) {
 
     return `<div class="medical-card" style="margin-bottom:16px;">
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
-        <div class="player-initials" style="background:${player.color};width:44px;height:44px;font-size:14px;">${player.initials}</div>
+        ${renderAvatar(player, 44, 14)}
         <div style="flex:1;">
           <div style="font-family:var(--serif);font-size:20px;font-weight:600;">${player.name}</div>
           <div style="font-size:12px;color:var(--text-secondary);">${player.team}</div>
