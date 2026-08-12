@@ -2018,6 +2018,7 @@ let playersDB = [];
 let medicalDB = {};
 let articlesDB = {};
 let injuryResearch = {};
+let playerStats = {};
 
 const DATA_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? '.' : (window.location.origin + window.location.pathname.replace(/\/[^/]*$/, ''));
@@ -2034,17 +2035,19 @@ async function loadJSON(path) {
 }
 
 async function initData() {
-  const [rankings, players, medicals, articles, injuries] = await Promise.all([
+  const [rankings, players, medicals, articles, injuries, statsData] = await Promise.all([
     loadJSON('data/rankings.json'),
     loadJSON('data/players.json'),
     loadJSON('data/medicals.json'),
     loadJSON('data/articles.json'),
-    loadJSON('data/injury-research.json')
+    loadJSON('data/injury-research.json'),
+    loadJSON('data/stats.json')
   ]);
 
   if (rankings) rankingsData = rankings;
   if (players) playersDB = players;
   if (medicals) medicalDB = medicals;
+  if (statsData) playerStats = statsData;
   if (articles && articles.articles) {
     articles.articles.forEach(a => { articlesDB[a.slug] = a; });
   }
@@ -2449,9 +2452,156 @@ function renderProfileTab(tab) {
   }
 
   else if (tab === 'stats') {
-    if (player.seasonStats && player.seasonStats.length > 0) {
-      const isQB = player.pos === 'QB';
-      const isRB = player.pos === 'RB';
+    const ps = playerStats[player.id];
+    const isQB = player.pos === 'QB';
+    const isRB = player.pos === 'RB';
+
+    if (ps && Object.keys(ps.seasons).length > 0) {
+      // ===== SEASON TOTALS TABLE =====
+      html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Season Totals</div>`;
+      html += `<div style="overflow-x:auto;margin-bottom:20px;-webkit-overflow-scrolling:touch;"><table style="width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap;">`;
+
+      if (isQB) {
+        html += '<thead><tr style="border-bottom:2px solid var(--border);">';
+        ['Year','G','Cmp/Att','Cmp%','Pass Yds','TD','INT','YPA','Sack%','Rush','RuYds','RuTD','EPA','FPPG'].forEach(h =>
+          html += `<th style="padding:8px 6px;text-align:left;font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;">${h}</th>`);
+        html += '</tr></thead><tbody>';
+        Object.values(ps.seasons).sort((a,b) => a.season - b.season).forEach(s => {
+          html += `<tr style="border-bottom:1px solid var(--border-subtle);">
+            <td style="padding:8px 6px;font-weight:600;color:var(--gold);font-family:var(--mono);">${s.season}</td>
+            <td style="padding:8px 6px;">${s.games}</td>
+            <td style="padding:8px 6px;">${s.completions}/${s.attempts}</td>
+            <td style="padding:8px 6px;font-weight:600;">${s.compPct}%</td>
+            <td style="padding:8px 6px;font-weight:600;">${s.passYds.toLocaleString()}</td>
+            <td style="padding:8px 6px;color:var(--green);">${s.passTD}</td>
+            <td style="padding:8px 6px;color:var(--red);">${s.int}</td>
+            <td style="padding:8px 6px;">${s.ypa}</td>
+            <td style="padding:8px 6px;">${s.sackPct}%</td>
+            <td style="padding:8px 6px;">${s.carries}</td>
+            <td style="padding:8px 6px;">${s.rushYds}</td>
+            <td style="padding:8px 6px;color:var(--green);">${s.rushTD}</td>
+            <td style="padding:8px 6px;color:${s.passEPA > 0 ? 'var(--green)' : 'var(--red)'};">${s.passEPA > 0 ? '+' : ''}${s.passEPA}</td>
+            <td style="padding:8px 6px;font-weight:600;color:var(--gold);">${s.fantasyPPG}</td>
+          </tr>`;
+        });
+      } else if (isRB) {
+        html += '<thead><tr style="border-bottom:2px solid var(--border);">';
+        ['Year','G','Car','RuYds','YPC','RuTD','Tgt','Rec','RecYds','RecTD','Catch%','TgtSh%','FPPG'].forEach(h =>
+          html += `<th style="padding:8px 6px;text-align:left;font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;">${h}</th>`);
+        html += '</tr></thead><tbody>';
+        Object.values(ps.seasons).sort((a,b) => a.season - b.season).forEach(s => {
+          html += `<tr style="border-bottom:1px solid var(--border-subtle);">
+            <td style="padding:8px 6px;font-weight:600;color:var(--gold);font-family:var(--mono);">${s.season}</td>
+            <td style="padding:8px 6px;">${s.games}</td>
+            <td style="padding:8px 6px;">${s.carries}</td>
+            <td style="padding:8px 6px;font-weight:600;">${s.rushYds.toLocaleString()}</td>
+            <td style="padding:8px 6px;">${s.ypc}</td>
+            <td style="padding:8px 6px;color:var(--green);">${s.rushTD}</td>
+            <td style="padding:8px 6px;">${s.targets}</td>
+            <td style="padding:8px 6px;">${s.rec}</td>
+            <td style="padding:8px 6px;">${s.recYds}</td>
+            <td style="padding:8px 6px;color:var(--green);">${s.recTD}</td>
+            <td style="padding:8px 6px;">${s.catchPct}%</td>
+            <td style="padding:8px 6px;">${s.tgtShare}%</td>
+            <td style="padding:8px 6px;font-weight:600;color:var(--gold);">${s.fantasyPPG}</td>
+          </tr>`;
+        });
+      } else { // WR / TE
+        html += '<thead><tr style="border-bottom:2px solid var(--border);">';
+        ['Year','G','Tgt','Rec','Yds','TD','Catch%','aDOT','YAC/R','TgtSh%','AirYd%','FPPG'].forEach(h =>
+          html += `<th style="padding:8px 6px;text-align:left;font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;">${h}</th>`);
+        html += '</tr></thead><tbody>';
+        Object.values(ps.seasons).sort((a,b) => a.season - b.season).forEach(s => {
+          html += `<tr style="border-bottom:1px solid var(--border-subtle);">
+            <td style="padding:8px 6px;font-weight:600;color:var(--gold);font-family:var(--mono);">${s.season}</td>
+            <td style="padding:8px 6px;">${s.games}</td>
+            <td style="padding:8px 6px;">${s.targets}</td>
+            <td style="padding:8px 6px;">${s.rec}</td>
+            <td style="padding:8px 6px;font-weight:600;">${s.recYds.toLocaleString()}</td>
+            <td style="padding:8px 6px;color:var(--green);">${s.recTD}</td>
+            <td style="padding:8px 6px;">${s.catchPct}%</td>
+            <td style="padding:8px 6px;">${s.aDOT}</td>
+            <td style="padding:8px 6px;">${s.yacPerRec}</td>
+            <td style="padding:8px 6px;">${s.tgtShare}%</td>
+            <td style="padding:8px 6px;">${s.airYardShare}%</td>
+            <td style="padding:8px 6px;font-weight:600;color:var(--gold);">${s.fantasyPPG}</td>
+          </tr>`;
+        });
+      }
+      html += '</tbody></table></div>';
+
+      // ===== WEEKLY GAME LOG (most recent season) =====
+      const latestSeason = Object.values(ps.seasons).sort((a,b) => b.season - a.season)[0];
+      if (latestSeason && latestSeason.weeklyLog && latestSeason.weeklyLog.length > 0) {
+        html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">${latestSeason.season} Game Log</div>`;
+        html += `<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;"><table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap;">`;
+
+        if (isQB) {
+          html += '<thead><tr style="border-bottom:2px solid var(--border);">';
+          ['Wk','Opp','C/A','PaYds','PaTD','INT','RuYds','RuTD','EPA','FPTS'].forEach(h =>
+            html += `<th style="padding:6px 5px;text-align:left;font-family:var(--mono);font-size:8px;color:var(--text-muted);text-transform:uppercase;">${h}</th>`);
+          html += '</tr></thead><tbody>';
+          latestSeason.weeklyLog.forEach(w => {
+            html += `<tr style="border-bottom:1px solid var(--border-subtle);">
+              <td style="padding:6px 5px;font-family:var(--mono);font-size:11px;">${w.week}</td>
+              <td style="padding:6px 5px;font-weight:600;">${w.opp}</td>
+              <td style="padding:6px 5px;">${w.cmp}/${w.att}</td>
+              <td style="padding:6px 5px;font-weight:600;">${w.passYds}</td>
+              <td style="padding:6px 5px;color:var(--green);">${w.passTD}</td>
+              <td style="padding:6px 5px;color:${w.int > 0 ? 'var(--red)' : 'var(--text-muted)'};">${w.int}</td>
+              <td style="padding:6px 5px;">${w.rushYds}</td>
+              <td style="padding:6px 5px;color:var(--green);">${w.rushTD}</td>
+              <td style="padding:6px 5px;color:${w.passEPA > 0 ? 'var(--green)' : 'var(--red)'};">${w.passEPA > 0 ? '+' : ''}${w.passEPA}</td>
+              <td style="padding:6px 5px;font-weight:600;color:var(--gold);">${w.fpts}</td>
+            </tr>`;
+          });
+        } else if (isRB) {
+          html += '<thead><tr style="border-bottom:2px solid var(--border);">';
+          ['Wk','Opp','Car','RuYds','RuTD','Tgt','Rec','RecYds','RecTD','FPTS'].forEach(h =>
+            html += `<th style="padding:6px 5px;text-align:left;font-family:var(--mono);font-size:8px;color:var(--text-muted);text-transform:uppercase;">${h}</th>`);
+          html += '</tr></thead><tbody>';
+          latestSeason.weeklyLog.forEach(w => {
+            html += `<tr style="border-bottom:1px solid var(--border-subtle);">
+              <td style="padding:6px 5px;font-family:var(--mono);font-size:11px;">${w.week}</td>
+              <td style="padding:6px 5px;font-weight:600;">${w.opp}</td>
+              <td style="padding:6px 5px;">${w.car}</td>
+              <td style="padding:6px 5px;font-weight:600;">${w.rushYds}</td>
+              <td style="padding:6px 5px;color:var(--green);">${w.rushTD}</td>
+              <td style="padding:6px 5px;">${w.tgt}</td>
+              <td style="padding:6px 5px;">${w.rec}</td>
+              <td style="padding:6px 5px;">${w.recYds}</td>
+              <td style="padding:6px 5px;color:var(--green);">${w.recTD}</td>
+              <td style="padding:6px 5px;font-weight:600;color:var(--gold);">${w.fpts}</td>
+            </tr>`;
+          });
+        } else { // WR / TE
+          html += '<thead><tr style="border-bottom:2px solid var(--border);">';
+          ['Wk','Opp','Tgt','Rec','Yds','TD','aDOT','YAC','EPA','FPTS'].forEach(h =>
+            html += `<th style="padding:6px 5px;text-align:left;font-family:var(--mono);font-size:8px;color:var(--text-muted);text-transform:uppercase;">${h}</th>`);
+          html += '</tr></thead><tbody>';
+          latestSeason.weeklyLog.forEach(w => {
+            html += `<tr style="border-bottom:1px solid var(--border-subtle);">
+              <td style="padding:6px 5px;font-family:var(--mono);font-size:11px;">${w.week}</td>
+              <td style="padding:6px 5px;font-weight:600;">${w.opp}</td>
+              <td style="padding:6px 5px;">${w.tgt}</td>
+              <td style="padding:6px 5px;">${w.rec}</td>
+              <td style="padding:6px 5px;font-weight:600;">${w.recYds}</td>
+              <td style="padding:6px 5px;color:var(--green);">${w.recTD}</td>
+              <td style="padding:6px 5px;">${w.aDOT}</td>
+              <td style="padding:6px 5px;">${w.yac || '—'}</td>
+              <td style="padding:6px 5px;color:${w.recEPA > 0 ? 'var(--green)' : 'var(--red)'};">${w.recEPA > 0 ? '+' : ''}${w.recEPA}</td>
+              <td style="padding:6px 5px;font-weight:600;color:var(--gold);">${w.fpts}</td>
+            </tr>`;
+          });
+        }
+        html += '</tbody></table></div>';
+      }
+
+      html += `<div style="font-size:11px;color:var(--text-muted);font-style:italic;margin-top:12px;">Source: nflverse · REG season only · PPR scoring</div>`;
+    }
+
+    // Fallback to hand-coded seasonStats if no nflverse data
+    else if (player.seasonStats && player.seasonStats.length > 0) {
       html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Season-by-Season</div>`;
       html += `<div style="overflow-x:auto;margin-bottom:20px;"><table style="width:100%;border-collapse:collapse;font-size:13px;">`;
       if (isQB) {
@@ -2477,7 +2627,9 @@ function renderProfileTab(tab) {
         });
       }
       html += '</tbody></table></div>';
-    } else {
+    }
+
+    else {
       html = `<div class="medical-card"><div class="medical-detail">Season stats are being compiled for ${player.name}. Check back soon.</div></div>`;
     }
   }
