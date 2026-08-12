@@ -221,6 +221,144 @@ function buildWeeklyLog(weeks, pos) {
 
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+// ===== VOLATILITY =====
+// Everything below measures WEEK-TO-WEEK consistency: how reliable a player was
+// start-to-start. This is NOT the same object as a season-long outcome band —
+// weekly noise partially cancels over 17 games. Kept deliberately separate from
+// projection ranges so the two never get conflated.
+
+const FANTASY_POS = ['QB', 'RB', 'WR', 'TE'];
+
+// Boom = finished the week as a top-N option at the position, i.e. a week where
+// starting him won you the slot. Bust = fell outside the range of players a
+// 12-team league would realistically start there.
+// Starter counts assume 12-team, 1QB, ~2.5 RB / 3 WR / 1 TE.
+const THRESHOLDS = {
+  QB: { boom: 6, bust: 18 },   // top-6 week vs outside QB18
+  RB: { boom: 12, bust: 36 },  // RB1 week vs outside RB3 range
+  WR: { boom: 12, bust: 42 },  // WR1 week vs outside WR3.5 range
+  TE: { boom: 6, bust: 18 }    // top-6 week vs outside TE18
+};
+
+// A distribution built from a handful of games is noise wearing a number's
+// clothes. Below this, we report nothing rather than something false.
+const MIN_GAMES_FOR_VOLATILITY = 8;
+
+function buildWeeklyRanks(rows, season, out) {
+  if (!out[season]) out[season] = {};
+  for (const row of rows) {
+    if (row.season_type !== 'REG') continue;
+    if (!FANTASY_POS.includes(row.position)) continue;
+    const pts = row.fantasy_points_ppr;
+    if (pts === null || pts === undefined) continue;
+    // Only count players who were actually involved — a healthy scratch at 0
+    // points would otherwise inflate everyone's rank.
+    const touched = (row.attempts > 0 || row.carries > 0 || row.targets > 0);
+    if (!touched) continue;
+
+    const wk = row.week;
+    if (!out[season][wk]) out[season][wk] = {};
+    if (!out[season][wk][row.position]) out[season][wk][row.position] = [];
+    out[season][wk][row.position].push(pts);
+  }
+}
+
+function finalizeWeeklyRanks(out) {
+  for (const season of Object.keys(out)) {
+    for (const wk of Object.keys(out[season])) {
+      for (const pos of Object.keys(out[season][wk])) {
+        out[season][wk][pos].sort((a, b) => b - a);
+      }
+    }
+  }
+}
+
+// Rank of `pts` within that week's position leaderboard (1 = best).
+function weeklyRankOf(weeklyRanks, season, week, pos, pts) {
+  const board = weeklyRanks[season] && weeklyRanks[season][week] && weeklyRanks[season][week][pos];
+  if (!board || !board.length) return null;
+  let rank = 1;
+  for (const v of board) {
+    if (v > pts) rank++;
+    else break;
+  }
+  return rank;
+}
+
+// Linear-interpolated percentile, matching the usual "type 7" definition.
+function percentile(sorted, p) {
+  if (!sorted.length) return null;
+  if (sorted.length === 1) return sorted[0];
+  const idx = (p / 100) * (sorted.length - 1);
+  const lo = Math.floor(idx), hi = Math.ceil(idx);
+  if (lo === hi) return sorted[lo];
+  return sorted[lo] + (sorted[hi] - sorted[lo]) * (idx - lo);
+}
+
+function computeVolatility(weeklyLog, pos, season, weeklyRanks) {
+  const games = weeklyLog.length;
+  if (games < MIN_GAMES_FOR_VOLATILITY) {
+    return { games, insufficient: true };
+  }
+
+  const pts = weeklyLog.map(w => w.fpts).filter(v => v !== null && v !== undefined);
+  if (pts.length < MIN_GAMES_FOR_VOLATILITY) return { games, insufficient: true };
+
+  const sorted = [...pts].sort((a, b) => a - b);
+  const mean = pts.reduce((a, b) => a + b, 0) / pts.length;
+  const variance = pts.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / pts.length;
+  const sd = Math.sqrt(variance);
+
+  const p10 = percentile(sorted, 10);
+  const p25 = percentile(sorted, 25);
+  const median = percentile(sorted, 50);
+  const p75 = percentile(sorted, 75);
+  const p90 = percentile(sorted, 90);
+
+  // Positional finish each week
+  const th = THRESHOLDS[pos] || THRESHOLDS.WR;
+  let boom = 0, bust = 0, ranked = 0;
+  const ranks = [];
+  for (const w of weeklyLog) {
+    const r = weeklyRankOf(weeklyRanks, season, w.week, pos, w.fpts);
+    if (r === null) continue;
+    ranked++;
+    ranks.push(r);
+    if (r <= th.boom) boom++;
+    if (r > th.bust) bust++;
+  }
+
+  // Is the upside tail actually longer than the downside tail? This is the
+  // asymmetry question directly — measured, not assumed.
+  const upGap = p90 - median;
+  const downGap = median - p10;
+  const skewRatio = downGap > 0 ? upGap / downGap : null;
+
+  return {
+    games,
+    mean: round(mean, 1),
+    median: round(median, 1),
+    sd: round(sd, 1),
+    // Coefficient of variation: spread relative to level, so a 20-PPG player
+    // and a 10-PPG player can be compared on consistency.
+    cv: mean > 0 ? round(sd / mean, 2) : null,
+    p10: round(p10, 1),
+    p25: round(p25, 1),
+    p75: round(p75, 1),
+    p90: round(p90, 1),
+    boomRate: ranked ? round((boom / ranked) * 100, 0) : null,
+    bustRate: ranked ? round((bust / ranked) * 100, 0) : null,
+    boomThreshold: th.boom,
+    bustThreshold: th.bust,
+    bestRank: ranks.length ? Math.min(...ranks) : null,
+    worstRank: ranks.length ? Math.max(...ranks) : null,
+    medianRank: ranks.length ? Math.round(percentile([...ranks].sort((a, b) => a - b), 50)) : null,
+    upGap: round(upGap, 1),
+    downGap: round(downGap, 1),
+    skewRatio: skewRatio === null ? null : round(skewRatio, 2)
+  };
+}
+
 // ===== MAIN =====
 async function main() {
   log('=== Stats Pipeline Start ===');
@@ -229,6 +367,8 @@ async function main() {
 
   // Collect all weekly rows per player across seasons
   const playerWeeks = {}; // { playerId: { 2023: [rows], 2024: [rows] } }
+  // League-wide weekly leaderboards, for positional rank / boom / bust
+  const weeklyRanks = {}; // { season: { week: { pos: [sorted fpts desc] } } }
 
   for (let i = 0; i < SEASONS.length; i++) {
     const season = SEASONS[i];
@@ -250,10 +390,17 @@ async function main() {
         matched++;
       }
       log(`  Matched ${matched} rows to our players`);
+
+      // Build league-wide weekly leaderboards. Boom/bust has to be measured
+      // against everyone who played that week at that position, not against
+      // our 31-player subset — otherwise "top 12" means nothing.
+      buildWeeklyRanks(rows, season, weeklyRanks);
     } catch (e) {
       log(`  ERROR fetching ${season}: ${e.message}`);
     }
   }
+
+  finalizeWeeklyRanks(weeklyRanks);
 
   // Build stats object
   const stats = {};
@@ -269,6 +416,7 @@ async function main() {
       if (agg) {
         agg.season = parseInt(yr);
         agg.weeklyLog = buildWeeklyLog(wks, player.pos);
+        agg.volatility = computeVolatility(agg.weeklyLog, player.pos, parseInt(yr), weeklyRanks);
         seasons[yr] = agg;
       }
     }
@@ -280,6 +428,26 @@ async function main() {
         seasons
       };
     }
+  }
+
+  // Guard: a transient fetch failure must never wipe good data. If this run
+  // produced nothing, or lost a large share of players versus what is already
+  // on disk, keep the existing files and exit non-zero so CI surfaces it.
+  const existingPath = path.join(DATA_DIR, 'stats.json');
+  let existingCount = 0;
+  if (fs.existsSync(existingPath)) {
+    try { existingCount = Object.keys(JSON.parse(fs.readFileSync(existingPath, 'utf8'))).length; }
+    catch (e) { existingCount = 0; }
+  }
+  const newCount = Object.keys(stats).length;
+
+  if (newCount === 0) {
+    log(`ABORT: produced 0 players (${existingCount} already on disk). Keeping existing files.`);
+    process.exit(1);
+  }
+  if (existingCount > 0 && newCount < existingCount * 0.8) {
+    log(`ABORT: produced ${newCount} players vs ${existingCount} on disk — looks like a partial fetch. Keeping existing files.`);
+    process.exit(1);
   }
 
   // Write output — split into two files.

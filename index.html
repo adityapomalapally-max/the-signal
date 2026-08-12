@@ -2602,6 +2602,10 @@ function renderProfileTab(tab) {
       }
       html += '</tbody></table></div>';
 
+      // ===== WEEKLY CONSISTENCY =====
+      const volSeason = Object.values(ps.seasons).sort((a,b) => b.season - a.season)[0];
+      if (volSeason && volSeason.volatility) html += renderVolatility(volSeason.volatility, volSeason.season, player.pos);
+
       // ===== WEEKLY GAME LOG (lazy-loaded — 188KB of logs stay off the init path) =====
       const latestSeason = Object.values(ps.seasons).sort((a,b) => b.season - a.season)[0];
       if (latestSeason) {
@@ -2733,6 +2737,100 @@ function renderAvatar(player, size, fontSize) {
 // Without this, "Ja'Marr Chase" terminates the JS string and the handler dies.
 function jsAttr(str) {
   return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+// ===== WEEKLY CONSISTENCY =====
+// Renders observed week-to-week distribution. This measures start-to-start
+// reliability, which is a DIFFERENT question from a season-long outcome range:
+// weekly noise partially cancels across 17 games. Labelled explicitly so the
+// two never get read as the same thing.
+function renderVolatility(v, season, pos) {
+  if (!v) return '';
+
+  const head = (t) => `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">${t}</div>`;
+
+  if (v.insufficient) {
+    return head(`${season} Weekly Consistency`) +
+      `<div class="medical-card" style="margin-bottom:16px;">
+        <div class="medical-detail">Only ${v.games} game${v.games === 1 ? '' : 's'} on record for ${season}. A distribution built from that few observations would be noise, so nothing is reported here.</div>
+      </div>`;
+  }
+
+  const posLabel = { QB: 'QB', RB: 'RB', WR: 'WR', TE: 'TE' }[pos] || pos;
+
+  // --- Distribution strip: p10 .. p90 with quartile box and median line ---
+  const lo = v.p10, hi = v.p90;
+  const span = (hi - lo) || 1;
+  const at = x => Math.max(0, Math.min(100, ((x - lo) / span) * 100));
+  const boxL = at(v.p25), boxR = at(v.p75), medX = at(v.median), meanX = at(v.mean);
+
+  let h = head(`${season} Weekly Consistency`);
+  h += `<div class="medical-card" style="margin-bottom:8px;padding:20px;">`;
+
+  // Strip
+  h += `<div style="margin-bottom:6px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text-muted);">
+    <span>${v.p10} pts</span><span style="letter-spacing:1px;">WEEKLY PPR RANGE (10th–90th)</span><span>${v.p90} pts</span>
+  </div>`;
+  h += `<div style="position:relative;height:34px;margin-bottom:14px;">
+    <div style="position:absolute;top:15px;left:0;right:0;height:3px;background:var(--border);border-radius:2px;"></div>
+    <div style="position:absolute;top:9px;left:${boxL}%;width:${Math.max(boxR - boxL, 1)}%;height:15px;background:var(--gold-muted);border:1px solid var(--gold);border-radius:3px;" title="Middle half of weeks: ${v.p25} to ${v.p75}"></div>
+    <div style="position:absolute;top:5px;left:${medX}%;width:2px;height:23px;background:var(--gold);" title="Median week: ${v.median}"></div>
+    <div style="position:absolute;top:11px;left:${meanX}%;width:9px;height:9px;margin-left:-4px;border-radius:50%;background:var(--teal);border:2px solid var(--bg-card);" title="Mean: ${v.mean}"></div>
+  </div>`;
+  h += `<div style="display:flex;justify-content:center;gap:18px;flex-wrap:wrap;font-size:11px;color:var(--text-muted);margin-bottom:16px;">
+    <span><span style="display:inline-block;width:2px;height:10px;background:var(--gold);vertical-align:middle;margin-right:5px;"></span>Median ${v.median}</span>
+    <span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--teal);vertical-align:middle;margin-right:5px;"></span>Mean ${v.mean}</span>
+    <span><span style="display:inline-block;width:14px;height:9px;background:var(--gold-muted);border:1px solid var(--gold);vertical-align:middle;margin-right:5px;"></span>Middle 50%</span>
+  </div>`;
+
+  // --- Key figures ---
+  const cvLabel = v.cv === null ? '—'
+    : v.cv < 0.40 ? 'Steady' : v.cv < 0.55 ? 'Typical' : 'Swingy';
+  const cvColor = v.cv === null ? 'var(--text-muted)'
+    : v.cv < 0.40 ? 'var(--green)' : v.cv < 0.55 ? 'var(--gold)' : 'var(--red)';
+
+  const tiles = [
+    { v: v.boomRate === null ? '—' : v.boomRate + '%', l: `Top-${v.boomThreshold} ${posLabel} week`, c: 'var(--green)', t: `Share of games finishing as a top-${v.boomThreshold} ${posLabel} that week, measured against every ${posLabel} who played.` },
+    { v: v.bustRate === null ? '—' : v.bustRate + '%', l: `Outside ${posLabel}${v.bustThreshold}`, c: 'var(--red)', t: `Share of games finishing outside the top ${v.bustThreshold} ${posLabel}s — below what a 12-team league would start.` },
+    { v: v.cv === null ? '—' : v.cv.toFixed(2), l: `Variation · ${cvLabel}`, c: cvColor, t: 'Standard deviation divided by mean. Scale-free, so a 20-PPG and a 10-PPG player can be compared on consistency. Lower = steadier.' },
+    { v: v.medianRank === null ? '—' : posLabel + v.medianRank, l: 'Median weekly finish', c: 'var(--text)', t: `Typical weekly positional finish. Best: ${posLabel}${v.bestRank} · Worst: ${posLabel}${v.worstRank}` }
+  ];
+
+  h += `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:16px;">`;
+  tiles.forEach(t => {
+    h += `<div style="text-align:center;padding:12px 8px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;cursor:help;" title="${t.t.replace(/"/g, '&quot;')}">
+      <div style="font-family:var(--serif);font-size:22px;font-weight:700;color:${t.c};">${t.v}</div>
+      <div style="font-family:var(--mono);font-size:8px;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-top:4px;line-height:1.3;">${t.l}</div>
+    </div>`;
+  });
+  h += `</div>`;
+
+  // --- Asymmetry ---
+  if (v.skewRatio !== null) {
+    const right = v.skewRatio > 1.15, left = v.skewRatio < 0.87;
+    const verdict = right ? 'Upside tail is longer' : left ? 'Downside tail is longer' : 'Roughly symmetric';
+    const vColor = right ? 'var(--green)' : left ? 'var(--red)' : 'var(--text-secondary)';
+    const upPct = Math.round((v.upGap / (v.upGap + v.downGap)) * 100);
+    h += `<div style="border-top:1px solid var(--border);padding-top:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
+        <span style="font-size:12px;color:var(--text-secondary);">Distribution shape</span>
+        <span style="font-size:12px;font-weight:600;color:${vColor};">${verdict}</span>
+      </div>
+      <div style="display:flex;height:8px;border-radius:4px;overflow:hidden;margin-bottom:6px;">
+        <div style="width:${100 - upPct}%;background:var(--red);opacity:0.55;" title="Median to 10th: ${v.downGap} pts"></div>
+        <div style="width:${upPct}%;background:var(--green);opacity:0.55;" title="Median to 90th: ${v.upGap} pts"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text-muted);">
+        <span>−${v.downGap} to floor</span>
+        <span>ratio ${v.skewRatio}×</span>
+        <span>+${v.upGap} to ceiling</span>
+      </div>
+    </div>`;
+  }
+
+  h += `</div>`;
+  h += `<p style="font-size:11px;color:var(--text-muted);font-style:italic;margin:0 0 20px;">Week-to-week spread across ${v.games} games — this is start-to-start reliability, not a season-long projection range. Weekly swings partly cancel over a full season, so the two are not interchangeable. Ranks measured against every ${posLabel} who touched the ball that week. Source: nflverse, REG season, PPR.</p>`;
+  return h;
 }
 
 // ===== WEEKLY GAME LOGS (lazy) =====
