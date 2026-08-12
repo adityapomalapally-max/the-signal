@@ -4,6 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Signal — NFL Intelligence</title>
+<meta name="description" content="Signal over noise. Research-backed NFL analysis: injury impact database, PlayerProfiler-verified athletic profiles, nflverse stats, and a draft model built on production over combine testing.">
+<meta name="author" content="Aditya Pomalapally">
+<!-- TODO(Adi): add <link rel="canonical"> and <meta property="og:url"> once the
+     production domain is settled. A canonical pointing at the wrong host tells
+     search engines the real page is a duplicate, so it is left out deliberately
+     rather than guessed. Same for og:image — needs a real 1200x630 asset. -->
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Signal">
+<meta property="og:title" content="The Signal — NFL Intelligence">
+<meta property="og:description" content="Signal over noise. Research-backed NFL analysis: injury impact database, verified athletic profiles, and a draft model built on production over combine testing.">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="The Signal — NFL Intelligence">
+<meta name="twitter:description" content="Signal over noise. Research-backed NFL analysis, injury impact data, and draft modeling.">
+
+<meta name="theme-color" content="#0c0f14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://sleepercdn.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1968,7 +1988,7 @@ a { color: inherit; text-decoration: none; }
 </div>
 
 <!-- ===== PLAYER PROFILE MODAL ===== -->
-<div class="profile-overlay" id="profileOverlay" onclick="if(event.target===this)closeProfile()">
+<div class="profile-overlay" id="profileOverlay" role="dialog" aria-modal="true" aria-label="Player profile" onclick="if(event.target===this)closeProfile()">
   <div class="profile-modal">
     <div class="profile-modal-header">
       <div class="profile-player-info">
@@ -1978,7 +1998,7 @@ a { color: inherit; text-decoration: none; }
           <div class="team-line" id="profileTeamLine">WR · New York Giants · <span>#1</span> · 2nd Year</div>
         </div>
       </div>
-      <button class="profile-close" onclick="closeProfile()">✕</button>
+      <button class="profile-close" onclick="closeProfile()" aria-label="Close player profile">✕</button>
     </div>
     <div class="profile-tabs">
       <div class="profile-tab active" onclick="switchProfileTab('medical', this)">Medical</div>
@@ -2076,13 +2096,24 @@ async function initData() {
   if (injuries) injuryResearch = injuries;
 
   // Initialize UI after data loads
-  await loadSleeperPlayerDB();
   renderTicker('overall');
   loadESPNNews();
   loadSubstack();
   loadSleeperTrending();
   renderInjuryWatch();
   renderHeroSidebar();
+
+  // The Sleeper player DB is ~5MB. Headshots normally come from the sleeperId
+  // baked into players.json by the daily Action, so we only pay for this fetch
+  // when some player is missing an ID — and never block first paint on it.
+  if (playersDB.some(p => !p.sleeperId)) {
+    loadSleeperPlayerDB().then(() => {
+      // Re-render anything that draws an avatar, now that IDs resolve.
+      renderInjuryWatch();
+      if (document.getElementById('page-players').classList.contains('active')) renderPlayersTable();
+      if (document.getElementById('page-compare').classList.contains('active')) renderComparePage();
+    });
+  }
 
   // Load data freshness metadata
   try {
@@ -2178,7 +2209,7 @@ function renderMedicals(search = '') {
 
     trending.forEach(([id, player]) => {
       const topInj = player.injuries[0];
-      html += `<div class="medical-card" style="cursor:pointer;transition:background 0.2s;" onclick="document.getElementById('medicalSearchInput').value='${player.name}';filterMedicals('${player.name}');" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background=''">
+      html += `<div class="medical-card" style="cursor:pointer;transition:background 0.2s;" onclick="document.getElementById('medicalSearchInput').value='${jsAttr(player.name)}';filterMedicals('${jsAttr(player.name)}');" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background=''">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
           ${renderAvatar(player, 40, 12)}
           <div>
@@ -2201,7 +2232,7 @@ function renderMedicals(search = '') {
     allPlayers.forEach(([id, player]) => {
       const injCount = player.injuries.length;
       const topSev = player.injuries.reduce((max, i) => i.impact > max.impact ? i : max, player.injuries[0]);
-      html += `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:background 0.2s;" onclick="document.getElementById('medicalSearchInput').value='${player.name}';filterMedicals('${player.name}');" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background='var(--bg-card)'">
+      html += `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:background 0.2s;" onclick="document.getElementById('medicalSearchInput').value='${jsAttr(player.name)}';filterMedicals('${jsAttr(player.name)}');" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background='var(--bg-card)'">
         ${renderAvatar(player, 34, 11)}
         <div style="flex:1;min-width:0;">
           <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${player.name}</div>
@@ -2571,71 +2602,11 @@ function renderProfileTab(tab) {
       }
       html += '</tbody></table></div>';
 
-      // ===== WEEKLY GAME LOG (most recent season) =====
+      // ===== WEEKLY GAME LOG (lazy-loaded — 188KB of logs stay off the init path) =====
       const latestSeason = Object.values(ps.seasons).sort((a,b) => b.season - a.season)[0];
-      if (latestSeason && latestSeason.weeklyLog && latestSeason.weeklyLog.length > 0) {
-        html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">${latestSeason.season} Game Log</div>`;
-        html += `<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;"><table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap;">`;
-
-        if (isQB) {
-          html += '<thead><tr style="border-bottom:2px solid var(--border);">';
-          ['Wk','Opp','C/A','PaYds','PaTD','INT','RuYds','RuTD','EPA','FPTS'].forEach(h =>
-            html += `<th style="padding:6px 5px;text-align:left;font-family:var(--mono);font-size:8px;color:var(--text-muted);text-transform:uppercase;">${h}</th>`);
-          html += '</tr></thead><tbody>';
-          latestSeason.weeklyLog.forEach(w => {
-            html += `<tr style="border-bottom:1px solid var(--border-subtle);">
-              <td style="padding:6px 5px;font-family:var(--mono);font-size:11px;">${w.week}</td>
-              <td style="padding:6px 5px;font-weight:600;">${w.opp}</td>
-              <td style="padding:6px 5px;">${w.cmp}/${w.att}</td>
-              <td style="padding:6px 5px;font-weight:600;">${w.passYds}</td>
-              <td style="padding:6px 5px;color:var(--green);">${w.passTD}</td>
-              <td style="padding:6px 5px;color:${w.int > 0 ? 'var(--red)' : 'var(--text-muted)'};">${w.int}</td>
-              <td style="padding:6px 5px;">${w.rushYds}</td>
-              <td style="padding:6px 5px;color:var(--green);">${w.rushTD}</td>
-              <td style="padding:6px 5px;color:${w.passEPA > 0 ? 'var(--green)' : 'var(--red)'};">${w.passEPA > 0 ? '+' : ''}${w.passEPA}</td>
-              <td style="padding:6px 5px;font-weight:600;color:var(--gold);">${w.fpts}</td>
-            </tr>`;
-          });
-        } else if (isRB) {
-          html += '<thead><tr style="border-bottom:2px solid var(--border);">';
-          ['Wk','Opp','Car','RuYds','RuTD','Tgt','Rec','RecYds','RecTD','FPTS'].forEach(h =>
-            html += `<th style="padding:6px 5px;text-align:left;font-family:var(--mono);font-size:8px;color:var(--text-muted);text-transform:uppercase;">${h}</th>`);
-          html += '</tr></thead><tbody>';
-          latestSeason.weeklyLog.forEach(w => {
-            html += `<tr style="border-bottom:1px solid var(--border-subtle);">
-              <td style="padding:6px 5px;font-family:var(--mono);font-size:11px;">${w.week}</td>
-              <td style="padding:6px 5px;font-weight:600;">${w.opp}</td>
-              <td style="padding:6px 5px;">${w.car}</td>
-              <td style="padding:6px 5px;font-weight:600;">${w.rushYds}</td>
-              <td style="padding:6px 5px;color:var(--green);">${w.rushTD}</td>
-              <td style="padding:6px 5px;">${w.tgt}</td>
-              <td style="padding:6px 5px;">${w.rec}</td>
-              <td style="padding:6px 5px;">${w.recYds}</td>
-              <td style="padding:6px 5px;color:var(--green);">${w.recTD}</td>
-              <td style="padding:6px 5px;font-weight:600;color:var(--gold);">${w.fpts}</td>
-            </tr>`;
-          });
-        } else { // WR / TE
-          html += '<thead><tr style="border-bottom:2px solid var(--border);">';
-          ['Wk','Opp','Tgt','Rec','Yds','TD','aDOT','YAC','EPA','FPTS'].forEach(h =>
-            html += `<th style="padding:6px 5px;text-align:left;font-family:var(--mono);font-size:8px;color:var(--text-muted);text-transform:uppercase;">${h}</th>`);
-          html += '</tr></thead><tbody>';
-          latestSeason.weeklyLog.forEach(w => {
-            html += `<tr style="border-bottom:1px solid var(--border-subtle);">
-              <td style="padding:6px 5px;font-family:var(--mono);font-size:11px;">${w.week}</td>
-              <td style="padding:6px 5px;font-weight:600;">${w.opp}</td>
-              <td style="padding:6px 5px;">${w.tgt}</td>
-              <td style="padding:6px 5px;">${w.rec}</td>
-              <td style="padding:6px 5px;font-weight:600;">${w.recYds}</td>
-              <td style="padding:6px 5px;color:var(--green);">${w.recTD}</td>
-              <td style="padding:6px 5px;">${w.aDOT}</td>
-              <td style="padding:6px 5px;">${w.yac || '—'}</td>
-              <td style="padding:6px 5px;color:${w.recEPA > 0 ? 'var(--green)' : 'var(--red)'};">${w.recEPA > 0 ? '+' : ''}${w.recEPA}</td>
-              <td style="padding:6px 5px;font-weight:600;color:var(--gold);">${w.fpts}</td>
-            </tr>`;
-          });
-        }
-        html += '</tbody></table></div>';
+      if (latestSeason) {
+        html += `<div id="gameLogSlot" style="min-height:40px;"><div style="font-size:12px;color:var(--text-muted);font-style:italic;padding:8px 0;">Loading ${latestSeason.season} game log…</div></div>`;
+        loadWeeklyLog(player.id, latestSeason.season, player.pos);
       }
 
       html += `<div style="font-size:11px;color:var(--text-muted);font-style:italic;margin-top:12px;">Source: nflverse · REG season only · PPR scoring</div>`;
@@ -2735,9 +2706,16 @@ function findSleeperPlayer(player) {
 
 // ===== HEADSHOTS (via Sleeper CDN) =====
 function getHeadshotUrl(player) {
-  const sp = findSleeperPlayer(player);
-  if (!sp) return null;
-  return `https://sleepercdn.com/content/nfl/players/thumb/${sp.player_id}.jpg`;
+  // Prefer the ID baked into players.json by the daily Action — this is the
+  // common path and costs nothing. The runtime DB lookup is only a fallback
+  // for players added by hand before the next Action run.
+  let id = player.sleeperId;
+  if (!id) {
+    const sp = findSleeperPlayer(player);
+    if (!sp) return null;
+    id = sp.player_id;
+  }
+  return `https://sleepercdn.com/content/nfl/players/thumb/${id}.jpg`;
 }
 
 function renderAvatar(player, size, fontSize) {
@@ -2748,6 +2726,93 @@ function renderAvatar(player, size, fontSize) {
     return `<img class="player-headshot" src="${url}" alt="${player.name}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${size <= 36 ? 8 : 12}px;" onerror="this.outerHTML='<div class=\\'player-initials\\' style=\\'background:${player.color};width:${size}px;height:${size}px;font-size:${fontSize}px;\\'>${player.initials}</div>'">`;
   }
   return `<div class="player-initials" style="background:${player.color};width:${size}px;height:${size}px;font-size:${fontSize}px;">${player.initials}</div>`;
+}
+
+// Escapes a string for safe embedding inside a single-quoted JS string
+// that itself sits inside a double-quoted HTML attribute.
+// Without this, "Ja'Marr Chase" terminates the JS string and the handler dies.
+function jsAttr(str) {
+  return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+// ===== WEEKLY GAME LOGS (lazy) =====
+// Season totals ship in stats.json (~31KB, loaded on init). The weekly logs are
+// ~188KB and only ever render inside an open profile modal, so they are fetched
+// on demand and cached for the rest of the session.
+let weeklyStats = null;
+let weeklyStatsPromise = null;
+
+function ensureWeeklyStats() {
+  if (weeklyStats) return Promise.resolve(weeklyStats);
+  if (!weeklyStatsPromise) {
+    weeklyStatsPromise = loadJSON('data/stats-weekly.json').then(d => {
+      weeklyStats = d || {};
+      return weeklyStats;
+    });
+  }
+  return weeklyStatsPromise;
+}
+
+async function loadWeeklyLog(playerId, season, pos) {
+  const data = await ensureWeeklyStats();
+  // The modal may have been closed or switched tabs while this was in flight.
+  const slot = document.getElementById('gameLogSlot');
+  if (!slot || currentProfileId !== playerId) return;
+
+  const log = data[playerId] && data[playerId][season];
+  if (!log || !log.length) { slot.innerHTML = ''; return; }
+
+  const isQB = pos === 'QB';
+  const isRB = pos === 'RB';
+  const cols = isQB ? ['Wk','Opp','C/A','PaYds','PaTD','INT','RuYds','RuTD','EPA','FPTS']
+    : isRB ? ['Wk','Opp','Car','RuYds','RuTD','Tgt','Rec','RecYds','RecTD','FPTS']
+    : ['Wk','Opp','Tgt','Rec','Yds','TD','aDOT','YAC','EPA','FPTS'];
+
+  let h = `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">${season} Game Log</div>`;
+  h += `<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;"><table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap;">`;
+  h += '<thead><tr style="border-bottom:2px solid var(--border);">';
+  cols.forEach(c => h += `<th style="padding:6px 5px;text-align:left;font-family:var(--mono);font-size:8px;color:var(--text-muted);text-transform:uppercase;">${c}</th>`);
+  h += '</tr></thead><tbody>';
+
+  const cell = (v, style) => `<td style="padding:6px 5px;${style || ''}">${v === null || v === undefined ? '—' : v}</td>`;
+  const epaColor = v => `color:${v > 0 ? 'var(--green)' : 'var(--red)'};`;
+  const signed = v => (v === null || v === undefined) ? '—' : (v > 0 ? '+' : '') + v;
+
+  log.forEach(w => {
+    h += `<tr style="border-bottom:1px solid var(--border-subtle);">`;
+    h += cell(w.week, 'font-family:var(--mono);font-size:11px;');
+    h += cell(w.opp, 'font-weight:600;');
+    if (isQB) {
+      h += cell(`${w.cmp}/${w.att}`);
+      h += cell(w.passYds, 'font-weight:600;');
+      h += cell(w.passTD, 'color:var(--green);');
+      h += cell(w.int, w.int > 0 ? 'color:var(--red);' : 'color:var(--text-muted);');
+      h += cell(w.rushYds);
+      h += cell(w.rushTD, 'color:var(--green);');
+      h += cell(signed(w.passEPA), epaColor(w.passEPA));
+    } else if (isRB) {
+      h += cell(w.car);
+      h += cell(w.rushYds, 'font-weight:600;');
+      h += cell(w.rushTD, 'color:var(--green);');
+      h += cell(w.tgt);
+      h += cell(w.rec);
+      h += cell(w.recYds);
+      h += cell(w.recTD, 'color:var(--green);');
+    } else {
+      h += cell(w.tgt);
+      h += cell(w.rec);
+      h += cell(w.recYds, 'font-weight:600;');
+      h += cell(w.recTD, 'color:var(--green);');
+      h += cell(w.aDOT);
+      h += cell(w.yac);
+      h += cell(signed(w.recEPA), epaColor(w.recEPA));
+    }
+    h += cell(w.fpts, 'font-weight:600;color:var(--gold);');
+    h += `</tr>`;
+  });
+
+  h += '</tbody></table></div>';
+  slot.innerHTML = h;
 }
 
 // ===== RADAR CHARTS =====
@@ -3684,7 +3749,33 @@ document.addEventListener('keydown', e => {
 });
 
 // ===== BOOT =====
+// ===== KEYBOARD ACCESSIBILITY =====
+// Much of the UI uses clickable <div>s, which are invisible to keyboard and
+// screen-reader users. Rather than rewrite every call site, promote them:
+// give each one a button role, put it in the tab order, and map Enter/Space
+// to a click. Runs after any render that injects new markup.
+function makeClickablesAccessible(root) {
+  (root || document).querySelectorAll('[onclick]:not([data-a11y])').forEach(el => {
+    el.setAttribute('data-a11y', '1');
+    const tag = el.tagName.toLowerCase();
+    if (tag === 'button' || tag === 'a') return; // already focusable
+    el.setAttribute('role', 'button');
+    el.setAttribute('tabindex', '0');
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        el.click();
+      }
+    });
+  });
+}
+
+// Catch markup injected by any render path.
+const a11yObserver = new MutationObserver(() => makeClickablesAccessible());
+a11yObserver.observe(document.body, { childList: true, subtree: true });
+
 initData().then(() => {
+  makeClickablesAccessible();
   // Check for hash route after data loads
   if (window.location.hash) handleHashRoute();
 });

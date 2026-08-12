@@ -89,6 +89,13 @@ async function updatePlayerStatuses(sleeperPlayers) {
     );
 
     if (match) {
+      // Persist the Sleeper ID so the site can build headshot URLs without
+      // fetching the full ~5MB player DB at runtime.
+      if (player.sleeperId !== match.player_id) {
+        player.sleeperId = match.player_id;
+        updated++;
+      }
+
       const injuryStatus = match.injury_status;
       
       // Don't overwrite manually-set statuses like "Rehab (ACL)" with just "Healthy"

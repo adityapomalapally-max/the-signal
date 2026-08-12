@@ -282,10 +282,29 @@ async function main() {
     }
   }
 
-  // Write output
-  const outPath = path.join(DATA_DIR, 'stats.json');
-  fs.writeFileSync(outPath, JSON.stringify(stats, null, 2) + '\n');
-  log(`Wrote stats for ${Object.keys(stats).length} players to data/stats.json`);
+  // Write output — split into two files.
+  // Season totals load on init; weekly logs only render inside an open profile
+  // modal, so they are fetched lazily. This keeps the initial payload small.
+  const seasonOnly = {};
+  const weeklyOnly = {};
+
+  for (const [pid, p] of Object.entries(stats)) {
+    seasonOnly[pid] = { name: p.name, pos: p.pos, seasons: {} };
+    weeklyOnly[pid] = {};
+    for (const [yr, s] of Object.entries(p.seasons)) {
+      const { weeklyLog, ...totals } = s;
+      seasonOnly[pid].seasons[yr] = totals;
+      if (weeklyLog && weeklyLog.length) weeklyOnly[pid][yr] = weeklyLog;
+    }
+  }
+
+  fs.writeFileSync(path.join(DATA_DIR, 'stats.json'), JSON.stringify(seasonOnly, null, 2) + '\n');
+  fs.writeFileSync(path.join(DATA_DIR, 'stats-weekly.json'), JSON.stringify(weeklyOnly, null, 2) + '\n');
+
+  const kb = f => (fs.statSync(path.join(DATA_DIR, f)).size / 1024).toFixed(0);
+  log(`Wrote stats for ${Object.keys(stats).length} players`);
+  log(`  data/stats.json        ${kb('stats.json')}KB (season totals, loaded on init)`);
+  log(`  data/stats-weekly.json ${kb('stats-weekly.json')}KB (game logs, lazy-loaded)`);
   log('=== Stats Pipeline Complete ===');
 }
 
