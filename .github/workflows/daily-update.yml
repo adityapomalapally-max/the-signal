@@ -26,6 +26,9 @@ jobs:
       - name: Run data update script
         run: node scripts/update-data.js
       
+      - name: Fetch nflverse player stats
+        run: node scripts/fetch-stats.js
+      
       - name: Check for changes
         id: changes
         run: |
@@ -42,5 +45,6 @@ jobs:
 
           - Player statuses synced from Sleeper API
           - Trending players cached
-          - ESPN news cached"
+          - ESPN news cached
+          - Player stats synced from nflverse"
           git push
