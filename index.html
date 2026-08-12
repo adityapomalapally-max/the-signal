@@ -1408,6 +1408,7 @@ a { color: inherit; text-decoration: none; }
     <div class="nav-center">
       <a class="nav-item active" data-page="home" onclick="switchPage('home')">Home</a>
       <a class="nav-item" data-page="players" onclick="switchPage('players')">Players</a>
+      <a class="nav-item" data-page="compare" onclick="switchPage('compare')">Compare</a>
       <a class="nav-item" data-page="medicals" onclick="switchPage('medicals')">Medicals</a>
       <a class="nav-item" data-page="fantasy" onclick="switchPage('fantasy')">Fantasy</a>
       <a class="nav-item" data-page="draft" onclick="switchPage('draft')">Draft Lab</a>
@@ -1752,6 +1753,27 @@ a { color: inherit; text-decoration: none; }
 <!-- ============================= -->
 <!-- ====== FANTASY PAGE ========= -->
 <!-- ============================= -->
+<!-- ===== COMPARE ===== -->
+<div class="page-section" id="page-compare">
+  <div style="max-width:1440px;margin:0 auto;">
+    <div class="players-header">
+      <h1>Player Comparison</h1>
+      <p>Overlay two or three players on the same axes. Percentiles are within position, so comparisons across position groups are disabled — a 90th-percentile WR and a 90th-percentile RB are not the same athlete.</p>
+    </div>
+
+    <div style="padding:0 48px 24px;">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+        <span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;">Position</span>
+        <div id="comparePosTabs" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+      </div>
+      <div id="compareRoster" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"></div>
+      <div id="compareHint" style="font-size:12px;color:var(--text-muted);font-style:italic;"></div>
+    </div>
+
+    <div id="compareOutput" style="padding:0 48px 60px;"></div>
+  </div>
+</div>
+
 <div class="page-section" id="page-fantasy">
   <div style="max-width:1440px;margin:0 auto;">
     <div class="players-header">
@@ -2108,6 +2130,7 @@ function switchPage(page) {
   window.scrollTo(0, 0);
   if (page !== 'article' && window.location.hash) history.replaceState(null, '', window.location.pathname);
   if (page === 'players') renderPlayersTable();
+  if (page === 'compare') renderComparePage();
   if (page === 'medicals') { renderMedicals(); renderInjuryTypeGrid(); }
 }
 
@@ -2352,6 +2375,24 @@ function renderProfileTab(tab) {
       if (footnote) h += `<p style="font-size:11px;color:var(--text-muted);font-style:italic;margin:0 0 16px;">${footnote}</p>`;
       return h;
     };
+
+    // ===== RADARS (shape at a glance; bars below carry the exact numbers) =====
+    const prodAxes = getRadarAxes(player, 'production');
+    const athAxes = getRadarAxes(player, 'athletic');
+    if (prodAxes || athAxes) {
+      const radars = [];
+      if (prodAxes) radars.push({ title: 'Production Shape', series: [{ name: player.name, color: 'var(--gold)', axes: prodAxes }] });
+      if (athAxes) radars.push({ title: 'Athletic Shape', series: [{ name: player.name, color: 'var(--teal)', axes: athAxes }] });
+
+      if (radars.length === 2) {
+        html += `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;">`;
+        radars.forEach(rd => { html += `<div>${radarBlock(rd.title, rd.series)}</div>`; });
+        html += `</div>`;
+      } else {
+        html += radarBlock(radars[0].title, radars[0].series);
+      }
+      html += `<p style="font-size:11px;color:var(--text-muted);font-style:italic;margin:0 0 20px;">All axes are percentile ranks within position. Exact values below.</p>`;
+    }
 
     // ===== PRODUCTION PROFILE (leads — most predictive per POE/SHAP) =====
     let prod;
@@ -2707,6 +2748,340 @@ function renderAvatar(player, size, fontSize) {
     return `<img class="player-headshot" src="${url}" alt="${player.name}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${size <= 36 ? 8 : 12}px;" onerror="this.outerHTML='<div class=\\'player-initials\\' style=\\'background:${player.color};width:${size}px;height:${size}px;font-size:${fontSize}px;\\'>${player.initials}</div>'">`;
   }
   return `<div class="player-initials" style="background:${player.color};width:${size}px;height:${size}px;font-size:${fontSize}px;">${player.initials}</div>`;
+}
+
+// ===== RADAR CHARTS =====
+// Extracts the percentile axes for a player. Returns null if too sparse to plot.
+function getRadarAxes(player, kind) {
+  const num = v => (v === null || v === undefined || isNaN(v)) ? null : Number(v);
+  let axes;
+
+  if (kind === 'athletic') {
+    // athleticismPct is not published for anyone in our set, and QB athletic
+    // percentiles are too sparse to plot honestly. Bars carry those instead.
+    if (player.pos === 'QB') return null;
+    axes = [
+      { label: 'Speed', pct: num(player.speedPct) },
+      { label: 'Explosion', pct: num(player.burstPct) },
+      { label: 'Agility', pct: num(player.agilityPct) }
+    ];
+  } else { // production
+    if (player.pos === 'QB') {
+      axes = [
+        { label: 'College QBR', pct: num(player.qbrPct) },
+        { label: 'College YPA', pct: num(player.ypaPct) },
+        { label: 'Breakout Age', pct: num(player.breakoutPct) }
+      ];
+    } else if (player.pos === 'RB') {
+      axes = [
+        { label: 'Dominator', pct: num(player.dominatorPct) },
+        { label: 'College YPC', pct: num(player.ypcPct) },
+        { label: 'Target Share', pct: num(player.targetSharePct) },
+        { label: 'Breakout Age', pct: num(player.breakoutPct) }
+      ];
+    } else {
+      axes = [
+        { label: 'Dominator', pct: num(player.dominatorPct) },
+        { label: 'Target Share', pct: num(player.targetSharePct) },
+        { label: 'Breakout Age', pct: num(player.breakoutPct) }
+      ];
+    }
+  }
+
+  // Drop axes with no published percentile. Plotting them at the center would
+  // read visually as "worst in class" when the truth is "not measured".
+  const present = axes.filter(a => a.pct !== null);
+  // Fewer than 3 axes cannot enclose an area — the bars below say it better.
+  if (present.length < 3) return null;
+  return present;
+}
+
+/**
+ * Renders an SVG radar. `series` = [{ name, color, axes }].
+ * All series must share the same axis labels in the same order —
+ * use intersectAxes() to guarantee that before calling with multiple series.
+ */
+function renderRadar(series, opts) {
+  opts = opts || {};
+  const size = opts.size || 260;
+  const cx = size / 2, cy = size / 2;
+  const r = (size / 2) - 46; // leave room for labels
+  const rings = [25, 50, 75, 100];
+  const axes = series[0].axes;
+  const n = axes.length;
+
+  const angleFor = i => (Math.PI * 2 * i / n) - (Math.PI / 2);
+  const pointAt = (i, pct) => {
+    const a = angleFor(i);
+    const rad = (pct / 100) * r;
+    return [cx + Math.cos(a) * rad, cy + Math.sin(a) * rad];
+  };
+
+  let svg = `<svg viewBox="0 0 ${size} ${size}" style="width:100%;max-width:${size}px;height:auto;display:block;margin:0 auto;">`;
+
+  // Rings
+  rings.forEach(ring => {
+    const pts = [];
+    for (let i = 0; i < n; i++) {
+      const [x, y] = pointAt(i, ring);
+      pts.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+    }
+    svg += `<polygon points="${pts.join(' ')}" fill="none" stroke="var(--border)" stroke-width="1"/>`;
+  });
+
+  // Spokes + labels
+  for (let i = 0; i < n; i++) {
+    const [x, y] = pointAt(i, 100);
+    svg += `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--border)" stroke-width="1"/>`;
+    const a = angleFor(i);
+    const lx = cx + Math.cos(a) * (r + 24);
+    const ly = cy + Math.sin(a) * (r + 24);
+    let anchor = 'middle';
+    if (Math.cos(a) > 0.3) anchor = 'start';
+    else if (Math.cos(a) < -0.3) anchor = 'end';
+    svg += `<text x="${lx.toFixed(1)}" y="${(ly + 4).toFixed(1)}" text-anchor="${anchor}" font-family="var(--mono)" font-size="9" fill="var(--text-secondary)" letter-spacing="0.5">${axes[i].label}</text>`;
+  }
+
+  // Series polygons
+  series.forEach(s => {
+    const pts = [];
+    for (let i = 0; i < n; i++) {
+      const [x, y] = pointAt(i, s.axes[i].pct);
+      pts.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+    }
+    svg += `<polygon points="${pts.join(' ')}" fill="${s.color}" fill-opacity="0.16" stroke="${s.color}" stroke-width="2" stroke-linejoin="round"/>`;
+    for (let i = 0; i < n; i++) {
+      const [x, y] = pointAt(i, s.axes[i].pct);
+      svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="${s.color}"><title>${s.name} — ${s.axes[i].label}: ${s.axes[i].pct}th</title></circle>`;
+    }
+  });
+
+  svg += `</svg>`;
+  return svg;
+}
+
+/**
+ * Reduces a set of players' axes to the labels every one of them has.
+ * Returns null if fewer than 3 axes survive — an overlay on non-shared
+ * axes would compare a measured value against nothing.
+ */
+function intersectAxes(axesList) {
+  if (!axesList.length || axesList.some(a => !a)) return null;
+  const shared = axesList[0]
+    .map(a => a.label)
+    .filter(label => axesList.every(list => list.some(a => a.label === label)));
+  if (shared.length < 3) return null;
+  return axesList.map(list => shared.map(label => list.find(a => a.label === label)));
+}
+
+function radarBlock(title, series, note) {
+  let h = `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">${title}</div>`;
+  h += `<div class="medical-card" style="margin-bottom:16px;padding:16px 12px;">`;
+  h += renderRadar(series);
+  if (series.length > 1) {
+    h += `<div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:12px;">`;
+    series.forEach(s => {
+      h += `<div style="display:flex;align-items:center;gap:6px;">
+        <span style="width:10px;height:10px;border-radius:2px;background:${s.color};display:inline-block;"></span>
+        <span style="font-size:12px;color:var(--text-secondary);">${s.name}</span>
+      </div>`;
+    });
+    h += `</div>`;
+  }
+  h += `</div>`;
+  if (note) h += `<p style="font-size:11px;color:var(--text-muted);font-style:italic;margin:0 0 16px;">${note}</p>`;
+  return h;
+}
+
+// ===== PLAYER COMPARISON =====
+const COMPARE_COLORS = ['var(--gold)', 'var(--teal)', 'var(--blue)'];
+let comparePos = 'WR';
+let compareSelected = [];
+
+function renderComparePage() {
+  const positions = ['QB', 'RB', 'WR', 'TE'];
+
+  // Position tabs
+  const tabs = document.getElementById('comparePosTabs');
+  tabs.innerHTML = positions.map(p =>
+    `<button onclick="setComparePos('${p}')" style="font-family:var(--mono);font-size:11px;letter-spacing:1px;padding:6px 14px;border-radius:6px;cursor:pointer;border:1px solid ${p === comparePos ? 'var(--gold)' : 'var(--border)'};background:${p === comparePos ? 'var(--gold-muted)' : 'transparent'};color:${p === comparePos ? 'var(--gold)' : 'var(--text-secondary)'};">${p}</button>`
+  ).join('');
+
+  // Roster chips for the active position
+  const roster = playersDB.filter(p => p.pos === comparePos);
+  const chips = document.getElementById('compareRoster');
+  chips.innerHTML = roster.map(p => {
+    const on = compareSelected.includes(p.id);
+    const idx = compareSelected.indexOf(p.id);
+    const col = on ? COMPARE_COLORS[idx] : 'var(--border)';
+    return `<button onclick="toggleCompare('${p.id}')" style="display:flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:8px;cursor:pointer;border:1px solid ${col};background:${on ? 'var(--bg-card-hover)' : 'var(--bg-card)'};color:var(--text);">
+      ${renderAvatar(p, 26, 9)}
+      <span style="font-size:12px;font-weight:${on ? '600' : '400'};">${p.name}</span>
+    </button>`;
+  }).join('');
+
+  const hint = document.getElementById('compareHint');
+  hint.textContent = compareSelected.length === 0
+    ? `Pick two or three ${comparePos}s to compare.`
+    : compareSelected.length === 1
+      ? 'Pick at least one more.'
+      : compareSelected.length >= 3
+        ? 'Three is the max — deselect one to swap.'
+        : 'Add a third, or read the comparison below.';
+
+  renderCompareOutput();
+}
+
+function setComparePos(pos) {
+  if (pos === comparePos) return;
+  comparePos = pos;
+  compareSelected = []; // cross-position percentiles aren't comparable
+  renderComparePage();
+}
+
+function toggleCompare(id) {
+  const i = compareSelected.indexOf(id);
+  if (i >= 0) compareSelected.splice(i, 1);
+  else {
+    if (compareSelected.length >= 3) return;
+    compareSelected.push(id);
+  }
+  renderComparePage();
+}
+
+function renderCompareOutput() {
+  const out = document.getElementById('compareOutput');
+  if (compareSelected.length < 2) { out.innerHTML = ''; return; }
+
+  const picks = compareSelected.map((id, i) => ({
+    player: playersDB.find(p => p.id === id),
+    color: COMPARE_COLORS[i]
+  })).filter(x => x.player);
+
+  let html = '';
+
+  // --- Radars (only on axes every selected player actually has) ---
+  const buildSeries = (kind) => {
+    const raw = picks.map(({ player }) => getRadarAxes(player, kind));
+    const aligned = intersectAxes(raw);
+    if (!aligned) return null;
+    return picks.map(({ player, color }, i) => ({ name: player.name, color, axes: aligned[i] }));
+  };
+
+  const prodSeries = buildSeries('production');
+  const athSeries = buildSeries('athletic');
+
+  const blocks = [];
+  if (prodSeries) blocks.push(radarBlock('Production Shape', prodSeries));
+  if (athSeries) blocks.push(radarBlock('Athletic Shape', athSeries));
+
+  if (blocks.length) {
+    html += `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:8px;">`;
+    blocks.forEach(b => { html += `<div>${b}</div>`; });
+    html += `</div>`;
+    html += `<p style="font-size:11px;color:var(--text-muted);font-style:italic;margin:0 0 28px;">Percentile ranks within position, drawn only on axes every selected player has on record. Exact values in the tables below.</p>`;
+  } else {
+    html += `<div class="medical-card" style="margin-bottom:20px;"><div class="medical-detail">These players don't share enough published percentiles to overlay a radar honestly. The tables below carry everything that is on record.</div></div>`;
+  }
+
+  // --- Career stat comparison (nflverse) ---
+  const withStats = picks.filter(({ player }) => playerStats[player.id]);
+  if (withStats.length >= 2) {
+    const rows = comparePos === 'QB'
+      ? [['Games','games'],['Pass Yds','passYds'],['Pass TD','passTD'],['INT','int'],['Cmp %','compPct','%'],['YPA','ypa'],['Sack %','sackPct','%'],['Rush Yds','rushYds'],['Rush TD','rushTD'],['Pass EPA','passEPA'],['Fantasy PPG','fantasyPPG']]
+      : comparePos === 'RB'
+      ? [['Games','games'],['Carries','carries'],['Rush Yds','rushYds'],['YPC','ypc'],['Rush TD','rushTD'],['Targets','targets'],['Rec','rec'],['Rec Yds','recYds'],['Rec TD','recTD'],['Catch %','catchPct','%'],['Tgt Share','tgtShare','%'],['Fantasy PPG','fantasyPPG']]
+      : [['Games','games'],['Targets','targets'],['Rec','rec'],['Rec Yds','recYds'],['Rec TD','recTD'],['Catch %','catchPct','%'],['aDOT','aDOT'],['YAC/Rec','yacPerRec'],['Tgt Share','tgtShare','%'],['Air Yd Share','airYardShare','%'],['Fantasy PPG','fantasyPPG']];
+
+    // Use each player's most recent season
+    const latest = withStats.map(({ player, color }) => {
+      const seasons = Object.values(playerStats[player.id].seasons).sort((a, b) => b.season - a.season);
+      return { player, color, s: seasons[0] };
+    });
+
+    html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Most Recent Season</div>`;
+    html += `<div class="medical-card" style="padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:8px;">`;
+    html += `<table style="width:100%;border-collapse:collapse;font-size:13px;">`;
+    html += `<thead><tr style="border-bottom:2px solid var(--border);">
+      <th style="padding:12px 14px;text-align:left;font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;">Metric</th>`;
+    latest.forEach(({ player, color, s }) => {
+      html += `<th style="padding:12px 14px;text-align:right;font-size:13px;font-weight:600;color:${color};white-space:nowrap;">${player.name}<div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);font-weight:400;letter-spacing:0.5px;">${s.season}</div></th>`;
+    });
+    html += `</tr></thead><tbody>`;
+
+    rows.forEach(([label, key, suffix]) => {
+      const vals = latest.map(({ s }) => (s[key] === null || s[key] === undefined) ? null : s[key]);
+      const nums = vals.filter(v => v !== null);
+      // INT and Sack% are stats where lower is better
+      const lowerBetter = (key === 'int' || key === 'sackPct');
+      const best = nums.length > 1 ? (lowerBetter ? Math.min(...nums) : Math.max(...nums)) : null;
+
+      html += `<tr style="border-bottom:1px solid var(--border-subtle);">
+        <td style="padding:10px 14px;color:var(--text-secondary);">${label}</td>`;
+      vals.forEach(v => {
+        const isBest = best !== null && v === best && nums.length > 1 && new Set(nums).size > 1;
+        html += `<td style="padding:10px 14px;text-align:right;font-family:var(--mono);font-weight:${isBest ? '700' : '400'};color:${isBest ? 'var(--green)' : 'var(--text)'};">${v === null ? '—' : v.toLocaleString()}${v === null ? '' : (suffix || '')}</td>`;
+      });
+      html += `</tr>`;
+    });
+    html += `</tbody></table></div>`;
+    html += `<p style="font-size:11px;color:var(--text-muted);font-style:italic;margin:0 0 28px;">Green marks the better figure. Seasons may differ in length or year — check the header before drawing conclusions. Source: nflverse, REG season, PPR.</p>`;
+  }
+
+  // --- Combine measurables ---
+  const measure = [['Height','height'],['Weight','weight',' lbs'],['40-Yard','fortyTime','s'],['Vertical','vertical'],['Broad Jump','broadJump'],['3-Cone','threeConeDrill','s'],['Shuttle','shuttle','s'],['Bench','benchPress',' reps'],['Arm Length','armLength'],['Hand Size','handSize']];
+  const anyMeasure = measure.some(([, k]) => picks.some(({ player }) => player[k]));
+  if (anyMeasure) {
+    html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Measurables</div>`;
+    html += `<div class="medical-card" style="padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:8px;">`;
+    html += `<table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr style="border-bottom:2px solid var(--border);">
+      <th style="padding:12px 14px;text-align:left;font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;">Metric</th>`;
+    picks.forEach(({ player, color }) => {
+      html += `<th style="padding:12px 14px;text-align:right;font-size:13px;font-weight:600;color:${color};white-space:nowrap;">${player.name}</th>`;
+    });
+    html += `</tr></thead><tbody>`;
+    measure.forEach(([label, key, suffix]) => {
+      if (!picks.some(({ player }) => player[key])) return;
+      html += `<tr style="border-bottom:1px solid var(--border-subtle);">
+        <td style="padding:10px 14px;color:var(--text-secondary);">${label}</td>`;
+      picks.forEach(({ player }) => {
+        const v = player[key];
+        html += `<td style="padding:10px 14px;text-align:right;font-family:var(--mono);">${v ? v + (suffix || '') : '—'}</td>`;
+      });
+      html += `</tr>`;
+    });
+    html += `</tbody></table></div>`;
+    html += `<p style="font-size:11px;color:var(--text-muted);font-style:italic;margin:0 0 28px;">Blank means not on record — no combine result published, not a zero.</p>`;
+  }
+
+  // --- Injury flags ---
+  const withMed = picks.filter(({ player }) => medicalDB[player.id] && medicalDB[player.id].injuries.length);
+  if (withMed.length) {
+    html += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Medical Flags</div>`;
+    html += `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-bottom:12px;">`;
+    picks.forEach(({ player, color }) => {
+      const med = medicalDB[player.id];
+      html += `<div class="medical-card" style="border-left:3px solid ${color};">
+        <div style="font-weight:600;font-size:14px;margin-bottom:8px;">${player.name}</div>`;
+      if (med && med.injuries.length) {
+        const worst = Math.max(...med.injuries.map(i => i.impact));
+        const risk = worst > 50 ? 'High' : worst > 25 ? 'Moderate' : 'Low';
+        const rc = worst > 50 ? 'var(--red)' : worst > 25 ? 'var(--gold)' : 'var(--green)';
+        html += `<div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">${med.injuries.length} record${med.injuries.length !== 1 ? 's' : ''} · <span style="color:${rc};font-weight:600;">${risk} impact</span></div>`;
+        med.injuries.slice(0, 3).forEach(inj => {
+          html += `<div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">· ${inj.title.split('—')[0].trim()}</div>`;
+        });
+        if (med.injuries.length > 3) html += `<div style="font-size:11px;color:var(--text-muted);font-style:italic;margin-top:6px;">+${med.injuries.length - 3} more — open the profile</div>`;
+      } else {
+        html += `<div style="font-size:12px;color:var(--text-muted);">No records on file.</div>`;
+      }
+      html += `</div>`;
+    });
+    html += `</div>`;
+    html += `<p style="font-size:11px;color:var(--text-muted);font-style:italic;margin:0;">Impact scores are our own research estimates, not a medical opinion.</p>`;
+  }
+
+  out.innerHTML = html;
 }
 
 // ===== DYNAMIC HERO SIDEBAR =====
