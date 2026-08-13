@@ -58,14 +58,46 @@ async function fetchSleeperPlayers() {
   }
 }
 
+// ===== STATUS PROVENANCE =====
+// A status is "manual" only when players.json says so explicitly.
+//
+// This used to be inferred from punctuation — `status.includes('(')` — which
+// meant any hand-written status was frozen permanently. "Rehab (Turf Toe)"
+// contains a parenthesis, so Burrow could never be auto-cleared and sat at
+// status-out for ten months after he was healthy. Punctuation is not
+// provenance. A manual flag is.
+//
+// Manual statuses are also not immortal. One that hasn't been touched in
+// MANUAL_STALE_DAYS is reported as stale rather than silently held, so a
+// forgotten hand-edit surfaces instead of quietly going wrong on the site.
+const MANUAL_STALE_DAYS = 21;
+
+// Feed statuses that outrank a manual note regardless of freshness. Never
+// under-report an injury because someone typed something optimistic in July.
+const ESCALATIONS = new Set(['IR', 'Out', 'PUP', 'NFI', 'Suspended', 'Doubtful']);
+
+function daysSince(iso) {
+  if (!iso) return null;
+  const t = Date.parse(iso);
+  if (Number.isNaN(t)) return null;
+  return Math.floor((Date.now() - t) / 86400000);
+}
+
 // ===== UPDATE PLAYER STATUSES =====
 async function updatePlayerStatuses(sleeperPlayers) {
-  if (!sleeperPlayers) return { updated: 0 };
+  if (!sleeperPlayers) {
+    log('  ABORT: no Sleeper player DB — statuses left untouched');
+    return { updated: 0, diagnostics: { fetchFailed: true } };
+  }
 
   const players = readJSON('players.json');
   if (!players) { log('ERROR: players.json not found'); return { updated: 0 }; }
 
   let updated = 0;
+  // Why the run did or didn't act, per player. A run that changes nothing is
+  // indistinguishable from a run that failed unless it says which it was —
+  // meta.json read `playerStatusesUpdated: 0` for weeks with no way to tell.
+  const diagnostics = { unmatched: [], manualHeld: [], staleManual: [], feedSilent: 0 };
   const statusMap = {
     'IR': { status: 'IR', statusClass: 'status-out' },
     'Out': { status: 'Out', statusClass: 'status-out' },
@@ -97,23 +129,47 @@ async function updatePlayerStatuses(sleeperPlayers) {
       }
 
       const injuryStatus = match.injury_status;
-      
-      // Don't overwrite manually-set statuses like "Rehab (ACL)" with just "Healthy"
-      const isManualStatus = player.status.includes('(') || player.status.includes('Rehab');
-      
-      if (injuryStatus && statusMap[injuryStatus]) {
-        const newStatus = statusMap[injuryStatus];
-        if (player.statusClass !== newStatus.statusClass) {
-          log(`  ${player.name}: ${player.status} → ${newStatus.status} (${injuryStatus})`);
-          player.status = newStatus.status;
-          player.statusClass = newStatus.statusClass;
-          updated++;
+      const manual = player.manualOverride === true;
+      const age = manual ? daysSince(player.statusSetAt) : null;
+      const manualStale = manual && (age === null || age > MANUAL_STALE_DAYS);
+
+      const apply = (status, statusClass, source, why) => {
+        log(`  ${player.name}: ${player.status} → ${status} (${why})`);
+        player.status = status;
+        player.statusClass = statusClass;
+        player.statusSource = source;
+        player.statusUpdated = new Date().toISOString();
+        if (source === 'sleeper') {
+          player.manualOverride = false;
+          delete player.statusSetAt;
         }
-      } else if (!injuryStatus && !isManualStatus && player.statusClass !== 'status-healthy') {
-        log(`  ${player.name}: ${player.status} → Healthy (cleared)`);
-        player.status = 'Healthy';
-        player.statusClass = 'status-healthy';
         updated++;
+      };
+
+      if (injuryStatus && statusMap[injuryStatus]) {
+        const next = statusMap[injuryStatus];
+        // The feed wins when it escalates, when the manual note has gone stale,
+        // or when there is no manual note at all. A fresh manual note otherwise
+        // holds, because it carries detail the feed's one-word status doesn't.
+        const feedWins = !manual || manualStale || ESCALATIONS.has(injuryStatus);
+        if (!feedWins) {
+          diagnostics.manualHeld.push(`${player.name} (feed: ${injuryStatus}, manual ${age}d old)`);
+        } else if (player.status !== next.status || player.statusClass !== next.statusClass) {
+          apply(next.status, next.statusClass, 'sleeper', `sleeper: ${injuryStatus}`);
+        }
+      } else if (!injuryStatus) {
+        if (!manual) {
+          if (player.statusClass !== 'status-healthy') {
+            apply('Healthy', 'status-healthy', 'sleeper', 'cleared — feed reports no injury');
+          }
+        } else if (manualStale) {
+          // Do not auto-clear a manual note, but do not hide it either.
+          diagnostics.staleManual.push(
+            `${player.name}: "${player.status}" set ${age === null ? 'at an unknown date' : age + 'd ago'} — needs review`
+          );
+        } else {
+          diagnostics.manualHeld.push(`${player.name} (manual, ${age}d old)`);
+        }
       }
 
       // Update team if changed
@@ -122,12 +178,24 @@ async function updatePlayerStatuses(sleeperPlayers) {
         player.team = match.team;
         updated++;
       }
+    } else {
+      // A name that never matches gets its status frozen just as effectively as
+      // a bad guard did — it simply never enters the decision at all.
+      diagnostics.unmatched.push(`${player.name} (${player.pos})`);
     }
   });
 
+  diagnostics.feedSilent = players.filter(p => p.statusClass !== 'status-healthy').length;
+
   writeJSON('players.json', players);
   log(`Updated ${updated} player statuses`);
-  return { updated };
+  if (diagnostics.unmatched.length) log(`  UNMATCHED in Sleeper DB (${diagnostics.unmatched.length}): ${diagnostics.unmatched.join(', ')}`);
+  if (diagnostics.staleManual.length) {
+    log(`  STALE manual statuses (${diagnostics.staleManual.length}) — review these:`);
+    diagnostics.staleManual.forEach(s => log(`    ${s}`));
+  }
+  if (diagnostics.manualHeld.length) log(`  Manual holds (${diagnostics.manualHeld.length}): ${diagnostics.manualHeld.join(', ')}`);
+  return { updated, diagnostics };
 }
 
 // ===== SLEEPER TRENDING =====
@@ -222,6 +290,7 @@ async function main() {
   const meta = readJSON('meta.json') || {};
   meta.lastUpdate = new Date().toISOString();
   meta.playerStatusesUpdated = statusResult.updated;
+  meta.statusDiagnostics = statusResult.diagnostics || null;
   meta.trendingAddCount = trending ? trending.adds.length : 0;
   meta.newsArticleCount = news ? news.articles.length : 0;
   writeJSON('meta.json', meta);

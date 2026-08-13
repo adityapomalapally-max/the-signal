@@ -152,6 +152,20 @@ a { color: inherit; text-decoration: none; }
 
 .ticker-name { font-weight: 600; color: var(--text); }
 .ticker-team { font-family: var(--mono); font-size: 10px; color: var(--text-muted); }
+.ticker-pos {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  color: var(--bg);
+  background: var(--text-muted);
+  border-radius: 3px;
+  padding: 1px 4px;
+}
+.ticker-pos[data-p="QB"] { background: #6c8ebf; }
+.ticker-pos[data-p="RB"] { background: var(--teal); }
+.ticker-pos[data-p="WR"] { background: var(--gold); }
+.ticker-pos[data-p="TE"] { background: #c98a4c; }
+.ticker-ppg { font-family: var(--mono); font-size: 10px; color: var(--text-secondary); }
 
 @keyframes tickerScroll {
   from { transform: translateX(0); }
@@ -2132,7 +2146,34 @@ async function initData() {
 function renderTicker(pos) {
   const data = rankingsData[pos];
   const c = document.getElementById('tickerContent');
-  const items = data.map(p => `<div class="ticker-player"><span class="ticker-rank">#${p.rank}</span><span class="ticker-name">${p.name}</span><span class="ticker-team">${p.team}</span></div>`).join('');
+  if (!c) return;
+  if (!Array.isArray(data) || !data.length) { c.innerHTML = ''; return; }
+
+  const meta = rankingsData.meta || {};
+  // The overall board is cross-positional, so the badge is doing real work
+  // there; inside a position tab every badge would read the same.
+  const showPos = pos === 'overall';
+  const tip = showPos
+    ? (meta.overallMethod || 'Ranked by value over replacement.')
+    : (meta.method || 'Ranked by projected median season total.');
+
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+  const items = data.map(p => {
+    const badge = showPos && p.pos
+      ? `<span class="ticker-pos" data-p="${esc(p.pos)}">${esc(p.pos)}</span>` : '';
+    // A projection that isn't there renders as nothing rather than "undefined".
+    const ppg = (typeof p.ppg === 'number')
+      ? `<span class="ticker-ppg">${p.ppg.toFixed(1)}</span>` : '';
+    return `<div class="ticker-player" title="${esc(tip)}">`
+      + `<span class="ticker-rank">#${esc(p.rank)}</span>`
+      + badge
+      + `<span class="ticker-name">${esc(p.name)}</span>`
+      + `<span class="ticker-team">${esc(p.team)}</span>`
+      + ppg
+      + `</div>`;
+  }).join('');
   c.innerHTML = items + items;
 }
 

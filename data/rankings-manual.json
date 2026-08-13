@@ -1,0 +1,30 @@
+{
+  "_README": [
+    "Your ranks for the ticker at the top of the site. This file wins over anything the model generates.",
+    "",
+    "HOW TO USE:",
+    "  1. Put names in the order you want, top first. That's it.",
+    "  2. Run: node scripts/build-rankings.js",
+    "  3. Commit and push. Vercel redeploys on its own.",
+    "",
+    "RULES:",
+    "  - A tab you leave as [] uses the generated order. Fill in one tab or all five.",
+    "  - Names are matched against data/projections-2026.json to pull team and projected PPG.",
+    "    Spelling has to match, but case doesn't.",
+    "  - Rank someone who isn't in the projections and it still works — the row just shows",
+    "    no PPG rather than a made-up number. The build prints those names so you can see them.",
+    "  - For a player with no projection, use {\"name\": \"Player\", \"team\": \"BUF\", \"pos\": \"WR\"}",
+    "    instead of a plain string if you want the team and badge to show.",
+    "  - Bad JSON aborts the build instead of publishing a half-right board. A trailing comma",
+    "    after the last item in a list is the usual culprit.",
+    "",
+    "The 'overall' tab is the cross-positional one. The model orders it by VORP, which puts",
+    "no QB in the top 24 — correct for 1QB scoring, but override it here if you'd rather the",
+    "board read like a draft list."
+  ],
+  "overall": [],
+  "qb": [],
+  "rb": [],
+  "wr": [],
+  "te": []
+}
