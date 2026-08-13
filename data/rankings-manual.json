@@ -1,30 +1,54 @@
 {
   "_README": [
-    "Your ranks for the ticker at the top of the site. This file wins over anything the model generates.",
+    "Adi's 2026 ranks. This file wins over anything the model generates.",
     "",
     "HOW TO USE:",
-    "  1. Put names in the order you want, top first. That's it.",
+    "  1. Put names in the order you want, top first.",
     "  2. Run: node scripts/build-rankings.js",
-    "  3. Commit and push. Vercel redeploys on its own.",
+    "  3. git add -A && git commit -m \"my 2026 ranks\" && git push",
     "",
     "RULES:",
-    "  - A tab you leave as [] uses the generated order. Fill in one tab or all five.",
-    "  - Names are matched against data/projections-2026.json to pull team and projected PPG.",
-    "    Spelling has to match, but case doesn't.",
-    "  - Rank someone who isn't in the projections and it still works — the row just shows",
-    "    no PPG rather than a made-up number. The build prints those names so you can see them.",
-    "  - For a player with no projection, use {\"name\": \"Player\", \"team\": \"BUF\", \"pos\": \"WR\"}",
-    "    instead of a plain string if you want the team and badge to show.",
-    "  - Bad JSON aborts the build instead of publishing a half-right board. A trailing comma",
-    "    after the last item in a list is the usual culprit.",
-    "",
-    "The 'overall' tab is the cross-positional one. The model orders it by VORP, which puts",
-    "no QB in the top 24 — correct for 1QB scoring, but override it here if you'd rather the",
-    "board read like a draft list."
+    "  - A tab left as [] uses the generated order. 'overall' is empty, so it stays VORP-generated.",
+    "  - Names match against data/projections-2026.json to pull team and projected PPG.",
+    "    Spelling must match, case doesn't.",
+    "  - A player with no projection still ranks; the row just shows no PPG rather than",
+    "    an invented one. The build prints those names so you can see them.",
+    "  - Use {\"name\": \"X\", \"team\": \"BUF\", \"pos\": \"WR\"} for players with no projection,",
+    "    so the team and badge still render.",
+    "  - Invalid JSON aborts the build instead of publishing a half-right board.",
+    "    A trailing comma after the last item is the usual culprit."
   ],
   "overall": [],
-  "qb": [],
-  "rb": [],
-  "wr": [],
-  "te": []
+  "qb": [
+    "Josh Allen", "Lamar Jackson", "Jayden Daniels", "Drake Maye", "Joe Burrow",
+    "Jalen Hurts", "Justin Herbert", "Trevor Lawrence", "Kyler Murray", "Caleb Williams",
+    "Dak Prescott", "Jaxson Dart", "Brock Purdy", "Matthew Stafford", "Bo Nix",
+    "Baker Mayfield", "Jared Goff", "Patrick Mahomes", "Jordan Love",
+    { "name": "Malik Willis", "team": "GB", "pos": "QB" }
+  ],
+  "rb": [
+    "Jahmyr Gibbs", "Bijan Robinson", "Christian McCaffrey", "Jonathan Taylor", "James Cook",
+    "Saquon Barkley", "Ashton Jeanty", "Kenneth Walker III", "De'Von Achane", "Derrick Henry",
+    "Omarion Hampton", "Chase Brown", "Josh Jacobs", "Javonte Williams", "Breece Hall",
+    "Jeremiyah Love", "Bucky Irving", "Cam Skattebo", "Bhayshul Tuten", "Kyren Williams",
+    "Quinshon Judkins", "Travis Etienne", "David Montgomery", "D'Andre Swift"
+  ],
+  "wr": [
+    "Ja'Marr Chase", "Puka Nacua", "CeeDee Lamb", "Amon-Ra St. Brown", "Justin Jefferson",
+    "Jaxon Smith-Njigba", "A.J. Brown", "Nico Collins", "Drake London", "Malik Nabers",
+    "George Pickens", "DeVonta Smith", "Zay Flowers", "Emeka Egbuka", "Ladd McConkey",
+    "Chris Olave", "Jaylen Waddle", "Rashee Rice", "Tee Higgins", "Garrett Wilson",
+    "Terry McLaurin", "Mike Evans", "Tetairoa McMillan", "Jameson Williams", "Christian Watson",
+    "Luther Burden III", "Davante Adams", "Parker Washington", "DK Metcalf", "Carnell Tate",
+    { "name": "DJ Moore", "team": "BUF", "pos": "WR" },
+    "Rome Odunze"
+  ],
+  "te": [
+    "Brock Bowers", "Trey McBride", "Colston Loveland", "Tucker Kraft", "Tyler Warren",
+    "Sam LaPorta", "Harold Fannin Jr.", "Kyle Pitts", "George Kittle", "Dalton Kincaid",
+    "T.J. Hockenson", "Travis Kelce", "Brenton Strange",
+    { "name": "Terrance Ferguson", "team": "LAR", "pos": "TE" },
+    "Mark Andrews",
+    { "name": "AJ Barner", "team": "SEA", "pos": "TE" }
+  ]
 }
