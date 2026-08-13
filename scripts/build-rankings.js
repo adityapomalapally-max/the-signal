@@ -177,8 +177,64 @@ function main() {
     return rows;
   }
 
-  for (const tab of ['overall', 'qb', 'rb', 'wr', 'te']) {
+  for (const tab of ['qb', 'rb', 'wr', 'te']) {
     out[tab] = applyManual(tab, out[tab]);
+  }
+
+  // ===== OVERALL =====
+  // Precedence: a hand-written overall list wins. Otherwise, if any positional
+  // tab is hand-ordered, the overall board is derived from those instead of
+  // from the model's own order — publishing a VORP board that contradicts the
+  // positional tabs sitting next to it would be worse than either alone.
+  //
+  // Slot inheritance: a player takes the projected median of the SLOT he was
+  // ranked into, not his own projection. Rank someone RB5 and he is valued as
+  // the 5th-best RB, because that is what the ranking asserts. This keeps the
+  // ordering entirely Adi's while the replacement math stays real, and it means
+  // players with no projection of their own still get a defensible value.
+  const manualPositional = ['qb', 'rb', 'wr', 'te'].filter(
+    (t) => Array.isArray(manual[t]) && manual[t].length
+  );
+
+  if (Array.isArray(manual.overall) && manual.overall.length) {
+    out.overall = applyManual('overall', out.overall);
+  } else if (manualPositional.length) {
+    const slotMedians = {};
+    for (const pos of ['qb', 'rb', 'wr', 'te']) {
+      slotMedians[pos] = pools[pos].filter((p) => !p.baselineOnly).map((p) => p.median);
+    }
+
+    const board = [];
+    for (const pos of ['qb', 'rb', 'wr', 'te']) {
+      // A tab left to the model still contributes, using the model's order.
+      out[pos].forEach((r, i) => {
+        const slots = slotMedians[pos];
+        // Past the end of the projected pool there is no slot value to inherit.
+        // Fall back to replacement level rather than inventing one: it puts the
+        // player at VORP 0 instead of somewhere flattering and arbitrary.
+        const slotMedian = i < slots.length ? slots[i] : baselines[pos];
+        board.push({ r, pos, slotMedian, vorp: slotMedian - baselines[pos] });
+      });
+    }
+    board.sort((a, b) => b.vorp - a.vorp);
+
+    out.overall = board.slice(0, TAB_SIZE.overall).map((e, i) => {
+      const o = { ...e.r, rank: i + 1, vorp: Math.round(e.vorp) };
+      // The overall tab is a value board, so every row is shown on the same
+      // slot basis. A player's own projection is kept alongside rather than
+      // dropped — where the two disagree, that gap is the ranking's actual
+      // claim about him, and it should stay visible.
+      if (typeof e.r.ppg === 'number') o.ownPpg = e.r.ppg;
+      if (typeof e.r.median === 'number') o.ownMedian = e.r.median;
+      o.median = e.slotMedian;
+      o.ppg = round1(e.slotMedian / 17);
+      return o;
+    });
+
+    out.meta.overallMethod =
+      'Derived from the hand-ordered positional tabs. Each player inherits the projected median of the slot he was ranked into, then VORP is taken against replacement level. Ordering is the analyst\'s; the replacement math is the model\'s.';
+    out.meta.overallDerivedFrom = manualPositional;
+    log(`  overall: DERIVED from manual tabs (${manualPositional.join(', ')}) via slot-inherited VORP`);
   }
 
   fs.writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n');

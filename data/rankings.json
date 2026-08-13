@@ -8,8 +8,8 @@
     "source": "The Signal 2026 projection set",
     "generated": "2026-08-13",
     "builtBy": "scripts/build-rankings.js",
-    "builtAt": "2026-08-13T19:50:31.325Z",
-    "overallMethod": "Ordered by VORP (median minus replacement-level median at the same position), not raw points.",
+    "builtAt": "2026-08-13T19:58:39.262Z",
+    "overallMethod": "Derived from the hand-ordered positional tabs. Each player inherits the projected median of the slot he was ranked into, then VORP is taken against replacement level. Ordering is the analyst's; the replacement math is the model's.",
     "baselines": {
       "qb": {
         "rank": 12,
@@ -33,6 +33,12 @@
       }
     },
     "manualTabs": [
+      "qb",
+      "rb",
+      "wr",
+      "te"
+    ],
+    "overallDerivedFrom": [
       "qb",
       "rb",
       "wr",
@@ -1043,7 +1049,9 @@
       "ppg": 18.5,
       "vorp": 137,
       "floor": 254,
-      "ceiling": 365
+      "ceiling": 365,
+      "ownPpg": 18.5,
+      "ownMedian": 315
     },
     {
       "rank": 2,
@@ -1054,7 +1062,9 @@
       "ppg": 18.3,
       "vorp": 133,
       "floor": 252,
-      "ceiling": 374
+      "ceiling": 374,
+      "ownPpg": 18.3,
+      "ownMedian": 311
     },
     {
       "rank": 3,
@@ -1065,7 +1075,9 @@
       "ppg": 17.6,
       "vorp": 122,
       "floor": 233,
-      "ceiling": 366
+      "ceiling": 366,
+      "ownPpg": 17.6,
+      "ownMedian": 300
     },
     {
       "rank": 4,
@@ -1076,18 +1088,22 @@
       "ppg": 17.5,
       "vorp": 120,
       "floor": 241,
-      "ceiling": 356
+      "ceiling": 356,
+      "ownPpg": 17.5,
+      "ownMedian": 298
     },
     {
       "rank": 5,
-      "name": "De'Von Achane",
-      "team": "MIA",
+      "name": "James Cook",
+      "team": "BUF",
       "pos": "RB",
       "median": 290,
       "ppg": 17.1,
       "vorp": 112,
-      "floor": 224,
-      "ceiling": 352
+      "floor": 195,
+      "ceiling": 319,
+      "ownPpg": 14.9,
+      "ownMedian": 254
     },
     {
       "rank": 6,
@@ -1098,7 +1114,9 @@
       "ppg": 15.5,
       "vorp": 108,
       "floor": 210,
-      "ceiling": 316
+      "ceiling": 316,
+      "ownPpg": 15.5,
+      "ownMedian": 264
     },
     {
       "rank": 7,
@@ -1109,7 +1127,9 @@
       "ppg": 16.8,
       "vorp": 107,
       "floor": 206,
-      "ceiling": 351
+      "ceiling": 351,
+      "ownPpg": 16.8,
+      "ownMedian": 285
     },
     {
       "rank": 8,
@@ -1120,7 +1140,9 @@
       "ppg": 15,
       "vorp": 99,
       "floor": 204,
-      "ceiling": 304
+      "ceiling": 304,
+      "ownPpg": 15,
+      "ownMedian": 255
     },
     {
       "rank": 9,
@@ -1131,29 +1153,35 @@
       "ppg": 14.8,
       "vorp": 96,
       "floor": 202,
-      "ceiling": 300
+      "ceiling": 300,
+      "ownPpg": 14.8,
+      "ownMedian": 252
     },
     {
       "rank": 10,
-      "name": "Justin Jefferson",
-      "team": "MIN",
+      "name": "Amon-Ra St. Brown",
+      "team": "DET",
       "pos": "WR",
       "median": 248,
       "ppg": 14.6,
       "vorp": 92,
-      "floor": 192,
-      "ceiling": 300
+      "floor": 204,
+      "ceiling": 290,
+      "ownPpg": 14.4,
+      "ownMedian": 245
     },
     {
       "rank": 11,
-      "name": "Amon-Ra St. Brown",
-      "team": "DET",
+      "name": "Justin Jefferson",
+      "team": "MIN",
       "pos": "WR",
       "median": 245,
       "ppg": 14.4,
       "vorp": 89,
-      "floor": 204,
-      "ceiling": 290
+      "floor": 192,
+      "ceiling": 300,
+      "ownPpg": 14.6,
+      "ownMedian": 248
     },
     {
       "rank": 12,
@@ -1164,7 +1192,9 @@
       "ppg": 15.6,
       "vorp": 88,
       "floor": 208,
-      "ceiling": 324
+      "ceiling": 324,
+      "ownPpg": 15.6,
+      "ownMedian": 266
     },
     {
       "rank": 13,
@@ -1175,32 +1205,64 @@
       "ppg": 14.1,
       "vorp": 84,
       "floor": 200,
-      "ceiling": 294
+      "ceiling": 294,
+      "ownPpg": 14.1,
+      "ownMedian": 240
     },
     {
       "rank": 14,
-      "name": "Drake London",
-      "team": "ATL",
+      "name": "A.J. Brown",
+      "team": "NE",
       "pos": "WR",
       "median": 236,
       "ppg": 13.9,
       "vorp": 80,
-      "floor": 190,
-      "ceiling": 284
+      "floor": 180,
+      "ceiling": 280,
+      "ownPpg": 13.5,
+      "ownMedian": 230
     },
     {
       "rank": 15,
-      "name": "James Cook",
-      "team": "BUF",
+      "name": "Kenneth Walker III",
+      "team": "KC",
       "pos": "RB",
       "median": 254,
       "ppg": 14.9,
       "vorp": 76,
-      "floor": 195,
-      "ceiling": 319
+      "floor": 190,
+      "ceiling": 318,
+      "ownPpg": 14.8,
+      "ownMedian": 251
     },
     {
       "rank": 16,
+      "name": "Nico Collins",
+      "team": "HOU",
+      "pos": "WR",
+      "median": 230,
+      "ppg": 13.5,
+      "vorp": 74,
+      "floor": 176,
+      "ceiling": 268,
+      "ownPpg": 13.1,
+      "ownMedian": 222
+    },
+    {
+      "rank": 17,
+      "name": "Drake London",
+      "team": "ATL",
+      "pos": "WR",
+      "median": 230,
+      "ppg": 13.5,
+      "vorp": 74,
+      "floor": 190,
+      "ceiling": 284,
+      "ownPpg": 13.9,
+      "ownMedian": 236
+    },
+    {
+      "rank": 18,
       "name": "Malik Nabers",
       "team": "NYG",
       "pos": "WR",
@@ -1208,95 +1270,87 @@
       "ppg": 13.5,
       "vorp": 74,
       "floor": 178,
-      "ceiling": 285
-    },
-    {
-      "rank": 17,
-      "name": "George Pickens",
-      "team": "DAL",
-      "pos": "WR",
-      "median": 230,
-      "ppg": 13.5,
-      "vorp": 74,
-      "floor": 182,
-      "ceiling": 277
-    },
-    {
-      "rank": 18,
-      "name": "A.J. Brown",
-      "team": "NE",
-      "pos": "WR",
-      "median": 230,
-      "ppg": 13.5,
-      "vorp": 74,
-      "floor": 180,
-      "ceiling": 280
+      "ceiling": 285,
+      "ownPpg": 13.5,
+      "ownMedian": 230
     },
     {
       "rank": 19,
-      "name": "Kenneth Walker III",
-      "team": "KC",
+      "name": "De'Von Achane",
+      "team": "MIA",
       "pos": "RB",
       "median": 251,
       "ppg": 14.8,
       "vorp": 73,
-      "floor": 190,
-      "ceiling": 318
+      "floor": 224,
+      "ceiling": 352,
+      "ownPpg": 17.1,
+      "ownMedian": 290
     },
     {
       "rank": 20,
-      "name": "Omarion Hampton",
-      "team": "LAC",
+      "name": "Derrick Henry",
+      "team": "BAL",
       "pos": "RB",
       "median": 250,
       "ppg": 14.7,
       "vorp": 72,
-      "floor": 192,
-      "ceiling": 312
+      "floor": 193,
+      "ceiling": 303,
+      "ownPpg": 14.5,
+      "ownMedian": 247
     },
     {
       "rank": 21,
-      "name": "Derrick Henry",
-      "team": "BAL",
+      "name": "Omarion Hampton",
+      "team": "LAC",
       "pos": "RB",
       "median": 247,
       "ppg": 14.5,
       "vorp": 69,
-      "floor": 193,
-      "ceiling": 303
+      "floor": 192,
+      "ceiling": 312,
+      "ownPpg": 14.7,
+      "ownMedian": 250
     },
     {
       "rank": 22,
-      "name": "Nico Collins",
-      "team": "HOU",
+      "name": "George Pickens",
+      "team": "DAL",
       "pos": "WR",
       "median": 222,
       "ppg": 13.1,
       "vorp": 66,
-      "floor": 176,
-      "ceiling": 268
+      "floor": 182,
+      "ceiling": 277,
+      "ownPpg": 13.5,
+      "ownMedian": 230
     },
     {
       "rank": 23,
-      "name": "Rashee Rice",
-      "team": "KC",
+      "name": "DeVonta Smith",
+      "team": "PHI",
       "pos": "WR",
       "median": 220,
       "ppg": 12.9,
       "vorp": 64,
-      "floor": 135,
-      "ceiling": 269
+      "floor": 164,
+      "ceiling": 256,
+      "ownPpg": 12.3,
+      "ownMedian": 209
     },
     {
       "rank": 24,
-      "name": "Trey McBride",
-      "team": "ARI",
+      "name": "Brock Bowers",
+      "team": "LV",
       "pos": "TE",
       "median": 213,
       "ppg": 12.5,
       "vorp": 64,
-      "floor": 168,
-      "ceiling": 256
+      "floor": 161,
+      "ceiling": 246,
+      "ownPpg": 12.2,
+      "ownMedian": 208
     }
   ]
 }
