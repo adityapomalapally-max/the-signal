@@ -76,6 +76,22 @@ const MANUAL_STALE_DAYS = 21;
 // under-report an injury because someone typed something optimistic in July.
 const ESCALATIONS = new Set(['IR', 'Out', 'PUP', 'NFI', 'Suspended', 'Doubtful']);
 
+// Generational suffixes are inconsistently placed across sources — sometimes in
+// last_name, sometimes a separate field, sometimes absent. They carry no
+// identifying information here, so they come out on both sides.
+const NAME_SUFFIXES = new Set(['jr', 'sr', 'ii', 'iii', 'iv', 'v']);
+
+function normalizeName(s) {
+  return String(s || '')
+    .toLowerCase()
+    .replace(/[.'\u2019`]/g, '')   // periods and apostrophes: "St." / "Ja'Marr"
+    .replace(/[-\u2010-\u2015]/g, ' ') // hyphens: "Amon-Ra"
+    .split(/\s+/)
+    .filter(t => t && !NAME_SUFFIXES.has(t))
+    .join(' ')
+    .trim();
+}
+
 function daysSince(iso) {
   if (!iso) return null;
   const t = Date.parse(iso);
@@ -97,7 +113,7 @@ async function updatePlayerStatuses(sleeperPlayers) {
   // Why the run did or didn't act, per player. A run that changes nothing is
   // indistinguishable from a run that failed unless it says which it was —
   // meta.json read `playerStatusesUpdated: 0` for weeks with no way to tell.
-  const diagnostics = { unmatched: [], manualHeld: [], staleManual: [], feedSilent: 0 };
+  const diagnostics = { unmatched: [], ambiguous: [], manualHeld: [], staleManual: [], feedSilent: 0 };
   const statusMap = {
     'IR': { status: 'IR', statusClass: 'status-out' },
     'Out': { status: 'Out', statusClass: 'status-out' },
@@ -109,16 +125,48 @@ async function updatePlayerStatuses(sleeperPlayers) {
     'NFI': { status: 'NFI', statusClass: 'status-out' },
   };
 
+  // Index Sleeper by normalized full name + position. The old matcher compared
+  // the first and last *whitespace tokens* of our name against Sleeper's
+  // first_name/last_name, which fails in both directions:
+  //   "Amon-Ra St. Brown" -> last token "Brown", Sleeper stores "St. Brown"
+  //   "James Cook III"    -> last token "III",   Sleeper stores "Cook"
+  // A player who never matches is never evaluated at all, so his status is
+  // frozen just as hard as a bad guard would freeze it, and silently.
+  const nameIndex = new Map();
+  for (const sp of Object.values(sleeperPlayers)) {
+    if (!sp || !sp.position) continue;
+    const full = sp.full_name || `${sp.first_name || ''} ${sp.last_name || ''}`;
+    const key = `${normalizeName(full)}|${sp.position}`;
+    if (!key.startsWith('|')) {
+      if (!nameIndex.has(key)) nameIndex.set(key, []);
+      nameIndex.get(key).push(sp);
+    }
+  }
+
   players.forEach(player => {
-    // Find matching Sleeper player
-    const lastName = player.name.split(' ').pop().toLowerCase();
-    const firstName = player.name.split(' ')[0].toLowerCase();
-    const match = Object.values(sleeperPlayers).find(sp =>
-      sp && sp.last_name && sp.first_name &&
-      sp.last_name.toLowerCase() === lastName &&
-      sp.first_name.toLowerCase() === firstName &&
-      sp.position === player.pos
-    );
+    // A confirmed Sleeper ID is stable and beats name matching outright, so a
+    // player only has to be matched by name once.
+    let match = null;
+    if (player.sleeperId && sleeperPlayers[player.sleeperId]) {
+      const byId = sleeperPlayers[player.sleeperId];
+      if (byId.position === player.pos) match = byId;
+    }
+
+    if (!match) {
+      const candidates = nameIndex.get(`${normalizeName(player.name)}|${player.pos}`) || [];
+      if (candidates.length === 1) {
+        match = candidates[0];
+      } else if (candidates.length > 1) {
+        const byTeam = candidates.filter(sp => sp.team === player.team);
+        if (byTeam.length === 1) {
+          match = byTeam[0];
+        } else {
+          // Two players, same name and position. Picking one at random would
+          // write someone else's injury onto this profile.
+          diagnostics.ambiguous.push(`${player.name} (${player.pos}) — ${candidates.length} candidates`);
+        }
+      }
+    }
 
     if (match) {
       // Persist the Sleeper ID so the site can build headshot URLs without
@@ -190,6 +238,7 @@ async function updatePlayerStatuses(sleeperPlayers) {
   writeJSON('players.json', players);
   log(`Updated ${updated} player statuses`);
   if (diagnostics.unmatched.length) log(`  UNMATCHED in Sleeper DB (${diagnostics.unmatched.length}): ${diagnostics.unmatched.join(', ')}`);
+  if (diagnostics.ambiguous.length) log(`  AMBIGUOUS, skipped (${diagnostics.ambiguous.length}): ${diagnostics.ambiguous.join(', ')}`);
   if (diagnostics.staleManual.length) {
     log(`  STALE manual statuses (${diagnostics.staleManual.length}) — review these:`);
     diagnostics.staleManual.forEach(s => log(`    ${s}`));
