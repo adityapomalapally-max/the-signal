@@ -8,7 +8,7 @@
     "source": "The Signal 2026 projection set",
     "generated": "2026-08-13",
     "builtBy": "scripts/build-rankings.js",
-    "builtAt": "2026-08-14T16:26:04.216Z",
+    "builtAt": "2026-08-14T18:42:33.874Z",
     "overallMethod": "Derived from the hand-ordered positional tabs. Each player inherits the projected median of the slot he was ranked into, then VORP is taken against replacement level. Ordering is the analyst's; the replacement math is the model's.",
     "baselines": {
       "qb": {
@@ -553,6 +553,17 @@
     },
     {
       "rank": 3,
+      "name": "Justin Jefferson",
+      "team": "MIN",
+      "pos": "WR",
+      "median": 248,
+      "ppg": 14.6,
+      "vorp": 92,
+      "floor": 192,
+      "ceiling": 300
+    },
+    {
+      "rank": 4,
       "name": "CeeDee Lamb",
       "team": "DAL",
       "pos": "WR",
@@ -563,7 +574,7 @@
       "ceiling": 300
     },
     {
-      "rank": 4,
+      "rank": 5,
       "name": "Amon-Ra St. Brown",
       "team": "DET",
       "pos": "WR",
@@ -572,17 +583,6 @@
       "vorp": 89,
       "floor": 204,
       "ceiling": 290
-    },
-    {
-      "rank": 5,
-      "name": "Justin Jefferson",
-      "team": "MIN",
-      "pos": "WR",
-      "median": 248,
-      "ppg": 14.6,
-      "vorp": 92,
-      "floor": 192,
-      "ceiling": 300
     },
     {
       "rank": 6,
@@ -1146,42 +1146,42 @@
     },
     {
       "rank": 9,
-      "name": "CeeDee Lamb",
-      "team": "DAL",
+      "name": "Justin Jefferson",
+      "team": "MIN",
       "pos": "WR",
       "median": 252,
       "ppg": 14.8,
       "vorp": 96,
+      "floor": 192,
+      "ceiling": 300,
+      "ownPpg": 14.6,
+      "ownMedian": 248
+    },
+    {
+      "rank": 10,
+      "name": "CeeDee Lamb",
+      "team": "DAL",
+      "pos": "WR",
+      "median": 248,
+      "ppg": 14.6,
+      "vorp": 92,
       "floor": 202,
       "ceiling": 300,
       "ownPpg": 14.8,
       "ownMedian": 252
     },
     {
-      "rank": 10,
+      "rank": 11,
       "name": "Amon-Ra St. Brown",
       "team": "DET",
-      "pos": "WR",
-      "median": 248,
-      "ppg": 14.6,
-      "vorp": 92,
-      "floor": 204,
-      "ceiling": 290,
-      "ownPpg": 14.4,
-      "ownMedian": 245
-    },
-    {
-      "rank": 11,
-      "name": "Justin Jefferson",
-      "team": "MIN",
       "pos": "WR",
       "median": 245,
       "ppg": 14.4,
       "vorp": 89,
-      "floor": 192,
-      "ceiling": 300,
-      "ownPpg": 14.6,
-      "ownMedian": 248
+      "floor": 204,
+      "ceiling": 290,
+      "ownPpg": 14.4,
+      "ownMedian": 245
     },
     {
       "rank": 12,
