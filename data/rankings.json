@@ -8,7 +8,7 @@
     "source": "The Signal 2026 projection set",
     "generated": "2026-08-13",
     "builtBy": "scripts/build-rankings.js",
-    "builtAt": "2026-08-15T19:02:22.541Z",
+    "builtAt": "2026-08-15T19:13:29.428Z",
     "overallMethod": "Derived from the hand-ordered positional tabs. Each player inherits the projected median of the slot he was ranked into, then VORP is taken against replacement level. Ordering is the analyst's; the replacement math is the model's.",
     "baselines": {
       "qb": {
@@ -608,6 +608,17 @@
     },
     {
       "rank": 8,
+      "name": "George Pickens",
+      "team": "DAL",
+      "pos": "WR",
+      "median": 230,
+      "ppg": 13.5,
+      "vorp": 74,
+      "floor": 182,
+      "ceiling": 277
+    },
+    {
+      "rank": 9,
       "name": "Nico Collins",
       "team": "HOU",
       "pos": "WR",
@@ -618,7 +629,7 @@
       "ceiling": 268
     },
     {
-      "rank": 9,
+      "rank": 10,
       "name": "Drake London",
       "team": "ATL",
       "pos": "WR",
@@ -629,7 +640,7 @@
       "ceiling": 284
     },
     {
-      "rank": 10,
+      "rank": 11,
       "name": "Malik Nabers",
       "team": "NYG",
       "pos": "WR",
@@ -638,17 +649,6 @@
       "vorp": 74,
       "floor": 178,
       "ceiling": 285
-    },
-    {
-      "rank": 11,
-      "name": "George Pickens",
-      "team": "DAL",
-      "pos": "WR",
-      "median": 230,
-      "ppg": 13.5,
-      "vorp": 74,
-      "floor": 182,
-      "ceiling": 277
     },
     {
       "rank": 12,
@@ -1237,6 +1237,19 @@
     },
     {
       "rank": 16,
+      "name": "George Pickens",
+      "team": "DAL",
+      "pos": "WR",
+      "median": 230,
+      "ppg": 13.5,
+      "vorp": 74,
+      "floor": 182,
+      "ceiling": 277,
+      "ownPpg": 13.5,
+      "ownMedian": 230
+    },
+    {
+      "rank": 17,
       "name": "Nico Collins",
       "team": "HOU",
       "pos": "WR",
@@ -1249,7 +1262,7 @@
       "ownMedian": 222
     },
     {
-      "rank": 17,
+      "rank": 18,
       "name": "Drake London",
       "team": "ATL",
       "pos": "WR",
@@ -1260,19 +1273,6 @@
       "ceiling": 284,
       "ownPpg": 13.9,
       "ownMedian": 236
-    },
-    {
-      "rank": 18,
-      "name": "Malik Nabers",
-      "team": "NYG",
-      "pos": "WR",
-      "median": 230,
-      "ppg": 13.5,
-      "vorp": 74,
-      "floor": 178,
-      "ceiling": 285,
-      "ownPpg": 13.5,
-      "ownMedian": 230
     },
     {
       "rank": 19,
@@ -1315,14 +1315,14 @@
     },
     {
       "rank": 22,
-      "name": "George Pickens",
-      "team": "DAL",
+      "name": "Malik Nabers",
+      "team": "NYG",
       "pos": "WR",
       "median": 222,
       "ppg": 13.1,
       "vorp": 66,
-      "floor": 182,
-      "ceiling": 277,
+      "floor": 178,
+      "ceiling": 285,
       "ownPpg": 13.5,
       "ownMedian": 230
     },
