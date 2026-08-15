@@ -503,12 +503,27 @@ async function main() {
   }
 
   fs.writeFileSync(path.join(DATA_DIR, 'stats.json'), JSON.stringify(seasonOnly, null, 2) + '\n');
-  fs.writeFileSync(path.join(DATA_DIR, 'stats-weekly.json'), JSON.stringify(weeklyOnly, null, 2) + '\n');
+
+  // Weekly logs shard per player: opening a profile fetches one ~8KB file
+  // instead of the whole league's logs (the single file had reached 1.4MB).
+  // Safe to wipe and rewrite — every abort guard has already run by here.
+  const weeklyDir = path.join(DATA_DIR, 'weekly');
+  fs.rmSync(weeklyDir, { recursive: true, force: true });
+  fs.mkdirSync(weeklyDir, { recursive: true });
+  let shardCount = 0;
+  for (const [pid, seasons] of Object.entries(weeklyOnly)) {
+    if (Object.keys(seasons).length) {
+      fs.writeFileSync(path.join(weeklyDir, `${pid}.json`), JSON.stringify(seasons, null, 2) + '\n');
+      shardCount++;
+    }
+  }
+  // The old monolith must not linger as a stale duplicate source of truth.
+  fs.rmSync(path.join(DATA_DIR, 'stats-weekly.json'), { force: true });
 
   const kb = f => (fs.statSync(path.join(DATA_DIR, f)).size / 1024).toFixed(0);
   log(`Wrote stats for ${Object.keys(stats).length} players`);
-  log(`  data/stats.json        ${kb('stats.json')}KB (season totals, loaded on init)`);
-  log(`  data/stats-weekly.json ${kb('stats-weekly.json')}KB (game logs, lazy-loaded)`);
+  log(`  data/stats.json  ${kb('stats.json')}KB (season totals, loaded on init)`);
+  log(`  data/weekly/     ${shardCount} per-player game-log shards (lazy-loaded per profile)`);
   log('=== Stats Pipeline Complete ===');
 }
 

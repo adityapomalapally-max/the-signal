@@ -703,6 +703,16 @@ a { color: inherit; text-decoration: none; }
   .rank-team { display: none; }
 }
 
+/* ===== WEEKLY PROFILE CHARTS ===== */
+.wk-chart { margin: 0 0 20px; }
+.wk-chart-head { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
+.wk-cols { display: flex; align-items: flex-end; gap: 2px; height: 92px; border-bottom: 1px solid var(--border); }
+.wk-slot { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-width: 0; }
+.wk-bar { width: 60%; max-width: 18px; border-radius: 4px 4px 0 0; }
+.wk-lab { font-family: var(--mono); font-size: 9px; color: var(--text-secondary); margin-bottom: 3px; }
+.wk-xrow { display: flex; gap: 2px; margin-top: 5px; }
+.wk-x { flex: 1; text-align: center; font-family: var(--mono); font-size: 8px; color: var(--text-muted); min-width: 0; }
+
 /* ===== RIGHT SIDEBAR ===== */
 .sidebar-section {
   padding: 28px;
@@ -2380,8 +2390,6 @@ function initRankTooltip() {
   const tip = document.createElement('div');
   tip.id = 'vizTooltip';
   document.body.appendChild(tip);
-  const bodyEl = document.getElementById('rankingsBody');
-  if (!bodyEl) return;
   const show = (text, x, y) => {
     tip.textContent = text;
     tip.style.display = 'block';
@@ -2390,20 +2398,22 @@ function initRankTooltip() {
     tip.style.left = Math.min(x + pad, window.innerWidth - w - 8) + 'px';
     tip.style.top = (y + pad + hgt > window.innerHeight ? y - hgt - 6 : y + pad) + 'px';
   };
-  bodyEl.addEventListener('pointermove', e => {
-    const row = e.target.closest('.rank-row');
-    if (row && row.dataset.tip) show(row.dataset.tip, e.clientX, e.clientY);
-    else tip.style.display = 'none';
+  // Delegated on document: any element carrying data-tip gets the shared
+  // tooltip — rankings rows, profile chart columns, whatever comes next.
+  document.addEventListener('pointermove', e => {
+    const el = e.target.closest && e.target.closest('[data-tip]');
+    if (el) show(el.dataset.tip, e.clientX, e.clientY);
+    else if (tip.style.display !== 'none') tip.style.display = 'none';
   });
-  bodyEl.addEventListener('pointerleave', () => { tip.style.display = 'none'; });
-  bodyEl.addEventListener('focusin', e => {
-    const row = e.target.closest('.rank-row');
-    if (row && row.dataset.tip) {
-      const r = row.getBoundingClientRect();
-      show(row.dataset.tip, r.left + 40, r.top);
+  document.addEventListener('focusin', e => {
+    const el = e.target.closest && e.target.closest('[data-tip]');
+    if (el) {
+      const r = el.getBoundingClientRect();
+      show(el.dataset.tip, r.left + 40, r.top);
+    } else {
+      tip.style.display = 'none';
     }
   });
-  bodyEl.addEventListener('focusout', () => { tip.style.display = 'none'; });
 }
 initRankTooltip();
 
@@ -2917,7 +2927,7 @@ function renderProfileTab(tab) {
       const volSeason = Object.values(ps.seasons).sort((a,b) => b.season - a.season)[0];
       if (volSeason && volSeason.volatility) html += renderVolatility(volSeason.volatility, volSeason.season, player.pos);
 
-      // ===== WEEKLY GAME LOG (lazy-loaded — 188KB of logs stay off the init path) =====
+      // ===== WEEKLY CHARTS + GAME LOG (lazy-loaded per player from data/weekly/) =====
       const latestSeason = Object.values(ps.seasons).sort((a,b) => b.season - a.season)[0];
       if (latestSeason) {
         html += `<div id="gameLogSlot" style="min-height:40px;"><div style="font-size:12px;color:var(--text-muted);font-style:italic;padding:8px 0;">Loading ${latestSeason.season} game log…</div></div>`;
@@ -3147,28 +3157,85 @@ function renderVolatility(v, season, pos) {
 // ===== WEEKLY GAME LOGS (lazy) =====
 // Season totals ship in stats.json (~31KB, loaded on init). The weekly logs are
 // ~188KB and only ever render inside an open profile modal, so they are fetched
-// on demand and cached for the rest of the session.
-let weeklyStats = null;
-let weeklyStatsPromise = null;
+// on demand and cached for the rest of the session. Logs are sharded one
+// file per player (data/weekly/<id>.json) so a profile open costs ~8KB,
+// not the whole league's logs.
+const weeklyCache = {};
 
-function ensureWeeklyStats() {
-  if (weeklyStats) return Promise.resolve(weeklyStats);
-  if (!weeklyStatsPromise) {
-    weeklyStatsPromise = loadJSON('data/stats-weekly.json').then(d => {
-      weeklyStats = d || {};
-      return weeklyStats;
-    });
+function ensureWeeklyStats(playerId) {
+  if (!(playerId in weeklyCache)) {
+    weeklyCache[playerId] = loadJSON(`data/weekly/${playerId}.json`).then(d => d || {});
   }
-  return weeklyStatsPromise;
+  return weeklyCache[playerId];
+}
+
+// ===== WEEKLY PROFILE CHARTS =====
+// Columns sit on a full week 1→N axis so a missed week is a visible hole,
+// not a silently closed gap — injury absences are part of the story. The
+// game-log table right below is the table-view twin for both charts.
+function vizWeeklyColumns(title, unit, log, valueOf, tipOf, color, season) {
+  const played = log.filter(w => typeof valueOf(w) === 'number');
+  if (played.length < 3) return '';
+  // A finished season runs the full 18-week axis, so a season-ending injury
+  // reads as a run of empty slots. An in-progress season ends at the last
+  // played week — weeks that haven't happened yet are not "missed".
+  const seasonOver = Number(season) < new Date().getFullYear();
+  const maxWeek = seasonOver ? 18 : Math.max(...log.map(w => w.week));
+  const byWeek = new Map(log.map(w => [w.week, w]));
+  const max = Math.max(...played.map(valueOf));
+  if (!(max > 0)) return '';
+  const PLOT = 74; // px; bar of `max` fills it, its label rides above
+
+  let cols = '', xrow = '';
+  const thin = maxWeek > 10; // label every other week when crowded
+  for (let wk = 1; wk <= maxWeek; wk++) {
+    const w = byWeek.get(wk);
+    const v = w ? valueOf(w) : null;
+    if (typeof v === 'number') {
+      const h = Math.max(Math.round((v / max) * PLOT), 2);
+      const lab = v === max ? `<div class="wk-lab">${v}</div>` : '';
+      cols += `<div class="wk-slot">${lab}<div class="wk-bar" data-tip="${rankEsc(tipOf(w, v))}" style="height:${h}px;background:${color};"></div></div>`;
+    } else {
+      cols += `<div class="wk-slot"></div>`;
+    }
+    xrow += `<div class="wk-x">${(thin && wk % 2 === 0) ? '' : wk}</div>`;
+  }
+
+  return `<div class="wk-chart">`
+    + `<div class="wk-chart-head"><span>${rankEsc(title)}</span><span>${rankEsc(unit)}</span></div>`
+    + `<div class="wk-cols">${cols}</div>`
+    + `<div class="wk-xrow">${xrow}</div>`
+    + `</div>`;
+}
+
+function weeklyCharts(log, pos, season) {
+  const fpts = vizWeeklyColumns(
+    `${season} Weekly Fantasy Points`, 'PPR',
+    log, w => (typeof w.fpts === 'number' ? w.fpts : null),
+    (w, v) => `W${w.week} vs ${w.opp || '?'} — ${v} PPR pts`,
+    '#a8893a', season);
+  const usageVal = pos === 'QB'
+    ? (w => (typeof w.att === 'number' ? w.att : null))
+    : pos === 'RB'
+      ? (w => (typeof w.car === 'number' || typeof w.tgt === 'number' ? (w.car || 0) + (w.tgt || 0) : null))
+      : (w => (typeof w.tgt === 'number' ? w.tgt : null));
+  const usageName = pos === 'QB' ? 'Pass Attempts' : pos === 'RB' ? 'Touches' : 'Targets';
+  const usageUnit = pos === 'RB' ? 'CARRIES + TARGETS' : '';
+  const usage = vizWeeklyColumns(
+    `${season} Weekly ${usageName}`, usageUnit,
+    log, usageVal,
+    (w, v) => `W${w.week} vs ${w.opp || '?'} — ${v} ${usageName.toLowerCase()}`,
+    '#1ba89b', season);
+  return fpts + usage;
 }
 
 async function loadWeeklyLog(playerId, season, pos) {
-  const data = await ensureWeeklyStats();
+  const seasons = await ensureWeeklyStats(playerId);
   // The modal may have been closed or switched tabs while this was in flight.
   const slot = document.getElementById('gameLogSlot');
   if (!slot || currentProfileId !== playerId) return;
 
-  const log = data[playerId] && data[playerId][season];
+  const log = seasons[season];
   if (!log || !log.length) { slot.innerHTML = ''; return; }
 
   const isQB = pos === 'QB';
@@ -3177,7 +3244,8 @@ async function loadWeeklyLog(playerId, season, pos) {
     : isRB ? ['Wk','Opp','Car','RuYds','RuTD','Tgt','Rec','RecYds','RecTD','FPTS']
     : ['Wk','Opp','Tgt','Rec','Yds','TD','aDOT','YAC','EPA','FPTS'];
 
-  let h = `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">${season} Game Log</div>`;
+  let h = weeklyCharts(log, pos, season);
+  h += `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">${season} Game Log</div>`;
   h += `<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;"><table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap;">`;
   h += '<thead><tr style="border-bottom:2px solid var(--border);">';
   cols.forEach(c => h += `<th style="padding:6px 5px;text-align:left;font-family:var(--mono);font-size:8px;color:var(--text-muted);text-transform:uppercase;">${c}</th>`);
