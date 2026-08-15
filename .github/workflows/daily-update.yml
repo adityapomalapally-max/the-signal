@@ -31,6 +31,9 @@ jobs:
       
       - name: Fetch nflverse player stats
         run: node scripts/fetch-stats.js
+
+      - name: Fetch Next Gen Stats + snap counts
+        run: node scripts/fetch-ngs.js
       
       - name: Check for changes
         id: changes

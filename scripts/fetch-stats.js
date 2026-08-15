@@ -12,67 +12,16 @@
 
 const fs = require('fs');
 const path = require('path');
-const https = require('https');
+const { fetchCSV, parseCSV, buildMatchIndex, matchRow } = require('./lib/match');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
-const SEASONS = [2023, 2024, 2025]; // extend as needed
+const SEASONS = [2023, 2024, 2025]; // extend as needed — keep in step with fetch-ngs.js
 
 function log(msg) {
   console.log(`[stats] ${msg}`);
 }
 
-// ===== CSV FETCH + PARSE =====
-function fetchCSV(url) {
-  return new Promise((resolve, reject) => {
-    const doFetch = (u, redirects = 0) => {
-      if (redirects > 5) return reject(new Error('Too many redirects'));
-      https.get(u, { headers: { 'User-Agent': 'TheSignal/1.0' } }, (res) => {
-        if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-          return doFetch(res.headers.location, redirects + 1);
-        }
-        if (res.statusCode !== 200) return reject(new Error(`HTTP ${res.statusCode}`));
-        let data = '';
-        res.on('data', chunk => data += chunk);
-        res.on('end', () => resolve(data));
-      }).on('error', reject);
-    };
-    doFetch(url);
-  });
-}
-
-function parseCSV(csv) {
-  const lines = csv.split('\n').filter(l => l.trim());
-  if (lines.length < 2) return [];
-  const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
-  const rows = [];
-  for (let i = 1; i < lines.length; i++) {
-    const vals = parseCSVLine(lines[i]);
-    if (vals.length !== headers.length) continue;
-    const row = {};
-    headers.forEach((h, j) => {
-      const v = vals[j].replace(/^"|"$/g, '').trim();
-      row[h] = v === '' || v === 'NA' ? null : isNaN(v) ? v : parseFloat(v);
-    });
-    rows.push(row);
-  }
-  return rows;
-}
-
-function parseCSVLine(line) {
-  const result = [];
-  let current = '';
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const c = line[i];
-    if (c === '"') { inQuotes = !inQuotes; }
-    else if (c === ',' && !inQuotes) { result.push(current); current = ''; }
-    else { current += c; }
-  }
-  result.push(current);
-  return result;
-}
-
-// ===== PLAYER MATCHING =====
+// ===== PLAYER MATCHING (shared logic lives in lib/match.js) =====
 function loadOurPlayers() {
   const players = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'players.json'), 'utf8'));
   return players.map(p => ({
@@ -84,45 +33,9 @@ function loadOurPlayers() {
   }));
 }
 
-function normalizeName(name) {
-  return name
-    .replace(/\s+(III|II|IV|Jr\.?|Sr\.?)$/i, '')
-    .replace(/[''`]/g, '')  // strip apostrophes/smart quotes
-    .replace(/\./g, '')     // periods: "A.J. Barner" vs Sleeper's "AJ Barner"
-    .toLowerCase()
-    .trim();
-}
-
-// Prebuilt lookup: GSIS id first (exact — nflverse's player_id IS the GSIS
-// id), normalized name + position as the fallback. Two pool players who
-// normalize to the same name+position poison that key: matching neither
-// beats guessing, because a wrong match writes one player's stats onto
-// another's profile.
-function buildMatchIndex(ourPlayers) {
-  const byGsis = new Map();
-  const byName = new Map();
-  for (const p of ourPlayers) {
-    if (p.gsisId) byGsis.set(p.gsisId, p);
-    const key = `${normalizeName(p.name)}|${p.pos}`;
-    if (byName.has(key)) {
-      log(`  AMBIGUOUS pool name — name-matching disabled for both: ${p.name} (${p.pos})`);
-      byName.set(key, null);
-    } else {
-      byName.set(key, p);
-    }
-  }
-  return { byGsis, byName };
-}
-
+// nflverse stats rows: player_id IS the GSIS id.
 function matchPlayer(row, index) {
-  if (row.player_id) {
-    const byId = index.byGsis.get(row.player_id);
-    // No position check here: a GSIS id identifies exactly one human. The
-    // position guard exists to keep same-NAME strangers apart, and it wrongly
-    // rejects two-way players (nflverse files Travis Hunter under CB).
-    if (byId) return byId;
-  }
-  return index.byName.get(`${normalizeName(row.player_display_name || '')}|${row.position}`) || null;
+  return matchRow(index, { gsis: row.player_id, name: row.player_display_name, pos: row.position });
 }
 
 // ===== STAT AGGREGATION =====
@@ -393,7 +306,7 @@ async function main() {
   log('=== Stats Pipeline Start ===');
   const ourPlayers = loadOurPlayers();
   log(`Loaded ${ourPlayers.length} players from players.json`);
-  const matchIndex = buildMatchIndex(ourPlayers);
+  const matchIndex = buildMatchIndex(ourPlayers, log);
 
   // Collect all weekly rows per player across seasons
   const playerWeeks = {}; // { playerId: { 2023: [rows], 2024: [rows] } }

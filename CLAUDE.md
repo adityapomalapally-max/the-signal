@@ -8,6 +8,8 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   status carry-over + curated overlay. NEVER edit players.json by hand. Runs FIRST in the Action
 - `scripts/update-data.js` — daily GitHub Action, 6 AM ET. Sleeper statuses, ESPN news, trending
 - `scripts/fetch-stats.js` — nflverse stats (stats_player release). GSIS-id match first, name second
+- `scripts/fetch-ngs.js` — Next Gen Stats + snap counts → data/ngs.json. Same matching rules
+- `scripts/lib/match.js` — THE player matcher + CSV fetch. Both fetch scripts use it; never fork it
 - `scripts/build-rankings.js` — generates data/rankings.json. NEVER edit rankings.json by hand
 - `data/players-curated.json` — hand-written rich profiles (athletic %iles, comps, pinned GSIS ids).
   Wins over the generated base, EXCEPT status/team/age/fRank, which drift and stay feed-owned

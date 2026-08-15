@@ -2923,6 +2923,10 @@ function renderProfileTab(tab) {
       }
       html += '</tbody></table></div>';
 
+      // ===== NEXT GEN STATS (lazy — one shared data/ngs.json) =====
+      html += `<div id="ngsSlot"></div>`;
+      loadNgsSection(player.id, player.pos);
+
       // ===== WEEKLY CONSISTENCY =====
       const volSeason = Object.values(ps.seasons).sort((a,b) => b.season - a.season)[0];
       if (volSeason && volSeason.volatility) html += renderVolatility(volSeason.volatility, volSeason.season, player.pos);
@@ -2934,7 +2938,7 @@ function renderProfileTab(tab) {
         loadWeeklyLog(player.id, latestSeason.season, player.pos);
       }
 
-      html += `<div style="font-size:11px;color:var(--text-muted);font-style:italic;margin-top:12px;">Source: nflverse · REG season only · PPR scoring</div>`;
+      html += `<div style="font-size:11px;color:var(--text-muted);font-style:italic;margin-top:12px;">Source: nflverse · NFL Next Gen Stats · REG season only · PPR scoring</div>`;
     }
 
     // Fallback to hand-coded seasonStats if no nflverse data
@@ -3167,6 +3171,84 @@ function ensureWeeklyStats(playerId) {
     weeklyCache[playerId] = loadJSON(`data/weekly/${playerId}.json`).then(d => d || {});
   }
   return weeklyCache[playerId];
+}
+
+// ===== NEXT GEN STATS (profile section) =====
+// Season-level tracking data (separation, CPOE, box counts) + snap share,
+// built by scripts/fetch-ngs.js. One file for the whole pool, fetched on
+// first profile open and cached. Missing metrics render as em-dashes,
+// missing players render as nothing.
+let ngsAllPromise = null;
+function ensureNgs() {
+  if (!ngsAllPromise) ngsAllPromise = loadJSON('data/ngs.json').then(d => d || {});
+  return ngsAllPromise;
+}
+
+async function loadNgsSection(playerId, pos) {
+  const data = await ensureNgs();
+  const el = document.getElementById('ngsSlot');
+  if (!el || currentProfileId !== playerId) return;
+  const seasons = data[playerId];
+  if (!seasons) { el.innerHTML = ''; return; }
+
+  const fmt = v => (v === null || v === undefined) ? '—' : v;
+  const sign = v => (v === null || v === undefined) ? '—'
+    : `<span style="color:${v > 0 ? 'var(--green)' : v < 0 ? 'var(--red)' : 'var(--text)'};">${v > 0 ? '+' : ''}${v}</span>`;
+
+  // [header, tooltip, cellFn]
+  let spec;
+  if (pos === 'QB') {
+    spec = [
+      ['TT', 'Average time to throw, in seconds', s => s.pass && fmt(s.pass.timeToThrow)],
+      ['AGG%', 'Aggressiveness — share of throws into tight windows (defender within 1 yard)', s => s.pass && fmt(s.pass.aggressiveness)],
+      ['iAY', 'Average intended air yards per attempt', s => s.pass && fmt(s.pass.iay)],
+      ['Comp%', 'Completion percentage', s => s.pass && fmt(s.pass.compPct)],
+      ['xComp%', 'Expected completion percentage, given the difficulty of each throw', s => s.pass && fmt(s.pass.xCompPct)],
+      ['CPOE', 'Completion percentage over expected — accuracy after adjusting for throw difficulty', s => s.pass && sign(s.pass.cpoe)]
+    ];
+  } else if (pos === 'RB') {
+    spec = [
+      ['EFF', 'Rushing efficiency — yards traveled per yard gained; lower is more direct (north/south)', s => s.rush && fmt(s.rush.efficiency)],
+      ['8+BOX%', 'Share of carries against 8 or more defenders in the box', s => s.rush && fmt(s.rush.eightBoxPct)],
+      ['TLOS', 'Average time behind the line of scrimmage, in seconds', s => s.rush && fmt(s.rush.timeToLos)]
+    ];
+  } else {
+    spec = [
+      ['SEP', 'Average separation from the nearest defender at pass arrival, in yards', s => s.rec && fmt(s.rec.separation)],
+      ['CUSH', 'Average cushion at the snap, in yards', s => s.rec && fmt(s.rec.cushion)],
+      ['iAY', 'Average intended air yards per target', s => s.rec && fmt(s.rec.iay)],
+      ['iAY SH%', "Share of the team's intended air yards", s => s.rec && fmt(s.rec.iayShare)],
+      ['xYAC/R', 'Expected yards after catch per reception, given position and defenders', s => s.rec && fmt(s.rec.xYac)],
+      ['YAC/R', 'Actual yards after catch per reception', s => s.rec && fmt(s.rec.yac)],
+      ['YAC +/-', 'YAC over expected — what the player creates beyond the situation', s => s.rec && sign(s.rec.yacOE)]
+    ];
+  }
+
+  const years = Object.keys(seasons).sort();
+  const rows = years.filter(yr => {
+    const s = seasons[yr];
+    return s.snapPct !== undefined || spec.some(([, , cell]) => cell(s));
+  });
+  if (!rows.length) { el.innerHTML = ''; return; }
+
+  let h = `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin:20px 0 12px;">Next Gen Stats &amp; Snap Share</div>`;
+  h += `<div style="overflow-x:auto;margin-bottom:20px;"><table style="width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap;">`;
+  h += '<thead><tr style="border-bottom:2px solid var(--border);">';
+  ['Year', 'Snap%', ...spec.map(c => c[0])].forEach((c, i) => {
+    const tip = i === 0 ? '' : i === 1 ? 'Share of team offensive snaps, snap-weighted across games played' : spec[i - 2][1];
+    h += `<th ${tip ? `data-tip="${rankEsc(tip)}"` : ''} style="padding:8px 6px;text-align:left;font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;${tip ? 'cursor:help;text-decoration:underline dotted;' : ''}">${c}</th>`;
+  });
+  h += '</tr></thead><tbody>';
+  rows.forEach(yr => {
+    const s = seasons[yr];
+    h += `<tr style="border-bottom:1px solid var(--border-subtle);">
+      <td style="padding:8px 6px;font-weight:600;color:var(--gold);font-family:var(--mono);">${yr}</td>
+      <td style="padding:8px 6px;font-weight:600;">${fmt(s.snapPct)}${s.snapPct !== undefined ? '%' : ''}</td>`;
+    spec.forEach(([, , cell]) => { h += `<td style="padding:8px 6px;">${cell(s) || '—'}</td>`; });
+    h += '</tr>';
+  });
+  h += '</tbody></table></div>';
+  el.innerHTML = h;
 }
 
 // ===== WEEKLY PROFILE CHARTS =====
