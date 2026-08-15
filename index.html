@@ -226,9 +226,10 @@ a { color: inherit; text-decoration: none; }
 }
 
 .nav-item {
-  padding: 20px 20px;
+  padding: 20px 13px;
   font-size: 13px;
   font-weight: 500;
+  white-space: nowrap;
   color: var(--text-secondary);
   letter-spacing: 0.3px;
   transition: color 0.2s;
@@ -701,6 +702,40 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 768px) {
   .rank-chart { --gutL: 118px; --gutR: 44px; }
   .rank-team { display: none; }
+}
+
+/* ===== LEADERS ===== */
+.lab-metric-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
+.lab-metric { font-family: var(--mono); font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; padding: 7px 11px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-card); color: var(--text-secondary); cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+.lab-metric:hover { border-color: var(--border-hover); color: var(--text); }
+.lab-metric.active { border-color: var(--gold); color: var(--gold); }
+.lab-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+.lab-title { font-family: var(--serif); font-size: 20px; font-weight: 700; }
+.lab-qual { font-family: var(--mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.5px; }
+.lab-sub { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px; }
+.lab-row { display: grid; grid-template-columns: 200px 1fr 62px; align-items: center; height: 28px; border-radius: 4px; cursor: pointer; }
+.lab-row:hover, .lab-row:focus-visible { background: var(--bg-card-hover); outline: none; }
+.lab-name { display: flex; align-items: center; gap: 7px; min-width: 0; padding-right: 10px; font-size: 12.5px; }
+.lab-rank { font-family: var(--mono); font-size: 10px; color: var(--text-muted); width: 20px; text-align: right; flex-shrink: 0; }
+.lab-player { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lab-team { font-family: var(--mono); font-size: 10px; color: var(--text-muted); flex-shrink: 0; }
+.lab-track { position: relative; height: 100%; display: flex; align-items: center; }
+.lab-bar { height: 11px; border-radius: 0 4px 4px 0; background: #a8893a; min-width: 2px; }
+/* Diverging pair: warm gold above zero, cool blue below. A warm/warm pair
+   (gold vs red) failed the normal-vision separation floor outright. */
+.lab-bar.neg { border-radius: 4px 0 0 4px; background: #2a78d6; margin-left: auto; }
+.lab-val { font-family: var(--mono); font-size: 11px; color: var(--text-secondary); text-align: right; font-variant-numeric: tabular-nums; }
+.lab-scale { display: grid; grid-template-columns: 200px 1fr 62px; padding: 0 20px 8px; }
+.lab-scale-inner { grid-column: 2; display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9px; color: var(--text-muted); }
+.lab-rule { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--border); }
+.lab-dot { position: absolute; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #a8893a; border: 2px solid var(--bg-card); box-sizing: content-box; }
+.lab-zero { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--border-hover); }
+.scatter-wrap { margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--border); }
+.scatter-dot { cursor: pointer; }
+.scatter-dot:hover circle, .scatter-dot:focus-visible circle { stroke: var(--gold); stroke-width: 2px; outline: none; }
+@media (max-width: 768px) {
+  .lab-row { grid-template-columns: 130px 1fr 52px; }
+  .lab-team { display: none; }
 }
 
 /* ===== WEEKLY PROFILE CHARTS ===== */
@@ -1489,6 +1524,7 @@ a { color: inherit; text-decoration: none; }
     <div class="nav-center">
       <a class="nav-item active" data-page="home" onclick="switchPage('home')">Home</a>
       <a class="nav-item" data-page="rankings" onclick="switchPage('rankings')">Rankings</a>
+      <a class="nav-item" data-page="lab" onclick="switchPage('lab')">Leaders</a>
       <a class="nav-item" data-page="players" onclick="switchPage('players')">Players</a>
       <a class="nav-item" data-page="compare" onclick="switchPage('compare')">Compare</a>
       <a class="nav-item" data-page="medicals" onclick="switchPage('medicals')">Medicals</a>
@@ -1521,6 +1557,7 @@ a { color: inherit; text-decoration: none; }
   <div style="padding:12px 0;">
     <a class="mobile-nav-link" onclick="switchPage('home');toggleMobileNav();">Home</a>
     <a class="mobile-nav-link" onclick="switchPage('rankings');toggleMobileNav();">Rankings</a>
+    <a class="mobile-nav-link" onclick="switchPage('lab');toggleMobileNav();">Leaders</a>
     <a class="mobile-nav-link" onclick="switchPage('players');toggleMobileNav();">Players</a>
     <a class="mobile-nav-link" onclick="switchPage('medicals');toggleMobileNav();">Medicals</a>
     <a class="mobile-nav-link" onclick="switchPage('fantasy');toggleMobileNav();">Fantasy</a>
@@ -1753,6 +1790,38 @@ a { color: inherit; text-decoration: none; }
     <div style="padding:0 48px 48px;">
       <div id="rankingsBody"></div>
       <div id="rankingsCaveat" class="rank-note"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= -->
+<!-- ========= LEADERS =========== -->
+<!-- ============================= -->
+<div class="page-section" id="page-lab">
+  <div style="max-width:1160px;margin:0 auto;">
+    <div class="players-header">
+      <h1>Leaders</h1>
+      <p>Leaderboards across the top-200 pool — box score, efficiency, and NFL Next Gen tracking data. Every board states its qualifier; players below it are excluded rather than ranked on noise.</p>
+      <div class="players-search-bar" style="justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <div class="position-filter" id="labPosFilter">
+            <button class="pos-btn" onclick="setLabPos('QB', this)">QB</button>
+            <button class="pos-btn" onclick="setLabPos('RB', this)">RB</button>
+            <button class="pos-btn active" onclick="setLabPos('WR', this)">WR</button>
+            <button class="pos-btn" onclick="setLabPos('TE', this)">TE</button>
+          </div>
+          <div class="position-filter" id="labSeasonFilter"></div>
+        </div>
+        <div class="position-filter" id="labViewToggle">
+          <button class="pos-btn active" onclick="setLabView('chart', this)">Chart</button>
+          <button class="pos-btn" onclick="setLabView('table', this)">Table</button>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 48px 48px;">
+      <div class="lab-metric-row" id="labMetricRow"></div>
+      <div id="labBoard"></div>
+      <div id="labScatter"></div>
     </div>
   </div>
 </div>
@@ -2417,6 +2486,321 @@ function initRankTooltip() {
 }
 initRankTooltip();
 
+// ===== LEADERS (leaderboards) =====
+// Every board declares a qualifier. A rate stat off three targets is noise
+// wearing a number's clothes, so players under the bar are excluded from
+// the board rather than ranked — same principle as the volatility panels.
+let labPos = 'WR';
+let labSeason = null;      // set from the data on first render
+let labMetricKey = null;
+let labView = 'chart';
+
+const LAB_SEASONS = ['2023', '2024', '2025'];
+
+// stat: reads data/stats.json season object · ngs: reads data/ngs.json season object
+// lower: smaller value ranks first · unit: appended to the printed value
+const LAB_METRICS = {
+  WR: [
+    { key: 'ppg', label: 'Fantasy PPG', stat: s => s.fantasyPPG, unit: '', minGames: 8, note: 'PPR points per game played.' },
+    { key: 'tgtShare', label: 'Target Share', stat: s => s.tgtShare, unit: '%', minGames: 8, note: "Share of the team's targets, averaged over games played." },
+    { key: 'airShare', label: 'Air Yards Share', stat: s => s.airYardShare, unit: '%', minGames: 8, note: "Share of the team's air yards — how much of the passing game runs through him." },
+    { key: 'recEPA', label: 'Receiving EPA', stat: s => s.recEPA, unit: '', minGames: 8, note: 'Total expected points added on targets. Values below zero are real and shown as such.' },
+    { key: 'sep', label: 'Avg Separation', ngs: n => n.rec && n.rec.separation, unit: ' yd', minGames: 8, minTargets: 40, note: 'Yards from the nearest defender at pass arrival (Next Gen Stats).' },
+    { key: 'yacOE', label: 'YAC Over Expected', ngs: n => n.rec && n.rec.yacOE, unit: '', minGames: 8, minTargets: 40, note: 'Yards after catch beyond what the tracking model expected — creation, not situation.' },
+    { key: 'adot', label: 'aDOT', stat: s => s.aDOT, unit: ' yd', minGames: 8, minTargets: 40, note: 'Average depth of target. High is a field-stretcher, low is a volume/YAC role.' },
+    { key: 'catchPct', label: 'Catch %', stat: s => s.catchPct, unit: '%', minGames: 8, minTargets: 40, note: 'Receptions per target. Reads alongside aDOT — deep roles catch a lower share.' },
+    { key: 'snapPct', label: 'Snap Share', ngs: n => n.snapPct, unit: '%', minGames: 8, note: 'Share of team offensive snaps, snap-weighted across games played.' }
+  ],
+  RB: [
+    { key: 'ppg', label: 'Fantasy PPG', stat: s => s.fantasyPPG, unit: '', minGames: 8, note: 'PPR points per game played.' },
+    { key: 'rushEPA', label: 'Rushing EPA', stat: s => s.rushEPA, unit: '', minGames: 8, note: 'Total expected points added on carries. Most backs land near or below zero — the bar is honest about it.' },
+    { key: 'ypc', label: 'Yards per Carry', stat: s => s.ypc, unit: '', minGames: 8, minCarries: 80, note: 'Rushing yards per attempt.' },
+    { key: 'eightBox', label: 'Loaded Box Rate', ngs: n => n.rush && n.rush.eightBoxPct, unit: '%', minGames: 8, minCarries: 80, note: 'Share of carries against 8+ defenders in the box — the difficulty of the run environment.' },
+    { key: 'eff', label: 'Rush Efficiency', ngs: n => n.rush && n.rush.efficiency, unit: '', lower: true, minGames: 8, minCarries: 80, note: 'Distance travelled per yard gained. Lower is more north/south; higher means more east/west searching.' },
+    { key: 'tgtShare', label: 'Target Share', stat: s => s.tgtShare, unit: '%', minGames: 8, note: "Share of the team's targets — the passing-down role." },
+    { key: 'recEPA', label: 'Receiving EPA', stat: s => s.recEPA, unit: '', minGames: 8, note: 'Total expected points added as a receiver.' },
+    { key: 'snapPct', label: 'Snap Share', ngs: n => n.snapPct, unit: '%', minGames: 8, note: 'Share of team offensive snaps — the workload signal behind the touches.' }
+  ],
+  QB: [
+    { key: 'ppg', label: 'Fantasy PPG', stat: s => s.fantasyPPG, unit: '', minGames: 8, note: 'PPR points per game played.' },
+    { key: 'passEPA', label: 'Passing EPA', stat: s => s.passEPA, unit: '', minGames: 8, note: 'Total expected points added through the air.' },
+    { key: 'cpoe', label: 'CPOE', ngs: n => n.pass && n.pass.cpoe, unit: '%', minGames: 8, minAttempts: 200, note: 'Completion percentage over expected — accuracy after adjusting for the difficulty of each throw.' },
+    { key: 'ypa', label: 'Yards per Attempt', stat: s => s.ypa, unit: '', minGames: 8, minAttempts: 200, note: 'Passing yards per attempt.' },
+    { key: 'agg', label: 'Aggressiveness', ngs: n => n.pass && n.pass.aggressiveness, unit: '%', minGames: 8, minAttempts: 200, note: 'Share of throws into tight windows (defender within a yard).' },
+    { key: 'ttt', label: 'Time to Throw', ngs: n => n.pass && n.pass.timeToThrow, unit: 's', lower: true, minGames: 8, minAttempts: 200, note: 'Seconds from snap to release. Lower is a quick-game operator; higher means holding it.' },
+    { key: 'sackPct', label: 'Sack Rate', stat: s => s.sackPct, unit: '%', lower: true, minGames: 8, minAttempts: 200, note: 'Sacks per dropback. Lower is better, and it is as much line and scheme as quarterback.' },
+    { key: 'rushYds', label: 'Rushing Yards', stat: s => s.rushYds, unit: '', minGames: 8, note: 'Regular-season rushing yards — the fantasy cheat code at the position.' }
+  ]
+};
+LAB_METRICS.TE = LAB_METRICS.WR;
+
+// x/y pairings that type a player rather than rank him.
+const LAB_SCATTER = {
+  WR: {
+    title: 'How He Earns His Yards',
+    sub: 'Average depth of target against yards after the catch. Up and to the left is a manufactured-touch YAC weapon; down and to the right is a pure field-stretcher; up and to the right is the rare receiver doing both.',
+    x: { label: 'aDOT (yd)', get: (s) => s.aDOT }, y: { label: 'YAC per reception (yd)', get: (s) => s.yacPerRec },
+    minGames: 8, minTargets: 40
+  },
+  RB: {
+    title: 'Run Environment vs Production',
+    sub: 'Yards per carry against the share of carries facing eight or more defenders. Up and to the right is production earned against loaded boxes; down and to the left is a soft environment without the output.',
+    x: { label: 'Loaded box rate (%)', ngs: true, get: (s, n) => n.rush && n.rush.eightBoxPct }, y: { label: 'Yards per carry', get: (s) => s.ypc },
+    minGames: 8, minCarries: 80
+  },
+  QB: {
+    title: 'Pocket Clock vs Accuracy',
+    sub: 'Time to throw against completion percentage over expected. Up and to the left is quick-game precision; up and to the right is accuracy while holding the ball; anything below the line is throwing worse than the situation warranted.',
+    x: { label: 'Time to throw (s)', ngs: true, get: (s, n) => n.pass && n.pass.timeToThrow }, y: { label: 'CPOE (%)', ngs: true, get: (s, n) => n.pass && n.pass.cpoe },
+    minGames: 8, minAttempts: 200
+  }
+};
+LAB_SCATTER.TE = LAB_SCATTER.WR;
+
+function labQualifies(m, s) {
+  if (!s) return false;
+  if (m.minGames && !(s.games >= m.minGames)) return false;
+  if (m.minTargets && !(s.targets >= m.minTargets)) return false;
+  if (m.minCarries && !(s.carries >= m.minCarries)) return false;
+  if (m.minAttempts && !(s.attempts >= m.minAttempts)) return false;
+  return true;
+}
+
+function labQualText(m) {
+  const parts = [];
+  if (m.minGames) parts.push(`${m.minGames}+ games`);
+  if (m.minTargets) parts.push(`${m.minTargets}+ targets`);
+  if (m.minCarries) parts.push(`${m.minCarries}+ carries`);
+  if (m.minAttempts) parts.push(`${m.minAttempts}+ attempts`);
+  return parts.length ? `QUALIFIER: ${parts.join(' · ')}` : '';
+}
+
+// Joins pool + season stats + tracking data for the active position/season.
+function labRows(valueOf, m) {
+  const rows = [];
+  for (const p of playersDB) {
+    if (p.pos !== labPos) continue;
+    const ps = playerStats[p.id];
+    const s = ps && ps.seasons && ps.seasons[labSeason];
+    const n = (labNgs[p.id] && labNgs[p.id][labSeason]) || {};
+    if (!labQualifies(m, s)) continue;
+    const v = valueOf(s, n);
+    if (typeof v !== 'number' || isNaN(v)) continue;
+    rows.push({ id: p.id, name: p.name, team: p.team, value: v });
+  }
+  return rows;
+}
+
+let labNgs = {};
+
+function setLabPos(pos, btn) {
+  labPos = pos;
+  labMetricKey = null;
+  document.querySelectorAll('#labPosFilter .pos-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLabPage();
+}
+function setLabSeason(season, btn) {
+  labSeason = season;
+  document.querySelectorAll('#labSeasonFilter .pos-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLabPage();
+}
+function setLabMetric(key) {
+  labMetricKey = key;
+  renderLabPage();
+}
+function setLabView(view, btn) {
+  labView = view;
+  document.querySelectorAll('#labViewToggle .pos-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLabPage();
+}
+
+function labBarBoard(rows, m) {
+  const vals = rows.map(r => r.value);
+  const lo = Math.min(...vals), hi = Math.max(...vals);
+
+  // A bar from zero only tells the story when zero is a meaningful floor for
+  // the measure. On a clustered ratio (rush efficiency runs 3.18–3.56) every
+  // bar is the same length and the differences vanish, so the field's own
+  // range becomes the scale and a dot marks the value.
+  if (lo >= 0 && hi > 0 && (hi - lo) / hi < 0.35) return labDotBoard(rows, m, lo, hi);
+
+  const maxV = Math.max(hi, 0);
+  const minV = Math.min(lo, 0);
+  const span = (maxV - minV) || 1;
+  const zeroPct = ((0 - minV) / span) * 100;
+  const hasNeg = minV < 0;
+
+  // position:relative makes the card the offset parent for the zero rule —
+  // without it the line resolves against the page and drifts off the chart.
+  let h = `<div class="medical-card" style="padding:20px;position:relative;">`;
+  if (hasNeg) h += `<div class="lab-zero" style="left:calc(20px + 200px + (100% - 40px - 200px - 62px) * ${(zeroPct / 100).toFixed(4)});"></div>`;
+  h += rows.map((r, i) => {
+    const pos = r.value >= 0;
+    const w = (Math.abs(r.value) / span) * 100;
+    const left = pos ? zeroPct : zeroPct - w;
+    const tip = `${r.name} (${r.team}) — ${m.label}: ${r.value}${m.unit}`;
+    return `<div class="lab-row" tabindex="0" role="button" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}" onclick="openProfile('${r.id}')">
+      <div class="lab-name"><span class="lab-rank">${i + 1}</span><span class="lab-player">${rankEsc(r.name)}</span><span class="lab-team">${rankEsc(r.team || '')}</span></div>
+      <div class="lab-track"><div style="position:absolute;left:${left.toFixed(2)}%;width:${Math.max(w, 0.4).toFixed(2)}%;"><div class="lab-bar${pos ? '' : ' neg'}"></div></div></div>
+      <div class="lab-val">${r.value}${m.unit}</div>
+    </div>`;
+  }).join('');
+  h += `</div>`;
+  return h;
+}
+
+// Dot-on-range form: the axis spans what the qualified field actually did,
+// so the reader sees separation instead of twenty identical bars.
+function labDotBoard(rows, m, lo, hi) {
+  const padAmt = (hi - lo) * 0.12 || 0.5;
+  const a = lo - padAmt, b = hi + padAmt;
+  const X = v => ((v - a) / (b - a)) * 100;
+  const fmt = v => Math.round(v * 100) / 100;
+
+  let h = `<div class="lab-scale"><div class="lab-scale-inner">`
+    + `<span>${fmt(a)}${m.unit}</span>`
+    + `<span style="letter-spacing:1px;">RANGE ACROSS QUALIFIED ${labPos}s</span>`
+    + `<span>${fmt(b)}${m.unit}</span></div></div>`;
+  h += `<div class="medical-card" style="padding:20px;position:relative;">`;
+  h += rows.map((r, i) => {
+    const tip = `${r.name} (${r.team}) — ${m.label}: ${r.value}${m.unit}`;
+    return `<div class="lab-row" tabindex="0" role="button" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}" onclick="openProfile('${r.id}')">
+      <div class="lab-name"><span class="lab-rank">${i + 1}</span><span class="lab-player">${rankEsc(r.name)}</span><span class="lab-team">${rankEsc(r.team || '')}</span></div>
+      <div class="lab-track"><div class="lab-rule"></div><div class="lab-dot" style="left:${X(r.value).toFixed(2)}%;"></div></div>
+      <div class="lab-val">${r.value}${m.unit}</div>
+    </div>`;
+  }).join('');
+  return h + `</div>`;
+}
+
+function labTable(rows, m) {
+  let h = `<table class="players-table rank-table"><thead><tr><th>#</th><th>Player</th><th>Team</th><th>${rankEsc(m.label)}</th></tr></thead><tbody>`;
+  h += rows.map((r, i) => `<tr onclick="openProfile('${r.id}')"><td>${i + 1}</td><td>${rankEsc(r.name)}</td><td>${rankEsc(r.team || '')}</td><td>${r.value}${m.unit}</td></tr>`).join('');
+  return h + '</tbody></table>';
+}
+
+// Median-crosshair scatter. One series, so no legend — the axis titles and
+// the quadrant hint in the subtitle carry the read. Only the four most
+// extreme players are labelled; the rest are hover/focus + the table view.
+function labScatterChart(pts, spec) {
+  const W = 720, H = 420, PAD = { t: 18, r: 24, b: 46, l: 58 };
+  const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
+  const pad = (arr) => { const lo = Math.min(...arr), hi = Math.max(...arr), m = (hi - lo) * 0.08 || 1; return [lo - m, hi + m]; };
+  const [x0, x1] = pad(xs), [y0, y1] = pad(ys);
+  const X = v => PAD.l + ((v - x0) / (x1 - x0)) * (W - PAD.l - PAD.r);
+  const Y = v => H - PAD.b - ((v - y0) / (y1 - y0)) * (H - PAD.t - PAD.b);
+  const med = arr => { const s = [...arr].sort((a, b) => a - b); const m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+  const mx = med(xs), my = med(ys);
+
+  const tick = (lo, hi) => { const step = Math.pow(10, Math.floor(Math.log10((hi - lo) / 3))); const s = ((hi - lo) / 3) / step > 5 ? step * 5 : ((hi - lo) / 3) / step > 2 ? step * 2 : step; const out = []; for (let v = Math.ceil(lo / s) * s; v <= hi; v += s) out.push(Math.round(v * 100) / 100); return out; };
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;overflow:visible;" role="img" aria-label="${rankEsc(spec.title)} — scatter of ${spec.x.label} against ${spec.y.label}">`;
+  // axes + gridlines (solid hairlines, recessive)
+  tick(x0, x1).forEach(v => {
+    svg += `<line x1="${X(v)}" y1="${PAD.t}" x2="${X(v)}" y2="${H - PAD.b}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>`;
+    svg += `<text x="${X(v)}" y="${H - PAD.b + 16}" text-anchor="middle" fill="#5c5955" font-family="var(--mono)" font-size="9">${v}</text>`;
+  });
+  tick(y0, y1).forEach(v => {
+    svg += `<line x1="${PAD.l}" y1="${Y(v)}" x2="${W - PAD.r}" y2="${Y(v)}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>`;
+    svg += `<text x="${PAD.l - 8}" y="${Y(v) + 3}" text-anchor="end" fill="#5c5955" font-family="var(--mono)" font-size="9">${v}</text>`;
+  });
+  // median reference lines — a threshold, so dashed reads correctly here
+  svg += `<line x1="${X(mx)}" y1="${PAD.t}" x2="${X(mx)}" y2="${H - PAD.b}" stroke="rgba(27,168,155,0.5)" stroke-width="1" stroke-dasharray="4 4"/>`;
+  svg += `<line x1="${PAD.l}" y1="${Y(my)}" x2="${W - PAD.r}" y2="${Y(my)}" stroke="rgba(27,168,155,0.5)" stroke-width="1" stroke-dasharray="4 4"/>`;
+  svg += `<text x="${X(mx) + 5}" y="${PAD.t + 10}" fill="#1ba89b" font-family="var(--mono)" font-size="8.5">MEDIAN ${Math.round(mx * 100) / 100}</text>`;
+  svg += `<text x="${W - PAD.r}" y="${Y(my) - 5}" text-anchor="end" fill="#1ba89b" font-family="var(--mono)" font-size="8.5">MEDIAN ${Math.round(my * 100) / 100}</text>`;
+  // axis titles
+  svg += `<text x="${(PAD.l + W - PAD.r) / 2}" y="${H - 6}" text-anchor="middle" fill="#8a8780" font-family="var(--mono)" font-size="9.5" letter-spacing="1">${rankEsc(spec.x.label.toUpperCase())}</text>`;
+  svg += `<text transform="translate(13,${(PAD.t + H - PAD.b) / 2}) rotate(-90)" text-anchor="middle" fill="#8a8780" font-family="var(--mono)" font-size="9.5" letter-spacing="1">${rankEsc(spec.y.label.toUpperCase())}</text>`;
+
+  // Label the four most distinctive players — furthest from the medians in
+  // normalized space. A name on every dot would be unreadable.
+  const dist = p => Math.hypot((p.x - mx) / ((x1 - x0) || 1), (p.y - my) / ((y1 - y0) || 1));
+  const labelled = new Set([...pts].sort((a, b) => dist(b) - dist(a)).slice(0, 4).map(p => p.id));
+
+  pts.forEach(p => {
+    const cx = X(p.x), cy = Y(p.y);
+    const tip = `${p.name} (${p.team}) — ${spec.x.label}: ${p.x} · ${spec.y.label}: ${p.y}`;
+    svg += `<g class="scatter-dot" tabindex="0" role="button" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}" onclick="openProfile('${p.id}')">`;
+    svg += `<circle cx="${cx}" cy="${cy}" r="10" fill="transparent"/>`;
+    svg += `<circle cx="${cx}" cy="${cy}" r="5" fill="#a8893a" stroke="#161a23" stroke-width="2"/>`;
+    if (labelled.has(p.id)) {
+      const flip = cx > W - PAD.r - 90;
+      svg += `<text x="${cx + (flip ? -9 : 9)}" y="${cy + 3.5}" text-anchor="${flip ? 'end' : 'start'}" fill="#e2e0dc" font-family="var(--mono)" font-size="9.5">${rankEsc(p.name)}</text>`;
+    }
+    svg += `</g>`;
+  });
+  svg += `</svg>`;
+  return svg;
+}
+
+function renderLabPage() {
+  const board = document.getElementById('labBoard');
+  if (!board || !playersDB.length) return;
+
+  // Season buttons, built from what the stats actually contain.
+  const seasonRow = document.getElementById('labSeasonFilter');
+  if (!labSeason) labSeason = LAB_SEASONS[LAB_SEASONS.length - 1];
+  if (seasonRow && !seasonRow.children.length) {
+    seasonRow.innerHTML = LAB_SEASONS.map(y =>
+      `<button class="pos-btn${y === labSeason ? ' active' : ''}" onclick="setLabSeason('${y}', this)">${y}</button>`).join('');
+  }
+
+  const metrics = LAB_METRICS[labPos] || [];
+  if (!labMetricKey || !metrics.some(m => m.key === labMetricKey)) labMetricKey = metrics[0] && metrics[0].key;
+  const m = metrics.find(x => x.key === labMetricKey);
+  document.getElementById('labMetricRow').innerHTML = metrics.map(x =>
+    `<button class="lab-metric${x.key === labMetricKey ? ' active' : ''}" onclick="setLabMetric('${x.key}')">${rankEsc(x.label)}</button>`).join('');
+  if (!m) { board.innerHTML = ''; return; }
+
+  const valueOf = m.ngs ? ((s, n) => m.ngs(n)) : ((s) => m.stat(s));
+  const rows = labRows(valueOf, m).sort((a, b) => m.lower ? a.value - b.value : b.value - a.value).slice(0, 20);
+
+  let h = `<div class="lab-head"><span class="lab-title">${rankEsc(m.label)} — ${labPos}, ${labSeason}</span><span class="lab-qual">${rankEsc(labQualText(m))}${m.lower ? ' · LOWER RANKS FIRST' : ''}</span></div>`;
+  h += `<div class="lab-sub">${rankEsc(m.note)}</div>`;
+  if (!rows.length) {
+    h += `<div class="medical-card"><div class="medical-detail">No player in the pool clears this board's qualifier for ${labSeason}. Nothing is shown rather than ranking on partial seasons.</div></div>`;
+  } else {
+    h += labView === 'chart' ? labBarBoard(rows, m) : labTable(rows, m);
+    h += `<div class="rank-note">Top ${rows.length} of the ${labPos} pool. Click any player for the full profile. Source: nflverse${m.ngs ? ' · NFL Next Gen Stats' : ''} · REG season only.</div>`;
+  }
+  board.innerHTML = h;
+
+  // ---- Scatter ----
+  const spec = LAB_SCATTER[labPos];
+  const scatterEl = document.getElementById('labScatter');
+  if (!spec) { scatterEl.innerHTML = ''; return; }
+  const pts = [];
+  for (const p of playersDB) {
+    if (p.pos !== labPos) continue;
+    const ps = playerStats[p.id];
+    const s = ps && ps.seasons && ps.seasons[labSeason];
+    const n = (labNgs[p.id] && labNgs[p.id][labSeason]) || {};
+    if (!labQualifies(spec, s)) continue;
+    const x = spec.x.get(s, n), y = spec.y.get(s, n);
+    if (typeof x !== 'number' || typeof y !== 'number' || isNaN(x) || isNaN(y)) continue;
+    pts.push({ id: p.id, name: p.name, team: p.team, x, y });
+  }
+  if (pts.length < 5) { scatterEl.innerHTML = ''; return; }
+
+  let sh = `<div class="scatter-wrap">`;
+  sh += `<div class="lab-head"><span class="lab-title">${rankEsc(spec.title)} — ${labPos}, ${labSeason}</span><span class="lab-qual">${rankEsc(labQualText(spec))} · ${pts.length} QUALIFIED</span></div>`;
+  sh += `<div class="lab-sub">${rankEsc(spec.sub)}</div>`;
+  if (labView === 'chart') {
+    sh += `<div class="medical-card" style="padding:20px;">${labScatterChart(pts, spec)}</div>`;
+  } else {
+    sh += `<table class="players-table rank-table"><thead><tr><th>Player</th><th>Team</th><th>${rankEsc(spec.x.label)}</th><th>${rankEsc(spec.y.label)}</th></tr></thead><tbody>`
+      + [...pts].sort((a, b) => b.y - a.y).map(p =>
+        `<tr onclick="openProfile('${p.id}')"><td>${rankEsc(p.name)}</td><td>${rankEsc(p.team || '')}</td><td>${p.x}</td><td>${p.y}</td></tr>`).join('')
+      + '</tbody></table>';
+  }
+  sh += `</div>`;
+  scatterEl.innerHTML = sh;
+}
+
 // ===== HOME MINI-CHARTS =====
 // The analysis-card side panels used to hold decorative bars with hardcoded
 // widths. Real data only now: a card whose data is missing renders empty.
@@ -2484,6 +2868,15 @@ function switchPage(page) {
   if (page === 'compare') renderComparePage();
   if (page === 'medicals') { renderMedicals(); renderInjuryTypeGrid(); }
   if (page === 'rankings') renderRankingsPage();
+  if (page === 'lab') {
+    // Leaders needs tracking data for most of its boards; render once with
+    // what is loaded, then again when ngs.json lands.
+    renderLabPage();
+    ensureNgs().then(d => {
+      labNgs = d;
+      if (document.getElementById('page-lab').classList.contains('active')) renderLabPage();
+    });
+  }
 }
 
 // ===== PLAYERS TABLE =====
@@ -4289,7 +4682,7 @@ function toggleMobileNav() {
 // ===== HASH ROUTING =====
 function handleHashRoute() {
   const hash = window.location.hash.slice(1);
-  if (['rankings', 'players', 'medicals', 'compare', 'fantasy', 'draft', 'film'].includes(hash)) {
+  if (['rankings', 'lab', 'players', 'medicals', 'compare', 'fantasy', 'draft', 'film'].includes(hash)) {
     switchPage(hash);
     return;
   }

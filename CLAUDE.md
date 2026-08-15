@@ -29,7 +29,13 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - A data-source fetch that fails must fail the RUN, loudly. nflverse moved the 2025 stats file
   and a per-season try/catch swallowed the 404 for months — every profile was silently a year stale.
 - Charts show real data or nothing. Chart marks use validated dark-surface steps of the site
-  accents (gold #a8893a, teal #1ba89b), and every chart has a table-view twin.
+  accents (gold #a8893a, teal #1ba89b; blue #2a78d6 for the negative pole of a diverging bar),
+  and every chart has a table-view twin.
+- NEVER eyeball a chart color. Run the dataviz skill's validate_palette.js against the card
+  surface #161a23. A hand-picked red for negative bars FAILED the normal-vision floor; a
+  diverging pair needs warm-vs-cool poles, not two warm hues.
+- Every leaderboard states its qualifier and excludes players under it. A rate stat off three
+  targets is noise wearing a number's clothes.
 
 ## Auth
 `gh` handles GitHub auth. Never put a token in a URL or a file.
