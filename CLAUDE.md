@@ -13,6 +13,12 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - `scripts/build-rankings.js` — generates data/rankings.json. NEVER edit rankings.json by hand
 - `data/players-curated.json` — hand-written rich profiles (athletic %iles, comps, pinned GSIS ids).
   Wins over the generated base, EXCEPT status/team/age/fRank, which drift and stay feed-owned
+- `data/medicals.json` — hand-written, never generated. An injury may carry an optional
+  `event: { outSeason, outWeek, researchKey?, caveat? }`, which drives the Return to Play
+  curve. NEVER parse the injury date out of the title prose — the titles run from
+  "Week 4, Sept 28, 2025" to "High School". Enter the event by hand and CHECK it against
+  data/weekly/<id>.json first: the last game logged before outWeek and the gap after it
+  must both line up, or the event is wrong.
 - `data/projections-2026.json` — source of truth for projections
 - `data/rankings-manual.json` — Adi's hand-ordered ranks. Wins over generated order
 

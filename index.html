@@ -745,6 +745,12 @@ a { color: inherit; text-decoration: none; }
 .wk-slot { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-width: 0; }
 .wk-bar { width: 60%; max-width: 18px; border-radius: 4px 4px 0 0; }
 .wk-lab { font-family: var(--mono); font-size: 9px; color: var(--text-secondary); margin-bottom: 3px; }
+.rtp-plot { position: relative; }
+.rtp-base { position: absolute; left: 0; right: 0; height: 0; border-top: 1px dashed rgba(27,168,155,0.65); z-index: 1; }
+.rtp-base-lab { position: absolute; right: 0; font-family: var(--mono); font-size: 8.5px; color: var(--teal); letter-spacing: 0.5px; z-index: 2; }
+.rtp-table { margin-bottom: 16px; }
+.rtp-table summary { font-family: var(--mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); cursor: pointer; padding: 6px 0; }
+.rtp-table summary:hover { color: var(--text); }
 .wk-xrow { display: flex; gap: 2px; margin-top: 5px; }
 .wk-x { flex: 1; text-align: center; font-family: var(--mono); font-size: 8px; color: var(--text-muted); min-width: 0; }
 
@@ -3061,13 +3067,20 @@ function renderProfileTab(tab) {
           <div class="medical-detail" style="margin-bottom:0;">${medical.currentStatus}</div>
         </div>`;
       }
-      medical.injuries.forEach(inj => {
+      medical.injuries.forEach((inj, idx) => {
         html += `<div class="medical-card">
           <div class="medical-card-header"><h4>${inj.title}</h4><span class="severity ${inj.severity}">${inj.severityLabel}</span></div>
           <div class="medical-detail">${inj.detail}</div>
           <div class="impact-meter"><div class="impact-label">Career Impact</div><div class="impact-bar"><div class="impact-fill ${inj.impactClass}" style="width:${inj.impact}%"></div></div></div>
           <div class="medical-source">Source: <span class="source-verified">✓ ${inj.source}</span></div>
         </div>`;
+        // An injury carrying a verified date gets its production curve right
+        // under it, where the reader is already asking "how did he come back?"
+        if (inj.event && typeof inj.event.outSeason === 'number' && typeof inj.event.outWeek === 'number') {
+          const slotId = `rtpSlot-${idx}`;
+          html += `<div id="${slotId}"></div>`;
+          loadReturnToPlay(currentProfileId, slotId, inj.event, inj.title);
+        }
       });
     } else {
       html = `<div class="medical-card"><div class="medical-detail">No medical records on file for ${player.name}. Player currently listed as <strong>${player.status}</strong>.</div></div>`;
@@ -3641,6 +3654,151 @@ async function loadNgsSection(playerId, pos) {
     h += '</tr>';
   });
   h += '</tbody></table></div>';
+  el.innerHTML = h;
+}
+
+// ===== RETURN TO PLAY =====
+// Weekly production after a dated injury, against the player's own level
+// before it. This is the medical database crossed with the game logs, so the
+// honesty bar is high: the injury week comes from a hand-entered event that
+// was checked against the game log, the injury game itself belongs to
+// neither side (it is a partial game), and a baseline built from too few
+// games is reported as too thin rather than drawn.
+const RTP_MIN_BASELINE = 4;
+const RTP_MIN_RETURN = 3;
+const RTP_MAX_POINTS = 18;
+
+function rtpSplit(seasonsLog, ev) {
+  const before = [], after = [];
+  for (const [yrStr, games] of Object.entries(seasonsLog || {})) {
+    const yr = Number(yrStr);
+    for (const g of games) {
+      if (typeof g.fpts !== 'number') continue;
+      const rec = { yr, week: g.week, fpts: g.fpts, opp: g.opp };
+      if (yr < ev.outSeason || (yr === ev.outSeason && g.week < ev.outWeek)) before.push(rec);
+      else if (yr > ev.outSeason || (yr === ev.outSeason && g.week > ev.outWeek)) after.push(rec);
+    }
+  }
+  const bySeq = (a, b) => a.yr - b.yr || a.week - b.week;
+  return { before: before.sort(bySeq), after: after.sort(bySeq) };
+}
+
+// Prefer the injury season's own games; reach back only far enough to get a
+// usable sample, and always report which seasons were used.
+function rtpBaseline(before, ev) {
+  const picked = before.filter(g => g.yr === ev.outSeason);
+  if (picked.length < 6) {
+    const priors = [...new Set(before.map(g => g.yr))].filter(y => y < ev.outSeason).sort((a, b) => b - a);
+    for (const y of priors) {
+      picked.push(...before.filter(g => g.yr === y));
+      if (picked.length >= 6) break;
+    }
+  }
+  return picked;
+}
+
+function rtpMedian(nums) {
+  if (!nums.length) return null;
+  const s = [...nums].sort((a, b) => a - b);
+  const m = Math.floor(s.length / 2);
+  const v = s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+  return Math.round(v * 10) / 10;
+}
+
+async function loadReturnToPlay(playerId, slotId, ev, title) {
+  const seasons = await ensureWeeklyStats(playerId);
+  const el = document.getElementById(slotId);
+  if (!el || currentProfileId !== playerId) return;
+
+  const { before, after } = rtpSplit(seasons, ev);
+  const baseGames = rtpBaseline(before, ev);
+  const research = ev.researchKey && injuryResearch ? injuryResearch[ev.researchKey] : null;
+
+  const head = `<div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;">Return to Play</div>`;
+  const note = (msg) => `<div class="medical-card" style="margin-top:-4px;margin-bottom:16px;border-left:3px solid var(--teal);">${head}<div class="medical-detail">${msg}</div></div>`;
+
+  if (after.length === 0) {
+    el.innerHTML = note(`No regular-season games on record since this injury (${ev.outSeason} week ${ev.outWeek}), so there is nothing to plot yet. This section fills in once he plays.`);
+    return;
+  }
+  if (baseGames.length < RTP_MIN_BASELINE) {
+    el.innerHTML = note(`Only ${baseGames.length} game${baseGames.length === 1 ? '' : 's'} on record before this injury. A "before" level built from that few games would be noise, so no comparison is drawn.`);
+    return;
+  }
+  if (after.length < RTP_MIN_RETURN) {
+    el.innerHTML = note(`Only ${after.length} game${after.length === 1 ? '' : 's'} back so far. That is too few to read a recovery curve from, so the numbers are left to the game log above.`);
+    return;
+  }
+
+  const baseline = rtpMedian(baseGames.map(g => g.fpts));
+  const pts = after.slice(0, RTP_MAX_POINTS);
+  const firstN = Math.min(5, pts.length);
+  const firstMed = rtpMedian(pts.slice(0, firstN).map(g => g.fpts));
+  const allMed = rtpMedian(after.map(g => g.fpts));
+  const baseSeasons = [...new Set(baseGames.map(g => g.yr))].sort().join('–');
+  const delta = Math.round((allMed - baseline) * 10) / 10;
+
+  const max = Math.max(...pts.map(g => g.fpts), baseline);
+  if (!(max > 0)) { el.innerHTML = ''; return; }
+  const PLOT = 92;
+  const hOf = v => Math.max(Math.round((v / max) * PLOT), 2);
+
+  let cols = '', xrow = '', prevYr = pts[0].yr;
+  pts.forEach((g, i) => {
+    const boundary = g.yr !== prevYr;
+    prevYr = g.yr;
+    const tip = `Game ${i + 1} back — ${g.yr} week ${g.week} vs ${g.opp || '?'}: ${g.fpts} PPR (baseline ${baseline})`;
+    cols += `<div class="wk-slot"${boundary ? ' style="border-left:1px solid var(--border-hover);"' : ''}>`
+      + `<div class="wk-bar" data-tip="${rankEsc(tip)}" style="height:${hOf(g.fpts)}px;background:#a8893a;"></div></div>`;
+    xrow += `<div class="wk-x">${i + 1}</div>`;
+  });
+
+  const tile = (label, val, sub) => `<div class="medical-card" style="padding:14px;text-align:center;">
+    <div style="font-family:var(--serif);font-size:24px;font-weight:700;color:var(--gold);">${val}</div>
+    <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:5px;">${label}</div>
+    ${sub ? `<div style="font-size:10px;color:var(--text-muted);margin-top:3px;">${sub}</div>` : ''}</div>`;
+
+  let h = `<div class="medical-card" style="margin-top:-4px;margin-bottom:16px;border-left:3px solid var(--teal);">`;
+  h += head;
+  h += `<div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:16px;">Weekly PPR after returning from this injury, against his own median week beforehand. Games are counted from his first game back, not by calendar week.</div>`;
+
+  h += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;">`
+    + tile('Median week before', baseline, `${baseGames.length} games · ${baseSeasons}`)
+    + tile(`First ${firstN} back`, firstMed, 'median')
+    + tile('Since return', allMed, `${after.length} games · ${delta >= 0 ? '+' : ''}${delta} vs before`)
+    + `</div>`;
+
+  h += `<div class="wk-chart"><div class="wk-chart-head"><span>Weekly PPR since return</span><span>PPR</span></div>`;
+  h += `<div class="rtp-plot"><div class="rtp-base" style="bottom:${hOf(baseline)}px;"></div>`
+    + `<div class="rtp-base-lab" style="bottom:${hOf(baseline) + 3}px;">BEFORE ${baseline}</div>`
+    + `<div class="wk-cols">${cols}</div></div>`;
+  h += `<div class="wk-xrow">${xrow}</div>`;
+  h += `<div style="font-family:var(--mono);font-size:8.5px;color:var(--text-muted);text-align:center;margin-top:4px;letter-spacing:1px;">GAMES SINCE RETURN</div></div>`;
+
+  if (after.length > pts.length) {
+    h += `<div class="rank-note">Showing his first ${pts.length} games back; the full log is on the Stats tab.</div>`;
+  }
+
+  if (research) {
+    h += `<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border-subtle);font-size:12.5px;color:var(--text-secondary);line-height:1.6;">
+      <strong style="color:var(--text);">${rankEsc(research.name)} research context:</strong> ${rankEsc(research.performanceLabel || '')}
+      ${research.avgReturn ? ` Typical return window is ${rankEsc(research.avgReturn)}.` : ''}</div>`;
+  }
+
+  h += `<div style="margin-top:12px;font-size:11.5px;color:var(--text-muted);font-style:italic;line-height:1.6;">`
+    + (ev.caveat ? rankEsc(ev.caveat) + ' ' : '')
+    + `A return curve is not a controlled comparison — age, scheme, team and role all move alongside the injury. Read it as description, not attribution.</div>`;
+  h += `</div>`;
+
+  // Table twin: every plotted value reachable without the chart.
+  h += `<details class="rtp-table"><summary>Table view — games since return</summary>`
+    + `<table class="players-table rank-table" style="margin-top:8px;"><thead><tr><th>#</th><th>Season</th><th>Wk</th><th>Opp</th><th>PPR</th><th>vs before</th></tr></thead><tbody>`
+    + pts.map((g, i) => {
+      const d = Math.round((g.fpts - baseline) * 10) / 10;
+      return `<tr><td>${i + 1}</td><td>${g.yr}</td><td>${g.week}</td><td>${rankEsc(g.opp || '')}</td><td>${g.fpts}</td><td>${d >= 0 ? '+' : ''}${d}</td></tr>`;
+    }).join('')
+    + `</tbody></table></details>`;
+
   el.innerHTML = h;
 }
 
