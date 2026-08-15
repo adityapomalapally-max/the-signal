@@ -79,7 +79,8 @@ function loadOurPlayers() {
     id: p.id,
     name: p.name,
     pos: p.pos,
-    team: p.team
+    team: p.team,
+    gsisId: p.gsisId || null
   }));
 }
 
@@ -87,13 +88,41 @@ function normalizeName(name) {
   return name
     .replace(/\s+(III|II|IV|Jr\.?|Sr\.?)$/i, '')
     .replace(/[''`]/g, '')  // strip apostrophes/smart quotes
+    .replace(/\./g, '')     // periods: "A.J. Barner" vs Sleeper's "AJ Barner"
     .toLowerCase()
     .trim();
 }
 
-function matchPlayer(row, ourPlayers) {
-  const displayName = normalizeName(row.player_display_name || '');
-  return ourPlayers.find(p => normalizeName(p.name) === displayName && p.pos === row.position);
+// Prebuilt lookup: GSIS id first (exact — nflverse's player_id IS the GSIS
+// id), normalized name + position as the fallback. Two pool players who
+// normalize to the same name+position poison that key: matching neither
+// beats guessing, because a wrong match writes one player's stats onto
+// another's profile.
+function buildMatchIndex(ourPlayers) {
+  const byGsis = new Map();
+  const byName = new Map();
+  for (const p of ourPlayers) {
+    if (p.gsisId) byGsis.set(p.gsisId, p);
+    const key = `${normalizeName(p.name)}|${p.pos}`;
+    if (byName.has(key)) {
+      log(`  AMBIGUOUS pool name — name-matching disabled for both: ${p.name} (${p.pos})`);
+      byName.set(key, null);
+    } else {
+      byName.set(key, p);
+    }
+  }
+  return { byGsis, byName };
+}
+
+function matchPlayer(row, index) {
+  if (row.player_id) {
+    const byId = index.byGsis.get(row.player_id);
+    // No position check here: a GSIS id identifies exactly one human. The
+    // position guard exists to keep same-NAME strangers apart, and it wrongly
+    // rejects two-way players (nflverse files Travis Hunter under CB).
+    if (byId) return byId;
+  }
+  return index.byName.get(`${normalizeName(row.player_display_name || '')}|${row.position}`) || null;
 }
 
 // ===== STAT AGGREGATION =====
@@ -116,8 +145,8 @@ function aggregateQB(weeks) {
     attempts: games.reduce((a, w) => a + (w.attempts || 0), 0),
     passYds: games.reduce((a, w) => a + (w.passing_yards || 0), 0),
     passTD: games.reduce((a, w) => a + (w.passing_tds || 0), 0),
-    int: games.reduce((a, w) => a + (w.interceptions || 0), 0),
-    sacks: games.reduce((a, w) => a + (w.sacks || 0), 0),
+    int: games.reduce((a, w) => a + (w.passing_interceptions || 0), 0),
+    sacks: games.reduce((a, w) => a + (w.sacks_suffered || 0), 0),
     passAirYds: games.reduce((a, w) => a + (w.passing_air_yards || 0), 0),
     passEPA: round(games.reduce((a, w) => a + (w.passing_epa || 0), 0), 1),
     carries: games.reduce((a, w) => a + (w.carries || 0), 0),
@@ -200,7 +229,7 @@ function buildWeeklyLog(weeks, pos) {
       if (pos === 'QB') {
         return { ...base,
           cmp: w.completions, att: w.attempts, passYds: w.passing_yards,
-          passTD: w.passing_tds, int: w.interceptions, rushYds: w.rushing_yards,
+          passTD: w.passing_tds, int: w.passing_interceptions, rushYds: w.rushing_yards,
           rushTD: w.rushing_tds, passEPA: round(w.passing_epa, 1)
         };
       } else if (pos === 'RB') {
@@ -364,6 +393,7 @@ async function main() {
   log('=== Stats Pipeline Start ===');
   const ourPlayers = loadOurPlayers();
   log(`Loaded ${ourPlayers.length} players from players.json`);
+  const matchIndex = buildMatchIndex(ourPlayers);
 
   // Collect all weekly rows per player across seasons
   const playerWeeks = {}; // { playerId: { 2023: [rows], 2024: [rows] } }
@@ -375,14 +405,16 @@ async function main() {
     if (i > 0) await delay(3000); // rate limit courtesy
     log(`Fetching ${season} stats from nflverse...`);
     try {
-      const url = `https://github.com/nflverse/nflverse-data/releases/download/player_stats/player_stats_${season}.csv`;
+      // nflverse retired the player_stats release in 2025; stats_player is the
+      // current home and carries all seasons with a uniform schema.
+      const url = `https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_${season}.csv`;
       const csv = await fetchCSV(url);
       const rows = parseCSV(csv);
       log(`  Parsed ${rows.length} rows for ${season}`);
 
       let matched = 0;
       for (const row of rows) {
-        const player = matchPlayer(row, ourPlayers);
+        const player = matchPlayer(row, matchIndex);
         if (!player) continue;
         if (!playerWeeks[player.id]) playerWeeks[player.id] = {};
         if (!playerWeeks[player.id][season]) playerWeeks[player.id][season] = [];
@@ -396,7 +428,11 @@ async function main() {
       // our 31-player subset — otherwise "top 12" means nothing.
       buildWeeklyRanks(rows, season, weeklyRanks);
     } catch (e) {
-      log(`  ERROR fetching ${season}: ${e.message}`);
+      // A season that fails must fail the RUN, not just log. The 2025 season
+      // 404'd quietly for months after nflverse moved the release — every
+      // profile silently showed a year-old picture and nothing said so.
+      log(`ABORT: ${season} fetch failed (${e.message}). Keeping existing files.`);
+      process.exit(1);
     }
   }
 

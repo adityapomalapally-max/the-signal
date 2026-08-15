@@ -4,9 +4,13 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 
 ## Architecture
 - `index.html` — the entire app, single file
+- `scripts/build-players.js` — generates data/players.json: top-200 Sleeper pool, merged with
+  status carry-over + curated overlay. NEVER edit players.json by hand. Runs FIRST in the Action
 - `scripts/update-data.js` — daily GitHub Action, 6 AM ET. Sleeper statuses, ESPN news, trending
-- `scripts/fetch-stats.js` — nflverse stats
+- `scripts/fetch-stats.js` — nflverse stats (stats_player release). GSIS-id match first, name second
 - `scripts/build-rankings.js` — generates data/rankings.json. NEVER edit rankings.json by hand
+- `data/players-curated.json` — hand-written rich profiles (athletic %iles, comps, pinned GSIS ids).
+  Wins over the generated base, EXCEPT status/team/age/fRank, which drift and stay feed-owned
 - `data/projections-2026.json` — source of truth for projections
 - `data/rankings-manual.json` — Adi's hand-ordered ranks. Wins over generated order
 
@@ -20,6 +24,10 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - Empty beats wrong. A missing projection renders as nothing, not an invented number.
 - ALWAYS `git pull --rebase` before pushing. The daily bot commits while work is in progress.
 - Verify a change landed before committing. Print the value, don't assume.
+- A data-source fetch that fails must fail the RUN, loudly. nflverse moved the 2025 stats file
+  and a per-season try/catch swallowed the 404 for months — every profile was silently a year stale.
+- Charts show real data or nothing. Chart marks use validated dark-surface steps of the site
+  accents (gold #a8893a, teal #1ba89b), and every chart has a table-view twin.
 
 ## Auth
 `gh` handles GitHub auth. Never put a token in a URL or a file.

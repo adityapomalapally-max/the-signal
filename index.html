@@ -666,6 +666,43 @@ a { color: inherit; text-decoration: none; }
 
 .analysis-card:hover .chart-bar { opacity: 0.6; }
 
+/* ===== RANKINGS PAGE / VIZ ===== */
+/* Chart marks use darker steps of the site accents — gold #a8893a, teal
+   #1ba89b — validated for contrast and CVD separation on the card surface. */
+.rank-chart { --gutL: 215px; --gutR: 64px; padding: 8px 0 4px; }
+.rank-axis { display: grid; grid-template-columns: var(--gutL) 1fr var(--gutR); margin-bottom: 10px; font-family: var(--mono); font-size: 9px; color: var(--text-muted); }
+.rank-axis-strip { position: relative; height: 14px; }
+.rank-axis-strip span { position: absolute; transform: translateX(-50%); letter-spacing: 0.5px; }
+.rank-axis-strip span:first-child { transform: none; }
+.rank-axis-strip span:last-child { transform: translateX(-100%); }
+.rank-axis-unit { text-align: right; letter-spacing: 1px; }
+.rank-plot { position: relative; }
+.rank-plot.has-baseline { padding-bottom: 20px; }
+.rank-row { display: grid; grid-template-columns: var(--gutL) 1fr var(--gutR); align-items: center; height: 27px; border-radius: 4px; }
+.rank-row:hover, .rank-row:focus-visible { background: var(--bg-card-hover); outline: none; }
+.rank-name { display: flex; align-items: center; gap: 7px; min-width: 0; padding-right: 10px; font-size: 12.5px; }
+.rank-num { font-family: var(--mono); font-size: 10px; color: var(--text-muted); width: 22px; text-align: right; flex-shrink: 0; }
+.rank-player { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rank-team { font-family: var(--mono); font-size: 10px; color: var(--text-muted); flex-shrink: 0; }
+.rank-strip { position: relative; height: 100%;
+  background-image:
+    linear-gradient(90deg, var(--border) 1px, transparent 1px),
+    linear-gradient(270deg, var(--border) 1px, transparent 1px);
+  background-size: 25.0001% 100%, 100% 100%;
+  background-repeat: repeat-x, no-repeat; }
+.rank-band { position: absolute; top: 50%; margin-top: -4px; height: 8px; border-radius: 4px; background: rgba(168,137,58,0.28); }
+.rank-dot { position: absolute; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #a8893a; border: 2px solid var(--bg-card); box-sizing: content-box; }
+.rank-baseline { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1px dashed rgba(27,168,155,0.55); }
+.rank-baseline-label { position: absolute; bottom: -18px; transform: translateX(-50%); font-family: var(--mono); font-size: 8.5px; color: var(--teal); letter-spacing: 0.5px; white-space: nowrap; }
+.rank-val { font-family: var(--mono); font-size: 11px; color: var(--text-secondary); text-align: right; font-variant-numeric: tabular-nums; }
+.rank-note { font-family: var(--mono); font-size: 10px; color: var(--text-muted); margin-top: 14px; line-height: 1.7; }
+.rank-table td, .rank-table th { font-variant-numeric: tabular-nums; }
+#vizTooltip { position: fixed; z-index: 2000; display: none; max-width: 320px; background: var(--bg-elevated); border: 1px solid var(--border-hover); border-radius: 6px; padding: 8px 10px; font-family: var(--mono); font-size: 11px; line-height: 1.5; color: var(--text); pointer-events: none; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+@media (max-width: 768px) {
+  .rank-chart { --gutL: 118px; --gutR: 44px; }
+  .rank-team { display: none; }
+}
+
 /* ===== RIGHT SIDEBAR ===== */
 .sidebar-section {
   padding: 28px;
@@ -1441,6 +1478,7 @@ a { color: inherit; text-decoration: none; }
     </a>
     <div class="nav-center">
       <a class="nav-item active" data-page="home" onclick="switchPage('home')">Home</a>
+      <a class="nav-item" data-page="rankings" onclick="switchPage('rankings')">Rankings</a>
       <a class="nav-item" data-page="players" onclick="switchPage('players')">Players</a>
       <a class="nav-item" data-page="compare" onclick="switchPage('compare')">Compare</a>
       <a class="nav-item" data-page="medicals" onclick="switchPage('medicals')">Medicals</a>
@@ -1472,6 +1510,7 @@ a { color: inherit; text-decoration: none; }
   </div>
   <div style="padding:12px 0;">
     <a class="mobile-nav-link" onclick="switchPage('home');toggleMobileNav();">Home</a>
+    <a class="mobile-nav-link" onclick="switchPage('rankings');toggleMobileNav();">Rankings</a>
     <a class="mobile-nav-link" onclick="switchPage('players');toggleMobileNav();">Players</a>
     <a class="mobile-nav-link" onclick="switchPage('medicals');toggleMobileNav();">Medicals</a>
     <a class="mobile-nav-link" onclick="switchPage('fantasy');toggleMobileNav();">Fantasy</a>
@@ -1561,13 +1600,7 @@ a { color: inherit; text-decoration: none; }
           </div>
         </div>
         <div class="analysis-visual">
-          <div class="chart-placeholder">
-            <div class="chart-bar" style="width:45%"></div>
-            <div class="chart-bar" style="width:78%"></div>
-            <div class="chart-bar" style="width:92%"></div>
-            <div class="chart-bar" style="width:60%"></div>
-            <div class="chart-bar" style="width:85%"></div>
-          </div>
+          <div class="chart-placeholder" id="miniTgtShare"></div>
         </div>
       </div>
 
@@ -1583,12 +1616,7 @@ a { color: inherit; text-decoration: none; }
           </div>
         </div>
         <div class="analysis-visual">
-          <div class="chart-placeholder">
-            <div class="chart-bar" style="width:90%;background:var(--red);opacity:0.25;"></div>
-            <div class="chart-bar" style="width:70%;background:var(--red);opacity:0.2;"></div>
-            <div class="chart-bar" style="width:50%;background:var(--gold);opacity:0.25;"></div>
-            <div class="chart-bar" style="width:30%;background:var(--green);opacity:0.25;"></div>
-          </div>
+          <div class="chart-placeholder" id="miniInjury"></div>
         </div>
       </div>
 
@@ -1604,11 +1632,7 @@ a { color: inherit; text-decoration: none; }
           </div>
         </div>
         <div class="analysis-visual">
-          <div class="chart-placeholder">
-            <div class="chart-bar" style="width:100%;background:var(--blue);opacity:0.3;"></div>
-            <div class="chart-bar" style="width:72%;background:var(--blue);opacity:0.2;"></div>
-            <div class="chart-bar" style="width:88%;background:var(--blue);opacity:0.25;"></div>
-          </div>
+          <div class="chart-placeholder" id="miniVorp"></div>
         </div>
       </div>
 
@@ -1624,11 +1648,7 @@ a { color: inherit; text-decoration: none; }
           </div>
         </div>
         <div class="analysis-visual">
-          <div class="chart-placeholder">
-            <div class="chart-bar" style="width:65%;background:#a78bfa;opacity:0.3;"></div>
-            <div class="chart-bar" style="width:85%;background:#a78bfa;opacity:0.2;"></div>
-            <div class="chart-bar" style="width:95%;background:#a78bfa;opacity:0.2;"></div>
-          </div>
+          <div class="chart-placeholder" id="miniLamb"></div>
         </div>
       </div>
     </div>
@@ -1694,6 +1714,35 @@ a { color: inherit; text-decoration: none; }
       <h4>Draft Model</h4>
       <p>92% accuracy POE-based prospect evaluation system.</p>
       <span class="tool-badge badge-soon">Coming Soon</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= -->
+<!-- ======= RANKINGS PAGE ======= -->
+<!-- ============================= -->
+<div class="page-section" id="page-rankings">
+  <div style="max-width:1160px;margin:0 auto;">
+    <div class="players-header">
+      <h1>Rankings</h1>
+      <p id="rankingsMethod">2026 projections — floor, median, and ceiling for every ranked player.</p>
+      <div class="players-search-bar" style="justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div class="position-filter" id="rankTabs">
+          <button class="pos-btn active" onclick="setRankTab('overall', this)">Overall</button>
+          <button class="pos-btn" onclick="setRankTab('qb', this)">QB</button>
+          <button class="pos-btn" onclick="setRankTab('rb', this)">RB</button>
+          <button class="pos-btn" onclick="setRankTab('wr', this)">WR</button>
+          <button class="pos-btn" onclick="setRankTab('te', this)">TE</button>
+        </div>
+        <div class="position-filter" id="rankViewToggle">
+          <button class="pos-btn active" onclick="setRankView('chart', this)">Chart</button>
+          <button class="pos-btn" onclick="setRankView('table', this)">Table</button>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 48px 48px;">
+      <div id="rankingsBody"></div>
+      <div id="rankingsCaveat" class="rank-note"></div>
     </div>
   </div>
 </div>
@@ -2109,6 +2158,8 @@ async function initData() {
   loadSleeperTrending();
   renderInjuryWatch();
   renderHeroSidebar();
+  renderHomeMinis();
+  if (document.getElementById('page-rankings').classList.contains('active')) renderRankingsPage();
 
   // The Sleeper player DB is ~5MB. Headshots normally come from the sleeperId
   // baked into players.json by the daily Action, so we only pay for this fetch
@@ -2187,6 +2238,231 @@ document.querySelectorAll('.ticker-tab[data-pos]').forEach(tab => {
 
 // initData handles renderTicker('overall')
 
+// ===== RANKINGS PAGE + CHART MODULE =====
+// Dot-and-whisker board: floor→ceiling band, median dot, replacement-level
+// reference line. Marks use darker steps of the site accents (gold #a8893a,
+// teal #1ba89b) validated for contrast + CVD separation on the card surface.
+// Every value shown in the chart is also reachable via the Table view.
+let currentRankTab = 'overall';
+let currentRankView = 'chart';
+const RANK_CHART_CAP = 40;
+
+function rankEsc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function setRankTab(tab, btn) {
+  currentRankTab = tab;
+  document.querySelectorAll('#rankTabs .pos-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderRankingsPage();
+}
+
+function setRankView(view, btn) {
+  currentRankView = view;
+  document.querySelectorAll('#rankViewToggle .pos-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderRankingsPage();
+}
+
+// 4 even intervals on round-number bounds, so the gridline background
+// (25% repeating) and the tick labels always agree.
+function rankScale(lo, hi) {
+  let step = Math.max(10, Math.ceil((hi - lo) / 4 / 10) * 10);
+  let min = Math.floor(lo / step) * step;
+  while (min + 4 * step < hi) {
+    step += 10;
+    min = Math.floor(lo / step) * step;
+  }
+  return { min, max: min + 4 * step, ticks: [0, 1, 2, 3, 4].map(i => min + i * step) };
+}
+
+function rankWhiskerChart(rows, baseline, showPos) {
+  const lo = Math.min(...rows.map(r => r.floor), baseline ? baseline.points : Infinity);
+  const hi = Math.max(...rows.map(r => r.ceiling), baseline ? baseline.points : -Infinity);
+  const sc = rankScale(lo, hi);
+  const X = v => Math.max(0, Math.min(100, ((v - sc.min) / (sc.max - sc.min)) * 100));
+
+  let h = `<div class="rank-chart">`;
+  h += `<div class="rank-axis"><div></div><div class="rank-axis-strip">`
+    + sc.ticks.map((t, i) => `<span style="left:${i * 25}%">${t}</span>`).join('')
+    + `</div><div class="rank-axis-unit">PROJ PTS</div></div>`;
+
+  h += `<div class="rank-plot${baseline ? ' has-baseline' : ''}">`;
+  if (baseline) {
+    const f = X(baseline.points) / 100;
+    h += `<div class="rank-baseline" style="left:calc(var(--gutL) + (100% - var(--gutL) - var(--gutR)) * ${f.toFixed(4)})">`
+      + `<div class="rank-baseline-label">REPLACEMENT · ${rankEsc(baseline.label)} (${baseline.points})</div></div>`;
+  }
+
+  rows.forEach(r => {
+    const bl = X(r.floor);
+    const bw = Math.max(X(r.ceiling) - X(r.floor), 1);
+    const mx = X(r.median);
+    const tip = `${r.name} — floor ${r.floor} · median ${r.median} · ceiling ${r.ceiling}`
+      + (typeof r.ppg === 'number' ? ` · ${r.ppg.toFixed(1)} PPG` : '')
+      + (typeof r.vorp === 'number' ? ` · VORP ${r.vorp}` : '');
+    h += `<div class="rank-row" tabindex="0" aria-label="${rankEsc(tip)}" data-tip="${rankEsc(tip)}">`
+      + `<div class="rank-name"><span class="rank-num">${r.rank}</span>`
+      + (showPos && r.pos ? `<span class="ticker-pos" data-p="${rankEsc(r.pos)}">${rankEsc(r.pos)}</span>` : '')
+      + `<span class="rank-player">${rankEsc(r.name)}</span>`
+      + `<span class="rank-team">${rankEsc(r.team || '')}</span></div>`
+      + `<div class="rank-strip"><div class="rank-band" style="left:${bl.toFixed(2)}%;width:${bw.toFixed(2)}%"></div>`
+      + `<div class="rank-dot" style="left:${mx.toFixed(2)}%"></div></div>`
+      + `<div class="rank-val">${r.median}</div></div>`;
+  });
+  h += `</div></div>`;
+  return h;
+}
+
+function rankTable(rows, showPos) {
+  let h = `<table class="players-table rank-table"><thead><tr>`
+    + `<th>#</th><th>Player</th><th>Team</th>${showPos ? '<th>Pos</th>' : ''}`
+    + `<th>Floor</th><th>Median</th><th>Ceiling</th><th>PPG</th><th>VORP</th></tr></thead><tbody>`;
+  h += rows.map(r =>
+    `<tr><td>${r.rank}</td><td>${rankEsc(r.name)}</td><td>${rankEsc(r.team || '')}</td>`
+    + (showPos ? `<td>${rankEsc(r.pos || '')}</td>` : '')
+    + `<td>${r.floor ?? ''}</td><td>${r.median ?? ''}</td><td>${r.ceiling ?? ''}</td>`
+    + `<td>${typeof r.ppg === 'number' ? r.ppg.toFixed(1) : ''}</td>`
+    + `<td>${r.vorp ?? ''}</td></tr>`
+  ).join('');
+  return h + '</tbody></table>';
+}
+
+function renderRankingsPage() {
+  const body = document.getElementById('rankingsBody');
+  if (!body) return;
+  const meta = rankingsData.meta || {};
+  const showPos = currentRankTab === 'overall';
+
+  const methodEl = document.getElementById('rankingsMethod');
+  if (methodEl) {
+    const method = showPos ? (meta.overallMethod || '') : (meta.method || '');
+    methodEl.textContent = [meta.format, method].filter(Boolean).join(' — ');
+  }
+
+  const list = rankingsData[currentRankTab];
+  if (!Array.isArray(list) || !list.length) {
+    body.innerHTML = `<div class="medical-card"><div class="medical-detail">No rankings available yet.</div></div>`;
+    document.getElementById('rankingsCaveat').textContent = '';
+    return;
+  }
+
+  // A row without a full band cannot be drawn honestly — it still appears in
+  // the table, where missing numbers render as blanks instead of shapes.
+  const bandRows = list.filter(r =>
+    typeof r.floor === 'number' && typeof r.median === 'number' && typeof r.ceiling === 'number');
+
+  if (currentRankView === 'chart' && bandRows.length) {
+    const b = meta.baselines && meta.baselines[currentRankTab];
+    const baseline = (b && typeof b.points === 'number')
+      ? { points: b.points, label: `${currentRankTab.toUpperCase()}${b.rank}` } : null;
+    const shown = bandRows.slice(0, RANK_CHART_CAP);
+    let h = `<div class="medical-card" style="padding:22px 20px;">`
+      + rankWhiskerChart(shown, baseline, showPos) + `</div>`;
+    if (bandRows.length > shown.length) {
+      h += `<div class="rank-note">Chart shows the top ${shown.length} — the Table view has all ${bandRows.length}.</div>`;
+    }
+    body.innerHTML = h;
+  } else {
+    body.innerHTML = rankTable(list, showPos);
+  }
+
+  const caveat = document.getElementById('rankingsCaveat');
+  caveat.textContent = [meta.bandCaveat, meta.healthNote].filter(Boolean).join(' ');
+}
+
+// Shared tooltip: hover or keyboard focus, same content either way. The
+// aria-label carries identical text, and the Table view holds every value,
+// so the tooltip enhances rather than gates.
+function initRankTooltip() {
+  const tip = document.createElement('div');
+  tip.id = 'vizTooltip';
+  document.body.appendChild(tip);
+  const bodyEl = document.getElementById('rankingsBody');
+  if (!bodyEl) return;
+  const show = (text, x, y) => {
+    tip.textContent = text;
+    tip.style.display = 'block';
+    const pad = 14;
+    const w = tip.offsetWidth, hgt = tip.offsetHeight;
+    tip.style.left = Math.min(x + pad, window.innerWidth - w - 8) + 'px';
+    tip.style.top = (y + pad + hgt > window.innerHeight ? y - hgt - 6 : y + pad) + 'px';
+  };
+  bodyEl.addEventListener('pointermove', e => {
+    const row = e.target.closest('.rank-row');
+    if (row && row.dataset.tip) show(row.dataset.tip, e.clientX, e.clientY);
+    else tip.style.display = 'none';
+  });
+  bodyEl.addEventListener('pointerleave', () => { tip.style.display = 'none'; });
+  bodyEl.addEventListener('focusin', e => {
+    const row = e.target.closest('.rank-row');
+    if (row && row.dataset.tip) {
+      const r = row.getBoundingClientRect();
+      show(row.dataset.tip, r.left + 40, r.top);
+    }
+  });
+  bodyEl.addEventListener('focusout', () => { tip.style.display = 'none'; });
+}
+initRankTooltip();
+
+// ===== HOME MINI-CHARTS =====
+// The analysis-card side panels used to hold decorative bars with hardcoded
+// widths. Real data only now: a card whose data is missing renders empty.
+function renderMiniBars(id, items, color) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!items || !items.length) { el.innerHTML = ''; return; }
+  const max = Math.max(...items.map(i => i.value));
+  if (!(max > 0)) { el.innerHTML = ''; return; }
+  el.setAttribute('role', 'img');
+  el.setAttribute('aria-label', items.map(i => i.label).join('; '));
+  el.innerHTML = items.map(i =>
+    `<div class="chart-bar" style="width:${Math.max((i.value / max) * 100, 4).toFixed(1)}%;background:${color};opacity:0.55;" title="${rankEsc(i.label)}"></div>`
+  ).join('');
+}
+
+function renderHomeMinis() {
+  // Target-share leaders, latest completed season only — no cross-season mixing.
+  const tgtRows = [];
+  for (const s of Object.values(playerStats || {})) {
+    const yr = s.seasons && s.seasons['2025'];
+    if (yr && typeof yr.tgtShare === 'number' && yr.games >= 8) {
+      tgtRows.push({ label: `${s.name}: ${yr.tgtShare}% target share (2025)`, value: yr.tgtShare });
+    }
+  }
+  tgtRows.sort((a, b) => b.value - a.value);
+  renderMiniBars('miniTgtShare', tgtRows.slice(0, 5), 'var(--gold)');
+
+  // Return-to-play rates by injury type, from the medical research file.
+  const injRows = Object.values(injuryResearch || {})
+    .filter(i => i && typeof i.returnRate === 'number' && i.name)
+    .map(i => ({ label: `${i.name}: ${i.returnRateLabel || i.returnRate + '% return'}`, value: i.returnRate }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 4);
+  renderMiniBars('miniInjury', injRows, 'var(--red)');
+
+  // Top of the overall board by value over replacement.
+  const vorpRows = (rankingsData.overall || [])
+    .filter(p => typeof p.vorp === 'number')
+    .slice(0, 5)
+    .map(p => ({ label: `${p.name}: VORP ${p.vorp}`, value: p.vorp }));
+  renderMiniBars('miniVorp', vorpRows, 'var(--blue)');
+
+  // CeeDee Lamb PPG by season, for the route-tree piece.
+  const lamb = Object.values(playerStats || {}).find(s => s.name === 'CeeDee Lamb');
+  if (lamb && lamb.seasons) {
+    const lambRows = Object.entries(lamb.seasons)
+      .filter(([, s]) => typeof s.fantasyPPG === 'number')
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([yr, s]) => ({ label: `${yr}: ${s.fantasyPPG} PPR PPG`, value: s.fantasyPPG }));
+    renderMiniBars('miniLamb', lambRows, '#a78bfa');
+  } else {
+    renderMiniBars('miniLamb', [], '#a78bfa');
+  }
+}
+
 // ===== PAGE SWITCHING =====
 function switchPage(page) {
   document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
@@ -2197,6 +2473,7 @@ function switchPage(page) {
   if (page === 'players') renderPlayersTable();
   if (page === 'compare') renderComparePage();
   if (page === 'medicals') { renderMedicals(); renderInjuryTypeGrid(); }
+  if (page === 'rankings') renderRankingsPage();
 }
 
 // ===== PLAYERS TABLE =====
@@ -2211,10 +2488,10 @@ function renderPlayersTable(search = '') {
     <tr onclick="openProfile('${p.id}')">
       <td><div class="player-cell">${renderAvatar(p, 36, 12)}<div><div class="player-cell-name">${p.name}</div></div></div></td>
       <td><span style="font-family:var(--mono);font-size:12px;color:var(--text-muted);">${p.pos}</span></td>
-      <td>${p.team}</td>
-      <td>${p.age}</td>
+      <td>${p.team || '—'}</td>
+      <td>${p.age ?? '—'}</td>
       <td><span class="player-quick-status ${p.statusClass}">${p.status}</span></td>
-      <td><span style="font-family:var(--mono);font-size:12px;color:var(--gold);">${p.fRank}</span></td>
+      <td><span style="font-family:var(--mono);font-size:12px;color:var(--gold);">${p.fRank || '—'}</span></td>
     </tr>
   `).join('');
 }
@@ -2343,7 +2620,7 @@ function openProfile(id) {
     avatarEl.textContent = player.initials;
   }
   document.getElementById('profileName').textContent = player.name;
-  document.getElementById('profileTeamLine').innerHTML = `${player.pos} · ${player.team} · <span>${player.fRank}</span>${player.experience ? ' · ' + player.experience : ''}`;
+  document.getElementById('profileTeamLine').innerHTML = `${player.pos} · ${player.team}${player.fRank ? ` · <span>${player.fRank}</span>` : ''}${player.experience ? ' · ' + player.experience : ''}`;
 
   // Reset to medical tab
   document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
@@ -3781,11 +4058,16 @@ async function loadSubstack() {
       document.getElementById('substackAnalysis').onclick = () => window.open(latest.link, '_blank');
     }
 
-    // Top stories sidebar — slot 5
+    // Top stories sidebar — slot 5. These elements were removed in a past
+    // redesign; the unguarded writes threw and silently killed everything
+    // below (the whole "From Substack" sidebar). Guard, don't assume.
     const thirdPost = data.items[2] || data.items[0];
-    document.getElementById('sidebarSubstackTitle').textContent = thirdPost.title;
-    document.getElementById('sidebarSubstackMeta').innerHTML = `<span>Adi</span> · ${new Date(thirdPost.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
-    document.getElementById('substackSidebarStory').onclick = () => window.open(thirdPost.link, '_blank');
+    const sbTitle = document.getElementById('sidebarSubstackTitle');
+    const sbMeta = document.getElementById('sidebarSubstackMeta');
+    const sbStory = document.getElementById('substackSidebarStory');
+    if (sbTitle) sbTitle.textContent = thirdPost.title;
+    if (sbMeta) sbMeta.innerHTML = `<span>Adi</span> · ${new Date(thirdPost.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+    if (sbStory) sbStory.onclick = () => window.open(thirdPost.link, '_blank');
 
     // Right sidebar — remaining posts
     const sidebar = document.getElementById('substackSidebar');
@@ -3857,6 +4139,10 @@ function toggleMobileNav() {
 // ===== HASH ROUTING =====
 function handleHashRoute() {
   const hash = window.location.hash.slice(1);
+  if (['rankings', 'players', 'medicals', 'compare', 'fantasy', 'draft', 'film'].includes(hash)) {
+    switchPage(hash);
+    return;
+  }
   if (hash.startsWith('article/')) {
     const slug = hash.replace('article/', '');
     // Wait for data to load if needed

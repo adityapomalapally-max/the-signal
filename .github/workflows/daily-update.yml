@@ -23,6 +23,9 @@ jobs:
         with:
           node-version: '24'
       
+      - name: Build player pool
+        run: node scripts/build-players.js
+
       - name: Run data update script
         run: node scripts/update-data.js
       
@@ -43,6 +46,7 @@ jobs:
           DATE=$(date -u +"%Y-%m-%d %H:%M UTC")
           git commit -m "Automated data update: ${DATE}
 
+          - Player pool rebuilt from Sleeper (top 200 + curated overlay)
           - Player statuses synced from Sleeper API
           - Trending players cached
           - ESPN news cached
