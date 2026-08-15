@@ -345,6 +345,32 @@ a { color: inherit; text-decoration: none; }
   background: repeating-linear-gradient(-45deg, var(--gold) 0px, var(--gold) 1px, transparent 1px, transparent 20px);
 }
 
+.hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  z-index: 0;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.hero-img.loaded { opacity: 1; }
+.hero-feature:hover .hero-img.loaded { transform: scale(1.03); }
+/* The headline sits on top of the artwork, so the scrim is doing contrast
+   work, not decoration — heaviest under the text, lifting toward the top. */
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  background:
+    linear-gradient(to top, rgba(12,15,20,0.97) 0%, rgba(12,15,20,0.93) 30%, rgba(12,15,20,0.72) 60%, rgba(12,15,20,0.5) 100%),
+    linear-gradient(to right, rgba(12,15,20,0.85) 0%, rgba(12,15,20,0.3) 60%, rgba(12,15,20,0.15) 100%);
+}
+.hero-scrim.on { opacity: 1; }
+
 .hero-content { position: relative; z-index: 2; }
 
 .hero-tag {
@@ -1583,6 +1609,11 @@ a { color: inherit; text-decoration: none; }
   <!-- HERO -->
   <div class="hero-layout">
     <a class="hero-feature" href="https://adityapomalapally.substack.com" target="_blank" id="heroLink">
+      <!-- Post artwork from the Substack feed. Stays invisible until it
+           actually decodes, so a missing or blocked image leaves the
+           original pattern rather than a broken frame. -->
+      <img class="hero-img" id="heroImage" alt="" aria-hidden="true">
+      <div class="hero-scrim" id="heroScrim"></div>
       <div class="hero-bg-pattern"></div>
       <div class="hero-content">
         <div class="hero-tag">
@@ -4715,6 +4746,51 @@ async function loadESPNNews() {
 }
 
 // ===== SUBSTACK INTEGRATION =====
+// Substack CDN urls carry both the width it chose to render (w_NNN) and the
+// original's dimensions (…_686x386.jpeg). The render width is the reliable
+// signal: real post artwork comes back at w_1456, while a post with no
+// artwork attaches a small square avatar at its natural size. The source
+// width is only a floor against genuinely tiny originals — legitimate
+// artwork is sometimes portrait (480x640), and that is still worth showing.
+const HERO_MIN_RENDER_WIDTH = 600;
+const HERO_MIN_SOURCE_WIDTH = 400;
+
+function heroImageBigEnough(url) {
+  if (!url) return false;
+  const decoded = decodeURIComponent(url);
+  const render = decoded.match(/[?&,\/]w_(\d+)/);
+  if (render && Number(render[1]) < HERO_MIN_RENDER_WIDTH) return false;
+  const source = decoded.match(/_(\d{2,5})x(\d{2,5})\.(?:jpe?g|png|webp|gif)/i);
+  if (source && Number(source[1]) < HERO_MIN_SOURCE_WIDTH) return false;
+  return true;
+}
+
+// The feed exposes the post artwork as `thumbnail`, but not every post has
+// one (a text-only post carries an empty string), so try the enclosure and
+// then the first image in the post body before giving up.
+function substackImage(item) {
+  if (!item) return null;
+  const candidates = [
+    (item.thumbnail || '').trim(),
+    item.enclosure ? (item.enclosure.link || '').trim() : '',
+    ...[...String(item.content || item.description || '').matchAll(/<img[^>]+src="([^">]+)"/gi)].map(m => m[1])
+  ].filter(Boolean);
+  return candidates.find(heroImageBigEnough) || null;
+}
+
+// Only reveal the artwork once it has actually decoded. A 404, a hotlink
+// block, or a slow CDN then costs nothing — the hero keeps the pattern it
+// has always had instead of flashing a broken frame.
+function setHeroImage(url) {
+  const img = document.getElementById('heroImage');
+  const scrim = document.getElementById('heroScrim');
+  if (!img || !scrim) return;
+  if (!url) { img.removeAttribute('src'); img.classList.remove('loaded'); scrim.classList.remove('on'); return; }
+  img.onload = () => { img.classList.add('loaded'); scrim.classList.add('on'); };
+  img.onerror = () => { img.classList.remove('loaded'); scrim.classList.remove('on'); };
+  img.src = url;
+}
+
 async function loadSubstack() {
   // Try multiple possible Substack RSS URLs
   const feedUrls = [
@@ -4744,6 +4820,7 @@ async function loadSubstack() {
     document.getElementById('heroExcerpt').textContent = excerpt;
     document.getElementById('heroDate').textContent = new Date(latest.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     document.getElementById('heroLink').href = latest.link;
+    setHeroImage(substackImage(latest));
 
     // Analysis section — 2nd post (or 1st if only 1)
     if (data.items.length > 1) {
