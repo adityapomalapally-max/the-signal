@@ -9,6 +9,10 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - `scripts/update-data.js` — daily GitHub Action, 6 AM ET. Sleeper statuses, ESPN news, trending
 - `scripts/fetch-stats.js` — nflverse stats (stats_player release). GSIS-id match first, name second
 - `scripts/fetch-ngs.js` — Next Gen Stats + snap counts → data/ngs.json. Same matching rules
+- `scripts/fetch-injuries.js` — official NFL weekly injury reports → data/injuries.json. The
+  GENERATED medical layer under the hand-written medicals.json (174/200 vs 31/200). nflverse's
+  injuries schema is NOT stable across seasons: 2025 has season_type, 2024 and earlier only
+  game_type. Read one alone and whole seasons silently match zero rows. Guard PER SEASON
 - `scripts/lib/match.js` — THE player matcher + CSV fetch. Both fetch scripts use it; never fork it
 - `scripts/build-rankings.js` — generates data/rankings.json. NEVER edit rankings.json by hand.
   Also computes the availability / missed-time case per player. That number MOVES THE DOWNSIDE,

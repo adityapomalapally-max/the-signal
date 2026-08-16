@@ -3652,8 +3652,12 @@ function renderProfileTab(tab) {
         }
       });
     } else {
-      html = `<div class="medical-card"><div class="medical-detail">No medical records on file for ${player.name}. Player currently listed as <strong>${player.status}</strong>.</div></div>`;
+      html = `<div class="medical-card"><div class="medical-detail">No hand-written medical profile for ${player.name} yet — those are researched one at a time. He is currently listed as <strong>${player.status}</strong>, and his official injury report history is below.</div></div>`;
     }
+    // The generated layer under the curated profiles: every player in the
+    // pool gets a real sourced history, not just the ~30 written by hand.
+    html += `<div id="injReportSlot"></div>`;
+    loadInjuryReport(currentProfileId);
   }
 
   else if (tab === 'overview') {
@@ -4223,6 +4227,52 @@ async function loadNgsSection(playerId, pos) {
     h += '</tr>';
   });
   h += '</tbody></table></div>';
+  el.innerHTML = h;
+}
+
+// ===== OFFICIAL INJURY REPORT =====
+// The NFL's own weekly report, via nflverse. This is a RECORD of what the
+// team declared, not analysis — and it has one limit worth stating on the
+// page: a player placed on IR drops off the report entirely, so the weeks
+// listed here undercount a season-ending injury rather than capturing it.
+// Games actually missed live in the availability figure on Rankings.
+let injAllPromise = null;
+function ensureInjuries() {
+  if (!injAllPromise) injAllPromise = loadJSON('data/injuries.json').then(d => d || {});
+  return injAllPromise;
+}
+
+async function loadInjuryReport(playerId) {
+  const data = await ensureInjuries();
+  const el = document.getElementById('injReportSlot');
+  if (!el || currentProfileId !== playerId) return;
+  const seasons = data[playerId];
+  if (!seasons || !Object.keys(seasons).length) { el.innerHTML = ''; return; }
+
+  const years = Object.keys(seasons).sort().reverse();
+  let h = `<div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin:24px 0 10px;">Official Injury Report</div>`;
+  h += `<div style="font-size:12.5px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px;">Every week this player appeared on his team's official injury report, grouped into episodes by body part. Most listings are a tag he played through — the Out count is the weeks the team ruled him out.</div>`;
+
+  years.forEach(yr => {
+    const s = seasons[yr];
+    if (!s.episodes || !s.episodes.length) return;
+    h += `<div class="medical-card" style="margin-bottom:10px;padding:16px 18px;">`;
+    h += `<div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:10px;">`
+      + `<span style="font-family:var(--mono);font-size:12px;color:var(--gold);font-weight:600;">${yr}</span>`
+      + `<span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);">${s.weeksListed} WEEK${s.weeksListed === 1 ? '' : 'S'} LISTED${s.gamesOut ? ` · ${s.gamesOut} RULED OUT` : ''}</span></div>`;
+    h += s.episodes.map(e => {
+      const span = e.firstWeek === e.lastWeek ? `Wk ${e.firstWeek}` : `Wk ${e.firstWeek}–${e.lastWeek}`;
+      const worst = e.statuses && e.statuses.length ? e.statuses.join(', ') : null;
+      return `<div style="display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-top:1px solid var(--border-subtle);font-size:13px;">`
+        + `<span style="color:var(--text);">${rankEsc(e.part)}</span>`
+        + `<span style="font-family:var(--mono);font-size:11px;color:var(--text-muted);white-space:nowrap;">${span}`
+        + (e.gamesOut ? ` · <span style="color:var(--red);">${e.gamesOut} out</span>` : (worst ? ` · ${rankEsc(worst)}` : ''))
+        + `</span></div>`;
+    }).join('');
+    h += `</div>`;
+  });
+
+  h += `<div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.6;margin-top:8px;">Source: NFL official injury reports via nflverse. A player moved to injured reserve comes off the weekly report, so a season-ending injury shows up here as the weeks before it and then silence — this counts report appearances, not games missed.</div>`;
   el.innerHTML = h;
 }
 

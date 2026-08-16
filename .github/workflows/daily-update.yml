@@ -34,6 +34,9 @@ jobs:
 
       - name: Fetch Next Gen Stats + snap counts
         run: node scripts/fetch-ngs.js
+
+      - name: Fetch official injury reports
+        run: node scripts/fetch-injuries.js
       
       - name: Check for changes
         id: changes
