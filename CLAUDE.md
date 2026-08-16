@@ -10,7 +10,11 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - `scripts/fetch-stats.js` — nflverse stats (stats_player release). GSIS-id match first, name second
 - `scripts/fetch-ngs.js` — Next Gen Stats + snap counts → data/ngs.json. Same matching rules
 - `scripts/lib/match.js` — THE player matcher + CSV fetch. Both fetch scripts use it; never fork it
-- `scripts/build-rankings.js` — generates data/rankings.json. NEVER edit rankings.json by hand
+- `scripts/build-rankings.js` — generates data/rankings.json. NEVER edit rankings.json by hand.
+  Also computes the availability / missed-time case per player. That number MOVES THE DOWNSIDE,
+  NEVER THE RANK — if a change to it reorders any board, the change is wrong. Sleeper's
+  `experience` is not trustworthy for entry season (it lists 2023 draftees as 3rd Year), so a
+  season with a game log on file always counts as eligible
 - `data/players-curated.json` — hand-written rich profiles (athletic %iles, comps, pinned GSIS ids).
   Wins over the generated base, EXCEPT status/team/age/fRank, which drift and stay feed-owned
 - `data/medicals.json` — hand-written, never generated. An injury may carry an optional

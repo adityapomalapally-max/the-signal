@@ -25,11 +25,154 @@
 
 const fs = require('fs');
 const path = require('path');
+const { normalizeName } = require('./lib/match');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const SRC = path.join(DATA_DIR, 'projections-2026.json');
 const MANUAL = path.join(DATA_DIR, 'rankings-manual.json');
 const OUT = path.join(DATA_DIR, 'rankings.json');
+
+// ===== AVAILABILITY =====
+// The projections assume 17 games and say so; the floor is where injury
+// history is supposed to live. This computes that floor from what actually
+// happened rather than leaving it to judgment.
+//
+// It measures AVAILABILITY, not durability: a game missed to suspension
+// counts the same as a game missed to a knee, because the question being
+// answered is "how often was he not in your lineup". Rice's 2025 is six
+// games of suspension and the number says so.
+//
+// Seasons are historical and complete, so this is stable between runs — it
+// only moves when a projection or the pool changes.
+const AVAIL_SEASONS = [2023, 2024, 2025];
+const GAMES_PER_SEASON = 17;
+// The projections define their floor as roughly a 15th-percentile outcome,
+// so the league-wide availability floor is read at the same percentile.
+const FLOOR_PERCENTILE = 15;
+// If the derived baseline lands outside this range the inputs have moved
+// under us and the number would be quietly wrong, so the run stops.
+const FLOOR_GAMES_SANE = [6, 14];
+// Bounds on the per-player figure. The upper bound exists because nobody is
+// injury-proof, so no record should imply a full-season floor; the lower one
+// stops a two-season sample of bad luck implying a near-zero season.
+const FLOOR_GAMES_CLAMP = [5, 14];
+
+// "3rd Year" in 2026 means he entered in 2024, so 2023 was never his to miss.
+// Sleeper's experience is not reliable enough to use alone — it lists Rashee
+// Rice and Puka Nacua, both 2023 draftees, as 3rd Year — so a season we hold
+// a game log for always counts as eligible. Presence of a log proves he was
+// in the league; absence proves nothing, so the label still sets the start
+// when it is the earlier of the two.
+function entrySeason(experience, season, loggedSeasons) {
+  let derived = null;
+  if (experience) {
+    if (/rookie/i.test(experience)) derived = season;
+    else {
+      const m = String(experience).match(/^(\d+)/);
+      if (m) derived = season - (Number(m[1]) - 1);
+    }
+  }
+  const earliestLogged = loggedSeasons.length ? Math.min(...loggedSeasons) : null;
+  if (derived === null) return earliestLogged;
+  if (earliestLogged === null) return derived;
+  return Math.min(derived, earliestLogged);
+}
+
+function percentile(sorted, p) {
+  if (!sorted.length) return null;
+  const i = (p / 100) * (sorted.length - 1);
+  const lo = Math.floor(i), hi = Math.ceil(i);
+  return lo === hi ? sorted[lo] : sorted[lo] + (sorted[hi] - sorted[lo]) * (i - lo);
+}
+
+function loadAvailability(projSeason) {
+  const playersPath = path.join(DATA_DIR, 'players.json');
+  if (!fs.existsSync(playersPath)) return null;
+  const players = JSON.parse(fs.readFileSync(playersPath, 'utf8'));
+
+  const byPlayer = new Map();   // "name|POS" -> record
+  const allSeasonGames = [];
+
+  for (const p of players) {
+    let weekly = null;
+    try {
+      weekly = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'weekly', `${p.id}.json`), 'utf8'));
+    } catch (e) { continue; }
+
+    const logged = Object.keys(weekly).map(Number).filter(s => AVAIL_SEASONS.includes(s));
+    const entry = entrySeason(p.experience, projSeason, logged);
+    if (entry === null) continue;
+
+    const eligible = AVAIL_SEASONS.filter(s => s >= entry);
+    if (!eligible.length) continue;
+    // A game log can carry a duplicate week for a mid-season trade, so cap.
+    const games = eligible.map(s => Math.min(weekly[s] ? weekly[s].length : 0, GAMES_PER_SEASON));
+    games.forEach(g => allSeasonGames.push(g));
+
+    const key = `${normalizeName(p.name)}|${p.pos}`;
+    // Two pool players collapsing to one key would attach one man's record
+    // to another, so poison it rather than guess.
+    byPlayer.set(key, byPlayer.has(key) ? null : {
+      seasons: eligible, games,
+      played: games.reduce((a, b) => a + b, 0),
+      possible: eligible.length * GAMES_PER_SEASON,
+      worst: Math.min(...games),
+      status: p.status || null,
+      healthy: p.statusClass === 'status-healthy'
+    });
+  }
+
+  allSeasonGames.sort((a, b) => a - b);
+  const leagueFloorGames = Math.round(percentile(allSeasonGames, FLOOR_PERCENTILE));
+  const leagueRate = (allSeasonGames.reduce((a, b) => a + b, 0) / allSeasonGames.length) / GAMES_PER_SEASON;
+  if (!(leagueFloorGames >= FLOOR_GAMES_SANE[0] && leagueFloorGames <= FLOOR_GAMES_SANE[1])) {
+    console.error(
+      `[rankings] ABORT: league availability floor computed as ${leagueFloorGames} games from ` +
+      `${allSeasonGames.length} player-seasons, outside the sane range ` +
+      `${FLOOR_GAMES_SANE.join('-')}. The weekly logs or the pool have moved.`
+    );
+    process.exit(1);
+  }
+  return { byPlayer, leagueFloorGames, leagueRate, sampleSize: allSeasonGames.length };
+}
+
+// Attaches the availability picture and the floor it implies.
+function availabilityFor(avail, p) {
+  if (!avail) return null;
+  const rec = avail.byPlayer.get(`${normalizeName(p.name)}|${p.pos}`);
+  if (!rec || typeof p.median !== 'number') return null;
+
+  // Everyone carries the league-wide risk. A player's own record then scales
+  // it by how available he has been relative to the league.
+  //
+  // The earlier draft used his single worst season, which let one wrecked
+  // year define a player permanently and swung wildly on a sample of three —
+  // Rice's 3-game 2024 implied a 39-point floor on a 220-point projection.
+  // Scaling the whole record is steadier and still separates the durable
+  // from the fragile. His worst season is reported alongside, so the extreme
+  // is visible without being the number.
+  const rate = rec.played / rec.possible;
+  const shortRecord = rec.seasons.length < 2;
+  const scaled = Math.round(avail.leagueFloorGames * (rate / avail.leagueRate));
+  const floorGames = shortRecord
+    ? avail.leagueFloorGames
+    : Math.max(FLOOR_GAMES_CLAMP[0], Math.min(FLOOR_GAMES_CLAMP[1], scaled));
+
+  return {
+    pct: Math.round(rate * 100),
+    seasons: rec.seasons,
+    games: rec.games,
+    worst: rec.worst,
+    floorGames,
+    basis: shortRecord ? 'league-short-record'
+      : (floorGames < avail.leagueFloorGames ? 'below-league' : floorGames > avail.leagueFloorGames ? 'above-league' : 'league'),
+    floor: Math.round((p.median / GAMES_PER_SEASON) * floorGames),
+    // History cannot see a knock he is carrying right now, so the number is
+    // flagged rather than adjusted — inventing a games-missed figure from a
+    // one-word status is exactly the guess this project does not make.
+    statusFlag: rec.healthy ? null : rec.status
+  };
+}
 
 // Rank of the replacement-level player at each position (1-indexed).
 const BASELINE_RANK = { qb: 12, rb: 30, wr: 40, te: 12 };
@@ -46,6 +189,14 @@ function main() {
   }
   const src = JSON.parse(fs.readFileSync(SRC, 'utf8'));
   const proj = src.projections;
+
+  const availability = loadAvailability(src.meta && src.meta.season ? src.meta.season : 2026);
+  if (availability) {
+    log(`availability: league floor = ${availability.leagueFloorGames}/${GAMES_PER_SEASON} games ` +
+        `(p${FLOOR_PERCENTILE} of ${availability.sampleSize} player-seasons)`);
+  } else {
+    log('availability: players.json not found — floors stay health-assumed only');
+  }
 
   const baselines = {};
   const pools = {};
@@ -87,6 +238,8 @@ function main() {
     // median for baseline purposes and nothing else. Empty beats invented.
     if (typeof p.floor === 'number') r.floor = p.floor;
     if (typeof p.ceiling === 'number') r.ceiling = p.ceiling;
+    const av = availabilityFor(availability, p);
+    if (av) r.availability = av;
     return r;
   };
 
@@ -97,6 +250,20 @@ function main() {
       builtAt: new Date().toISOString(),
       overallMethod:
         'Ordered by VORP (median minus replacement-level median at the same position), not raw points.',
+      availabilityMethod: availability
+        ? `The missed-time case is a different downside from the floor beside it. The floor is a cold season played out in full; ` +
+          `this is a normal season cut short. It holds the projected per-game rate flat and applies it to a low-availability year. ` +
+          `League-wide that year is ${availability.leagueFloorGames} of ${GAMES_PER_SEASON} games — the ${FLOOR_PERCENTILE}th percentile of ` +
+          `${availability.sampleSize} player-seasons across ${AVAIL_SEASONS[0]}–${AVAIL_SEASONS[AVAIL_SEASONS.length - 1]}, the same percentile the projection set uses for its floor — ` +
+          `then scaled by how available the player himself has been against the league average of ${Math.round(availability.leagueRate * 100)}%. ` +
+          `It counts every missed game regardless of cause, suspensions included, because the question is how often he was not in your lineup. ` +
+          `The per-game rate is deliberately NOT reduced: this prices availability only, never diminished play on return. ` +
+          `Ordering is untouched — it moves the downside, never the rank.`
+        : undefined,
+      availabilityCaveat: availability
+        ? 'A record of one or two seasons is too short to read a player-specific floor from, so those fall back to the league figure. ' +
+          'A player who is not currently healthy is flagged, not adjusted: history cannot see the knock he is carrying now, and a games-missed number inferred from a one-word status would be invented.'
+        : undefined,
       baselines: Object.fromEntries(
         Object.keys(BASELINE_RANK).map((p) => [
           p,

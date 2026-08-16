@@ -729,6 +729,14 @@ a { color: inherit; text-decoration: none; }
   background-size: 25.0001% 100%, 100% 100%;
   background-repeat: repeat-x, no-repeat; }
 .rank-band { position: absolute; top: 50%; margin-top: -4px; height: 8px; border-radius: 4px; background: rgba(168,137,58,0.28); }
+/* Missed-time extension: cooler and hatched so it never reads as more of the
+   same band. It is a different downside, not a wider one. */
+.rank-band-avail { position: absolute; top: 50%; margin-top: -3px; height: 6px; border-radius: 3px;
+  background: repeating-linear-gradient(-45deg, rgba(42,120,214,0.55) 0 3px, rgba(42,120,214,0.15) 3px 6px); }
+.rank-flag { position: absolute; top: 50%; width: 5px; height: 5px; margin: -2.5px 0 0 -7px; border-radius: 50%; background: var(--red); }
+.rank-legend { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; font-family: var(--mono); font-size: 9.5px; color: var(--text-muted); letter-spacing: 0.5px; margin: 12px 0 0; }
+.rank-legend span { display: flex; align-items: center; gap: 6px; }
+.rank-legend i { display: inline-block; width: 16px; height: 7px; border-radius: 3px; }
 .rank-dot { position: absolute; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #a8893a; border: 2px solid var(--bg-card); box-sizing: content-box; }
 .rank-baseline { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1px dashed rgba(27,168,155,0.55); }
 .rank-baseline-label { position: absolute; bottom: -18px; transform: translateX(-50%); font-family: var(--mono); font-size: 8.5px; color: var(--teal); letter-spacing: 0.5px; white-space: nowrap; }
@@ -1838,9 +1846,15 @@ a { color: inherit; text-decoration: none; }
           <button class="pos-btn" onclick="setRankTab('wr', this)">WR</button>
           <button class="pos-btn" onclick="setRankTab('te', this)">TE</button>
         </div>
-        <div class="position-filter" id="rankViewToggle">
-          <button class="pos-btn active" onclick="setRankView('chart', this)">Chart</button>
-          <button class="pos-btn" onclick="setRankView('table', this)">Table</button>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <div class="position-filter" id="rankAvailToggle">
+            <button class="pos-btn active" onclick="setRankAvail(true, this)">Show missed-time risk</button>
+            <button class="pos-btn" onclick="setRankAvail(false, this)">Health assumed</button>
+          </div>
+          <div class="position-filter" id="rankViewToggle">
+            <button class="pos-btn active" onclick="setRankView('chart', this)">Chart</button>
+            <button class="pos-btn" onclick="setRankView('table', this)">Table</button>
+          </div>
         </div>
       </div>
     </div>
@@ -2381,6 +2395,7 @@ document.querySelectorAll('.ticker-tab[data-pos]').forEach(tab => {
 // Every value shown in the chart is also reachable via the Table view.
 let currentRankTab = 'overall';
 let currentRankView = 'chart';
+let rankShowAvail = true;
 const RANK_CHART_CAP = 40;
 
 function rankEsc(s) {
@@ -2402,6 +2417,13 @@ function setRankView(view, btn) {
   renderRankingsPage();
 }
 
+function setRankAvail(on, btn) {
+  rankShowAvail = on;
+  document.querySelectorAll('#rankAvailToggle .pos-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderRankingsPage();
+}
+
 // 4 even intervals on round-number bounds, so the gridline background
 // (25% repeating) and the tick labels always agree.
 function rankScale(lo, hi) {
@@ -2414,8 +2436,16 @@ function rankScale(lo, hi) {
   return { min, max: min + 4 * step, ticks: [0, 1, 2, 3, 4].map(i => min + i * step) };
 }
 
+// The availability extension is a SECOND downside, not a wider version of the
+// first: the gold band is a cold season played in full, the extension is a
+// normal season cut short. Different risks, so they get different marks.
+const availFloorOf = (r) => (rankShowAvail && r.availability && typeof r.availability.floor === 'number'
+  && r.availability.floor < r.floor) ? r.availability.floor : null;
+
 function rankWhiskerChart(rows, baseline, showPos) {
-  const lo = Math.min(...rows.map(r => r.floor), baseline ? baseline.points : Infinity);
+  const lo = Math.min(
+    ...rows.map(r => Math.min(r.floor, availFloorOf(r) === null ? Infinity : availFloorOf(r))),
+    baseline ? baseline.points : Infinity);
   const hi = Math.max(...rows.map(r => r.ceiling), baseline ? baseline.points : -Infinity);
   const sc = rankScale(lo, hi);
   const X = v => Math.max(0, Math.min(100, ((v - sc.min) / (sc.max - sc.min)) * 100));
@@ -2436,16 +2466,26 @@ function rankWhiskerChart(rows, baseline, showPos) {
     const bl = X(r.floor);
     const bw = Math.max(X(r.ceiling) - X(r.floor), 1);
     const mx = X(r.median);
-    const tip = `${r.name} — floor ${r.floor} · median ${r.median} · ceiling ${r.ceiling}`
+    const af = availFloorOf(r);
+    const a = r.availability;
+    let tip = `${r.name} — floor ${r.floor} · median ${r.median} · ceiling ${r.ceiling}`
       + (typeof r.ppg === 'number' ? ` · ${r.ppg.toFixed(1)} PPG` : '')
       + (typeof r.vorp === 'number' ? ` · VORP ${r.vorp}` : '');
+    if (a) {
+      tip += ` — available ${a.pct}% of games (${a.games.join('/')}); a ${a.floorGames}-game season at this rate is ${a.floor}`;
+      if (a.statusFlag) tip += `; currently ${a.statusFlag}, which this does not price in`;
+    }
     h += `<div class="rank-row" tabindex="0" aria-label="${rankEsc(tip)}" data-tip="${rankEsc(tip)}">`
       + `<div class="rank-name"><span class="rank-num">${r.rank}</span>`
       + (showPos && r.pos ? `<span class="ticker-pos" data-p="${rankEsc(r.pos)}">${rankEsc(r.pos)}</span>` : '')
       + `<span class="rank-player">${rankEsc(r.name)}</span>`
       + `<span class="rank-team">${rankEsc(r.team || '')}</span></div>`
-      + `<div class="rank-strip"><div class="rank-band" style="left:${bl.toFixed(2)}%;width:${bw.toFixed(2)}%"></div>`
-      + `<div class="rank-dot" style="left:${mx.toFixed(2)}%"></div></div>`
+      + `<div class="rank-strip">`
+      + (af !== null ? `<div class="rank-band-avail" style="left:${X(af).toFixed(2)}%;width:${Math.max(bl - X(af), 0.6).toFixed(2)}%"></div>` : '')
+      + `<div class="rank-band" style="left:${bl.toFixed(2)}%;width:${bw.toFixed(2)}%"></div>`
+      + `<div class="rank-dot" style="left:${mx.toFixed(2)}%"></div>`
+      + (rankShowAvail && a && a.statusFlag ? `<div class="rank-flag" style="left:${X(af !== null ? af : r.floor).toFixed(2)}%"></div>` : '')
+      + `</div>`
       + `<div class="rank-val">${r.median}</div></div>`;
   });
   h += `</div></div>`;
@@ -2455,14 +2495,20 @@ function rankWhiskerChart(rows, baseline, showPos) {
 function rankTable(rows, showPos) {
   let h = `<table class="players-table rank-table"><thead><tr>`
     + `<th>#</th><th>Player</th><th>Team</th>${showPos ? '<th>Pos</th>' : ''}`
-    + `<th>Floor</th><th>Median</th><th>Ceiling</th><th>PPG</th><th>VORP</th></tr></thead><tbody>`;
-  h += rows.map(r =>
-    `<tr><td>${r.rank}</td><td>${rankEsc(r.name)}</td><td>${rankEsc(r.team || '')}</td>`
-    + (showPos ? `<td>${rankEsc(r.pos || '')}</td>` : '')
-    + `<td>${r.floor ?? ''}</td><td>${r.median ?? ''}</td><td>${r.ceiling ?? ''}</td>`
-    + `<td>${typeof r.ppg === 'number' ? r.ppg.toFixed(1) : ''}</td>`
-    + `<td>${r.vorp ?? ''}</td></tr>`
-  ).join('');
+    + `<th>Floor</th><th>Median</th><th>Ceiling</th><th>PPG</th><th>VORP</th>`
+    + `<th data-tip="Share of his team's games played over the seasons he has been in the league. Counts every missed game, cause included." style="cursor:help;">Avail</th>`
+    + `<th data-tip="Season total at his projected per-game rate across a low-availability year, scaled to his own record." style="cursor:help;">Missed-time</th>`
+    + `</tr></thead><tbody>`;
+  h += rows.map(r => {
+    const a = r.availability;
+    return `<tr><td>${r.rank}</td><td>${rankEsc(r.name)}</td><td>${rankEsc(r.team || '')}</td>`
+      + (showPos ? `<td>${rankEsc(r.pos || '')}</td>` : '')
+      + `<td>${r.floor ?? ''}</td><td>${r.median ?? ''}</td><td>${r.ceiling ?? ''}</td>`
+      + `<td>${typeof r.ppg === 'number' ? r.ppg.toFixed(1) : ''}</td>`
+      + `<td>${r.vorp ?? ''}</td>`
+      + `<td>${a ? a.pct + '%' : '—'}</td>`
+      + `<td>${a ? a.floor : '—'}${a && a.statusFlag ? ` <span style="color:var(--red);" title="Currently ${rankEsc(a.statusFlag)} — not priced in">•</span>` : ''}</td></tr>`;
+  }).join('');
   return h + '</tbody></table>';
 }
 
@@ -2509,7 +2555,13 @@ function renderRankingsPage() {
     let h = `<div style="display:flex;justify-content:flex-end;margin-bottom:10px;">`
       + `<button class="export-btn" onclick="runExport(() => exportRowChart(rankExportSpec), rankExportSpec.title, this)">Export PNG</button></div>`;
     h += `<div class="medical-card" style="padding:22px 20px;">`
-      + rankWhiskerChart(shown, baseline, showPos) + `</div>`;
+      + rankWhiskerChart(shown, baseline, showPos)
+      + `<div class="rank-legend">`
+      + `<span><i style="background:rgba(168,137,58,0.28);"></i>Floor → ceiling, health assumed</span>`
+      + `<span><i style="background:#a8893a;border-radius:50%;width:9px;height:9px;"></i>Median</span>`
+      + (rankShowAvail ? `<span><i style="background:repeating-linear-gradient(-45deg,rgba(42,120,214,0.55) 0 3px,rgba(42,120,214,0.15) 3px 6px);"></i>Missed-time case</span>`
+        + `<span><i style="background:var(--red);border-radius:50%;width:5px;height:5px;"></i>Not currently healthy — not priced in</span>` : '')
+      + `</div></div>`;
     if (bandRows.length > shown.length) {
       h += `<div class="rank-note">Chart shows the top ${shown.length} — the Table view has all ${bandRows.length}.</div>`;
     }
@@ -2519,7 +2571,12 @@ function renderRankingsPage() {
   }
 
   const caveat = document.getElementById('rankingsCaveat');
-  caveat.textContent = [meta.bandCaveat, meta.healthNote].filter(Boolean).join(' ');
+  caveat.textContent = [
+    meta.bandCaveat,
+    meta.healthNote,
+    rankShowAvail ? meta.availabilityMethod : null,
+    rankShowAvail ? meta.availabilityCaveat : null
+  ].filter(Boolean).join(' ');
 }
 
 // Shared tooltip: hover or keyboard focus, same content either way. The
