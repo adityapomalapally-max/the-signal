@@ -37,6 +37,9 @@ jobs:
 
       - name: Fetch official injury reports
         run: node scripts/fetch-injuries.js
+
+      - name: Build aggregate return-to-play curves
+        run: node scripts/build-injury-curves.js
       
       - name: Check for changes
         id: changes

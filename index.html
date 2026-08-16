@@ -1954,6 +1954,7 @@ a { color: inherit; text-decoration: none; }
         <div id="injuryTypeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:24px;"></div>
         <!-- Results area -->
         <div id="injuryToolResults"></div>
+        <div id="injuryCurves"></div>
       </div>
 
       <div id="playerToolContent" style="display:none;">
@@ -3452,7 +3453,7 @@ function switchPage(page) {
   // further with their own filters, so a specific board can be linked.
   if (page !== 'article') setRoute(page === 'home' ? '' : page);
   if (page === 'players') renderPlayersTable();
-  if (page === 'medicals') { renderMedicals(); renderInjuryTypeGrid(); }
+  if (page === 'medicals') { renderMedicals(); renderInjuryTypeGrid(); renderInjuryCurves(); }
   if (page === 'rankings') renderRankingsPage();
   // These three are the ones that genuinely need the season totals, so they
   // are also the ones that pay for loading them.
@@ -5003,6 +5004,72 @@ function renderInjuryWatch() {
 }
 
 // ===== INJURY IMPACT TOOL =====
+// ===== AGGREGATE RETURN CURVES =====
+// The grid above is what the literature says. This is what actually happened
+// to this pool: every attributable absence over three seasons, indexed to
+// each player's own level before it. Games missed is the reliable number
+// here; the production line is a shape with real biases, all stated.
+let curvesPromise = null;
+function ensureCurves() {
+  if (!curvesPromise) curvesPromise = loadJSON('data/injury-curves.json').then(d => d || null);
+  return curvesPromise;
+}
+
+async function renderInjuryCurves() {
+  const el = document.getElementById('injuryCurves');
+  if (!el) return;
+  const data = await ensureCurves();
+  if (!data || !data.types || !Object.keys(data.types).length) { el.innerHTML = ''; return; }
+
+  const entries = Object.entries(data.types);
+  let h = `<div class="section-divider" style="padding:0;margin:36px 0 18px;">
+    <span class="section-divider-label">What Coming Back Actually Looked Like</span>
+    <span class="section-divider-line"></span></div>`;
+  h += `<div style="font-size:13.5px;color:var(--text-secondary);line-height:1.7;margin-bottom:22px;max-width:900px;">
+    Absences in the top-200 pool over ${data.meta.seasons[0]}–${data.meta.seasons[data.meta.seasons.length - 1]} that the official injury report
+    attributes to a body part — ${entries.reduce((a, [, t]) => a + t.absences, 0)} of them across the ${entries.length} injury types with enough cases to say anything.
+    Each player's games back are indexed to his own median week before the injury, so a WR1 and a committee back sit on the same axis.</div>`;
+
+  h += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;">`;
+  for (const [part, t] of entries) {
+    const worst = Math.min(...t.curve.map(c => c.pct));
+    h += `<div class="medical-card" style="padding:18px;">`;
+    h += `<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:4px;">
+      <span style="font-family:var(--serif);font-size:17px;font-weight:700;">${rankEsc(part)}</span>
+      <span style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);">${t.absences} ABSENCES · ${t.players} PLAYERS</span></div>`;
+    h += `<div style="font-family:var(--mono);font-size:11px;color:var(--gold);margin-bottom:14px;">TYPICALLY COSTS ${t.medianMissed} GAME${t.medianMissed === 1 ? '' : 'S'}</div>`;
+
+    // 100% is the player's own pre-injury level, so the reference line is
+    // the point of the chart, not decoration. Bars own the full plot height
+    // and the values float above them — laying the labels out inside the
+    // columns stole height from the bars and flattened the differences.
+    const PLOT = 84;
+    const max = Math.max(125, ...t.curve.map(c => c.pct));
+    h += `<div style="position:relative;height:${PLOT}px;margin:20px 0 6px;border-bottom:1px solid var(--border);">`;
+    h += `<div style="position:absolute;left:0;right:0;bottom:${(100 / max * PLOT).toFixed(1)}px;border-top:1px dashed rgba(27,168,155,0.7);z-index:1;"></div>`;
+    h += `<div style="position:absolute;inset:0;display:flex;align-items:flex-end;gap:10px;z-index:2;">`;
+    h += t.curve.map(c => {
+      const hh = Math.max((c.pct / max) * PLOT, 3);
+      return `<div data-tip="${rankEsc(`${c.label}: ${c.pct}% of his own pre-injury median, across ${c.n} players`)}"
+             style="flex:1;position:relative;height:${hh.toFixed(1)}px;border-radius:4px 4px 0 0;background:${c.pct < 100 ? '#a8893a' : '#1ba89b'};">
+        <span style="position:absolute;top:-17px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text-secondary);">${c.pct}%</span>
+      </div>`;
+    }).join('');
+    h += `</div></div>`;
+    h += `<div style="display:flex;gap:8px;">` + t.curve.map(c =>
+      `<div style="flex:1;text-align:center;font-family:var(--mono);font-size:8.5px;color:var(--text-muted);line-height:1.3;">${rankEsc(c.label.replace('Games ', '').replace(' back', ''))}<br>n=${c.n}</div>`).join('') + `</div>`;
+    h += `<div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);margin-top:10px;letter-spacing:0.5px;">TEAL LINE = HIS OWN PRE-INJURY LEVEL${worst < 100 ? ` · LOW POINT ${worst}%` : ''}</div>`;
+    h += `</div>`;
+  }
+  h += `</div>`;
+
+  h += `<div style="font-size:11.5px;color:var(--text-muted);font-style:italic;line-height:1.7;margin-top:18px;max-width:900px;">
+    ${rankEsc(data.meta.method)}</div>`;
+  h += `<div style="font-size:11.5px;color:var(--text-muted);font-style:italic;line-height:1.7;margin-top:10px;max-width:900px;">
+    ${rankEsc(data.meta.caveats)}</div>`;
+  el.innerHTML = h;
+}
+
 function renderInjuryTypeGrid() {
   const grid = document.getElementById('injuryTypeGrid');
   if (!grid) return;
