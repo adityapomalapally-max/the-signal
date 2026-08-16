@@ -417,6 +417,36 @@ async function main() {
 
   fs.writeFileSync(path.join(DATA_DIR, 'stats.json'), JSON.stringify(seasonOnly, null, 2) + '\n');
 
+  // The home page drew two small charts out of the full 450KB stats file,
+  // which meant every visitor downloaded the league's season totals to see
+  // five bars. This is the same numbers, precomputed, so stats.json can load
+  // lazily behind the pages that actually need it.
+  const HOME_SEASON = String(SEASONS[SEASONS.length - 1]);
+  const HOME_FEATURED = 'CeeDee Lamb';
+  const tgt = [];
+  for (const p of Object.values(seasonOnly)) {
+    const s = p.seasons[HOME_SEASON];
+    if (s && typeof s.tgtShare === 'number' && s.games >= 8) {
+      tgt.push({ name: p.name, value: s.tgtShare });
+    }
+  }
+  tgt.sort((a, b) => b.value - a.value);
+
+  const featured = Object.values(seasonOnly).find(p => p.name === HOME_FEATURED);
+  const homeSummary = {
+    season: Number(HOME_SEASON),
+    builtBy: 'scripts/fetch-stats.js',
+    targetShareLeaders: tgt.slice(0, 5),
+    featured: featured ? {
+      name: featured.name,
+      seasons: Object.entries(featured.seasons)
+        .filter(([, s]) => typeof s.fantasyPPG === 'number')
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([yr, s]) => ({ season: Number(yr), ppg: s.fantasyPPG }))
+    } : null
+  };
+  fs.writeFileSync(path.join(DATA_DIR, 'home-summary.json'), JSON.stringify(homeSummary, null, 2) + '\n');
+
   // Weekly logs shard per player: opening a profile fetches one ~8KB file
   // instead of the whole league's logs (the single file had reached 1.4MB).
   // Safe to wipe and rewrite — every abort guard has already run by here.
@@ -435,7 +465,8 @@ async function main() {
 
   const kb = f => (fs.statSync(path.join(DATA_DIR, f)).size / 1024).toFixed(0);
   log(`Wrote stats for ${Object.keys(stats).length} players`);
-  log(`  data/stats.json  ${kb('stats.json')}KB (season totals, loaded on init)`);
+  log(`  data/stats.json  ${kb('stats.json')}KB (season totals, lazy — Leaders/profile/compare)`);
+  log(`  data/home-summary.json ${kb('home-summary.json')}KB (home mini-charts, on init)`);
   log(`  data/weekly/     ${shardCount} per-player game-log shards (lazy-loaded per profile)`);
   log('=== Stats Pipeline Complete ===');
 }

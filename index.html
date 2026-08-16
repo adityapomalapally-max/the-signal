@@ -2267,6 +2267,23 @@ let medicalDB = {};
 let articlesDB = {};
 let injuryResearch = {};
 let playerStats = {};
+let homeSummaryData = null;
+
+// Season totals for the whole pool. Fetched once, on the first page that
+// needs it, and warmed in the background after first paint so that page
+// almost never actually waits.
+let statsPromise = null;
+let statsReady = false;
+function ensureStats() {
+  if (!statsPromise) {
+    statsPromise = loadJSON('data/stats.json').then(d => {
+      if (d) playerStats = d;
+      statsReady = true;
+      return playerStats;
+    });
+  }
+  return statsPromise;
+}
 
 const DATA_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? '.' : (window.location.origin + window.location.pathname.replace(/\/[^/]*$/, ''));
@@ -2283,19 +2300,22 @@ async function loadJSON(path) {
 }
 
 async function initData() {
-  const [rankings, players, medicals, articles, injuries, statsData] = await Promise.all([
+  // stats.json is ~450KB and nothing on first paint needs it — the home
+  // mini-charts read a precomputed summary instead, and Leaders, the profile
+  // Stats tab and Compare each await it when they actually render.
+  const [rankings, players, medicals, articles, injuries, homeSummary] = await Promise.all([
     loadJSON('data/rankings.json'),
     loadJSON('data/players.json'),
     loadJSON('data/medicals.json'),
     loadJSON('data/articles.json'),
     loadJSON('data/injury-research.json'),
-    loadJSON('data/stats.json')
+    loadJSON('data/home-summary.json')
   ]);
 
   if (rankings) rankingsData = rankings;
   if (players) playersDB = players;
   if (medicals) medicalDB = medicals;
-  if (statsData) playerStats = statsData;
+  if (homeSummary) homeSummaryData = homeSummary;
   if (articles && articles.articles) {
     articles.articles.forEach(a => { articlesDB[a.slug] = a; });
   }
@@ -2310,6 +2330,9 @@ async function initData() {
   renderHeroSidebar();
   renderHomeMinis();
   if (document.getElementById('page-rankings').classList.contains('active')) renderRankingsPage();
+  // First paint is done; warm the season totals so the pages that need them
+  // are ready by the time anyone clicks through.
+  ensureStats();
 
   // The Sleeper player DB is ~5MB. Headshots normally come from the sleeperId
   // baked into players.json by the daily Action, so we only pay for this fetch
@@ -3390,16 +3413,11 @@ function renderMiniBars(id, items, color) {
 }
 
 function renderHomeMinis() {
-  // Target-share leaders, latest completed season only — no cross-season mixing.
-  const tgtRows = [];
-  for (const s of Object.values(playerStats || {})) {
-    const yr = s.seasons && s.seasons['2025'];
-    if (yr && typeof yr.tgtShare === 'number' && yr.games >= 8) {
-      tgtRows.push({ label: `${s.name}: ${yr.tgtShare}% target share (2025)`, value: yr.tgtShare });
-    }
-  }
-  tgtRows.sort((a, b) => b.value - a.value);
-  renderMiniBars('miniTgtShare', tgtRows.slice(0, 5), 'var(--gold)');
+  // Reads the precomputed summary, not the full stats file — see ensureStats.
+  const hs = homeSummaryData;
+  const tgtRows = (hs && hs.targetShareLeaders ? hs.targetShareLeaders : []).map(r =>
+    ({ label: `${r.name}: ${r.value}% target share (${hs.season})`, value: r.value }));
+  renderMiniBars('miniTgtShare', tgtRows, 'var(--gold)');
 
   // Return-to-play rates by injury type, from the medical research file.
   const injRows = Object.values(injuryResearch || {})
@@ -3416,17 +3434,11 @@ function renderHomeMinis() {
     .map(p => ({ label: `${p.name}: VORP ${p.vorp}`, value: p.vorp }));
   renderMiniBars('miniVorp', vorpRows, 'var(--blue)');
 
-  // CeeDee Lamb PPG by season, for the route-tree piece.
-  const lamb = Object.values(playerStats || {}).find(s => s.name === 'CeeDee Lamb');
-  if (lamb && lamb.seasons) {
-    const lambRows = Object.entries(lamb.seasons)
-      .filter(([, s]) => typeof s.fantasyPPG === 'number')
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([yr, s]) => ({ label: `${yr}: ${s.fantasyPPG} PPR PPG`, value: s.fantasyPPG }));
-    renderMiniBars('miniLamb', lambRows, '#a78bfa');
-  } else {
-    renderMiniBars('miniLamb', [], '#a78bfa');
-  }
+  // Featured player's PPG by season, for the route-tree piece.
+  const feat = hs && hs.featured;
+  renderMiniBars('miniLamb', feat && feat.seasons
+    ? feat.seasons.map(s => ({ label: `${s.season}: ${s.ppg} PPR PPG`, value: s.ppg }))
+    : [], '#a78bfa');
 }
 
 // ===== PAGE SWITCHING =====
@@ -3440,17 +3452,25 @@ function switchPage(page) {
   // further with their own filters, so a specific board can be linked.
   if (page !== 'article') setRoute(page === 'home' ? '' : page);
   if (page === 'players') renderPlayersTable();
-  if (page === 'compare') renderComparePage();
   if (page === 'medicals') { renderMedicals(); renderInjuryTypeGrid(); }
   if (page === 'rankings') renderRankingsPage();
-  if (page === 'lab') {
-    // Leaders needs tracking data for most of its boards; render once with
-    // what is loaded, then again when ngs.json lands.
-    renderLabPage();
-    ensureNgs().then(d => {
-      labNgs = d;
-      if (document.getElementById('page-lab').classList.contains('active')) renderLabPage();
+  // These three are the ones that genuinely need the season totals, so they
+  // are also the ones that pay for loading them.
+  if (page === 'compare') {
+    renderComparePage();
+    ensureStats().then(() => {
+      if (document.getElementById('page-compare').classList.contains('active')) renderComparePage();
     });
+  }
+  if (page === 'lab') {
+    // Leaders needs both the season totals and the tracking data; render as
+    // each arrives rather than blocking on the pair.
+    const redraw = () => {
+      if (document.getElementById('page-lab').classList.contains('active')) renderLabPage();
+    };
+    renderLabPage();
+    ensureStats().then(redraw);
+    ensureNgs().then(d => { labNgs = d; redraw(); });
   }
 }
 
@@ -3824,6 +3844,17 @@ function renderProfileTab(tab) {
   }
 
   else if (tab === 'stats') {
+    // Season totals are lazy. In practice they are already warming from
+    // first paint, so this almost never actually waits — but when it does,
+    // say so rather than rendering an empty tab that looks like no data.
+    if (!statsReady) {
+      container.innerHTML = `<div class="medical-card"><div class="medical-detail">Loading season stats…</div></div>`;
+      ensureStats().then(() => {
+        statsReady = true;
+        if (currentProfileId === player.id) renderProfileTab('stats');
+      });
+      return;
+    }
     const ps = playerStats[player.id];
     const isQB = player.pos === 'QB';
     const isRB = player.pos === 'RB';
