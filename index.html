@@ -745,9 +745,20 @@ a { color: inherit; text-decoration: none; }
 .rank-table td, .rank-table th { font-variant-numeric: tabular-nums; }
 #vizTooltip { position: fixed; z-index: 2000; display: none; max-width: 320px; background: var(--bg-elevated); border: 1px solid var(--border-hover); border-radius: 6px; padding: 8px 10px; font-family: var(--mono); font-size: 11px; line-height: 1.5; color: var(--text); pointer-events: none; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
 @media (max-width: 768px) {
-  .rank-chart { --gutL: 118px; --gutR: 44px; }
+  .rank-chart { --gutL: 112px; --gutR: 40px; }
   .rank-team { display: none; }
+  /* Five tick labels collide in the ~150px of plot left on a phone, printing
+     "320400". The gridlines still mark all five; only every other label is
+     dropped, so the ones that remain still line up with them. */
+  .rank-axis-strip span:nth-child(even) { display: none; }
+  .rank-axis-unit { font-size: 8px; }
 }
+
+/* Wide data tables scroll inside their own box. Without this the table sets
+   the page width on a phone and the whole site scrolls sideways — the
+   players table ran 541px and the rankings table 796px against a 390px
+   viewport. Scrolling a table is fine; scrolling the page is not. */
+.table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 .export-btn {
   font-family: var(--mono); font-size: 9.5px; letter-spacing: 1px; text-transform: uppercase;
@@ -1543,7 +1554,11 @@ a { color: inherit; text-decoration: none; }
   .hero-headline { font-size: 28px; }
   .news-feed { grid-template-columns: 1fr; }
   .news-card { border-right: none; border-bottom: 1px solid var(--border); }
-  .section-divider { padding: 20px; }
+  /* The divider is a single flex row of label + rule + filter buttons +
+     timestamp. At phone width that row cannot fit and it was setting the
+     page width to 503px, scrolling the whole site sideways. */
+  .section-divider { padding: 20px; flex-wrap: wrap; gap: 10px; }
+  .section-divider-line { display: none; }
   .analysis-card { padding: 24px 20px; grid-template-columns: 1fr; }
   .analysis-visual { display: none; }
   .tools-strip { grid-template-columns: 1fr; }
@@ -1916,6 +1931,7 @@ a { color: inherit; text-decoration: none; }
         </div>
       </div>
     </div>
+    <div class="table-scroll">
     <table class="players-table">
       <thead>
         <tr>
@@ -1929,6 +1945,7 @@ a { color: inherit; text-decoration: none; }
       </thead>
       <tbody id="playersTableBody"></tbody>
     </table>
+    </div>
   </div>
 </div>
 
@@ -2517,7 +2534,7 @@ function rankWhiskerChart(rows, baseline, showPos) {
 }
 
 function rankTable(rows, showPos) {
-  let h = `<table class="players-table rank-table"><thead><tr>`
+  let h = `<div class="table-scroll"><table class="players-table rank-table"><thead><tr>`
     + `<th>#</th><th>Player</th><th>Team</th>${showPos ? '<th>Pos</th>' : ''}`
     + `<th>Floor</th><th>Median</th><th>Ceiling</th><th>PPG</th><th>VORP</th>`
     + `<th data-tip="Share of his team's games played over the seasons he has been in the league. Counts every missed game, cause included." style="cursor:help;">Avail</th>`
@@ -2533,7 +2550,7 @@ function rankTable(rows, showPos) {
       + `<td>${a ? a.pct + '%' : '—'}</td>`
       + `<td>${a ? a.floor : '—'}${a && a.statusFlag ? ` <span style="color:var(--red);" title="Currently ${rankEsc(a.statusFlag)} — not priced in">•</span>` : ''}</td></tr>`;
   }).join('');
-  return h + '</tbody></table>';
+  return h + '</tbody></table></div>';
 }
 
 function renderRankingsPage() {
@@ -3240,9 +3257,9 @@ function labDotBoard(rows, m, lo, hi) {
 }
 
 function labTable(rows, m) {
-  let h = `<table class="players-table rank-table"><thead><tr><th>#</th><th>Player</th><th>Team</th><th>${rankEsc(m.label)}</th></tr></thead><tbody>`;
+  let h = `<div class="table-scroll"><table class="players-table rank-table"><thead><tr><th>#</th><th>Player</th><th>Team</th><th>${rankEsc(m.label)}</th></tr></thead><tbody>`;
   h += rows.map((r, i) => `<tr onclick="openProfile('${r.id}')"><td>${i + 1}</td><td>${rankEsc(r.name)}</td><td>${rankEsc(r.team || '')}</td><td>${r.value}${m.unit}</td></tr>`).join('');
-  return h + '</tbody></table>';
+  return h + '</tbody></table></div>';
 }
 
 // Median-crosshair scatter. One series, so no legend — the axis titles and
@@ -3388,10 +3405,10 @@ function renderLabPage() {
   if (labView === 'chart') {
     sh += `<div class="medical-card" style="padding:20px;">${labScatterChart(pts, spec)}</div>`;
   } else {
-    sh += `<table class="players-table rank-table"><thead><tr><th>Player</th><th>Team</th><th>${rankEsc(spec.x.label)}</th><th>${rankEsc(spec.y.label)}</th></tr></thead><tbody>`
+    sh += `<div class="table-scroll"><table class="players-table rank-table"><thead><tr><th>Player</th><th>Team</th><th>${rankEsc(spec.x.label)}</th><th>${rankEsc(spec.y.label)}</th></tr></thead><tbody>`
       + [...pts].sort((a, b) => b.y - a.y).map(p =>
         `<tr onclick="openProfile('${p.id}')"><td>${rankEsc(p.name)}</td><td>${rankEsc(p.team || '')}</td><td>${p.x}</td><td>${p.y}</td></tr>`).join('')
-      + '</tbody></table>';
+      + '</tbody></table></div>';
   }
   sh += `</div>`;
   scatterEl.innerHTML = sh;
@@ -4443,12 +4460,12 @@ async function loadReturnToPlay(playerId, slotId, ev, title) {
 
   // Table twin: every plotted value reachable without the chart.
   h += `<details class="rtp-table"><summary>Table view — games since return</summary>`
-    + `<table class="players-table rank-table" style="margin-top:8px;"><thead><tr><th>#</th><th>Season</th><th>Wk</th><th>Opp</th><th>PPR</th><th>vs before</th></tr></thead><tbody>`
+    + `<div class="table-scroll"><table class="players-table rank-table" style="margin-top:8px;"><thead><tr><th>#</th><th>Season</th><th>Wk</th><th>Opp</th><th>PPR</th><th>vs before</th></tr></thead><tbody>`
     + pts.map((g, i) => {
       const d = Math.round((g.fpts - baseline) * 10) / 10;
       return `<tr><td>${i + 1}</td><td>${g.yr}</td><td>${g.week}</td><td>${rankEsc(g.opp || '')}</td><td>${g.fpts}</td><td>${d >= 0 ? '+' : ''}${d}</td></tr>`;
     }).join('')
-    + `</tbody></table></details>`;
+    + `</tbody></table></div></details>`;
 
   el.innerHTML = h;
 }
