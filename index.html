@@ -2545,12 +2545,22 @@ function renderRankingsPage() {
     const baseline = (b && typeof b.points === 'number')
       ? { points: b.points, label: `${currentRankTab.toUpperCase()}${b.rank}` } : null;
     const shown = bandRows.slice(0, RANK_CHART_CAP);
+    const anyAvail = rankShowAvail && shown.some(r => availFloorOf(r) !== null);
     rankExportSpec = {
       title: `${currentRankTab === 'overall' ? 'Overall' : currentRankTab.toUpperCase()} Rankings — ${meta.season || ''}`.trim(),
       subtitle: meta.format || '',
-      source: 'Floor / median / ceiling · bands are hand-set judgment, not simulated · The Signal projection set',
-      unit: '', band: true,
-      rows: shown.map(r => ({ rank: r.rank, name: r.name, team: r.team, value: r.median, floor: r.floor, ceiling: r.ceiling }))
+      // The footer has ~85 characters before it truncates, so this stays short
+      // on purpose; the full method lives on the page, not on the card.
+      source: anyAvail
+        ? 'Hand-set bands · missed-time = a low-availability season at the projected rate'
+        : 'Floor / median / ceiling · hand-set bands, not simulated · The Signal',
+      unit: '', band: true, showAvail: anyAvail,
+      rows: shown.map(r => ({
+        rank: r.rank, name: r.name, team: r.team, value: r.median,
+        floor: r.floor, ceiling: r.ceiling,
+        availFloor: rankShowAvail ? availFloorOf(r) : null,
+        flagged: !!(rankShowAvail && r.availability && r.availability.statusFlag)
+      }))
     };
     let h = `<div style="display:flex;justify-content:flex-end;margin-bottom:10px;">`
       + `<button class="export-btn" onclick="runExport(() => exportRowChart(rankExportSpec), rankExportSpec.title, this)">Export PNG</button></div>`;
@@ -2724,6 +2734,34 @@ function exDrawFrame(ctx, o, height) {
   return y + 34;
 }
 
+// Canvas has no repeating-linear-gradient, so the missed-time hatch is drawn:
+// a wash for body, diagonals clipped to the bar for texture. It has to read as
+// a different mark from the solid band, not a lighter one.
+function exHatchBar(ctx, x, y, w, h, color) {
+  if (w <= 0) return;
+  ctx.save();
+  ctx.beginPath();
+  const rr = Math.min(3, h / 2, w / 2);
+  ctx.moveTo(x + rr, y);
+  ctx.arcTo(x + w, y, x + w, y + h, rr);
+  ctx.arcTo(x + w, y + h, x, y + h, rr);
+  ctx.arcTo(x, y + h, x, y, rr);
+  ctx.arcTo(x, y, x + w, y, rr);
+  ctx.closePath();
+  ctx.clip();
+  ctx.fillStyle = 'rgba(42,120,214,0.18)';
+  ctx.fillRect(x, y, w, h);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  for (let i = -h; i < w + h; i += 6) {
+    ctx.beginPath();
+    ctx.moveTo(x + i, y + h);
+    ctx.lineTo(x + i + h, y);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
 function exRoundRect(ctx, x, y, w, h, r) {
   const rr = Math.min(r, h / 2, Math.max(w, 0) / 2);
   ctx.beginPath();
@@ -2741,7 +2779,8 @@ function exRoundRect(ctx, x, y, w, h, r) {
 function exportRowChart(o) {
   const rows = o.rows;
   const ROW_H = 34, NAME_W = 250, VAL_W = 86;
-  const height = exContentTop(o) + rows.length * ROW_H + EX_FOOTER_SPACE;
+  const LEGEND_H = o.showAvail ? 34 : 0;
+  const height = exContentTop(o) + rows.length * ROW_H + LEGEND_H + EX_FOOTER_SPACE;
 
   const canvas = document.createElement('canvas');
   canvas.width = EXPORT_W * EXPORT_SCALE;
@@ -2753,7 +2792,11 @@ function exportRowChart(o) {
   const trackX = EXPORT_PAD + NAME_W;
   const trackW = EXPORT_W - EXPORT_PAD * 2 - NAME_W - VAL_W;
 
-  const vals = rows.map(r => r.value);
+  // In band mode the scale has to span the drawn extremes, not just the
+  // medians, or the hatched extension runs off the left edge.
+  const vals = o.band
+    ? rows.flatMap(r => [typeof r.availFloor === 'number' ? r.availFloor : r.floor, r.ceiling])
+    : rows.map(r => r.value);
   const lo = Math.min(...vals), hi = Math.max(...vals);
   const useDots = o.mode === 'dots';
   let zeroX = trackX, span = 1, aLo = lo, aHi = hi;
@@ -2814,8 +2857,16 @@ function exportRowChart(o) {
     } else if (o.band) {
       // floor→ceiling band with a median dot (the rankings tier board)
       const X = v => trackX + ((v - lo) / ((hi - lo) || 1)) * trackW;
+      if (typeof r.availFloor === 'number' && r.availFloor < r.floor) {
+        exHatchBar(ctx, X(r.availFloor), mid - 4, X(r.floor) - X(r.availFloor), 8, 'rgba(42,120,214,0.62)');
+      }
       ctx.fillStyle = 'rgba(168,137,58,0.30)';
       exRoundRect(ctx, X(r.floor), mid - 5, Math.max(X(r.ceiling) - X(r.floor), 2), 10, 5);
+      if (r.flagged) {
+        const fx = X(typeof r.availFloor === 'number' ? r.availFloor : r.floor) - 9;
+        ctx.fillStyle = '#e74c3c';
+        ctx.beginPath(); ctx.arc(fx, mid, 3.5, 0, Math.PI * 2); ctx.fill();
+      }
       const cx = X(r.value);
       ctx.fillStyle = EX_CARD;
       ctx.beginPath(); ctx.arc(cx, mid, 8, 0, Math.PI * 2); ctx.fill();
@@ -2842,6 +2893,30 @@ function exportRowChart(o) {
     ctx.moveTo(zeroX, y - 6);
     ctx.lineTo(zeroX, y + rows.length * ROW_H);
     ctx.stroke();
+  }
+
+  // Three different marks now share the plot, so identity cannot rest on
+  // colour memory — the exported card carries its own key.
+  if (o.showAvail) {
+    const ly = y + rows.length * ROW_H + 22;
+    let lx = EXPORT_PAD + 36;
+    ctx.font = exFont('400 13px $sans');
+    ctx.textBaseline = 'middle';
+    const key = (draw, label) => {
+      draw(lx, ly);
+      ctx.fillStyle = EX_MUTED;
+      ctx.textAlign = 'left';
+      ctx.fillText(label, lx + 26, ly);
+      lx += 26 + ctx.measureText(label).width + 30;
+    };
+    key((x, cy) => { ctx.fillStyle = 'rgba(168,137,58,0.30)'; exRoundRect(ctx, x, cy - 5, 18, 10, 5); },
+      'Floor → ceiling, health assumed');
+    key((x, cy) => { ctx.fillStyle = EX_CARD; ctx.beginPath(); ctx.arc(x + 9, cy, 8, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = EX_GOLD; ctx.beginPath(); ctx.arc(x + 9, cy, 6, 0, Math.PI * 2); ctx.fill(); }, 'Median');
+    key((x, cy) => exHatchBar(ctx, x, cy - 4, 18, 8, 'rgba(42,120,214,0.62)'), 'Missed-time case');
+    key((x, cy) => { ctx.fillStyle = '#e74c3c'; ctx.beginPath(); ctx.arc(x + 6, cy, 3.5, 0, Math.PI * 2); ctx.fill(); },
+      'Not currently healthy');
+    ctx.textBaseline = 'alphabetic';
   }
   return canvas;
 }
