@@ -21,9 +21,18 @@
   --green: #2ecc71;
   --green-muted: rgba(46,204,113,0.1);
   --blue: #5b9bd5;
+  /* A three-step ladder, every step measured against BOTH surfaces (--bg and
+     --bg-card, the harder one). Contrast on card: 13.2 / 7.9 / 5.0 — all clear
+     of the WCAG AA 4.5:1 floor for body text.
+     --text-muted used to be #5c5955, which is 2.5:1 on a card. It carries every
+     mono label, caption, timestamp and meta line on the site, at 10-11px, which
+     is the hardest case there is — it was the one token on the palette that
+     failed, and it failed everywhere at once. Dimmer is not the only way to say
+     "secondary": the mono labels are already uppercase, letter-spaced and small,
+     so the hierarchy survives the tiers being legible. */
   --text: #e2e0dc;
-  --text-secondary: #8a8780;
-  --text-muted: #5c5955;
+  --text-secondary: #b3aea6;
+  --text-muted: #8d8880;
   --serif: 'Playfair Display', Georgia, serif;
   --sans: 'DM Sans', -apple-system, sans-serif;
   --mono: 'IBM Plex Mono', monospace;
@@ -720,6 +729,22 @@ a { color: inherit; text-decoration: none; }
    players table ran 541px and the rankings table 796px against a 390px
    viewport. Scrolling a table is fine; scrolling the page is not. */
 .table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* The players table overflowed a phone by only ~46px, which reads as a column
+   chopped off rather than as something to swipe. 24px of cell padding a side is
+   a desktop measurement; spending it on a 390px screen is what pushed Fantasy
+   Rank over the edge. Tightening the padding buys back far more than 46px, so
+   the table simply fits and there is nothing to scroll or to hint at.
+   The scroll container stays — it is the backstop for the widest tables. */
+@media (max-width: 768px) {
+  .players-table th, .players-table td { padding: 12px 10px; }
+  .players-table th:first-child, .players-table td:first-child { padding-left: 16px; }
+  .players-table th:last-child, .players-table td:last-child { padding-right: 16px; }
+  /* Age is the column a phone can spare — the same call Leaders and the Value
+     Board already make when they drop the team column. Tightening the padding
+     alone left it 50px over, which is content, not spacing. */
+  .players-table th:nth-child(4), .players-table td:nth-child(4) { display: none; }
+}
 
 .export-btn {
   font-family: var(--mono); font-size: 9.5px; letter-spacing: 1px; text-transform: uppercase;

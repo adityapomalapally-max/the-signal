@@ -481,7 +481,10 @@ function renderAvatar(player, size, fontSize) {
   fontSize = fontSize || 12;
   const url = getHeadshotUrl(player);
   if (url) {
-    return `<img class="player-headshot" src="${url}" alt="${player.name}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${size <= 36 ? 8 : 12}px;" onerror="this.outerHTML='<div class=\\'player-initials\\' style=\\'background:${playerColor(player)};width:${size}px;height:${size}px;font-size:${fontSize}px;\\'>${playerInitials(player)}</div>'">`;
+    // lazy + async: the pool is 350 players and several pages render an avatar
+    // per row, so the document holds ~770 of these. Eager decoding meant every
+    // one of them was requested on load, including the pages nobody opened.
+    return `<img class="player-headshot" src="${url}" alt="${player.name}" width="${size}" height="${size}" loading="lazy" decoding="async" style="width:${size}px;height:${size}px;border-radius:${size <= 36 ? 8 : 12}px;" onerror="this.outerHTML='<div class=\\'player-initials\\' style=\\'background:${playerColor(player)};width:${size}px;height:${size}px;font-size:${fontSize}px;\\'>${playerInitials(player)}</div>'">`;
   }
   return `<div class="player-initials" style="background:${playerColor(player)};width:${size}px;height:${size}px;font-size:${fontSize}px;">${playerInitials(player)}</div>`;
 }

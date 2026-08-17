@@ -84,8 +84,17 @@ async function initData() {
   renderHomeMinis();
   if (document.getElementById('page-rankings').classList.contains('active')) renderRankingsPage();
   // First paint is done; warm the season totals so the pages that need them
-  // are ready by the time anyone clicks through.
-  ensureStats();
+  // are ready by the time anyone clicks through. stats.json is 664KB — it was
+  // ~450KB when this prefetch was written and it grows with every season — so
+  // it is a real cost to spend speculatively on someone who came to read one
+  // article. Skip it on a metered or slow connection and let the pages that
+  // need it fetch it themselves; they all already await ensureStats().
+  const conn = navigator.connection;
+  const expensive = conn && (conn.saveData === true || /^(slow-)?2g$/.test(conn.effectiveType || ''));
+  if (!expensive) {
+    if (window.requestIdleCallback) requestIdleCallback(() => ensureStats(), { timeout: 4000 });
+    else ensureStats();
+  }
 
   // The Sleeper player DB is ~5MB. Headshots normally come from the sleeperId
   // baked into players.json by the daily Action, so we only pay for this fetch
