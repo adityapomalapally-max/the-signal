@@ -28,7 +28,7 @@ const path = require('path');
 const https = require('https');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
-const POOL_TARGET = 200;
+const POOL_TARGET = 350;
 // If the Sleeper feed returns something absurdly small, the feed is broken.
 // Keep yesterday's file rather than shipping a gutted pool.
 const POOL_FLOOR = 100;
@@ -148,7 +148,22 @@ const STATUS_FIELDS = ['status', 'statusClass', 'statusSource', 'statusUpdated',
 // Fields the curated overlay is NOT allowed to set — they drift (trades,
 // birthdays, feed statuses) and freezing them in a hand file caused exactly
 // the class of bug the CLAUDE.md rules exist to prevent.
-const OVERLAY_BLOCKED = new Set([...STATUS_FIELDS, 'team', 'age', 'fRank']);
+// color and initials are DERIVED on the site from sleeperId and name, so a
+// stored copy would only disagree with the derived one — and it did: a
+// curated player rendered one gradient before players-detail.json loaded and
+// a different one after.
+const OVERLAY_BLOCKED = new Set([...STATUS_FIELDS, 'team', 'age', 'fRank', 'color', 'initials']);
+
+// players.json is fetched on EVERY page view, so it carries only what the
+// site needs before anyone opens a profile — plus the few fields the
+// pipeline scripts join on (gsisId, experience). Everything else goes to
+// players-detail.json, loaded once when a profile is actually opened.
+// Splitting this is what lets the pool grow without the payload growing:
+// 350 players of core costs about what 200 players of everything did.
+const CORE_FIELDS = [
+  'id', 'name', 'pos', 'team', 'age', 'fRank', 'sleeperId', 'gsisId', 'experience',
+  ...STATUS_FIELDS
+];
 
 // ===== fRank FROM RANKINGS =====
 function buildFRankIndex(rankings) {
@@ -258,8 +273,6 @@ async function main() {
       weight: (sp.weight && !isNaN(parseInt(sp.weight, 10))) ? parseInt(sp.weight, 10) : null,
       college: sp.college || null,
       experience: experienceLabel(sp.years_exp),
-      initials: initialsFor(name),
-      color: colorFor(sleeperId),
       sleeperId,
       gsisId: (sp.gsis_id && String(sp.gsis_id).trim()) || null,
       fRank: null,
@@ -300,8 +313,20 @@ async function main() {
   players.sort((a, b) => a.searchRank - b.searchRank);
   const out = players.map(p => p.player);
 
-  writeJSON('players.json', out);
-  log(`Wrote players.json: ${out.length} players (${carried} carried over, ${added} new, ${ranked} with fRank, ${curated.length} curated overlays)`);
+  const core = out.map(p => Object.fromEntries(
+    CORE_FIELDS.filter(k => p[k] !== undefined).map(k => [k, p[k]])));
+  const detail = {};
+  for (const p of out) {
+    const d = Object.fromEntries(Object.entries(p).filter(([k]) => !CORE_FIELDS.includes(k)));
+    if (Object.keys(d).length) detail[p.id] = d;
+  }
+
+  writeJSON('players.json', core);
+  writeJSON('players-detail.json', detail);
+  const kb = (f) => (fs.statSync(path.join(DATA_DIR, f)).size / 1024).toFixed(0);
+  log(`Wrote players.json: ${core.length} players (${carried} carried over, ${added} new, ${ranked} with fRank, ${curated.length} curated overlays)`);
+  log(`  players.json        ${kb('players.json')}KB (core, on init)`);
+  log(`  players-detail.json ${kb('players-detail.json')}KB (profile fields, lazy)`);
 }
 
 main().catch(e => {

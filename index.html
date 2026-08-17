@@ -2282,10 +2282,10 @@ a { color: inherit; text-decoration: none; }
       <button class="profile-close" onclick="closeProfile()" aria-label="Close player profile">✕</button>
     </div>
     <div class="profile-tabs">
-      <div class="profile-tab active" onclick="switchProfileTab('medical', this)">Medical</div>
-      <div class="profile-tab" onclick="switchProfileTab('overview', this)">Overview</div>
-      <div class="profile-tab" onclick="switchProfileTab('stats', this)">Stats</div>
-      <div class="profile-tab" onclick="switchProfileTab('fantasy', this)">Fantasy</div>
+      <div class="profile-tab active" data-tab="medical" onclick="switchProfileTab('medical', this)">Medical</div>
+      <div class="profile-tab" data-tab="overview" onclick="switchProfileTab('overview', this)">Overview</div>
+      <div class="profile-tab" data-tab="stats" onclick="switchProfileTab('stats', this)">Stats</div>
+      <div class="profile-tab" data-tab="fantasy" onclick="switchProfileTab('fantasy', this)">Fantasy</div>
     </div>
     <div class="profile-content" id="profileContent"></div>
   </div>
@@ -2720,6 +2720,42 @@ function initRankTooltip() {
   });
 }
 initRankTooltip();
+
+// ===== PLAYER DETAIL (lazy) =====
+// players.json carries only what the site needs before a profile opens.
+// Avatar colour and initials are derived here rather than stored, and the
+// rich profile fields live in players-detail.json, fetched once on the
+// first profile open. That is what lets the pool grow without the payload.
+const AVATAR_GRADIENTS = [
+  'linear-gradient(135deg,#1e3a5f,#2563eb)', 'linear-gradient(135deg,#4a2c1a,#b45309)',
+  'linear-gradient(135deg,#1a3a2c,#059669)', 'linear-gradient(135deg,#3b1f47,#7c3aed)',
+  'linear-gradient(135deg,#451a1a,#dc2626)', 'linear-gradient(135deg,#1f3547,#0891b2)',
+  'linear-gradient(135deg,#3d3517,#ca8a04)', 'linear-gradient(135deg,#2d2d35,#64748b)'
+];
+// Same hash as scripts/build-players.js, so a player keeps his colour.
+function playerColor(p) {
+  if (!p) return AVATAR_GRADIENTS[0];
+  if (p.color) return p.color;
+  let hash = 0; const str = String(p.sleeperId || p.id || '');
+  for (let i = 0; i < str.length; i++) hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+  return AVATAR_GRADIENTS[hash % AVATAR_GRADIENTS.length];
+}
+function playerInitials(p) {
+  if (!p) return '';
+  if (p.initials) return p.initials;
+  return String(p.name || '').split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+}
+
+let detailPromise = null;
+function ensurePlayerDetail() {
+  if (!detailPromise) {
+    detailPromise = loadJSON('data/players-detail.json').then(d => {
+      if (d) for (const p of playersDB) if (d[p.id]) Object.assign(p, d[p.id]);
+      return d || {};
+    });
+  }
+  return detailPromise;
+}
 
 // ===== CHART EXPORT =====
 // Charts are redrawn onto a canvas from their own data rather than scraped
@@ -3906,16 +3942,23 @@ function openProfile(id) {
   const player = playersDB.find(p => p.id === id);
   if (!player) return;
   currentProfileId = id;
+  // The rich fields live in players-detail.json. Merge them in and re-render
+  // the open tab; on any visit after the first this resolves from cache.
+  ensurePlayerDetail().then(() => {
+    if (currentProfileId !== id) return;
+    const active = document.querySelector('.profile-tab.active');
+    renderProfileTab(active ? (active.dataset.tab || 'medical') : 'medical');
+  });
 
   const avatarEl = document.getElementById('profileAvatar');
   const hsUrl = getHeadshotUrl(player);
   if (hsUrl) {
-    avatarEl.style.background = player.color;
-    avatarEl.innerHTML = `<img src="${hsUrl}" alt="${player.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.remove();this.parentElement.textContent='${player.initials}';">`;
+    avatarEl.style.background = playerColor(player);
+    avatarEl.innerHTML = `<img src="${hsUrl}" alt="${player.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.remove();this.parentElement.textContent='${playerInitials(player)}';">`;
   } else {
-    avatarEl.style.background = player.color;
+    avatarEl.style.background = playerColor(player);
     avatarEl.innerHTML = '';
-    avatarEl.textContent = player.initials;
+    avatarEl.textContent = playerInitials(player);
   }
   document.getElementById('profileName').textContent = player.name;
   document.getElementById('profileTeamLine').innerHTML = `${player.pos} · ${player.team}${player.fRank ? ` · <span>${player.fRank}</span>` : ''}${player.experience ? ' · ' + player.experience : ''}`;
@@ -4362,9 +4405,9 @@ function renderAvatar(player, size, fontSize) {
   fontSize = fontSize || 12;
   const url = getHeadshotUrl(player);
   if (url) {
-    return `<img class="player-headshot" src="${url}" alt="${player.name}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${size <= 36 ? 8 : 12}px;" onerror="this.outerHTML='<div class=\\'player-initials\\' style=\\'background:${player.color};width:${size}px;height:${size}px;font-size:${fontSize}px;\\'>${player.initials}</div>'">`;
+    return `<img class="player-headshot" src="${url}" alt="${player.name}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${size <= 36 ? 8 : 12}px;" onerror="this.outerHTML='<div class=\\'player-initials\\' style=\\'background:${playerColor(player)};width:${size}px;height:${size}px;font-size:${fontSize}px;\\'>${playerInitials(player)}</div>'">`;
   }
-  return `<div class="player-initials" style="background:${player.color};width:${size}px;height:${size}px;font-size:${fontSize}px;">${player.initials}</div>`;
+  return `<div class="player-initials" style="background:${playerColor(player)};width:${size}px;height:${size}px;font-size:${fontSize}px;">${playerInitials(player)}</div>`;
 }
 
 // Escapes a string for safe embedding inside a single-quoted JS string
@@ -5398,7 +5441,7 @@ function showInjuryDetail(key) {
       };
       const keywords = matchMap[key] || [key];
       if (keywords.some(k => title.includes(k))) {
-        affectedPlayers.push({ id, name: player.name, pos: player.pos, team: player.team, injury: injury.title, severity: injury.severity, severityLabel: injury.severityLabel, initials: player.initials, color: player.color });
+        affectedPlayers.push({ id, name: player.name, pos: player.pos, team: player.team, injury: injury.title, severity: injury.severity, severityLabel: injury.severityLabel, initials: playerInitials(player), color: playerColor(player) });
       }
     });
   });

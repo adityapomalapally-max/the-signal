@@ -8,9 +8,9 @@
     "source": "The Signal 2026 projection set",
     "generated": "2026-08-13",
     "builtBy": "scripts/build-rankings.js",
-    "builtAt": "2026-08-16T04:31:40.710Z",
+    "builtAt": "2026-08-17T00:50:52.493Z",
     "overallMethod": "Derived from the hand-ordered positional tabs. Each player inherits the projected median of the slot he was ranked into, then VORP is taken against replacement level. Ordering is the analyst's; the replacement math is the model's.",
-    "availabilityMethod": "The missed-time case is a different downside from the floor beside it. The floor is a cold season played out in full; this is a normal season cut short. It holds the projected per-game rate flat and applies it to a low-availability year. League-wide that year is 11 of 17 games — the 15th percentile of 452 player-seasons across 2023–2025, the same percentile the projection set uses for its floor — then scaled by how available the player himself has been against the league average of 83%. It counts every missed game regardless of cause, suspensions included, because the question is how often he was not in your lineup. The per-game rate is deliberately NOT reduced: this prices availability only, never diminished play on return. Ordering is untouched — it moves the downside, never the rank.",
+    "availabilityMethod": "The missed-time case is a different downside from the floor beside it. The floor is a cold season played out in full; this is a normal season cut short. It holds the projected per-game rate flat and applies it to a low-availability year. League-wide that year is 11 of 17 games — the 15th percentile of 293 player-seasons across 2023–2025, the same percentile the projection set uses for its floor — then scaled by how available the player himself has been against the league average of 86%. It counts every missed game regardless of cause, suspensions included, because the question is how often he was not in your lineup. The per-game rate is deliberately NOT reduced: this prices availability only, never diminished play on return. Ordering is untouched — it moves the downside, never the rank.",
     "availabilityCaveat": "A record of one or two seasons is too short to read a player-specific floor from, so those fall back to the league figure. A player who is not currently healthy is flagged, not adjusted: history cannot see the knock he is carrying now, and a games-missed number inferred from a one-word status would be invented.",
     "baselines": {
       "qb": {
@@ -71,9 +71,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 13,
+        "floorGames": 12,
         "basis": "above-league",
-        "floor": 291,
+        "floor": 268,
         "statusFlag": null
       }
     },
@@ -100,9 +100,9 @@
           13
         ],
         "worst": 13,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 264,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 242,
         "statusFlag": null
       }
     },
@@ -154,9 +154,9 @@
           17
         ],
         "worst": 13,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 246,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 226,
         "statusFlag": null
       }
     },
@@ -241,9 +241,9 @@
           16
         ],
         "worst": 13,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 227,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 208,
         "statusFlag": null
       }
     },
@@ -299,9 +299,9 @@
           5
         ],
         "worst": 5,
-        "floorGames": 8,
+        "floorGames": 7,
         "basis": "below-league",
-        "floor": 151,
+        "floor": 132,
         "statusFlag": null
       }
     },
@@ -355,9 +355,9 @@
           17
         ],
         "worst": 8,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 207,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 188,
         "statusFlag": null
       }
     },
@@ -552,9 +552,9 @@
           14
         ],
         "worst": 14,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 220,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 201,
         "statusFlag": "Questionable"
       }
     },
@@ -618,9 +618,9 @@
           17
         ],
         "worst": 15,
-        "floorGames": 13,
+        "floorGames": 12,
         "basis": "above-league",
-        "floor": 241,
+        "floor": 222,
         "statusFlag": null
       }
     },
@@ -676,9 +676,9 @@
           17
         ],
         "worst": 4,
-        "floorGames": 10,
+        "floorGames": 9,
         "basis": "below-league",
-        "floor": 176,
+        "floor": 159,
         "statusFlag": "Questionable"
       }
     },
@@ -705,9 +705,9 @@
           17
         ],
         "worst": 10,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 193,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 175,
         "statusFlag": null
       }
     },
@@ -734,9 +734,9 @@
           17
         ],
         "worst": 16,
-        "floorGames": 13,
+        "floorGames": 12,
         "basis": "above-league",
-        "floor": 194,
+        "floor": 179,
         "statusFlag": null
       }
     },
@@ -763,9 +763,9 @@
           16
         ],
         "worst": 14,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 201,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 184,
         "statusFlag": null
       }
     },
@@ -958,9 +958,9 @@
           15
         ],
         "worst": 13,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 169,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 155,
         "statusFlag": "Questionable"
       }
     },
@@ -987,9 +987,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 13,
+        "floorGames": 12,
         "basis": "above-league",
-        "floor": 156,
+        "floor": 144,
         "statusFlag": null
       }
     },
@@ -1016,9 +1016,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 13,
+        "floorGames": 12,
         "basis": "above-league",
-        "floor": 167,
+        "floor": 154,
         "statusFlag": null
       }
     },
@@ -1133,9 +1133,9 @@
           17
         ],
         "worst": 12,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 151,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 138,
         "statusFlag": null
       }
     },
@@ -1187,9 +1187,9 @@
           17
         ],
         "worst": 15,
-        "floorGames": 13,
+        "floorGames": 12,
         "basis": "above-league",
-        "floor": 174,
+        "floor": 161,
         "statusFlag": null
       }
     },
@@ -1216,9 +1216,9 @@
           17
         ],
         "worst": 14,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 150,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 137,
         "statusFlag": null
       }
     },
@@ -1245,9 +1245,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 13,
+        "floorGames": 12,
         "basis": "above-league",
-        "floor": 173,
+        "floor": 160,
         "statusFlag": null
       }
     }
@@ -1276,9 +1276,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 13,
+        "floorGames": 12,
         "basis": "above-league",
-        "floor": 202,
+        "floor": 186,
         "statusFlag": null
       }
     },
@@ -1363,9 +1363,9 @@
           13
         ],
         "worst": 13,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 178,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 163,
         "statusFlag": null
       }
     },
@@ -1392,9 +1392,9 @@
           17
         ],
         "worst": 16,
-        "floorGames": 13,
+        "floorGames": 12,
         "basis": "above-league",
-        "floor": 187,
+        "floor": 173,
         "statusFlag": null
       }
     },
@@ -1450,9 +1450,9 @@
           15
         ],
         "worst": 13,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 162,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 149,
         "statusFlag": null
       }
     },
@@ -1508,9 +1508,9 @@
           15
         ],
         "worst": 12,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 144,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 131,
         "statusFlag": null
       }
     },
@@ -1537,9 +1537,9 @@
           12
         ],
         "worst": 12,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 167,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 153,
         "statusFlag": null
       }
     },
@@ -1593,9 +1593,9 @@
           17
         ],
         "worst": 13,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 148,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 135,
         "statusFlag": "Questionable"
       }
     },
@@ -1622,9 +1622,9 @@
           17
         ],
         "worst": 16,
-        "floorGames": 13,
+        "floorGames": 12,
         "basis": "above-league",
-        "floor": 158,
+        "floor": 145,
         "statusFlag": null
       }
     },
@@ -1732,9 +1732,9 @@
           16
         ],
         "worst": 14,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 140,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 128,
         "statusFlag": "Questionable"
       }
     },
@@ -1819,9 +1819,9 @@
           7
         ],
         "worst": 7,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 131,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 119,
         "statusFlag": null
       }
     },
@@ -1960,9 +1960,9 @@
           10
         ],
         "worst": 9,
-        "floorGames": 9,
+        "floorGames": 8,
         "basis": "below-league",
-        "floor": 103,
+        "floor": 91,
         "statusFlag": null
       }
     },
@@ -2014,9 +2014,9 @@
           14
         ],
         "worst": 14,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 133,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 122,
         "statusFlag": null
       }
     },
@@ -2043,9 +2043,9 @@
           15
         ],
         "worst": 6,
-        "floorGames": 9,
+        "floorGames": 8,
         "basis": "below-league",
-        "floor": 98,
+        "floor": 87,
         "statusFlag": null
       }
     },
@@ -2072,9 +2072,9 @@
           15
         ],
         "worst": 15,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 136,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 124,
         "statusFlag": "Questionable"
       }
     },
@@ -2172,9 +2172,9 @@
           17
         ],
         "worst": 16,
-        "floorGames": 13,
+        "floorGames": 12,
         "basis": "above-league",
-        "floor": 163,
+        "floor": 150,
         "statusFlag": null
       }
     },
@@ -2280,9 +2280,9 @@
           9
         ],
         "worst": 9,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 109,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 99,
         "statusFlag": null
       }
     },
@@ -2363,9 +2363,9 @@
           11
         ],
         "worst": 11,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 103,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 94,
         "statusFlag": "PUP"
       }
     },
@@ -2392,9 +2392,9 @@
           12
         ],
         "worst": 12,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 100,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 91,
         "statusFlag": null
       }
     },
@@ -2547,9 +2547,9 @@
           17
         ],
         "worst": 15,
-        "floorGames": 13,
+        "floorGames": 12,
         "basis": "above-league",
-        "floor": 241,
+        "floor": 222,
         "statusFlag": null
       },
       "ownPpg": 18.5,
@@ -2609,9 +2609,9 @@
           17
         ],
         "worst": 4,
-        "floorGames": 10,
+        "floorGames": 9,
         "basis": "below-league",
-        "floor": 176,
+        "floor": 159,
         "statusFlag": "Questionable"
       },
       "ownPpg": 17.6,
@@ -2640,9 +2640,9 @@
           17
         ],
         "worst": 10,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 193,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 175,
         "statusFlag": null
       },
       "ownPpg": 17.5,
@@ -2671,9 +2671,9 @@
           17
         ],
         "worst": 16,
-        "floorGames": 13,
+        "floorGames": 12,
         "basis": "above-league",
-        "floor": 194,
+        "floor": 179,
         "statusFlag": null
       },
       "ownPpg": 14.9,
@@ -2702,9 +2702,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 13,
+        "floorGames": 12,
         "basis": "above-league",
-        "floor": 202,
+        "floor": 186,
         "statusFlag": null
       },
       "ownPpg": 15.5,
@@ -2733,9 +2733,9 @@
           16
         ],
         "worst": 14,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 201,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 184,
         "statusFlag": null
       },
       "ownPpg": 16.8,
@@ -2826,9 +2826,9 @@
           13
         ],
         "worst": 13,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 178,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 163,
         "statusFlag": null
       },
       "ownPpg": 14.8,
@@ -2857,9 +2857,9 @@
           17
         ],
         "worst": 16,
-        "floorGames": 13,
+        "floorGames": 12,
         "basis": "above-league",
-        "floor": 187,
+        "floor": 173,
         "statusFlag": null
       },
       "ownPpg": 14.4,
@@ -2946,9 +2946,9 @@
           15
         ],
         "worst": 13,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 162,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 149,
         "statusFlag": null
       },
       "ownPpg": 13.5,
@@ -3039,9 +3039,9 @@
           15
         ],
         "worst": 12,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 144,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 131,
         "statusFlag": null
       },
       "ownPpg": 13.1,
@@ -3070,9 +3070,9 @@
           12
         ],
         "worst": 12,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 167,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 153,
         "statusFlag": null
       },
       "ownPpg": 13.9,
@@ -3219,9 +3219,9 @@
           17
         ],
         "worst": 13,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 148,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 135,
         "statusFlag": "Questionable"
       },
       "ownPpg": 12.3,

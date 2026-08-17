@@ -85,7 +85,18 @@ function percentile(sorted, p) {
   return lo === hi ? sorted[lo] : sorted[lo] + (sorted[hi] - sorted[lo]) * (i - lo);
 }
 
-function loadAvailability(projSeason) {
+// `isRanked` decides who counts toward the LEAGUE baseline — not who gets a
+// record. Every player still gets his own availability; the baseline is
+// estimated only from projected players.
+//
+// This matters because the pool is deliberately deeper than the ranked set.
+// When it grew from 200 to 350 the extra 150 were backups and third-string
+// quarterbacks who play two or three games a year, and the 15th-percentile
+// season fell from 11 games to 5. That is not a low-availability starter,
+// that is a backup — and it would have quietly made every floor on the site
+// far more pessimistic. The sanity guard caught it. The baseline now comes
+// from the same population the number is applied to.
+function loadAvailability(projSeason, isRanked) {
   const playersPath = path.join(DATA_DIR, 'players.json');
   if (!fs.existsSync(playersPath)) return null;
   const players = JSON.parse(fs.readFileSync(playersPath, 'utf8'));
@@ -107,9 +118,9 @@ function loadAvailability(projSeason) {
     if (!eligible.length) continue;
     // A game log can carry a duplicate week for a mid-season trade, so cap.
     const games = eligible.map(s => Math.min(weekly[s] ? weekly[s].length : 0, GAMES_PER_SEASON));
-    games.forEach(g => allSeasonGames.push(g));
-
     const key = `${normalizeName(p.name)}|${p.pos}`;
+    if (isRanked(key)) games.forEach(g => allSeasonGames.push(g));
+
     // Two pool players collapsing to one key would attach one man's record
     // to another, so poison it rather than guess.
     byPlayer.set(key, byPlayer.has(key) ? null : {
@@ -190,10 +201,16 @@ function main() {
   const src = JSON.parse(fs.readFileSync(SRC, 'utf8'));
   const proj = src.projections;
 
-  const availability = loadAvailability(src.meta && src.meta.season ? src.meta.season : 2026);
+  const rankedKeys = new Set();
+  for (const pos of ['qb', 'rb', 'wr', 'te']) {
+    for (const p of (proj[pos] || [])) rankedKeys.add(`${normalizeName(p.name)}|${(p.pos || pos).toUpperCase()}`);
+  }
+  const availability = loadAvailability(
+    src.meta && src.meta.season ? src.meta.season : 2026,
+    (key) => rankedKeys.has(key));
   if (availability) {
     log(`availability: league floor = ${availability.leagueFloorGames}/${GAMES_PER_SEASON} games ` +
-        `(p${FLOOR_PERCENTILE} of ${availability.sampleSize} player-seasons)`);
+        `(p${FLOOR_PERCENTILE} of ${availability.sampleSize} projected-player seasons)`);
   } else {
     log('availability: players.json not found — floors stay health-assumed only');
   }
