@@ -781,6 +781,45 @@ a { color: inherit; text-decoration: none; }
   .draft-outcomes { padding: 20px; }
 }
 
+/* ===== TEAMS ===== */
+.team-picker { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px 14px; }
+.team-div-label { font-family: var(--mono); font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; }
+.team-div-chips { display: flex; gap: 4px; flex-wrap: wrap; }
+.team-chip { font-family: var(--mono); font-size: 10.5px; padding: 5px 8px; min-width: 40px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-card); color: var(--text-secondary); cursor: pointer; transition: border-color .15s, color .15s; }
+.team-chip:hover { border-color: var(--border-hover); color: var(--text); }
+.team-chip.active { border-color: var(--gold); color: var(--gold); }
+.tm-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+.tm-team { font-family: var(--serif); font-size: 28px; font-weight: 700; }
+.tm-meta { font-family: var(--mono); font-size: 10px; color: var(--text-muted); letter-spacing: 1px; margin-top: 4px; }
+.tm-week { text-align: right; }
+.tm-week-label { font-family: var(--mono); font-size: 9px; letter-spacing: 1.5px; color: var(--gold); }
+.tm-week-game { font-family: var(--serif); font-size: 22px; font-weight: 700; margin-top: 2px; }
+.tm-week-date { font-family: var(--mono); font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+.tm-row { display: grid; grid-template-columns: 190px 1fr 56px; align-items: center; height: 27px; border-radius: 4px; cursor: pointer; }
+.tm-row:hover, .tm-row:focus-visible { background: var(--bg-card-hover); outline: none; }
+.tm-name { display: flex; align-items: center; gap: 6px; min-width: 0; padding-right: 8px; font-size: 12.5px; }
+.tm-player { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* A player whose numbers came from another roster is flagged, never silently shown as this team's production. */
+.tm-moved { font-family: var(--mono); font-size: 8.5px; padding: 1px 4px; border-radius: 3px; background: rgba(42,120,214,0.18); color: #7fb0ea; flex-shrink: 0; }
+.tm-status { font-family: var(--mono); font-size: 8.5px; padding: 1px 4px; border-radius: 3px; flex-shrink: 0; }
+.tm-track { position: relative; height: 10px; background: var(--border-subtle); border-radius: 3px; overflow: hidden; }
+.tm-bar { position: absolute; left: 0; top: 0; bottom: 0; background: #a8893a; border-radius: 3px; }
+.tm-val { font-family: var(--mono); font-size: 11px; color: var(--text-secondary); text-align: right; font-variant-numeric: tabular-nums; }
+.tm-sched { display: grid; grid-template-columns: repeat(auto-fit, minmax(52px, 1fr)); gap: 5px; }
+.tm-sched-cell { text-align: center; padding: 6px 2px; border: 1px solid var(--border); border-radius: 4px; font-family: var(--mono); }
+.tm-sched-cell span { display: block; font-size: 8.5px; color: var(--text-muted); }
+.tm-sched-cell b { display: block; font-size: 11px; font-weight: 500; color: var(--text-secondary); margin-top: 2px; }
+.tm-sched-cell.tm-now { border-color: var(--gold); }
+.tm-sched-cell.tm-now b { color: var(--gold); }
+.tm-bye b { color: var(--text-muted); }
+@media (max-width: 768px) {
+  .team-picker { grid-template-columns: 1fr 1fr; }
+  .tm-row { grid-template-columns: 130px 1fr 46px; font-size: 11px; }
+  .tm-team { font-size: 22px; }
+  .tm-week { text-align: left; }
+  .tm-sched { grid-template-columns: repeat(auto-fit, minmax(44px, 1fr)); }
+}
+
 /* ===== VALUE BOARD ===== */
 .vb-row { display: grid; grid-template-columns: 220px 56px 56px 52px 1fr 62px; align-items: center; height: 30px; border-radius: 4px; }
 .vb-row:hover, .vb-row:focus-visible { background: var(--bg-card-hover); outline: none; }
@@ -1631,6 +1670,7 @@ a { color: inherit; text-decoration: none; }
     </a>
     <div class="nav-center">
       <a class="nav-item active" data-page="home" onclick="switchPage('home')">Home</a>
+      <a class="nav-item" data-page="teams" onclick="switchPage('teams')">Teams</a>
       <a class="nav-item" data-page="rankings" onclick="switchPage('rankings')">Rankings</a>
       <a class="nav-item" data-page="lab" onclick="switchPage('lab')">Leaders</a>
       <a class="nav-item" data-page="players" onclick="switchPage('players')">Players</a>
@@ -1638,7 +1678,6 @@ a { color: inherit; text-decoration: none; }
       <a class="nav-item" data-page="medicals" onclick="switchPage('medicals')">Medicals</a>
       <a class="nav-item" data-page="fantasy" onclick="switchPage('fantasy')">Fantasy</a>
       <a class="nav-item" data-page="draft" onclick="switchPage('draft')">Draft Lab</a>
-      <a class="nav-item" data-page="film" onclick="switchPage('film')">Film</a>
     </div>
     <div class="nav-right">
       <div class="nav-search" onclick="switchPage('players'); setTimeout(()=>document.getElementById('playerSearchGlobal').focus(), 100)">
@@ -1664,6 +1703,7 @@ a { color: inherit; text-decoration: none; }
   </div>
   <div style="padding:12px 0;">
     <a class="mobile-nav-link" onclick="switchPage('home');toggleMobileNav();">Home</a>
+    <a class="mobile-nav-link" onclick="switchPage('teams');toggleMobileNav();">Teams</a>
     <a class="mobile-nav-link" onclick="switchPage('rankings');toggleMobileNav();">Rankings</a>
     <a class="mobile-nav-link" onclick="switchPage('lab');toggleMobileNav();">Leaders</a>
     <a class="mobile-nav-link" onclick="switchPage('players');toggleMobileNav();">Players</a>
@@ -1909,6 +1949,24 @@ a { color: inherit; text-decoration: none; }
     <div style="padding:0 48px 48px;">
       <div id="rankingsBody"></div>
       <div id="rankingsCaveat" class="rank-note"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= -->
+<!-- ========== TEAMS ============ -->
+<!-- ============================= -->
+<div class="page-section" id="page-teams">
+  <div style="max-width:1160px;margin:0 auto;">
+    <div class="players-header">
+      <h1>Teams</h1>
+      <p id="teamsIntro">Who actually gets the ball in each offense — target share, air yards, and the backfield split — plus the season schedule.</p>
+    </div>
+    <div style="padding:0 48px 20px;">
+      <div id="teamPicker" class="team-picker"></div>
+    </div>
+    <div style="padding:0 48px 48px;">
+      <div id="teamBody"></div>
     </div>
   </div>
 </div>
@@ -3507,6 +3565,148 @@ function renderLabPage() {
   scatterEl.innerHTML = sh;
 }
 
+// ===== TEAMS =====
+// Rosters are current; production is last season. A player who moved carries
+// the numbers he earned elsewhere, and every one of those is marked — the
+// alternative is a page quietly claiming a receiver did that here.
+let teamsData = null, currentTeam = null;
+let teamsPromise = null;
+function ensureTeams() {
+  if (!teamsPromise) teamsPromise = loadJSON('data/teams.json').then(d => (teamsData = d));
+  return teamsPromise;
+}
+
+const DIVISION_ORDER = ['AFC East', 'AFC North', 'AFC South', 'AFC West',
+  'NFC East', 'NFC North', 'NFC South', 'NFC West'];
+
+function setTeam(abbr) {
+  currentTeam = abbr;
+  setRoute('teams/' + abbr.toLowerCase());
+  renderTeamPage();
+}
+
+// One usage row: name, the bar, the number. Shares are already percentages.
+function teamUsageRows(list, valueOf, unitLabel, max) {
+  return list.map(p => {
+    const v = valueOf(p);
+    const w = (typeof v === 'number' && max > 0) ? (v / max) * 100 : 0;
+    const tip = `${p.name}${p.producedFor ? ` — these numbers are from ${p.producedFor}` : ''}`
+      + (p.games ? ` · ${p.games} games` : '') + (p.ppg ? ` · ${p.ppg} PPG` : '');
+    return `<div class="tm-row" tabindex="0" role="button" data-tip="${rankEsc(tip)}" onclick="openProfile('${p.id}')">
+      <span class="tm-name">
+        <span class="tm-player">${rankEsc(p.name)}</span>
+        ${p.producedFor ? `<span class="tm-moved" title="Produced for ${rankEsc(p.producedFor)}">${rankEsc(p.producedFor)}</span>` : ''}
+        ${p.statusClass && p.statusClass !== 'status-healthy' ? `<span class="tm-status ${p.statusClass}">${rankEsc(p.status)}</span>` : ''}
+      </span>
+      <span class="tm-track"><span class="tm-bar" style="width:${Math.max(w, 0.5).toFixed(1)}%"></span></span>
+      <span class="tm-val">${typeof v === 'number' ? v : '—'}${typeof v === 'number' ? unitLabel : ''}</span>
+    </div>`;
+  }).join('');
+}
+
+function teamBlock(title, sub, list, valueOf, unitLabel) {
+  const vals = list.map(valueOf).filter(v => typeof v === 'number');
+  if (!vals.length) {
+    return `<div class="medical-card" style="padding:18px;"><div style="font-family:var(--serif);font-size:17px;font-weight:700;margin-bottom:6px;">${rankEsc(title)}</div>
+      <div class="medical-detail">No ${rankEsc(title.toLowerCase())} on record for this group last season.</div></div>`;
+  }
+  const max = Math.max(...vals);
+  // Sort by the value actually being charted. The roster arrives ordered by
+  // raw volume, which put a 12% share below a 7% one.
+  const sorted = [...list].sort((a, b) => (valueOf(b) ?? -Infinity) - (valueOf(a) ?? -Infinity));
+  return `<div class="medical-card" style="padding:18px;">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:2px;">
+      <span style="font-family:var(--serif);font-size:17px;font-weight:700;">${rankEsc(title)}</span></div>
+    <div style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);letter-spacing:0.5px;margin-bottom:12px;">${rankEsc(sub)}</div>
+    ${teamUsageRows(sorted, valueOf, unitLabel, max)}</div>`;
+}
+
+function renderTeamPicker() {
+  const el = document.getElementById('teamPicker');
+  if (!el || !teamsData) return;
+  const byDiv = {};
+  for (const t of Object.values(teamsData.teams)) (byDiv[t.division || 'Other'] ||= []).push(t);
+  const divs = DIVISION_ORDER.filter(d => byDiv[d]).concat(Object.keys(byDiv).filter(d => !DIVISION_ORDER.includes(d)));
+  el.innerHTML = divs.map(d => `<div class="team-div">
+    <div class="team-div-label">${rankEsc(d)}</div>
+    <div class="team-div-chips">${byDiv[d].sort((a, b) => a.abbr.localeCompare(b.abbr)).map(t =>
+      `<button class="team-chip${t.abbr === currentTeam ? ' active' : ''}" onclick="setTeam('${t.abbr}')" title="${rankEsc(t.name)}">${rankEsc(t.abbr)}</button>`).join('')}</div>
+  </div>`).join('');
+}
+
+function renderTeamPage() {
+  const body = document.getElementById('teamBody');
+  if (!body) return;
+  if (!teamsData) { body.innerHTML = `<div class="medical-card"><div class="medical-detail">Loading teams…</div></div>`; return; }
+  if (!currentTeam || !teamsData.teams[currentTeam]) currentTeam = Object.keys(teamsData.teams).sort()[0];
+  renderTeamPicker();
+
+  const t = teamsData.teams[currentTeam];
+  const m = teamsData.meta;
+  const intro = document.getElementById('teamsIntro');
+  if (intro) intro.textContent = m.note;
+
+  // The live week. Before kickoff this is week 1, which is what a reader
+  // wants to see in August anyway.
+  const wk = m.currentWeek;
+  const game = t.schedule.find(g => g.week === wk);
+  let h = `<div class="tm-head">
+    <div><div class="tm-team">${rankEsc(t.name)}</div>
+      <div class="tm-meta">${rankEsc(t.division || '')}${t.bye ? ` · BYE WEEK ${t.bye}` : ''}</div></div>
+    <div class="tm-week">`;
+  if (game) {
+    h += `<div class="tm-week-label">${m.seasonStarted ? 'WEEK ' + wk : 'OPENS WEEK ' + wk}</div>
+      <div class="tm-week-game">${game.home ? 'vs' : '@'} ${rankEsc(game.opp)}</div>
+      <div class="tm-week-date">${rankEsc(game.date || '')}${game.result !== null ? ` · ${game.result > 0 ? 'W' : game.result < 0 ? 'L' : 'T'} by ${Math.abs(game.result)}` : ''}</div>`;
+  } else {
+    h += `<div class="tm-week-label">WEEK ${wk}</div><div class="tm-week-game">BYE</div>`;
+  }
+  h += `</div></div>`;
+
+  const pass = t.roster.filter(p => (p.pos === 'WR' || p.pos === 'TE'));
+  const backs = t.roster.filter(p => p.pos === 'RB');
+  const qbs = t.roster.filter(p => p.pos === 'QB');
+
+  h += `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:14px;margin-bottom:14px;">`;
+  h += teamBlock('Target share', `WHO THE PASSES GO TO · ${m.statsSeason}`, pass.filter(p => typeof p.tgtShare === 'number'), p => p.tgtShare, '%');
+  h += teamBlock('Air yards share', `WHO THE OFFENSE THROWS TO DOWNFIELD · ${m.statsSeason}`, pass.filter(p => typeof p.airYardShare === 'number'), p => p.airYardShare, '%');
+  h += teamBlock('Backfield carries', `HOW THE RUN GAME SPLIT · ${m.statsSeason}`, backs.filter(p => typeof p.carries === 'number' && p.carries > 0), p => p.carries, '');
+  h += teamBlock('Snap share', `WHO WAS ON THE FIELD · ${m.statsSeason}`,
+    t.roster.filter(p => typeof p.snapPct === 'number').sort((a, b) => b.snapPct - a.snapPct).slice(0, 10), p => p.snapPct, '%');
+  h += `</div>`;
+
+  if (qbs.length) {
+    h += `<div class="medical-card" style="padding:18px;margin-bottom:14px;">
+      <div style="font-family:var(--serif);font-size:17px;font-weight:700;margin-bottom:10px;">Quarterbacks</div>`
+      + qbs.map(q => `<div class="tm-row" tabindex="0" role="button" onclick="openProfile('${q.id}')">
+          <span class="tm-name"><span class="tm-player">${rankEsc(q.name)}</span>
+          ${q.producedFor ? `<span class="tm-moved">${rankEsc(q.producedFor)}</span>` : ''}
+          ${q.statusClass && q.statusClass !== 'status-healthy' ? `<span class="tm-status ${q.statusClass}">${rankEsc(q.status)}</span>` : ''}</span>
+          <span class="tm-track"></span>
+          <span class="tm-val">${q.games ? q.games + ' g' : '—'}</span></div>`).join('')
+      + `</div>`;
+  }
+
+  // Full schedule strip — the bye shows as a gap, which is the point.
+  h += `<div class="medical-card" style="padding:18px;">
+    <div style="font-family:var(--serif);font-size:17px;font-weight:700;margin-bottom:2px;">${m.season} Schedule</div>
+    <div style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);letter-spacing:0.5px;margin-bottom:12px;">18 WEEKS · BYE IN WEEK ${t.bye || '—'}</div>
+    <div class="tm-sched">`;
+  const weeks = {};
+  t.schedule.forEach(g => { weeks[g.week] = g; });
+  const lastWeek = Math.max(...t.schedule.map(g => g.week));
+  for (let w = 1; w <= lastWeek; w++) {
+    const g = weeks[w];
+    if (!g) { h += `<div class="tm-sched-cell tm-bye"><span>${w}</span><b>BYE</b></div>`; continue; }
+    const cls = w === wk ? ' tm-now' : '';
+    h += `<div class="tm-sched-cell${cls}" data-tip="${rankEsc(`Week ${w} ${g.home ? 'vs' : 'at'} ${g.opp}${g.date ? ' · ' + g.date : ''}`)}">
+      <span>${w}</span><b>${g.home ? '' : '@'}${rankEsc(g.opp)}</b></div>`;
+  }
+  h += `</div></div>`;
+
+  body.innerHTML = h;
+}
+
 // ===== DRAFT OUTCOMES =====
 // What draft capital produced on its own, 2018–2023. This is deliberately
 // NOT a validation of the POE model: validating a model needs its
@@ -3782,6 +3982,7 @@ function switchPage(page) {
   if (page === 'players') renderPlayersTable();
   if (page === 'medicals') { renderMedicals(); renderInjuryTypeGrid(); renderInjuryCurves(); }
   if (page === 'draft') renderDraftOutcomes();
+  if (page === 'teams') { renderTeamPage(); ensureTeams().then(() => { if (document.getElementById('page-teams').classList.contains('active')) renderTeamPage(); }); }
   if (page === 'fantasy') {
     renderValueBoard();
     ensureAdp().then(d => {
@@ -5943,7 +6144,7 @@ function toggleMobileNav() {
 }
 
 // ===== HASH ROUTING =====
-const ROUTE_PAGES = ['rankings', 'lab', 'players', 'medicals', 'compare', 'fantasy', 'draft', 'film'];
+const ROUTE_PAGES = ['teams', 'rankings', 'lab', 'players', 'medicals', 'compare', 'fantasy', 'draft', 'film'];
 
 // replaceState rather than assigning location.hash: assigning fires
 // hashchange, which re-enters the router and fights whatever just rendered.
@@ -5965,6 +6166,12 @@ function handleHashRoute() {
     // that position's first board instead of rendering nothing.
     labMetricKey = (parts[3] && (LAB_METRICS[labPos] || []).some(m => m.key === parts[3])) ? parts[3] : null;
     switchPage('lab');
+    return;
+  }
+  // #teams/sea
+  if (parts[0] === 'teams') {
+    if (parts[1]) currentTeam = parts[1].toUpperCase();
+    switchPage('teams');
     return;
   }
   // #rankings/qb

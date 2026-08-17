@@ -43,6 +43,9 @@ jobs:
 
       - name: Fetch average draft position
         run: node scripts/fetch-adp.js
+
+      - name: Build team pages and schedule
+        run: node scripts/build-teams.js
       
       - name: Check for changes
         id: changes
