@@ -1,0 +1,351 @@
+{
+  "meta": {
+    "builtBy": "scripts/build-draft-outcomes.js",
+    "builtAt": "2026-08-17T00:19:18.849Z",
+    "classes": [
+      2018,
+      2023
+    ],
+    "window": 3,
+    "successRule": "Top-12 at his position by scrimmage yards in any of his first 3 seasons",
+    "source": "nflverse draft picks + season totals",
+    "scope": "This is the base rate draft capital produces on its own. It is NOT a validation of the POE model — validating a model requires its predictions, which are not published here. Read it as the bar any evaluation has to clear.",
+    "caveats": "Scrimmage yards is the stated bar, so a touchdown-dependent or target-hog receiver can miss it while still helping a fantasy roster. A player who never got the ball counts as a miss whether that was talent or situation, and situation is most of it in the later rounds. Quarterbacks are excluded because scrimmage yards does not measure them."
+  },
+  "positions": {
+    "RB": {
+      "total": 124,
+      "hits": 18,
+      "pct": 15,
+      "byRound": [
+        {
+          "round": 1,
+          "n": 9,
+          "hits": 6,
+          "pct": 67
+        },
+        {
+          "round": 2,
+          "n": 15,
+          "hits": 5,
+          "pct": 33
+        },
+        {
+          "round": 3,
+          "n": 18,
+          "hits": 4,
+          "pct": 22
+        },
+        {
+          "round": 4,
+          "n": 23,
+          "hits": 1,
+          "pct": 4
+        },
+        {
+          "round": 5,
+          "n": 15,
+          "hits": 2,
+          "pct": 13
+        },
+        {
+          "round": 6,
+          "n": 22,
+          "hits": 0,
+          "pct": 0
+        },
+        {
+          "round": 7,
+          "n": 22,
+          "hits": 0,
+          "pct": 0
+        }
+      ],
+      "lateHits": [
+        {
+          "name": "David Montgomery",
+          "season": 2019,
+          "round": 3,
+          "pick": 73,
+          "best": 4
+        },
+        {
+          "name": "Rachaad White",
+          "season": 2022,
+          "round": 3,
+          "pick": 91,
+          "best": 4
+        },
+        {
+          "name": "De'Von Achane",
+          "season": 2023,
+          "round": 3,
+          "pick": 84,
+          "best": 6
+        },
+        {
+          "name": "Antonio Gibson",
+          "season": 2020,
+          "round": 3,
+          "pick": 66,
+          "best": 8
+        },
+        {
+          "name": "Kyren Williams",
+          "season": 2022,
+          "round": 5,
+          "pick": 164,
+          "best": 9
+        },
+        {
+          "name": "Chase Brown",
+          "season": 2023,
+          "round": 5,
+          "pick": 163,
+          "best": 9
+        }
+      ],
+      "firstRoundMisses": [
+        {
+          "name": "Rashaad Penny",
+          "season": 2018,
+          "round": 1,
+          "pick": 27,
+          "best": 54
+        },
+        {
+          "name": "Sony Michel",
+          "season": 2018,
+          "round": 1,
+          "pick": 31,
+          "best": 24
+        },
+        {
+          "name": "Clyde Edwards-Helaire",
+          "season": 2020,
+          "round": 1,
+          "pick": 32,
+          "best": 14
+        }
+      ]
+    },
+    "WR": {
+      "total": 193,
+      "hits": 18,
+      "pct": 9,
+      "byRound": [
+        {
+          "round": 1,
+          "n": 25,
+          "hits": 11,
+          "pct": 44
+        },
+        {
+          "round": 2,
+          "n": 36,
+          "hits": 2,
+          "pct": 6
+        },
+        {
+          "round": 3,
+          "n": 24,
+          "hits": 3,
+          "pct": 13
+        },
+        {
+          "round": 4,
+          "n": 21,
+          "hits": 1,
+          "pct": 5
+        },
+        {
+          "round": 5,
+          "n": 23,
+          "hits": 1,
+          "pct": 4
+        },
+        {
+          "round": 6,
+          "n": 38,
+          "hits": 0,
+          "pct": 0
+        },
+        {
+          "round": 7,
+          "n": 26,
+          "hits": 0,
+          "pct": 0
+        }
+      ],
+      "lateHits": [
+        {
+          "name": "Puka Nacua",
+          "season": 2023,
+          "round": 5,
+          "pick": 177,
+          "best": 2
+        },
+        {
+          "name": "Amon-Ra St. Brown",
+          "season": 2021,
+          "round": 4,
+          "pick": 112,
+          "best": 4
+        },
+        {
+          "name": "Diontae Johnson",
+          "season": 2019,
+          "round": 3,
+          "pick": 66,
+          "best": 8
+        },
+        {
+          "name": "Nico Collins",
+          "season": 2021,
+          "round": 3,
+          "pick": 89,
+          "best": 8
+        },
+        {
+          "name": "Terry McLaurin",
+          "season": 2019,
+          "round": 3,
+          "pick": 76,
+          "best": 11
+        }
+      ],
+      "firstRoundMisses": [
+        {
+          "name": "Chris Olave",
+          "season": 2022,
+          "round": 1,
+          "pick": 11,
+          "best": 17
+        },
+        {
+          "name": "Henry Ruggs III",
+          "season": 2020,
+          "round": 1,
+          "pick": 12,
+          "best": 70
+        },
+        {
+          "name": "Jameson Williams",
+          "season": 2022,
+          "round": 1,
+          "pick": 12,
+          "best": 18
+        },
+        {
+          "name": "Jerry Jeudy",
+          "season": 2020,
+          "round": 1,
+          "pick": 15,
+          "best": 22
+        },
+        {
+          "name": "Jahan Dotson",
+          "season": 2022,
+          "round": 1,
+          "pick": 16,
+          "best": 64
+        },
+        {
+          "name": "Treylon Burks",
+          "season": 2022,
+          "round": 1,
+          "pick": 18,
+          "best": 70
+        }
+      ]
+    },
+    "TE": {
+      "total": 88,
+      "hits": 14,
+      "pct": 16,
+      "byRound": [
+        {
+          "round": 1,
+          "n": 5,
+          "hits": 4,
+          "pct": 80
+        },
+        {
+          "round": 2,
+          "n": 12,
+          "hits": 6,
+          "pct": 50
+        },
+        {
+          "round": 3,
+          "n": 19,
+          "hits": 2,
+          "pct": 11
+        },
+        {
+          "round": 4,
+          "n": 19,
+          "hits": 2,
+          "pct": 11
+        },
+        {
+          "round": 5,
+          "n": 15,
+          "hits": 0,
+          "pct": 0
+        },
+        {
+          "round": 6,
+          "n": 9,
+          "hits": 0,
+          "pct": 0
+        },
+        {
+          "round": 7,
+          "n": 9,
+          "hits": 0,
+          "pct": 0
+        }
+      ],
+      "lateHits": [
+        {
+          "name": "Mark Andrews",
+          "season": 2018,
+          "round": 3,
+          "pick": 86,
+          "best": 5
+        },
+        {
+          "name": "Tucker Kraft",
+          "season": 2023,
+          "round": 3,
+          "pick": 78,
+          "best": 7
+        },
+        {
+          "name": "Jake Ferguson",
+          "season": 2022,
+          "round": 4,
+          "pick": 129,
+          "best": 8
+        },
+        {
+          "name": "Dalton Schultz",
+          "season": 2018,
+          "round": 4,
+          "pick": 137,
+          "best": 11
+        }
+      ],
+      "firstRoundMisses": [
+        {
+          "name": "Hayden Hurst",
+          "season": 2018,
+          "round": 1,
+          "pick": 25,
+          "best": 14
+        }
+      ]
+    }
+  }
+}

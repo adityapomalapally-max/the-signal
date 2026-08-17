@@ -27,6 +27,13 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   "Week 4, Sept 28, 2025" to "High School". Enter the event by hand and CHECK it against
   data/weekly/<id>.json first: the last game logged before outWeek and the gap after it
   must both line up, or the event is wrong.
+- `scripts/build-draft-outcomes.js` — draft-capital hit rates → data/draft-outcomes.json. Inputs move
+  once a year, so it is NOT in the daily Action; re-run it when a new class completes three seasons.
+  It is the BASE RATE, deliberately not a validation of the POE model — validating that needs the
+  model's predictions, which are not in this repo
+- `scripts/fetch-adp.js` — consensus ADP → data/adp.json, daily. Pinned to Half-PPR 12-team to match
+  the projection format. The Value Board compares POSITIONAL ranks on both sides; comparing an overall
+  rank to an ADP pick number is a scale error that makes every deep player look like a bargain
 - `data/projections-2026.json` — source of truth for projections
 - `data/rankings-manual.json` — Adi's hand-ordered ranks. Wins over generated order
 
