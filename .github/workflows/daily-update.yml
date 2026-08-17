@@ -50,6 +50,11 @@ jobs:
       - name: Build strength of schedule
         run: node scripts/build-sos.js
       
+      # After the data steps: the pool changes, and a sitemap listing yesterday's
+      # players is a list of soft 404s submitted to Google.
+      - name: Build sitemap and robots.txt
+        run: node scripts/build-sitemap.js
+
       - name: Check for changes
         id: changes
         run: |
@@ -60,7 +65,7 @@ jobs:
         run: |
           git config user.name "The Signal Bot"
           git config user.email "bot@thesignal.app"
-          git add data/
+          git add data/ sitemap.xml robots.txt
           DATE=$(date -u +"%Y-%m-%d %H:%M UTC")
           git commit -m "Automated data update: ${DATE}
 

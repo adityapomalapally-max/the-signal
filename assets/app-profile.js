@@ -13,11 +13,20 @@
 // ===== PLAYER PROFILE MODAL =====
 let currentProfileId = null;
 
-function openProfile(id) {
+// fromRoute: the router opened this, so the URL is already right and pushing
+// again would put two entries in the back button for one navigation.
+function openProfile(id, fromRoute) {
   const overlay = document.getElementById('profileOverlay');
   const player = playersDB.find(p => p.id === id);
   if (!player) return;
   currentProfileId = id;
+
+  // A player profile is the richest thing on this site — athletic percentiles,
+  // production, sourced medical history, a weekly game log — and until now it
+  // had no address. You could not link to one, and a crawler could not reach
+  // one. 350 of them, invisible.
+  setRoute('player/' + id, !fromRoute);
+  applyRouteMeta();
   // The rich fields live in players-detail.json. Merge them in and re-render
   // the open tab; on any visit after the first this resolves from cache.
   ensurePlayerDetail().then(() => {
@@ -48,10 +57,23 @@ function openProfile(id) {
   document.body.style.overflow = 'hidden';
 }
 
-function closeProfile() {
+// Close the modal without touching history — for the router, which is already
+// somewhere else and must not be sent back.
+function closeProfileUI() {
   document.getElementById('profileOverlay').classList.remove('open');
   document.body.style.overflow = '';
   currentProfileId = null;
+}
+
+// Close it the way a reader does: the address returns to the page underneath.
+function closeProfile() {
+  const wasOpen = !!currentProfileId;
+  closeProfileUI();
+  if (!wasOpen) return;
+  const active = document.querySelector('.page-section.active');
+  const page = active ? active.id.replace('page-', '') : 'home';
+  setRoute(page === 'home' ? '' : page);
+  applyRouteMeta();
 }
 
 function switchProfileTab(tab, el) {
@@ -612,7 +634,7 @@ function ensureWeeklyStats(playerId) {
 // missing players render as nothing.
 let ngsAllPromise = null;
 function ensureNgs() {
-  if (!ngsAllPromise) ngsAllPromise = loadJSON('data/ngs.json').then(d => d || {});
+  if (!ngsAllPromise) ngsAllPromise = loadJSON('/data/ngs.json').then(d => d || {});
   return ngsAllPromise;
 }
 
@@ -691,7 +713,7 @@ async function loadNgsSection(playerId, pos) {
 // Games actually missed live in the availability figure on Rankings.
 let injAllPromise = null;
 function ensureInjuries() {
-  if (!injAllPromise) injAllPromise = loadJSON('data/injuries.json').then(d => d || {});
+  if (!injAllPromise) injAllPromise = loadJSON('/data/injuries.json').then(d => d || {});
   return injAllPromise;
 }
 

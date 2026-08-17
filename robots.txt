@@ -1,0 +1,9 @@
+# The Signal
+User-agent: *
+Allow: /
+
+# The JSON behind the site is public, but it is not the site. Keeping it out
+# of the index stops raw data files ranking instead of the pages that read them.
+Disallow: /data/
+
+Sitemap: https://the-signal-gamma.vercel.app/sitemap.xml

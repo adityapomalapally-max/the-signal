@@ -366,12 +366,12 @@ function renderLabPage() {
 let teamsData = null, currentTeam = null, sosData = null, sosPos = 'WR';
 let teamsPromise = null;
 function ensureTeams() {
-  if (!teamsPromise) teamsPromise = loadJSON('data/teams.json').then(d => (teamsData = d));
+  if (!teamsPromise) teamsPromise = loadJSON('/data/teams.json').then(d => (teamsData = d));
   return teamsPromise;
 }
 let sosPromise = null;
 function ensureSos() {
-  if (!sosPromise) sosPromise = loadJSON('data/sos.json').then(d => (sosData = d));
+  if (!sosPromise) sosPromise = loadJSON('/data/sos.json').then(d => (sosData = d));
   return sosPromise;
 }
 function setSosPos(pos, btn) {
@@ -555,7 +555,7 @@ function ordinalWord(n) {
 // judge the claim instead of taking it on faith.
 let draftPromise = null;
 function ensureDraftOutcomes() {
-  if (!draftPromise) draftPromise = loadJSON('data/draft-outcomes.json').then(d => d || null);
+  if (!draftPromise) draftPromise = loadJSON('/data/draft-outcomes.json').then(d => d || null);
   return draftPromise;
 }
 
@@ -633,7 +633,7 @@ async function renderDraftOutcomes() {
 let vbPos = 'all', vbView = 'values';
 let adpPromise = null;
 function ensureAdp() {
-  if (!adpPromise) adpPromise = loadJSON('data/adp.json').then(d => d || null);
+  if (!adpPromise) adpPromise = loadJSON('/data/adp.json').then(d => d || null);
   return adpPromise;
 }
 
@@ -818,11 +818,17 @@ function switchPage(page) {
   // The hash IS the address of what you are looking at, so a page switch
   // rewrites it rather than clearing it. Leaders and Rankings then refine it
   // further with their own filters, so a specific board can be linked.
-  // An open medical profile keeps its id in the URL — a bare setRoute('medicals')
-  // here would drop it the moment the router called us back.
+  // Only reset the address when the PAGE actually changes. The router calls us
+  // back with a deeper route already in the bar — /medicals/kittle, /teams/sea,
+  // /rankings/wr — and a bare setRoute(page) here threw away the part that said
+  // which one, leaving the reader on the right page at the wrong URL.
   if (page !== 'article') {
-    setRoute(page === 'home' ? '' : (page === 'medicals' && medDetailId ? 'medicals/' + medDetailId : page));
+    const target = page === 'home' ? '' : page;
+    if (currentRoute().split('/')[0] !== target) setRoute(target);
   }
+  // The address just changed, so the document's claim about itself has to
+  // change with it — title, description and canonical all follow the route.
+  applyRouteMeta();
   if (page === 'players') renderPlayersTable();
   if (page === 'medicals') {
     renderMedicals(medSearch);
@@ -1029,12 +1035,12 @@ function setMedFilter(v) { medFilter = v; renderMedicals(medSearch); }
 // A medical profile is a thing you can send someone. It used to be reachable
 // only by typing into a search box, which meant no URL, no back button, and
 // nothing to link to.
-// Assigning the hash rather than calling setRoute: replaceState leaves no
-// history entry, so the back button would have walked off the site instead of
-// returning to the list. The router renders both of these — the same path an
-// incoming link takes, so a shared URL and a click land on identical markup.
-function openMedical(id) { window.location.hash = 'medicals/' + id; }
-function closeMedical() { window.location.hash = 'medicals'; }
+// navigate() pushes a history entry and then renders through the router — the
+// same path an incoming link takes, so a shared URL and a click produce
+// identical markup, and the back button returns to the list instead of walking
+// off the site.
+function openMedical(id) { navigate('medicals/' + id); }
+function closeMedical() { navigate('medicals'); }
 
 let medDetailId = null;
 

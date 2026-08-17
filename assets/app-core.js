@@ -29,7 +29,7 @@ let statsPromise = null;
 let statsReady = false;
 function ensureStats() {
   if (!statsPromise) {
-    statsPromise = loadJSON('data/stats.json').then(d => {
+    statsPromise = loadJSON('/data/stats.json').then(d => {
       if (d) playerStats = d;
       statsReady = true;
       return playerStats;
@@ -38,9 +38,12 @@ function ensureStats() {
   return statsPromise;
 }
 
-const DATA_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? '.' : (window.location.origin + window.location.pathname.replace(/\/[^/]*$/, ''));
-
+// Every data path is ROOT-relative ('/data/x.json'), never bare ('data/x.json').
+// The site serves real paths now — /player/nabers, /medicals/olave — and a
+// relative fetch from one of those resolves against the route, asking for
+// /player/data/players.json. The rewrite answers that with index.html, so the
+// page gets HTML where it expected JSON and dies with no useful error.
+// The same rule applies to the script and stylesheet tags in index.html.
 async function loadJSON(path) {
   try {
     const res = await fetch(path + '?v=' + Date.now());
@@ -53,16 +56,16 @@ async function loadJSON(path) {
 }
 
 async function initData() {
-  // stats.json is ~450KB and nothing on first paint needs it — the home
+  // stats.json is 664KB and nothing on first paint needs it — the home
   // mini-charts read a precomputed summary instead, and Leaders, the profile
   // Stats tab and Compare each await it when they actually render.
   const [rankings, players, medicals, articles, injuries, homeSummary] = await Promise.all([
-    loadJSON('data/rankings.json'),
-    loadJSON('data/players.json'),
-    loadJSON('data/medicals.json'),
-    loadJSON('data/articles.json'),
-    loadJSON('data/injury-research.json'),
-    loadJSON('data/home-summary.json')
+    loadJSON('/data/rankings.json'),
+    loadJSON('/data/players.json'),
+    loadJSON('/data/medicals.json'),
+    loadJSON('/data/articles.json'),
+    loadJSON('/data/injury-research.json'),
+    loadJSON('/data/home-summary.json')
   ]);
 
   if (rankings) rankingsData = rankings;
@@ -110,7 +113,7 @@ async function initData() {
 
   // Load data freshness metadata
   try {
-    const metaRes = await fetch('data/meta.json?v=' + Date.now());
+    const metaRes = await fetch('/data/meta.json?v=' + Date.now());
     if (metaRes.ok) {
       const meta = await metaRes.json();
       if (meta.lastUpdate) {
@@ -436,7 +439,7 @@ function playerInitials(p) {
 let detailPromise = null;
 function ensurePlayerDetail() {
   if (!detailPromise) {
-    detailPromise = loadJSON('data/players-detail.json').then(d => {
+    detailPromise = loadJSON('/data/players-detail.json').then(d => {
       if (d) for (const p of playersDB) if (d[p.id]) Object.assign(p, d[p.id]);
       return d || {};
     });

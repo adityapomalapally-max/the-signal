@@ -80,9 +80,10 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - A grid track wider than the container scrolls the whole document sideways. This page keeps 48px of
   padding a side, so `minmax(min(320px,100%),1fr)` — a bare 320px overflows a 375px phone.
 - Anything worth reading is worth linking. A detail view addressed only by typing into a search box
-  has no URL, no back button, and nothing to send anyone. Assign the hash and let the router render,
-  so an incoming link and a click land on identical markup; setRoute/replaceState leaves no history
-  entry and the back button walks off the site.
+  has no URL, no back button, and nothing to send anyone. Route it, and let the ROUTER render, so an
+  incoming link and a click land on identical markup. Use `navigate()` (pushState) for a move the
+  reader chose to make; plain `setRoute` replaces and leaves no history entry, so the back button
+  walks off the site.
 - Charts show real data or nothing. Chart marks use validated dark-surface steps of the site
   accents (gold #a8893a, teal #1ba89b; blue #2a78d6 for the negative pole of a diverging bar),
   and every chart has a table-view twin.
@@ -98,3 +99,18 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 
 ## Auth
 `gh` handles GitHub auth. Never put a token in a URL or a file.
+
+## Routing and SEO
+- The address is a PATH, not a fragment. `vercel.json` rewrites everything to index.html, and the
+  filesystem is checked FIRST (Vercel's documented order), so `/assets/*` and `/data/*` still serve.
+- Therefore every asset and data URL must be ROOT-relative (`/data/x.json`, `/assets/app.js`). A bare
+  `data/x.json` fetched from `/player/nabers` resolves to `/player/data/x.json`, the rewrite answers
+  with index.html, and the page gets HTML where it expected JSON. This kills every script silently.
+- `switchPage` only rewrites the URL when the PAGE changes. The router calls it back with a deeper
+  route already in the bar (`/teams/sea`, `/rankings/wr`) and a bare `setRoute(page)` discards it.
+- `setRoute` updates the title, description and canonical, so no caller can move the URL and forget
+  the metadata. Old `#hash` links are translated to paths once, on boot.
+- Player profiles live at `/player/<id>` — 350 pages of the deepest content on the site, which had no
+  address at all until they were routed.
+- `scripts/build-sitemap.js` generates sitemap.xml + robots.txt in the daily Action. DRAFT ARTICLES
+  ARE EXCLUDED: submitting an unfinished page gets the unfinished version cached and shown.

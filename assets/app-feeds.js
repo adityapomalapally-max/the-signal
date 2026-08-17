@@ -18,7 +18,7 @@
 // here; the production line is a shape with real biases, all stated.
 let curvesPromise = null;
 function ensureCurves() {
-  if (!curvesPromise) curvesPromise = loadJSON('data/injury-curves.json').then(d => d || null);
+  if (!curvesPromise) curvesPromise = loadJSON('/data/injury-curves.json').then(d => d || null);
   return curvesPromise;
 }
 
@@ -288,7 +288,7 @@ async function loadSleeperTrending() {
     // Try cached data first (from GitHub Action)
     let trending = null;
     try {
-      const cached = await fetch('data/trending.json?v=' + Date.now());
+      const cached = await fetch('/data/trending.json?v=' + Date.now());
       if (cached.ok) trending = await cached.json();
     } catch (e) {}
 
@@ -393,7 +393,7 @@ async function loadESPNNews() {
   try {
     // Try cached data first (from GitHub Action)
     try {
-      const cached = await fetch('data/news-cache.json?v=' + Date.now());
+      const cached = await fetch('/data/news-cache.json?v=' + Date.now());
       if (cached.ok) {
         const newsData = await cached.json();
         if (newsData.articles && newsData.articles.length > 0) {
@@ -565,8 +565,8 @@ function openArticle(slug) {
   const article = articlesDB[slug];
   if (!article) return;
 
-  // Update URL hash for shareability
-  window.location.hash = 'article/' + slug;
+  // The article gets its own URL — it is the most shareable thing on the site.
+  setRoute('article/' + slug, true);
 
   // Set article page content
   const tagColors = { 'tag-injury': 'var(--red-muted)', 'tag-draft': 'rgba(91,155,213,0.1)', 'tag-film': 'rgba(167,139,250,0.1)', 'tag-analysis': 'var(--gold-muted)', 'tag-fantasy': 'var(--teal-muted)' };
@@ -607,19 +607,64 @@ function toggleMobileNav() {
   document.body.style.overflow = document.getElementById('mobileNavDrawer').classList.contains('open') ? 'hidden' : '';
 }
 
-// ===== HASH ROUTING =====
+// ===== ROUTING =====
+// The address is a PATH, not a fragment.
+//
+// A fragment is never sent to the server, and a crawler treats /#medicals/nabers
+// and /#rankings/qb as the same URL as /. The entire site — every board, every
+// one of 350 profiles — was one indexable page, and no amount of good writing
+// inside it could be found. vercel.json rewrites every path back to index.html,
+// so these are real URLs that answer 200 and can be crawled, linked and shared.
+//
+// The route GRAMMAR is unchanged: what used to follow the # now follows the /.
 const ROUTE_PAGES = ['teams', 'rankings', 'lab', 'players', 'medicals', 'compare', 'fantasy', 'draft', 'film'];
 
-// replaceState rather than assigning location.hash: assigning fires
-// hashchange, which re-enters the router and fights whatever just rendered.
-function setRoute(hash) {
-  const next = hash ? '#' + hash : window.location.pathname;
-  if (window.location.hash.slice(1) !== hash) history.replaceState(null, '', next);
+function routePath(route) {
+  return '/' + String(route || '').replace(/^\/+/, '');
 }
 
-function handleHashRoute() {
-  const hash = window.location.hash.slice(1);
-  const parts = hash.split('/').filter(Boolean);
+function currentRoute() {
+  return window.location.pathname.replace(/^\/+|\/+$/g, '');
+}
+
+// push: leaves a history entry, for a navigation the reader chose to make.
+// Default is replace, so re-rendering a page you are already on does not fill
+// the back button with duplicates of itself.
+function setRoute(route, push) {
+  const next = routePath(route);
+  if (window.location.pathname === next) return;
+  if (push) history.pushState(null, '', next);
+  else history.replaceState(null, '', next);
+  // The document's description of itself is part of the address. Updating it
+  // here means no caller can move the URL and forget the title — which is how
+  // /rankings/wr ended up titled "Fantasy Rankings".
+  applyRouteMeta();
+}
+
+// Navigate the way a click should: a new history entry, then render.
+function navigate(route) {
+  setRoute(route, true);
+  handleRoute();
+}
+
+function handleRoute() {
+  const parts = currentRoute().split('/').filter(Boolean);
+  const hash = parts.join('/');
+
+  // A profile modal must not outlive the route that opened it — pressing back
+  // out of /player/nabers has to actually dismiss the card.
+  if (parts[0] !== 'player' && currentProfileId) closeProfileUI();
+
+  // /player/nabers — the modal, addressable. The players table sits behind it,
+  // so closing lands somewhere that makes sense rather than on a blank page.
+  if (parts[0] === 'player') {
+    const id = parts[1];
+    if (!id) { switchPage('players'); return; }
+    if (!document.getElementById('page-players').classList.contains('active')) switchPage('players');
+    if (playersDB.length) openProfile(id, true);
+    else setTimeout(() => openProfile(id, true), 500);
+    return;
+  }
 
   // #lab/wr/2025/sep — position, season, then the board's metric key
   if (parts[0] === 'lab') {
@@ -665,7 +710,143 @@ function handleHashRoute() {
   }
 }
 
-window.addEventListener('hashchange', handleHashRoute);
+// Back and forward move between pushed routes.
+window.addEventListener('popstate', handleRoute);
+
+// ===== PER-ROUTE METADATA =====
+// Distinct URLs are worth nothing if they all claim to be the same document.
+// Every route gets its own title, description and canonical, so a search result
+// says what the page actually holds and a shared link unfurls as itself.
+// Keep SITE_ORIGIN in step with the canonical tag in index.html and with
+// scripts/build-sitemap.js — three places, one host.
+const SITE_ORIGIN = 'https://the-signal-gamma.vercel.app';
+
+const ROUTE_META = {
+  '': {
+    title: 'The Signal — NFL Intelligence',
+    description: 'Signal over noise. Research-backed NFL analysis: injury impact database, verified athletic profiles, nflverse stats, and a draft model built on production over combine testing.',
+  },
+  players: {
+    title: 'Player Database — The Signal',
+    description: 'Every fantasy-relevant NFL player: athletic profiles, nflverse production, sourced medical history and current status, updated daily.',
+  },
+  rankings: {
+    title: 'Fantasy Rankings — The Signal',
+    description: 'Half-PPR redraft rankings with projection ranges and missed-time risk priced in as a second downside, not hidden in the median.',
+  },
+  medicals: {
+    title: 'Medical Intelligence — The Signal',
+    description: 'Sourced injury histories, official NFL injury-report records, and research-backed return-to-play curves for the players who matter.',
+  },
+  lab: {
+    title: 'Leaders — The Signal',
+    description: 'Positional leaderboards from nflverse and Next Gen Stats. Every board states its qualifier and excludes anyone under it.',
+  },
+  teams: {
+    title: 'Teams — The Signal',
+    description: 'Who gets the ball: target and carry share by team, with the schedule strip read as a matchup map.',
+  },
+  fantasy: {
+    title: 'Value Board — The Signal',
+    description: 'Our positional ranks against consensus ADP, compared rank-to-rank so the gaps mean something.',
+  },
+  draft: {
+    title: 'Draft Lab — The Signal',
+    description: 'Draft-capital hit rates by round and position — the base rate any prospect model has to beat.',
+  },
+  compare: {
+    title: 'Player Comparison — The Signal',
+    description: 'Two or three players on the same axes, with percentiles stated against the position they actually play.',
+  },
+  film: {
+    title: 'Film Room — The Signal',
+    description: 'Breakdowns grounded in game film rather than box-score narratives.',
+  },
+};
+
+function metaForRoute(route) {
+  const parts = String(route || '').split('/').filter(Boolean);
+  const base = ROUTE_META[parts[0] || ''] || ROUTE_META[''];
+  if (parts.length < 2) return base;
+
+  const POS = { qb: 'Quarterback', rb: 'Running Back', wr: 'Wide Receiver', te: 'Tight End', overall: 'Overall' };
+
+  if (parts[0] === 'player') {
+    const p = playersDB.find(x => x.id === parts[1]);
+    if (!p) return base;
+    return {
+      title: `${p.name} — ${p.pos} ${p.team} | The Signal`,
+      description: `${p.name} (${[p.pos, p.team].filter(Boolean).join(' · ')}): athletic profile, production, sourced injury history and current status${p.fRank ? `, ranked ${p.fRank}` : ''}.`,
+    };
+  }
+
+  if (parts[0] === 'medicals') {
+    const prof = medicalDB[parts[1]];
+    const pooled = playersDB.find(p => p.id === parts[1]);
+    const name = (prof && prof.name) || (pooled && pooled.name);
+    if (!name) return base;
+    const inj = prof && prof.injuries && prof.injuries.length ? prof.injuries[0].title : null;
+    return {
+      title: `${name} — Injury History & Medical Profile | The Signal`,
+      description: inj
+        ? `${name}: sourced medical history including ${inj}, career impact, and his official NFL injury-report record.`
+        : `${name}: official NFL injury-report history by season and body part, plus current status.`,
+    };
+  }
+
+  if (parts[0] === 'article') {
+    const a = articlesDB[parts[1]];
+    if (!a) return base;
+    return {
+      title: `${a.title} — The Signal`,
+      description: (a.excerpt || a.subtitle || base.description).slice(0, 200),
+    };
+  }
+
+  if (parts[0] === 'teams') {
+    const abbr = parts[1].toUpperCase();
+    return {
+      title: `${abbr} — Target & Carry Share | The Signal`,
+      description: `Who gets the ball in ${abbr}: target share, carry share and the schedule read as a matchup map.`,
+    };
+  }
+
+  if (parts[0] === 'rankings' && POS[parts[1]]) {
+    return {
+      title: `${POS[parts[1]]} Rankings — The Signal`,
+      description: `Half-PPR ${POS[parts[1]]} rankings with projection ranges and missed-time risk priced in as a second downside.`,
+    };
+  }
+
+  if (parts[0] === 'lab' && POS[parts[1]]) {
+    return {
+      title: `${POS[parts[1]]} Leaders${parts[2] ? ' — ' + parts[2] : ''} | The Signal`,
+      description: `${POS[parts[1]]} leaderboards from nflverse and Next Gen Stats. Every board states its qualifier and excludes anyone under it.`,
+    };
+  }
+
+  return base;
+}
+
+function setTag(selector, attr, value) {
+  const el = document.querySelector(selector);
+  if (el) el.setAttribute(attr, value);
+}
+
+function applyRouteMeta() {
+  const route = currentRoute();
+  const meta = metaForRoute(route);
+  const url = SITE_ORIGIN + routePath(route === '' ? '' : route);
+
+  document.title = meta.title;
+  setTag('meta[name="description"]', 'content', meta.description);
+  setTag('link[rel="canonical"]', 'href', url);
+  setTag('meta[property="og:title"]', 'content', meta.title);
+  setTag('meta[property="og:description"]', 'content', meta.description);
+  setTag('meta[property="og:url"]', 'content', url);
+  setTag('meta[name="twitter:title"]', 'content', meta.title);
+  setTag('meta[name="twitter:description"]', 'content', meta.description);
+}
 
 // ===== KEYBOARD SHORTCUTS =====
 document.addEventListener('keydown', e => {
@@ -703,8 +884,15 @@ function makeClickablesAccessible(root) {
 const a11yObserver = new MutationObserver(() => makeClickablesAccessible());
 a11yObserver.observe(document.body, { childList: true, subtree: true });
 
+// Links shared before the move to paths look like /#medicals/nabers. Translate
+// once, in place, so an old link lands on the page it always meant and the
+// address bar shows the URL we actually want indexed.
+if (window.location.hash.length > 1) {
+  history.replaceState(null, '', routePath(window.location.hash.slice(1)));
+}
+
 initData().then(() => {
   makeClickablesAccessible();
-  // Check for hash route after data loads
-  if (window.location.hash) handleHashRoute();
+  // Route once the data the route needs is in memory.
+  if (currentRoute()) handleRoute();
 });
