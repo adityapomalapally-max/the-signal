@@ -25,10 +25,33 @@ For each significant injury:
 - Add complete medical profile entry
 
 ### 4. Update Player Statuses
-Review `data/players.json` and update:
-- status field (Healthy / Monitor / Rehab / Out / IR)
-- statusClass (status-healthy / status-quest / status-out / status-ir)
-- Any roster changes (new team, etc.)
+**Never hand-edit `data/players.json`.** It is generated, and `update-data.js`
+reconciles every status against the Sleeper feed on the next run — an edit made
+here survives until 6 AM ET and then silently disappears.
+
+Hand-set a status in `data/injury-overrides.json` instead. Every entry needs a
+`setAt` date and a `source`, and every entry expires (21 days by default), so a
+note can't outlive the report behind it the way the old hand-edits did:
+
+```json
+{
+  "player": "Chris Olave", "pos": "WR", "sleeperId": "8144",
+  "status": "PUP (Achilles)", "statusClass": "status-out",
+  "setAt": "2026-08-17", "expires": "2026-09-07",
+  "source": "ESPN, Aug 17 2026",
+  "note": "why this beats the feed"
+}
+```
+
+Then run `node scripts/check-overrides.js` — it resolves each entry against the
+pool and exits non-zero on anything that wouldn't apply. `--schema` prints the
+full field list.
+
+An override beats the feed, EXCEPT a live IR / Out / PUP / NFI / Suspended /
+Doubtful, which always wins. So an override can quiet a camp "Questionable" the
+feed is shouting, but it can never talk a player down off IR.
+
+Roster changes (team, etc.) need no action — the feed owns them.
 
 ### 5. Update Medical Profiles
 Review `data/medicals.json` and:

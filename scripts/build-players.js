@@ -132,18 +132,10 @@ function colorFor(sleeperId) {
   return AVATAR_GRADIENTS[hash % AVATAR_GRADIENTS.length];
 }
 
-// Sleeper's one-word injury status → the site's status vocabulary.
-// Mirrors update-data.js so a brand-new player starts consistent.
-const STATUS_MAP = {
-  'IR': { status: 'IR', statusClass: 'status-out' },
-  'Out': { status: 'Out', statusClass: 'status-out' },
-  'Doubtful': { status: 'Doubtful', statusClass: 'status-out' },
-  'Questionable': { status: 'Questionable', statusClass: 'status-quest' },
-  'Probable': { status: 'Probable', statusClass: 'status-quest' },
-  'PUP': { status: 'PUP', statusClass: 'status-out' },
-  'Suspended': { status: 'Suspended', statusClass: 'status-out' },
-  'NFI': { status: 'NFI', statusClass: 'status-out' },
-};
+// Sleeper's one-word injury status → the site's status vocabulary. Shared with
+// update-data.js, which owns statuses from here on, so a brand-new player
+// starts on exactly the wording the next run would give him.
+const { formatStatus } = require('./lib/status');
 
 // Fields update-data.js owns. Carried from the current players.json so a
 // rebuild never erases a status, its provenance, or a manual note.
@@ -303,9 +295,10 @@ async function main() {
       statusClass: 'status-healthy',
       statusSource: 'sleeper'
     };
-    if (sp.injury_status && STATUS_MAP[sp.injury_status]) {
-      base.status = STATUS_MAP[sp.injury_status].status;
-      base.statusClass = STATUS_MAP[sp.injury_status].statusClass;
+    const seeded = sp.injury_status && formatStatus(sp.injury_status, sp.injury_body_part);
+    if (seeded) {
+      base.status = seeded.status;
+      base.statusClass = seeded.statusClass;
     }
 
     // 2. Status carry-over from the current file

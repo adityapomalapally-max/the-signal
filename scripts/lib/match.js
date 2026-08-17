@@ -82,6 +82,24 @@ function normalizeName(name) {
     .trim();
 }
 
+// The Sleeper flavour. It is NOT the same normalizer as above and the
+// difference is load-bearing: nflverse writes "Amon-Ra St. Brown" with the
+// hyphen intact, Sleeper splits the name across first_name/last_name and the
+// reassembled spelling varies, so the Sleeper side has to collapse hyphens to
+// spaces and strip suffixes anywhere in the name rather than only at the end.
+// Run either normalizer against the other's source and matches vanish.
+const NAME_SUFFIXES = new Set(['jr', 'sr', 'ii', 'iii', 'iv', 'v']);
+function normalizeSleeperName(s) {
+  return String(s || '')
+    .toLowerCase()
+    .replace(/[.'’`]/g, '')       // periods and apostrophes: "St." / "Ja'Marr"
+    .replace(/[-‐-―]/g, ' ') // hyphens: "Amon-Ra"
+    .split(/\s+/)
+    .filter(t => t && !NAME_SUFFIXES.has(t))
+    .join(' ')
+    .trim();
+}
+
 function buildMatchIndex(ourPlayers, log) {
   const byGsis = new Map();
   const byName = new Map();
@@ -107,4 +125,4 @@ function matchRow(index, fields) {
   return index.byName.get(`${normalizeName(fields.name || '')}|${fields.pos}`) || null;
 }
 
-module.exports = { fetchCSV, parseCSV, parseCSVLine, normalizeName, buildMatchIndex, matchRow };
+module.exports = { fetchCSV, parseCSV, parseCSVLine, normalizeName, normalizeSleeperName, buildMatchIndex, matchRow };

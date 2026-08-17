@@ -67,37 +67,21 @@ async function fetchSleeperPlayers() {
 // status-out for ten months after he was healthy. Punctuation is not
 // provenance. A manual flag is.
 //
-// Manual statuses are also not immortal. One that hasn't been touched in
-// MANUAL_STALE_DAYS is reported as stale rather than silently held, so a
-// forgotten hand-edit surfaces instead of quietly going wrong on the site.
-const MANUAL_STALE_DAYS = 21;
-
-// Feed statuses that outrank a manual note regardless of freshness. Never
-// under-report an injury because someone typed something optimistic in July.
-const ESCALATIONS = new Set(['IR', 'Out', 'PUP', 'NFI', 'Suspended', 'Doubtful']);
+// A manual flag in players.json is no longer provenance either, because it
+// records only THAT a human typed something, never when or on what evidence.
+// data/injury-overrides.json is now the one place a status is hand-set, and
+// every entry there is dated, sourced, and expiring — see lib/overrides.js.
+// A manualOverride left in players.json with no live entry behind it is an
+// orphan from before that file existed and gets handed back to the feed.
+const { ESCALATIONS, formatStatus } = require('./lib/status');
+const { readOverrides, validateOverrides, parseDate, daysAgo } = require('./lib/overrides');
 
 // Generational suffixes are inconsistently placed across sources — sometimes in
 // last_name, sometimes a separate field, sometimes absent. They carry no
-// identifying information here, so they come out on both sides.
-const NAME_SUFFIXES = new Set(['jr', 'sr', 'ii', 'iii', 'iv', 'v']);
-
-function normalizeName(s) {
-  return String(s || '')
-    .toLowerCase()
-    .replace(/[.'\u2019`]/g, '')   // periods and apostrophes: "St." / "Ja'Marr"
-    .replace(/[-\u2010-\u2015]/g, ' ') // hyphens: "Amon-Ra"
-    .split(/\s+/)
-    .filter(t => t && !NAME_SUFFIXES.has(t))
-    .join(' ')
-    .trim();
-}
-
-function daysSince(iso) {
-  if (!iso) return null;
-  const t = Date.parse(iso);
-  if (Number.isNaN(t)) return null;
-  return Math.floor((Date.now() - t) / 86400000);
-}
+// identifying information here, so they come out on both sides. It lives in the
+// matcher lib next to its nflverse sibling: one definition of each, and the two
+// are documented as not interchangeable.
+const { normalizeSleeperName: normalizeName } = require('./lib/match');
 
 // ===== UPDATE PLAYER STATUSES =====
 async function updatePlayerStatuses(sleeperPlayers) {
@@ -113,17 +97,12 @@ async function updatePlayerStatuses(sleeperPlayers) {
   // Why the run did or didn't act, per player. A run that changes nothing is
   // indistinguishable from a run that failed unless it says which it was —
   // meta.json read `playerStatusesUpdated: 0` for weeks with no way to tell.
-  const diagnostics = { unmatched: [], ambiguous: [], manualHeld: [], staleManual: [], feedSilent: 0 };
-  const statusMap = {
-    'IR': { status: 'IR', statusClass: 'status-out' },
-    'Out': { status: 'Out', statusClass: 'status-out' },
-    'Doubtful': { status: 'Doubtful', statusClass: 'status-out' },
-    'Questionable': { status: 'Questionable', statusClass: 'status-quest' },
-    'Probable': { status: 'Probable', statusClass: 'status-quest' },
-    'PUP': { status: 'PUP', statusClass: 'status-out' },
-    'Suspended': { status: 'Suspended', statusClass: 'status-out' },
-    'NFI': { status: 'NFI', statusClass: 'status-out' },
+  const diagnostics = {
+    unmatched: [], ambiguous: [], overridesApplied: [], overridesOutranked: [],
+    overridesExpired: [], overridesOrphaned: [], overrideErrors: [], feedSilent: 0,
   };
+
+  const overrideIndex = buildOverrideIndex(diagnostics);
 
   // Index Sleeper by normalized full name + position. The old matcher compared
   // the first and last *whitespace tokens* of our name against Sleeper's
@@ -177,47 +156,45 @@ async function updatePlayerStatuses(sleeperPlayers) {
       }
 
       const injuryStatus = match.injury_status;
-      const manual = player.manualOverride === true;
-      const age = manual ? daysSince(player.statusSetAt) : null;
-      const manualStale = manual && (age === null || age > MANUAL_STALE_DAYS);
 
-      const apply = (status, statusClass, source, why) => {
+      const apply = (status, statusClass, source, why, setAt) => {
+        if (player.status === status && player.statusClass === statusClass && player.statusSource === source) return;
         log(`  ${player.name}: ${player.status} → ${status} (${why})`);
         player.status = status;
         player.statusClass = statusClass;
         player.statusSource = source;
         player.statusUpdated = new Date().toISOString();
-        if (source === 'sleeper') {
+        if (source === 'override') {
+          player.manualOverride = true;
+          player.statusSetAt = setAt;
+        } else {
           player.manualOverride = false;
           delete player.statusSetAt;
         }
         updated++;
       };
 
-      if (injuryStatus && statusMap[injuryStatus]) {
-        const next = statusMap[injuryStatus];
-        // The feed wins when it escalates, when the manual note has gone stale,
-        // or when there is no manual note at all. A fresh manual note otherwise
-        // holds, because it carries detail the feed's one-word status doesn't.
-        const feedWins = !manual || manualStale || ESCALATIONS.has(injuryStatus);
-        if (!feedWins) {
-          diagnostics.manualHeld.push(`${player.name} (feed: ${injuryStatus}, manual ${age}d old)`);
-        } else if (player.status !== next.status || player.statusClass !== next.statusClass) {
-          apply(next.status, next.statusClass, 'sleeper', `sleeper: ${injuryStatus}`);
+      // What the feed says, body part and all. No injury_status means healthy —
+      // the feed clears a player by going quiet about him.
+      const feed = (injuryStatus && formatStatus(injuryStatus, match.injury_body_part))
+        || { status: 'Healthy', statusClass: 'status-healthy' };
+
+      const ov = takeOverride(overrideIndex, player);
+
+      if (injuryStatus && ESCALATIONS.has(injuryStatus)) {
+        // Never let a hand note talk a player down from IR.
+        if (ov) diagnostics.overridesOutranked.push(`${player.name}: "${ov.status}" outranked by feed ${injuryStatus}`);
+        apply(feed.status, feed.statusClass, 'sleeper', `sleeper: ${injuryStatus}`);
+      } else if (ov) {
+        diagnostics.overridesApplied.push(`${player.name}: "${ov.status}" (set ${daysAgo(parseDate(ov.setAt))}d ago, ${ov.source})`);
+        apply(ov.status, ov.statusClass, 'override', `override: ${ov.source}`, ov.setAt);
+      } else {
+        if (player.manualOverride === true) {
+          // A hand-set status with nothing live behind it. It had its run.
+          diagnostics.overridesOrphaned.push(`${player.name}: "${player.status}" had no live override — returned to the feed`);
         }
-      } else if (!injuryStatus) {
-        if (!manual) {
-          if (player.statusClass !== 'status-healthy') {
-            apply('Healthy', 'status-healthy', 'sleeper', 'cleared — feed reports no injury');
-          }
-        } else if (manualStale) {
-          // Do not auto-clear a manual note, but do not hide it either.
-          diagnostics.staleManual.push(
-            `${player.name}: "${player.status}" set ${age === null ? 'at an unknown date' : age + 'd ago'} — needs review`
-          );
-        } else {
-          diagnostics.manualHeld.push(`${player.name} (manual, ${age}d old)`);
-        }
+        apply(feed.status, feed.statusClass, 'sleeper',
+          injuryStatus ? `sleeper: ${injuryStatus}` : 'cleared — feed reports no injury');
       }
 
       // Update team if changed
@@ -228,10 +205,35 @@ async function updatePlayerStatuses(sleeperPlayers) {
       }
     } else {
       // A name that never matches gets its status frozen just as effectively as
-      // a bad guard did — it simply never enters the decision at all.
+      // a bad guard did — it simply never enters the decision at all. An
+      // override still applies: not being in Sleeper's DB is exactly the kind
+      // of gap a human is filling in by hand.
       diagnostics.unmatched.push(`${player.name} (${player.pos})`);
+      const ov = takeOverride(overrideIndex, player);
+      if (ov) {
+        diagnostics.overridesApplied.push(`${player.name}: "${ov.status}" (no Sleeper match, ${ov.source})`);
+        if (player.status !== ov.status || player.statusClass !== ov.statusClass) {
+          log(`  ${player.name}: ${player.status} → ${ov.status} (override: ${ov.source})`);
+          player.status = ov.status;
+          player.statusClass = ov.statusClass;
+          player.statusSource = 'override';
+          player.statusUpdated = new Date().toISOString();
+          player.manualOverride = true;
+          player.statusSetAt = ov.setAt;
+          updated++;
+        }
+      }
     }
   });
+
+  // An override nobody claimed is a typo'd name, a traded player, or someone who
+  // fell out of the pool. It reads as "handled" in the file while doing nothing,
+  // which is the exact failure this whole layer exists to prevent.
+  for (const [, row] of overrideIndex.byKey) {
+    if (!row.claimed) {
+      diagnostics.overrideErrors.push(`${row.entry.player} (${row.entry.pos}): no player in the pool matches this override`);
+    }
+  }
 
   diagnostics.feedSilent = players.filter(p => p.statusClass !== 'status-healthy').length;
 
@@ -239,12 +241,81 @@ async function updatePlayerStatuses(sleeperPlayers) {
   log(`Updated ${updated} player statuses`);
   if (diagnostics.unmatched.length) log(`  UNMATCHED in Sleeper DB (${diagnostics.unmatched.length}): ${diagnostics.unmatched.join(', ')}`);
   if (diagnostics.ambiguous.length) log(`  AMBIGUOUS, skipped (${diagnostics.ambiguous.length}): ${diagnostics.ambiguous.join(', ')}`);
-  if (diagnostics.staleManual.length) {
-    log(`  STALE manual statuses (${diagnostics.staleManual.length}) — review these:`);
-    diagnostics.staleManual.forEach(s => log(`    ${s}`));
+  if (diagnostics.overridesApplied.length) {
+    log(`  Overrides applied (${diagnostics.overridesApplied.length}):`);
+    diagnostics.overridesApplied.forEach(s => log(`    ${s}`));
   }
-  if (diagnostics.manualHeld.length) log(`  Manual holds (${diagnostics.manualHeld.length}): ${diagnostics.manualHeld.join(', ')}`);
+  if (diagnostics.overridesOutranked.length) log(`  Overrides outranked by the feed (${diagnostics.overridesOutranked.length}): ${diagnostics.overridesOutranked.join(', ')}`);
+  if (diagnostics.overridesExpired.length) {
+    log(`  EXPIRED overrides (${diagnostics.overridesExpired.length}) — refresh or delete them:`);
+    diagnostics.overridesExpired.forEach(s => log(`    ${s}`));
+  }
+  if (diagnostics.overridesOrphaned.length) {
+    log(`  Orphaned manual statuses returned to the feed (${diagnostics.overridesOrphaned.length}):`);
+    diagnostics.overridesOrphaned.forEach(s => log(`    ${s}`));
+  }
+  if (diagnostics.overrideErrors.length) {
+    log(`  OVERRIDE ERRORS (${diagnostics.overrideErrors.length}) — these entries did NOTHING:`);
+    diagnostics.overrideErrors.forEach(s => log(`    ${s}`));
+  }
   return { updated, diagnostics };
+}
+
+// ===== HAND-WRITTEN OVERRIDES =====
+// Indexed the same way the Sleeper match is: a pinned sleeperId beats a
+// normalized name+position, and an ambiguous name is skipped rather than
+// guessed at. Same rule, same reason — a wrong match writes one player's
+// injury onto another's profile.
+function buildOverrideIndex(diagnostics) {
+  const byKey = new Map();
+  const bySleeperId = new Map();
+
+  let file;
+  try {
+    file = readOverrides();
+  } catch (e) {
+    diagnostics.overrideErrors.push(`injury-overrides.json is not valid JSON: ${e.message}`);
+    return { byKey, bySleeperId };
+  }
+
+  const { fileError, rows } = validateOverrides(file);
+  if (fileError) {
+    diagnostics.overrideErrors.push(fileError);
+    return { byKey, bySleeperId };
+  }
+
+  for (const row of rows) {
+    if (row.errors.length) {
+      row.errors.forEach(e => diagnostics.overrideErrors.push(e));
+      continue;
+    }
+    if (row.expired) {
+      diagnostics.overridesExpired.push(
+        `${row.entry.player}: "${row.entry.status}" expired ${daysAgo(row.expiresAt)}d ago — the feed has him back`
+      );
+      continue;
+    }
+    const record = { entry: row.entry, claimed: false };
+    const key = `${normalizeName(row.entry.player)}|${row.entry.pos}`;
+    // The validator dedupes on the raw name; two spellings of one name
+    // ("Amon-Ra St. Brown" / "AmonRa St Brown") pass it and collide only here.
+    if (byKey.has(key)) {
+      diagnostics.overrideErrors.push(`${row.entry.player} (${row.entry.pos}): a second live override resolves to the same player`);
+      continue;
+    }
+    byKey.set(key, record);
+    if (row.entry.sleeperId) bySleeperId.set(String(row.entry.sleeperId), record);
+  }
+
+  return { byKey, bySleeperId };
+}
+
+function takeOverride(index, player) {
+  const record = (player.sleeperId && index.bySleeperId.get(String(player.sleeperId)))
+    || index.byKey.get(`${normalizeName(player.name)}|${player.pos}`);
+  if (!record) return null;
+  record.claimed = true;
+  return record.entry;
 }
 
 // ===== SLEEPER TRENDING =====

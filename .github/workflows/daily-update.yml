@@ -70,3 +70,11 @@ jobs:
           - ESPN news cached
           - Player stats synced from nflverse"
           git push
+
+      # Last, and deliberately after the push: a broken hand-written override is
+      # a silent no-op — the file claims a player is on PUP and the site shows
+      # him healthy — so the run has to go red. Running it here means a typo in
+      # a hand file reds the Action without holding up the day's real data.
+      - name: Validate injury overrides
+        if: always()
+        run: node scripts/check-overrides.js
