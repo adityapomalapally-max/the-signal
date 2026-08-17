@@ -3569,11 +3569,31 @@ function renderLabPage() {
 // Rosters are current; production is last season. A player who moved carries
 // the numbers he earned elsewhere, and every one of those is marked — the
 // alternative is a page quietly claiming a receiver did that here.
-let teamsData = null, currentTeam = null;
+let teamsData = null, currentTeam = null, sosData = null, sosPos = 'WR';
 let teamsPromise = null;
 function ensureTeams() {
   if (!teamsPromise) teamsPromise = loadJSON('data/teams.json').then(d => (teamsData = d));
   return teamsPromise;
+}
+let sosPromise = null;
+function ensureSos() {
+  if (!sosPromise) sosPromise = loadJSON('data/sos.json').then(d => (sosData = d));
+  return sosPromise;
+}
+function setSosPos(pos, btn) {
+  sosPos = pos;
+  document.querySelectorAll('#sosPosFilter .pos-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderTeamPage();
+}
+// Matchup difficulty as a diverging scale around the median defence (16.5).
+// Gold is a soft matchup, blue a hard one — the same validated pair the rest
+// of the site uses for a two-sided value.
+function sosCellStyle(oppRank) {
+  if (typeof oppRank !== 'number') return '';
+  const d = (oppRank - 16.5) / 15.5;             // -1 hardest .. +1 softest
+  const a = (Math.min(Math.abs(d), 1) * 0.42).toFixed(2);
+  return d >= 0 ? `background:rgba(168,137,58,${a});` : `background:rgba(42,120,214,${a});`;
 }
 
 const DIVISION_ORDER = ['AFC East', 'AFC North', 'AFC South', 'AFC West',
@@ -3688,9 +3708,16 @@ function renderTeamPage() {
   }
 
   // Full schedule strip — the bye shows as a gap, which is the point.
+  const sosTeam = sosData && sosData.teams[currentTeam] && sosData.teams[currentTeam][sosPos];
   h += `<div class="medical-card" style="padding:18px;">
-    <div style="font-family:var(--serif);font-size:17px;font-weight:700;margin-bottom:2px;">${m.season} Schedule</div>
-    <div style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);letter-spacing:0.5px;margin-bottom:12px;">18 WEEKS · BYE IN WEEK ${t.bye || '—'}</div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:2px;">
+      <span style="font-family:var(--serif);font-size:17px;font-weight:700;">${m.season} Schedule</span>
+      <div class="position-filter" id="sosPosFilter">${['QB','RB','WR','TE'].map(x =>
+        `<button class="pos-btn${x === sosPos ? ' active' : ''}" onclick="setSosPos('${x}', this)">${x}</button>`).join('')}</div>
+    </div>
+    <div style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);letter-spacing:0.5px;margin-bottom:10px;">
+      18 WEEKS · BYE IN WEEK ${t.bye || '—'}${sosTeam && sosTeam.season ?
+        ` · ${sosPos} SLATE: ${ordinalWord(sosTeam.seasonEaseRank)} EASIEST · OPENING MONTH ${sosTeam.early ? sosTeam.early.avgRank : '—'} · PLAYOFF WEEKS ${sosTeam.playoffs ? sosTeam.playoffs.avgRank : '—'}` : ''}</div>
     <div class="tm-sched">`;
   const weeks = {};
   t.schedule.forEach(g => { weeks[g.week] = g; });
@@ -3699,12 +3726,31 @@ function renderTeamPage() {
     const g = weeks[w];
     if (!g) { h += `<div class="tm-sched-cell tm-bye"><span>${w}</span><b>BYE</b></div>`; continue; }
     const cls = w === wk ? ' tm-now' : '';
-    h += `<div class="tm-sched-cell${cls}" data-tip="${rankEsc(`Week ${w} ${g.home ? 'vs' : 'at'} ${g.opp}${g.date ? ' · ' + g.date : ''}`)}">
+    const dRank = sosData && sosData.defense[g.opp] && sosData.defense[g.opp][sosPos];
+    const tip = `Week ${w} ${g.home ? 'vs' : 'at'} ${g.opp}${g.date ? ' · ' + g.date : ''}`
+      + (dRank ? ` — ${g.opp} was ${ordinalWord(dRank.rank)} stingiest to ${sosPos}s in ${sosData.meta.defenseSeason}, ${dRank.perGame} pts/gm` : '');
+    h += `<div class="tm-sched-cell${cls}" style="${dRank ? sosCellStyle(dRank.rank) : ''}" data-tip="${rankEsc(tip)}">
       <span>${w}</span><b>${g.home ? '' : '@'}${rankEsc(g.opp)}</b></div>`;
   }
-  h += `</div></div>`;
+  h += `</div>`;
+  if (sosData) {
+    h += `<div class="rank-legend" style="margin-top:12px;">
+      <span><i style="background:rgba(42,120,214,0.42);"></i>Hard matchup</span>
+      <span><i style="background:rgba(168,137,58,0.42);"></i>Soft matchup</span>
+      <span>Shading is how many fantasy points that defence conceded to ${rankEsc(sosPos)}s in ${sosData.meta.defenseSeason}</span></div>`;
+    h += `<div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.7;margin-top:10px;">${rankEsc(sosData.meta.caveats)}</div>`;
+  }
+  h += `</div>`;
 
   body.innerHTML = h;
+}
+
+// 12 -> "12th". Used for defensive and slate ranks.
+function ordinalWord(n) {
+  if (typeof n !== 'number') return '—';
+  const r = n % 100;
+  if (r >= 11 && r <= 13) return n + 'th';
+  return n + (['th', 'st', 'nd', 'rd'][n % 10] || 'th');
 }
 
 // ===== DRAFT OUTCOMES =====
@@ -3982,7 +4028,12 @@ function switchPage(page) {
   if (page === 'players') renderPlayersTable();
   if (page === 'medicals') { renderMedicals(); renderInjuryTypeGrid(); renderInjuryCurves(); }
   if (page === 'draft') renderDraftOutcomes();
-  if (page === 'teams') { renderTeamPage(); ensureTeams().then(() => { if (document.getElementById('page-teams').classList.contains('active')) renderTeamPage(); }); }
+  if (page === 'teams') {
+    const redrawTeams = () => { if (document.getElementById('page-teams').classList.contains('active')) renderTeamPage(); };
+    renderTeamPage();
+    ensureTeams().then(redrawTeams);
+    ensureSos().then(redrawTeams);
+  }
   if (page === 'fantasy') {
     renderValueBoard();
     ensureAdp().then(d => {
