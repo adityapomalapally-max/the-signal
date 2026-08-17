@@ -17,7 +17,7 @@ const DATA_DIR = path.join(__dirname, '..', 'data');
 // ===== HELPERS =====
 function fetchJSON(url) {
   return new Promise((resolve, reject) => {
-    const req = https.get(url, { headers: { 'User-Agent': 'TheSignal/1.0' } }, (res) => {
+    const req = https.get(url, { headers: { 'User-Agent': USER_AGENT } }, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
@@ -53,7 +53,7 @@ async function fetchSleeperPlayers() {
     log(`Fetched ${count} players from Sleeper`);
     return players;
   } catch (e) {
-    log(`ERROR fetching Sleeper players: ${e.message}`);
+    recordFetchFailure('Sleeper player DB', e.message);
     return null;
   }
 }
@@ -82,6 +82,7 @@ const { readOverrides, validateOverrides, parseDate, daysAgo } = require('./lib/
 // matcher lib next to its nflverse sibling: one definition of each, and the two
 // are documented as not interchangeable.
 const { normalizeSleeperName: normalizeName } = require('./lib/match');
+const { USER_AGENT } = require('./lib/agent');
 
 // ===== UPDATE PLAYER STATUSES =====
 async function updatePlayerStatuses(sleeperPlayers) {
@@ -349,9 +350,22 @@ async function fetchTrending(sleeperPlayers) {
     log(`Saved ${trending.adds.length} trending adds, ${trending.drops.length} drops`);
     return trending;
   } catch (e) {
-    log(`ERROR fetching trending: ${e.message}`);
+    recordFetchFailure('Sleeper trending', e.message);
     return null;
   }
+}
+
+// ===== FETCH FAILURES =====
+// A source that fails must not leave the run looking successful. ESPN started
+// 403ing this script and every run afterwards reported "News articles cached:
+// 0" and exited zero, so the news feed was frozen for weeks with nothing
+// anywhere saying so. Failures are recorded here, written to meta.json, and
+// turned into a red run by scripts/check-feeds.js at the end of the Action —
+// late enough that a dead news API cannot block the day's stats.
+const fetchFailures = [];
+function recordFetchFailure(source, message) {
+  log(`ERROR fetching ${source}: ${message}`);
+  fetchFailures.push({ source, message, at: new Date().toISOString() });
 }
 
 // ===== ESPN NEWS =====
@@ -384,7 +398,7 @@ async function fetchESPNNews() {
     log(`Cached ${articles.length} ESPN articles (${articles.filter(a => a.category === 'injury').length} injury, ${articles.filter(a => a.category === 'fantasy').length} fantasy)`);
     return news;
   } catch (e) {
-    log(`ERROR fetching ESPN news: ${e.message}`);
+    recordFetchFailure('ESPN news', e.message);
     return null;
   }
 }
@@ -413,6 +427,7 @@ async function main() {
   meta.statusDiagnostics = statusResult.diagnostics || null;
   meta.trendingAddCount = trending ? trending.adds.length : 0;
   meta.newsArticleCount = news ? news.articles.length : 0;
+  meta.fetchFailures = fetchFailures;
   writeJSON('meta.json', meta);
 
   log('');

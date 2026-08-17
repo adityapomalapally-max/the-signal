@@ -45,7 +45,7 @@ function log(msg) {
 
 function fetchJSON(url) {
   return new Promise((resolve, reject) => {
-    const req = https.get(url, { headers: { 'User-Agent': 'TheSignal/1.0' } }, (res) => {
+    const req = https.get(url, { headers: { 'User-Agent': USER_AGENT } }, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
@@ -136,6 +136,7 @@ function colorFor(sleeperId) {
 // update-data.js, which owns statuses from here on, so a brand-new player
 // starts on exactly the wording the next run would give him.
 const { formatStatus } = require('./lib/status');
+const { USER_AGENT } = require('./lib/agent');
 
 // Fields update-data.js owns. Carried from the current players.json so a
 // rebuild never erases a status, its provenance, or a manual note.

@@ -20,6 +20,7 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+const { USER_AGENT } = require('./lib/agent');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA_DIR, 'adp.json');
@@ -36,7 +37,7 @@ const log = (m) => console.log(`[adp] ${m}`);
 
 function fetchJSON(url) {
   return new Promise((resolve, reject) => {
-    const req = https.get(url, { headers: { 'User-Agent': 'TheSignal/1.0' } }, (res) => {
+    const req = https.get(url, { headers: { 'User-Agent': USER_AGENT } }, (res) => {
       if (res.statusCode !== 200) return reject(new Error(`HTTP ${res.statusCode}`));
       let d = '';
       res.on('data', c => d += c);

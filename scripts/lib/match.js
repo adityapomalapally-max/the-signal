@@ -15,12 +15,13 @@
 
 const https = require('https');
 const zlib = require('zlib');
+const { USER_AGENT } = require('./agent');
 
 function fetchCSV(url) {
   return new Promise((resolve, reject) => {
     const doFetch = (u, redirects = 0) => {
       if (redirects > 5) return reject(new Error('Too many redirects'));
-      https.get(u, { headers: { 'User-Agent': 'TheSignal/1.0' } }, (res) => {
+      https.get(u, { headers: { 'User-Agent': USER_AGENT } }, (res) => {
         if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
           return doFetch(res.headers.location, redirects + 1);
         }

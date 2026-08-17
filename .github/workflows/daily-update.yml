@@ -78,3 +78,9 @@ jobs:
       - name: Validate injury overrides
         if: always()
         run: node scripts/check-overrides.js
+
+      # Same bargain: update-data.js swallows a dead API so the rest of the
+      # pipeline still runs, and this turns that into a red run afterwards.
+      - name: Check every feed reported in
+        if: always()
+        run: node scripts/check-feeds.js
