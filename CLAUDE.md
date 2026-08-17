@@ -3,7 +3,13 @@
 Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from main.
 
 ## Architecture
-- `index.html` — the entire app, single file
+- `index.html` — markup only (~800 lines). CSS and JS live in `assets/`
+- `assets/styles.css` — all styles
+- `assets/app-{core,export,pages,profile,feeds}.js` — the app, split by concern.
+  THEY ARE CLASSIC SCRIPTS AND THE ORDER IN index.html IS LOAD-BEARING: they share one
+  global scope because the markup has ~108 inline `onclick` handlers, and an inline handler
+  can only see globals. Do NOT convert to `type="module"` — every handler would break
+  silently. Do not reorder the tags; later files use bindings from earlier ones
 - `scripts/build-players.js` — generates data/players.json: top-200 Sleeper pool, merged with
   status carry-over + curated overlay. NEVER edit players.json by hand. Runs FIRST in the Action
 - `scripts/update-data.js` — daily GitHub Action, 6 AM ET. Sleeper statuses, ESPN news, trending
