@@ -769,6 +769,27 @@ a { color: inherit; text-decoration: none; }
 .export-btn:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
 .export-btn:disabled { opacity: 0.6; cursor: default; }
 
+/* ===== VALUE BOARD ===== */
+.vb-row { display: grid; grid-template-columns: 220px 56px 56px 52px 1fr 62px; align-items: center; height: 30px; border-radius: 4px; }
+.vb-row:hover, .vb-row:focus-visible { background: var(--bg-card-hover); outline: none; }
+.vb-head { height: 26px; font-family: var(--mono); font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); margin-bottom: 6px; }
+.vb-head .vb-track-head { text-align: center; }
+.vb-name { display: flex; align-items: center; gap: 7px; min-width: 0; padding-right: 10px; font-size: 12.5px; }
+.vb-player { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vb-num { font-family: var(--mono); font-size: 11px; color: var(--text-secondary); text-align: right; padding-right: 8px; font-variant-numeric: tabular-nums; }
+.vb-track { position: relative; height: 100%; }
+/* The zero rule is the whole chart: everything left of it is the room being
+   higher than us, everything right is a player falling to us. */
+.vb-zero { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--border-hover); }
+.vb-bar { position: absolute; top: 50%; margin-top: -5px; height: 10px; border-radius: 3px; min-width: 2px; }
+.vb-edge { font-family: var(--mono); font-size: 11.5px; text-align: right; font-variant-numeric: tabular-nums; }
+@media (max-width: 768px) {
+  .vb-row { grid-template-columns: 120px 42px 42px 1fr 44px; font-size: 11px; }
+  .vb-row .rank-team { display: none; }
+  .vb-pick { display: none; }   /* the two ranks carry the comparison; the pick is detail */
+  .vb-head .vb-track-head { font-size: 7.5px; }
+}
+
 /* ===== LEADERS ===== */
 .lab-metric-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
 .lab-metric { font-family: var(--mono); font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; padding: 7px 11px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-card); color: var(--text-secondary); cursor: pointer; transition: border-color 0.2s, color 0.2s; }
@@ -2031,24 +2052,40 @@ a { color: inherit; text-decoration: none; }
         <p>Full-featured analytics platform — power rankings, AI trade advice, what-if scenarios, optimal lineups.</p>
         <span class="tool-badge badge-live">● Live — Open Tool</span>
       </a>
-      <div class="tool-item">
-        <div class="tool-icon">🔄</div>
-        <h4>Trade Analyzer</h4>
-        <p>Evaluate trade offers with multi-dimensional value scoring and roster context.</p>
-        <span class="tool-badge badge-soon">Coming Soon</span>
-      </div>
-      <div class="tool-item">
+      <div class="tool-item" onclick="document.getElementById('valueBoardTop').scrollIntoView({behavior:'smooth'})">
         <div class="tool-icon">📋</div>
-        <h4>Draft Board</h4>
-        <p>Custom rankings with ADP comparison, tier breaks, and value-based picks.</p>
-        <span class="tool-badge badge-soon">Coming Soon</span>
+        <h4>Value Board</h4>
+        <p>Where these ranks disagree with what the room is actually doing, by consensus ADP.</p>
+        <span class="tool-badge badge-live">● Live — Below</span>
       </div>
-      <div class="tool-item">
-        <div class="tool-icon">🏆</div>
-        <h4>Roster Optimizer</h4>
-        <p>Weekly start/sit recommendations based on matchup data and projections.</p>
-        <span class="tool-badge badge-soon">Coming Soon</span>
+    </div>
+
+    <div id="valueBoardTop" style="padding:36px 48px 48px;">
+      <div class="lab-head" style="margin-bottom:6px;">
+        <span class="lab-title">Value Board — The Signal vs the room</span>
+        <span class="lab-qual" id="valueBoardMeta"></span>
       </div>
+      <div class="lab-sub" style="max-width:900px;">
+        Every ranked player against his average draft position. A positive edge means the room
+        is letting him fall past where these ranks have him — the pick you take. A negative edge
+        means the room likes him more than we do.
+      </div>
+      <div class="players-search-bar" style="justify-content:space-between;flex-wrap:wrap;gap:12px;padding:0;border:none;">
+        <div class="position-filter" id="vbPosFilter">
+          <button class="pos-btn active" onclick="setVbPos('all', this)">All</button>
+          <button class="pos-btn" onclick="setVbPos('QB', this)">QB</button>
+          <button class="pos-btn" onclick="setVbPos('RB', this)">RB</button>
+          <button class="pos-btn" onclick="setVbPos('WR', this)">WR</button>
+          <button class="pos-btn" onclick="setVbPos('TE', this)">TE</button>
+        </div>
+        <div class="position-filter" id="vbViewFilter">
+          <button class="pos-btn active" onclick="setVbView('values', this)">Best values</button>
+          <button class="pos-btn" onclick="setVbView('reaches', this)">Market reaches</button>
+          <button class="pos-btn" onclick="setVbView('all', this)">Full board</button>
+        </div>
+      </div>
+      <div id="valueBoardBody"></div>
+      <div id="valueBoardNote" class="rank-note"></div>
     </div>
   </div>
 </div>
@@ -3414,6 +3451,148 @@ function renderLabPage() {
   scatterEl.innerHTML = sh;
 }
 
+// ===== VALUE BOARD =====
+// The ranks against what the room is actually doing. The Signal rank is an
+// ordering, ADP is a pick number, and the gap between them is the only
+// number a drafter can act on.
+//
+// Edge = ADP − Signal rank. Positive means he falls past where we have him,
+// so you get him later than we value him. Negative means the room is higher
+// on him than we are.
+let vbPos = 'all', vbView = 'values';
+let adpPromise = null;
+function ensureAdp() {
+  if (!adpPromise) adpPromise = loadJSON('data/adp.json').then(d => d || null);
+  return adpPromise;
+}
+
+function setVbPos(pos, btn) {
+  vbPos = pos;
+  document.querySelectorAll('#vbPosFilter .pos-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderValueBoard();
+}
+function setVbView(v, btn) {
+  vbView = v;
+  document.querySelectorAll('#vbViewFilter .pos-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderValueBoard();
+}
+
+// Same normalization the pipeline scripts use, so a name that joins in the
+// build joins here too.
+function vbNorm(s) {
+  return String(s || '').toLowerCase()
+    .replace(/\s+(iii|ii|iv|jr\.?|sr\.?)$/i, '')
+    .replace(/[''`’]/g, '').replace(/\./g, '').trim();
+}
+
+function valueBoardRows() {
+  if (!vbAdp || !rankingsData.qb) return [];
+  const adpByKey = new Map(vbAdp.players.map(p => [vbNorm(p.name) + '|' + p.pos, p]));
+
+  // Positional rank on both sides, deliberately.
+  //
+  // The first version compared an overall Signal rank to the ADP pick
+  // number, and the board came back saying almost every tight end and
+  // quarterback was a screaming value. That was an artifact, not a finding:
+  // the ranks cover 88 players and ADP covers 184, so anyone deep in a
+  // shorter list is automatically "falling" against a longer one. Two
+  // positional ranks are the same scale on both sides, and they are how a
+  // drafter actually argues — "he's my TE5 and he's going TE8".
+  const adpPosRank = new Map();
+  for (const pos of ['QB', 'RB', 'WR', 'TE']) {
+    vbAdp.players.filter(p => p.pos === pos).sort((a, b) => a.adp - b.adp)
+      .forEach((p, i) => adpPosRank.set(vbNorm(p.name) + '|' + pos, i + 1));
+  }
+
+  const rows = [];
+  for (const tab of ['qb', 'rb', 'wr', 'te']) {
+    for (const r of (rankingsData[tab] || [])) {
+      const key = vbNorm(r.name) + '|' + r.pos;
+      const a = adpByKey.get(key);
+      const posRank = adpPosRank.get(key);
+      // No ADP means no comparison to draw. Skipped, never guessed.
+      if (!a || !posRank || typeof r.rank !== 'number') continue;
+      rows.push({
+        name: r.name, team: r.team, pos: r.pos,
+        signalPos: r.rank, adpPos: posRank, pick: a.adp,
+        stdev: a.stdev, drafts: a.timesDrafted,
+        edge: posRank - r.rank,
+        availability: r.availability || null
+      });
+    }
+  }
+  return rows;
+}
+
+let vbAdp = null;
+
+function renderValueBoard() {
+  const body = document.getElementById('valueBoardBody');
+  if (!body) return;
+  const metaEl = document.getElementById('valueBoardMeta');
+  const noteEl = document.getElementById('valueBoardNote');
+
+  if (!vbAdp) {
+    body.innerHTML = `<div class="medical-card"><div class="medical-detail">Loading average draft position…</div></div>`;
+    return;
+  }
+  const m = vbAdp.meta;
+  if (metaEl) metaEl.textContent = `${m.format} · ${m.teams}-TEAM · ${m.totalDrafts ? m.totalDrafts.toLocaleString() + ' DRAFTS' : ''}`;
+
+  let rows = valueBoardRows();
+  if (vbPos !== 'all') rows = rows.filter(r => r.pos === vbPos);
+  if (!rows.length) { body.innerHTML = `<div class="medical-card"><div class="medical-detail">No overlap between the ranks and the ADP board here.</div></div>`; return; }
+
+  const total = rows.length;
+  let shown;
+  if (vbView === 'values') shown = [...rows].sort((a, b) => b.edge - a.edge).slice(0, 20);
+  else if (vbView === 'reaches') shown = [...rows].sort((a, b) => a.edge - b.edge).slice(0, 20);
+  else shown = [...rows].sort((a, b) => a.pick - b.pick);
+
+  const maxAbs = Math.max(...shown.map(r => Math.abs(r.edge)), 1);
+
+  let h = `<div class="medical-card" style="padding:20px;position:relative;">`;
+  h += `<div class="vb-row vb-head"><span>Player</span><span>Signal</span><span>By ADP</span><span>Pick</span>`
+    + `<span class="vb-track-head">← room is higher · he falls to you →</span><span>Edge</span></div>`;
+  h += shown.map(r => {
+    const pos = r.edge >= 0;
+    const w = (Math.abs(r.edge) / maxAbs) * 50;   // half the track each way
+    const tip = `${r.name} — The Signal has him ${r.pos}${r.signalPos}; the room drafts him as ${r.pos}${r.adpPos}, `
+      + `around pick ${r.pick}${r.stdev ? ` (±${r.stdev})` : ''}. `
+      + `${r.edge > 0 ? `Falls ${r.edge} spot${r.edge === 1 ? '' : 's'} past where we have him.`
+        : r.edge < 0 ? `The room takes him ${Math.abs(r.edge)} spot${Math.abs(r.edge) === 1 ? '' : 's'} earlier than we would.`
+        : 'The room agrees exactly.'}`
+      + (r.availability ? ` Available ${r.availability.pct}% of games.` : '');
+    return `<div class="vb-row" tabindex="0" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}">
+      <span class="vb-name"><span class="ticker-pos" data-p="${rankEsc(r.pos)}">${rankEsc(r.pos)}</span>
+        <span class="vb-player">${rankEsc(r.name)}</span>
+        <span class="rank-team">${rankEsc(r.team || '')}</span></span>
+      <span class="vb-num">${r.pos}${r.signalPos}</span>
+      <span class="vb-num">${r.pos}${r.adpPos}</span>
+      <span class="vb-num vb-pick">${r.pick}</span>
+      <span class="vb-track"><span class="vb-zero"></span>
+        <span class="vb-bar" style="${pos ? `left:50%;width:${w.toFixed(1)}%;background:#a8893a;`
+          : `right:50%;width:${w.toFixed(1)}%;background:#2a78d6;`}"></span></span>
+      <span class="vb-edge" style="color:${pos ? 'var(--gold)' : 'var(--blue)'};">${r.edge > 0 ? '+' : ''}${r.edge}</span>
+    </div>`;
+  }).join('');
+  h += `</div>`;
+  body.innerHTML = h;
+
+  noteEl.textContent =
+    `Showing ${shown.length} of ${total} ranked players with an ADP. Both sides are positional ranks — his rank here `
+    + `against his rank among players at his position by ADP — because that is the same scale on both sides and it is how `
+    + `a drafter argues. Comparing an overall rank to a pick number does not work: these ranks cover ${total} players and `
+    + `the ADP board covers ${vbAdp.players.length}, so anyone deep in the shorter list looks like a bargain automatically. `
+    + `Pick is the average draft slot, for knowing when he actually goes. ADP is ${m.source}'s consensus over `
+    + `${m.totalDrafts ? m.totalDrafts.toLocaleString() : 'thousands of'} ${m.format} ${m.teams}-team mock drafts since `
+    + `${m.windowStart || 'recently'} — one site's rooms, not the whole market, and mock drafters are not your league. `
+    + `A player needs ${m.minDrafts}+ drafts to appear. The edge is a disagreement, not a projection: it says where we `
+    + `differ from the room, never who is right.`;
+}
+
 // ===== HOME MINI-CHARTS =====
 // The analysis-card side panels used to hold decorative bars with hardcoded
 // widths. Real data only now: a card whose data is missing renders empty.
@@ -3471,6 +3650,13 @@ function switchPage(page) {
   if (page !== 'article') setRoute(page === 'home' ? '' : page);
   if (page === 'players') renderPlayersTable();
   if (page === 'medicals') { renderMedicals(); renderInjuryTypeGrid(); renderInjuryCurves(); }
+  if (page === 'fantasy') {
+    renderValueBoard();
+    ensureAdp().then(d => {
+      vbAdp = d;
+      if (document.getElementById('page-fantasy').classList.contains('active')) renderValueBoard();
+    });
+  }
   if (page === 'rankings') renderRankingsPage();
   // These three are the ones that genuinely need the season totals, so they
   // are also the ones that pay for loading them.
