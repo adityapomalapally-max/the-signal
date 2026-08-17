@@ -114,3 +114,11 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   address at all until they were routed.
 - `scripts/build-sitemap.js` generates sitemap.xml + robots.txt in the daily Action. DRAFT ARTICLES
   ARE EXCLUDED: submitting an unfinished page gets the unfinished version cached and shown.
+
+## Tests
+- `node --test 'tests/*.test.js'` — no dependencies, no package.json, built into Node. CI runs it on
+  every push, including the daily bot's data commit, which is the commit most likely to break a rule.
+- The suite encodes the rules in this file: unique player ids, explicit status provenance, a source on
+  every medical injury, a game log behind every dated injury event, no invented projections, ordered
+  rankings, no draft article in the sitemap. When you learn a new rule the hard way, add a test with it.
+- A test that cannot fail is decoration. Mutate the data and watch it go red before you trust it.

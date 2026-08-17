@@ -707,7 +707,13 @@ function handleRoute() {
     } else {
       setTimeout(() => openArticle(slug), 500);
     }
+    return;
   }
+
+  // Nothing matched. The URL still answers 200 with this document, so say
+  // plainly that it should not be indexed rather than letting a nonsense path
+  // pass for a page. The reader keeps the home view underneath.
+  applyRouteMeta();
 }
 
 // Back and forward move between pushed routes.
@@ -846,6 +852,92 @@ function applyRouteMeta() {
   setTag('meta[property="og:url"]', 'content', url);
   setTag('meta[name="twitter:title"]', 'content', meta.title);
   setTag('meta[name="twitter:description"]', 'content', meta.description);
+
+  setRouteJsonLd(route, meta, url);
+  setIndexable(isKnownRoute(route));
+}
+
+// Every path serves index.html with a 200, so an address that means nothing
+// still answers as though it were a page. That is a soft 404, and a crawler
+// treats a site full of them as a site full of thin duplicates. We cannot send
+// a 404 status from a static host, but we can refuse to be indexed.
+function isKnownRoute(route) {
+  const parts = String(route || '').split('/').filter(Boolean);
+  if (!parts.length) return true;
+  const head = parts[0];
+  if (head === 'player') return playersDB.some(p => p.id === parts[1]);
+  if (head === 'medicals') return !parts[1] || !!medicalDB[parts[1]] || playersDB.some(p => p.id === parts[1]);
+  if (head === 'article') return !!articlesDB[parts[1]];
+  if (head === 'rankings') return !parts[1] || ['overall', 'qb', 'rb', 'wr', 'te'].includes(parts[1]);
+  return ROUTE_PAGES.includes(head);
+}
+
+function setIndexable(ok) {
+  let tag = document.querySelector('meta[name="robots"]');
+  if (!tag) {
+    tag = document.createElement('meta');
+    tag.setAttribute('name', 'robots');
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute('content', ok ? 'index, follow' : 'noindex, follow');
+}
+
+// Structured data, replaced per route. This is what lets a result render as
+// something richer than a blue link. Only claims that are true: an article is
+// only Article when it is actually published.
+function setRouteJsonLd(route, meta, url) {
+  const parts = String(route || '').split('/').filter(Boolean);
+  let ld = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: meta.title,
+    description: meta.description,
+    url,
+    isPartOf: { '@type': 'WebSite', name: 'The Signal', url: SITE_ORIGIN + '/' },
+  };
+
+  if (parts[0] === 'player') {
+    const p = playersDB.find(x => x.id === parts[1]);
+    if (p) {
+      ld = {
+        '@context': 'https://schema.org',
+        '@type': 'ProfilePage',
+        url,
+        mainEntity: {
+          '@type': 'Person',
+          name: p.name,
+          jobTitle: p.pos,
+          ...(p.team ? { affiliation: { '@type': 'SportsTeam', name: p.team } } : {}),
+        },
+        isPartOf: { '@type': 'WebSite', name: 'The Signal', url: SITE_ORIGIN + '/' },
+      };
+    }
+  } else if (parts[0] === 'article') {
+    const a = articlesDB[parts[1]];
+    // A draft is not an Article. Claiming otherwise invites it to be indexed
+    // and shown in the state we did not want anyone reading.
+    if (a && a.status === 'published') {
+      ld = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: a.title,
+        description: meta.description,
+        url,
+        ...(a.date ? { datePublished: a.date } : {}),
+        author: { '@type': 'Person', name: a.author || 'Adi' },
+        publisher: { '@type': 'Organization', name: 'The Signal' },
+      };
+    }
+  }
+
+  let el = document.getElementById('routeLd');
+  if (!el) {
+    el = document.createElement('script');
+    el.type = 'application/ld+json';
+    el.id = 'routeLd';
+    document.head.appendChild(el);
+  }
+  el.textContent = JSON.stringify(ld);
 }
 
 // ===== KEYBOARD SHORTCUTS =====
@@ -893,6 +985,9 @@ if (window.location.hash.length > 1) {
 
 initData().then(() => {
   makeClickablesAccessible();
-  // Route once the data the route needs is in memory.
+  // Route once the data the route needs is in memory. applyRouteMeta runs
+  // either way: the home page needs its canonical set too, and an unrecognised
+  // path needs its noindex.
   if (currentRoute()) handleRoute();
+  else applyRouteMeta();
 });

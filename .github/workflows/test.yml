@@ -1,0 +1,33 @@
+name: Tests
+
+# The data rules in CLAUDE.md were each learned by shipping the bug once. Until
+# now they were enforced by remembering. This runs them on every push, including
+# the daily bot's data commit — which is the commit most likely to break them.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      # No dependencies and no build step: node --test is built in, which is
+      # what makes a test suite affordable for a site with no package.json.
+      - name: Unit and data-integrity tests
+        run: node --test 'tests/*.test.js'
+
+      - name: Validate injury overrides
+        run: node scripts/check-overrides.js
+
+      - name: Every script parses
+        run: |
+          for f in scripts/*.js scripts/lib/*.js assets/*.js; do
+            node --check "$f" || exit 1
+          done
