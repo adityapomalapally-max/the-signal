@@ -63,6 +63,10 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   diverging pair needs warm-vs-cool poles, not two warm hues.
 - Every leaderboard states its qualifier and excludes players under it. A rate stat off three
   targets is noise wearing a number's clothes.
+- A hard cutoff on a jittery feed churns its own boundary. Sleeper's search_rank moves a few
+  places overnight, so the last ~20 of the 350-player pool entered and left daily, deleting and
+  rebuilding weekly shards each time. build-players gives incumbents a STICKY_RANKS bonus:
+  membership is hysteretic, the pool size is not.
 
 ## Auth
 `gh` handles GitHub auth. Never put a token in a URL or a file.

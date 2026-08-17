@@ -32,6 +32,10 @@ const POOL_TARGET = 350;
 // If the Sleeper feed returns something absurdly small, the feed is broken.
 // Keep yesterday's file rather than shipping a gutted pool.
 const POOL_FLOOR = 100;
+// How many search_rank places being in yesterday's pool is worth. Big enough
+// to absorb the day-to-day jitter at the cutoff, small enough that a player
+// genuinely climbing still takes the spot.
+const STICKY_RANKS = 40;
 const POSITIONS = new Set(['QB', 'RB', 'WR', 'TE']);
 const NAME_SUFFIXES = new Set(['jr', 'sr', 'ii', 'iii', 'iv', 'v']);
 
@@ -238,7 +242,21 @@ async function main() {
     sp && sp.player_id && POSITIONS.has(sp.position) && sp.team &&
     sp.active === true && typeof sp.search_rank === 'number' && sp.search_rank < 9999999 &&
     sp.depth_chart_order !== null && sp.depth_chart_order !== undefined
-  ).sort((a, b) => a.search_rank - b.search_rank);
+  );
+
+  // Incumbency bonus. A hard cut at rank 350 means anyone hovering near the
+  // boundary enters and leaves as Sleeper's search_rank jitters, and each
+  // exit deletes his weekly shard and each return rebuilds it — one daily run
+  // churned about twenty players for no real reason.
+  //
+  // Being in yesterday's pool is worth STICKY_RANKS places, so a player has
+  // to fall meaningfully past the cutoff before he is dropped, while anyone
+  // genuinely climbing still displaces him. The pool stays exactly
+  // POOL_TARGET; this only changes who sits at the bottom of it.
+  const incumbent = new Set(current.filter(p => p.sleeperId).map(p => String(p.sleeperId)));
+  const effectiveRank = (sp) =>
+    sp.search_rank - (incumbent.has(String(sp.player_id)) ? STICKY_RANKS : 0);
+  candidates.sort((a, b) => effectiveRank(a) - effectiveRank(b) || a.search_rank - b.search_rank);
 
   const pool = new Map();  // sleeperId -> sleeper record
   for (const sp of candidates.slice(0, POOL_TARGET)) pool.set(String(sp.player_id), sp);
@@ -250,6 +268,10 @@ async function main() {
     log(`ABORT: pool of ${pool.size} is below floor ${POOL_FLOOR} — feed looks broken, players.json left untouched`);
     process.exit(1);
   }
+
+  const dropped = [...incumbent].filter(id => !pool.has(id));
+  const gained = [...pool.keys()].filter(id => !incumbent.has(id));
+  log(`pool churn: ${gained.length} in, ${dropped.length} out (incumbency worth ${STICKY_RANKS} ranks)`);
 
   // IDs already in use stay stable (profile links, medicals.json keys).
   const takenIds = new Set([...current.map(p => p.id), ...curated.map(p => p.id)]);
