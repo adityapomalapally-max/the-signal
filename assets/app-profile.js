@@ -696,8 +696,14 @@ async function loadInjuryReport(playerId) {
   const data = await ensureInjuries();
   const el = document.getElementById('injReportSlot');
   if (!el || currentProfileId !== playerId) return;
-  const seasons = data[playerId];
-  if (!seasons || !Object.keys(seasons).length) { el.innerHTML = ''; return; }
+  el.innerHTML = injuryReportHtml(data[playerId]);
+}
+
+// The Medicals page shows this same block, so it is built in one place. A
+// second copy would drift, and the caveat at the bottom is the part that must
+// never go missing.
+function injuryReportHtml(seasons) {
+  if (!seasons || !Object.keys(seasons).length) return '';
 
   const years = Object.keys(seasons).sort().reverse();
   let h = `<div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin:24px 0 10px;">Official Injury Report</div>`;
@@ -723,7 +729,7 @@ async function loadInjuryReport(playerId) {
   });
 
   h += `<div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.6;margin-top:8px;">Source: NFL official injury reports via nflverse. A player moved to injured reserve comes off the weekly report, so a season-ending injury shows up here as the weeks before it and then silence — this counts report appearances, not games missed.</div>`;
-  el.innerHTML = h;
+  return h;
 }
 
 // ===== RETURN TO PLAY =====

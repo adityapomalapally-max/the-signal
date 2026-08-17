@@ -818,9 +818,24 @@ function switchPage(page) {
   // The hash IS the address of what you are looking at, so a page switch
   // rewrites it rather than clearing it. Leaders and Rankings then refine it
   // further with their own filters, so a specific board can be linked.
-  if (page !== 'article') setRoute(page === 'home' ? '' : page);
+  // An open medical profile keeps its id in the URL — a bare setRoute('medicals')
+  // here would drop it the moment the router called us back.
+  if (page !== 'article') {
+    setRoute(page === 'home' ? '' : (page === 'medicals' && medDetailId ? 'medicals/' + medDetailId : page));
+  }
   if (page === 'players') renderPlayersTable();
-  if (page === 'medicals') { renderMedicals(); renderInjuryTypeGrid(); renderInjuryCurves(); }
+  if (page === 'medicals') {
+    renderMedicals(medSearch);
+    renderInjuryTypeGrid();
+    renderInjuryCurves();
+    // 269 players of report history, fetched once and only when this page is
+    // actually opened. The page renders the hand-written layer immediately and
+    // fills in the generated one when it lands.
+    ensureInjuries().then(d => {
+      medInjuries = d;
+      if (document.getElementById('page-medicals').classList.contains('active')) renderMedicals(medSearch);
+    });
+  }
   if (page === 'draft') renderDraftOutcomes();
   if (page === 'teams') {
     const redrawTeams = () => { if (document.getElementById('page-teams').classList.contains('active')) renderTeamPage(); };
@@ -885,98 +900,310 @@ function filterByPos(pos, btn) {
 }
 
 // ===== MEDICALS =====
-function renderMedicals(search = '') {
-  const container = document.getElementById('medicalsContent');
-  let html = '';
+// ===== MEDICALS =====
+// The page has TWO layers and says which is which on every card.
+//   medicals.json   — 31 hand-written, sourced narratives
+//   injuries.json   — 269 players of generated official-injury-report history
+// The generated layer used to be invisible here, so a page called Medical
+// Intelligence covered 9% of the pool while the other 91% sat in the repo.
+//
+// Severity and impact are DIFFERENT axes and both already exist in the data:
+// `severity` is how bad the injury was, `impact` is how much it still costs
+// him. "Resolved — Career Start" is severity high, impact 10, and reading
+// either one as the other gets a healthy player flagged. The page shows both.
+// `severityLabel` is prose — 48 distinct strings across 73 injuries, one per
+// injury, near enough — so it reads as a caption and never as a category.
+const MED_SEVERITY_RANK = { high: 3, moderate: 2, low: 1 };
+const MED_SORTS = {
+  severity: 'Severity',
+  impact: 'Career impact',
+  missed: 'Games missed',
+  name: 'Name',
+};
+const MED_FILTERS = {
+  all: 'All',
+  injured: 'Currently injured',
+  sourced: 'Sourced profiles',
+  history: 'Injury history',
+};
 
-  if (!search) {
-    // Default view: trending injuries + browse prompt
-    const trending = Object.entries(medicalDB).filter(([id, p]) => p.trending);
-    const allPlayers = Object.entries(medicalDB);
+let medSort = 'severity';
+let medFilter = 'all';
+let medSearch = '';
+let medInjuries = null; // injuries.json once it lands; null until then
 
-    html += `<div style="margin-bottom:40px;">
-      <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;">Trending Injuries</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;">`;
+// Trim on a word boundary. `substring(150) + '...'` cut mid-word and, when the
+// cut landed just after a sentence, printed four dots.
+function medTrim(s, max) {
+  const t = String(s || '').trim();
+  if (t.length <= max) return rankEsc(t);
+  const cut = t.slice(0, max).replace(/\s+\S*$/, '').replace(/[\s.,;:—–-]+$/, '');
+  return rankEsc(cut) + '…';
+}
 
-    trending.forEach(([id, player]) => {
-      const topInj = player.injuries[0];
-      html += `<div class="medical-card" style="cursor:pointer;transition:background 0.2s;" onclick="document.getElementById('medicalSearchInput').value='${jsAttr(player.name)}';filterMedicals('${jsAttr(player.name)}');" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background=''">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-          ${renderAvatar(player, 40, 12)}
-          <div>
-            <div style="font-weight:600;font-size:14px;">${player.name}</div>
-            <div style="font-size:11px;color:var(--text-muted);">${player.team}</div>
-          </div>
-          <span class="severity ${topInj.severity}" style="margin-left:auto;">${topInj.severityLabel}</span>
-        </div>
-        <h4 style="font-size:13px;font-weight:600;margin-bottom:6px;">${topInj.title}</h4>
-        <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">${topInj.detail.substring(0, 150)}...</p>
-      </div>`;
-    });
+// The injury that defines the profile — the costliest one, not whichever
+// happens to sit first in the file. `injuries[0]` also threw outright on an
+// empty array, which is a valid shape for a player with a clean history.
+function medWorstInjury(profile) {
+  const list = (profile && profile.injuries) || [];
+  if (!list.length) return null;
+  return list.reduce((worst, i) => {
+    const a = (i.impact || 0) + (MED_SEVERITY_RANK[i.severity] || 0) * 0.1;
+    const b = (worst.impact || 0) + (MED_SEVERITY_RANK[worst.severity] || 0) * 0.1;
+    return a > b ? i : worst;
+  }, list[0]);
+}
 
-    html += `</div></div>`;
+function medSeasonTotals(seasons) {
+  const years = Object.keys(seasons || {}).sort();
+  let weeksListed = 0, gamesOut = 0;
+  years.forEach(y => {
+    weeksListed += seasons[y].weeksListed || 0;
+    gamesOut += seasons[y].gamesOut || 0;
+  });
+  return { years, weeksListed, gamesOut };
+}
 
-    // All players with medical profiles
-    html += `<div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px;">All Medical Profiles (${allPlayers.length})</div>`;
-    html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;margin-bottom:32px;">`;
+// One row per player, from all three sources: the hand-written profile, the
+// generated report history, and the live status. A player can appear because
+// of any one of them — someone hurt in camp with no history on file still
+// belongs on this page.
+function medRows() {
+  const rows = new Map();
+  const pool = {};
+  playersDB.forEach(p => { pool[p.id] = p; });
 
-    allPlayers.forEach(([id, player]) => {
-      const injCount = player.injuries.length;
-      const topSev = player.injuries.reduce((max, i) => i.impact > max.impact ? i : max, player.injuries[0]);
-      html += `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:background 0.2s;" onclick="document.getElementById('medicalSearchInput').value='${jsAttr(player.name)}';filterMedicals('${jsAttr(player.name)}');" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background='var(--bg-card)'">
-        ${renderAvatar(player, 34, 11)}
-        <div style="flex:1;min-width:0;">
-          <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${player.name}</div>
-          <div style="font-size:11px;color:var(--text-muted);">${injCount} record${injCount !== 1 ? 's' : ''}</div>
-        </div>
-        <span class="severity ${topSev.severity}" style="font-size:9px;">${topSev.severityLabel.split(' ')[0]}</span>
-      </div>`;
-    });
-
-    html += `</div>`;
-  } else {
-    // Search results: show full profiles
-    const results = Object.entries(medicalDB).filter(([id, player]) =>
-      (player.name + player.team + player.injuries.map(i => i.title).join(' ')).toLowerCase().includes(search.toLowerCase())
-    );
-
-    if (results.length === 0) {
-      html = `<div style="text-align:center;padding:48px 0;">
-        <p style="font-family:var(--serif);font-size:20px;color:var(--text-secondary);margin-bottom:8px;">No medical records found for "${search}"</p>
-        <p style="font-size:13px;color:var(--text-muted);">Try searching by player name. We're continuously adding new profiles.</p>
-      </div>`;
-    }
-
-    results.forEach(([id, player]) => {
-      html += `<div style="margin-bottom:40px;">
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;cursor:pointer;" onclick="openProfile('${id}')">
-          ${renderAvatar(player, 48, 15)}
-          <div style="flex:1;">
-            <div style="font-family:var(--serif);font-size:24px;font-weight:600;">${player.name}</div>
-            <div style="font-size:13px;color:var(--text-secondary);">${player.team}</div>
-          </div>
-          <span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);cursor:pointer;" onclick="event.stopPropagation();document.getElementById('medicalSearchInput').value='';filterMedicals('');">✕ Clear</span>
-        </div>`;
-      if (player.currentStatus) {
-        html += `<div class="medical-card" style="border-left:3px solid var(--gold);margin-bottom:20px;">
-          <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">Current Status</div>
-          <div class="medical-detail" style="margin-bottom:0;">${player.currentStatus}</div>
-        </div>`;
-      }
-      player.injuries.forEach(inj => {
-        html += `<div class="medical-card">
-          <div class="medical-card-header"><h4>${inj.title}</h4><span class="severity ${inj.severity}">${inj.severityLabel}</span></div>
-          <div class="medical-detail">${inj.detail}</div>
-          <div class="impact-meter"><div class="impact-label">Career Impact</div><div class="impact-bar"><div class="impact-fill ${inj.impactClass}" style="width:${inj.impact}%"></div></div></div>
-          <div class="medical-source">Source: <span class="source-verified">✓ ${inj.source}</span></div>
-        </div>`;
+  const touch = id => {
+    if (!rows.has(id)) {
+      const p = pool[id];
+      const profile = medicalDB[id];
+      rows.set(id, {
+        id, player: p || null, profile: profile || null,
+        name: (p && p.name) || (profile && profile.name) || id,
+        pos: (p && p.pos) || '', team: (p && p.team) || '',
+        seasons: null, injured: false,
       });
-      html += '</div>';
-    });
+    }
+    return rows.get(id);
+  };
+
+  Object.keys(medicalDB).forEach(touch);
+  Object.keys(medInjuries || {}).forEach(id => { touch(id).seasons = medInjuries[id]; });
+  playersDB.forEach(p => {
+    if (p.statusClass && p.statusClass !== 'status-healthy') touch(p.id).injured = true;
+  });
+
+  return [...rows.values()].map(r => {
+    const worst = medWorstInjury(r.profile);
+    const totals = medSeasonTotals(r.seasons);
+    return {
+      ...r, worst,
+      severityRank: worst ? (MED_SEVERITY_RANK[worst.severity] || 0) : 0,
+      impact: worst ? (worst.impact || 0) : 0,
+      gamesOut: totals.gamesOut, weeksListed: totals.weeksListed, years: totals.years,
+    };
+  });
+}
+
+function medSortRows(rows) {
+  const byName = (a, b) => a.name.localeCompare(b.name);
+  const cmp = {
+    severity: (a, b) => b.severityRank - a.severityRank || b.impact - a.impact || byName(a, b),
+    impact: (a, b) => b.impact - a.impact || byName(a, b),
+    missed: (a, b) => b.gamesOut - a.gamesOut || b.weeksListed - a.weeksListed || byName(a, b),
+    name: byName,
+  };
+  return rows.sort(cmp[medSort] || cmp.severity);
+}
+
+function medMatchesFilter(r) {
+  if (medFilter === 'sourced') return !!r.profile;
+  if (medFilter === 'injured') return r.injured;
+  if (medFilter === 'history') return !!r.seasons;
+  return true;
+}
+
+function setMedSort(v) { medSort = v; renderMedicals(medSearch); }
+function setMedFilter(v) { medFilter = v; renderMedicals(medSearch); }
+
+// A medical profile is a thing you can send someone. It used to be reachable
+// only by typing into a search box, which meant no URL, no back button, and
+// nothing to link to.
+// Assigning the hash rather than calling setRoute: replaceState leaves no
+// history entry, so the back button would have walked off the site instead of
+// returning to the list. The router renders both of these — the same path an
+// incoming link takes, so a shared URL and a click land on identical markup.
+function openMedical(id) { window.location.hash = 'medicals/' + id; }
+function closeMedical() { window.location.hash = 'medicals'; }
+
+let medDetailId = null;
+
+function renderMedicals(search = '') {
+  medSearch = search;
+  const container = document.getElementById('medicalsContent');
+  if (!container) return;
+
+  if (medDetailId) { container.innerHTML = medDetailHtml(medDetailId); return; }
+
+  const all = medRows();
+  const q = search.trim().toLowerCase();
+  let rows = all.filter(medMatchesFilter);
+  if (q) {
+    rows = rows.filter(r =>
+      (r.name + ' ' + r.team + ' ' + r.pos + ' ' +
+        ((r.profile && r.profile.injuries.map(i => i.title).join(' ')) || '')
+      ).toLowerCase().includes(q)
+    );
   }
+  medSortRows(rows);
+
+  const counts = {
+    all: all.length,
+    injured: all.filter(r => r.injured).length,
+    sourced: all.filter(r => r.profile).length,
+    history: all.filter(r => r.seasons).length,
+  };
+
+  let html = `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;">`;
+  Object.entries(MED_FILTERS).forEach(([key, label]) => {
+    html += `<button class="pos-btn${medFilter === key ? ' active' : ''}" onclick="setMedFilter('${key}')">${label} ${counts[key]}</button>`;
+  });
+  html += `<span style="margin-left:auto;display:flex;align-items:center;gap:8px;">`
+    + `<span style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);">Sort</span>`
+    + `<select onchange="setMedSort(this.value)" style="background:var(--bg-card);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-family:var(--mono);font-size:11px;">`
+    + Object.entries(MED_SORTS).map(([k, l]) => `<option value="${k}"${medSort === k ? ' selected' : ''}>${l}</option>`).join('')
+    + `</select></span></div>`;
+
+  html += `<div style="font-size:12px;color:var(--text-muted);line-height:1.6;margin-bottom:20px;">`
+    + `${counts.sourced} sourced narrative profiles · ${counts.history} players with official injury-report history, 2023–2025. `
+    + `A player on injured reserve drops off the weekly report, so the report counts appearances, not games missed.`
+    + `</div>`;
+
+  if (!rows.length) {
+    html += `<div style="text-align:center;padding:48px 0;">
+      <p style="font-family:var(--serif);font-size:20px;color:var(--text-secondary);margin-bottom:8px;">No medical records${q ? ` for "${rankEsc(search)}"` : ''}</p>
+      <p style="font-size:13px;color:var(--text-muted);">Try a different name, or widen the filter.</p>
+    </div>`;
+    container.innerHTML = html;
+    return;
+  }
+
+  // min(320px,100%), not a bare 320px: this page keeps 48px of padding on each
+  // side, so a 375px phone leaves 279px of content and a hard 320px track
+  // pushes the whole document sideways.
+  html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:16px;">`;
+  rows.forEach(r => { html += medCardHtml(r); });
+  html += `</div>`;
 
   container.innerHTML = html;
 }
 
-function filterMedicals(val) { renderMedicals(val); }
+// The avatar takes the POOL player, not the medical entry. Medical entries
+// carry no sleeperId, so passing one to renderAvatar could only ever produce
+// the initials fallback — every face on this page was a grey box while the
+// rest of the site showed headshots.
+function medAvatar(r, size, fontSize) {
+  return renderAvatar(r.player || { name: r.name, ...(r.profile || {}) }, size, fontSize);
+}
+
+function medCardHtml(r) {
+  // Exactly one coloured chip, and it always means the same thing: how he is
+  // TODAY. Severity is a different axis about a past injury, and rendering
+  // both as red badges side by side made a healthy man with an old ACL look
+  // like a scratch. Severity goes to the meta line as plain text.
+  const status = r.injured && r.player
+    ? `<span class="player-quick-status ${r.player.statusClass}" style="font-size:10px;">${rankEsc(r.player.status)}</span>`
+    : '';
+
+  let body;
+  if (r.worst) {
+    body = `<h4 style="font-size:13px;font-weight:600;margin-bottom:6px;">${rankEsc(r.worst.title)}</h4>`
+      + `<p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">${medTrim(r.worst.detail, 150)}</p>`;
+  } else if (r.seasons) {
+    const spanYears = r.years.length ? `${r.years[0]}–${r.years[r.years.length - 1].slice(2)}` : '';
+    body = `<h4 style="font-size:13px;font-weight:600;margin-bottom:6px;">${r.weeksListed} week${r.weeksListed === 1 ? '' : 's'} on the injury report</h4>`
+      + `<p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">`
+      + (r.gamesOut ? `Ruled out of ${r.gamesOut} game${r.gamesOut === 1 ? '' : 's'} across ${spanYears}.` : `Never ruled out across ${spanYears} — every listing was a tag he played through.`)
+      + `</p>`;
+  } else {
+    body = `<p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">No injury history on file. Listed here because he is not healthy right now.</p>`;
+  }
+
+  const meta = [];
+  if (r.profile) meta.push('Sourced profile');
+  if (r.worst) meta.push(`${r.worst.severity.charAt(0).toUpperCase() + r.worst.severity.slice(1)} severity`);
+  if (r.worst) meta.push(`Career impact ${r.worst.impact}`);
+  if (r.seasons && r.gamesOut) meta.push(`${r.gamesOut} ruled out`);
+
+  return `<div class="medical-card" style="cursor:pointer;transition:background 0.2s;" onclick="openMedical('${jsAttr(r.id)}')" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background=''">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+      ${medAvatar(r, 40, 12)}
+      <div style="min-width:0;">
+        <div style="font-weight:600;font-size:14px;">${rankEsc(r.name)}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${rankEsc([r.pos, r.team].filter(Boolean).join(' · '))}</div>
+      </div>
+      <span style="margin-left:auto;text-align:right;">${status}</span>
+    </div>
+    ${body}
+    ${meta.length ? `<div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:10px;">${meta.map(rankEsc).join(' · ')}</div>` : ''}
+  </div>`;
+}
+
+function medDetailHtml(id) {
+  const r = medRows().find(x => x.id === id);
+  if (!r) return `<div class="medical-card"><div class="medical-detail">No medical record for this player.</div></div>`;
+
+  const sub = (r.profile && r.profile.team) || [r.pos, r.team].filter(Boolean).join(' · ');
+  let html = `<div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+      ${medAvatar(r, 48, 15)}
+      <div style="flex:1;min-width:0;">
+        <div style="font-family:var(--serif);font-size:24px;font-weight:600;">${rankEsc(r.name)}</div>
+        <div style="font-size:13px;color:var(--text-secondary);">${rankEsc(sub)}</div>
+      </div>
+      <span style="display:flex;gap:8px;align-items:center;">
+        ${r.player ? `<span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);cursor:pointer;" onclick="openProfile('${jsAttr(r.id)}')">Full profile →</span>` : ''}
+        <span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);cursor:pointer;" onclick="closeMedical()">✕ Close</span>
+      </span>
+    </div>`;
+
+  // The live status comes from the feed and the override layer, so it is the
+  // one thing on this page that is current as of this morning.
+  if (r.player) {
+    html += `<div class="medical-card" style="margin-bottom:20px;display:flex;align-items:center;gap:12px;">
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);">Today</span>
+      <span class="player-quick-status ${r.player.statusClass}">${rankEsc(r.player.status)}</span>
+      <span style="font-size:11px;color:var(--text-muted);margin-left:auto;">${r.player.statusSource === 'override' ? 'Hand-entered, sourced' : 'NFL / Sleeper injury feed'}</span>
+    </div>`;
+  }
+
+  if (r.profile && r.profile.currentStatus) {
+    html += `<div class="medical-card" style="border-left:3px solid var(--gold);margin-bottom:20px;">
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">Assessment</div>
+      <div class="medical-detail" style="margin-bottom:0;">${rankEsc(r.profile.currentStatus)}</div>
+    </div>`;
+  }
+
+  ((r.profile && r.profile.injuries) || []).forEach(inj => {
+    html += `<div class="medical-card">
+      <div class="medical-card-header"><h4>${rankEsc(inj.title)}</h4><span class="severity ${inj.severity}">${rankEsc(inj.severityLabel)}</span></div>
+      <div class="medical-detail">${rankEsc(inj.detail)}</div>
+      <div class="impact-meter"><div class="impact-label">Career Impact</div><div class="impact-bar"><div class="impact-fill ${inj.impactClass}" style="width:${Number(inj.impact) || 0}%"></div></div></div>
+      <div class="medical-source">Source: <span class="source-verified">✓ ${rankEsc(inj.source)}</span></div>
+    </div>`;
+  });
+
+  html += injuryReportHtml(r.seasons);
+
+  if (!r.profile && !r.seasons) {
+    html += `<div class="medical-card"><div class="medical-detail">No injury history on file for this player.</div></div>`;
+  }
+  return html;
+}
+
+// Typing in the search box means "show me the list again", so it leaves an
+// open profile rather than filtering a page that isn't a list.
+function filterMedicals(val) {
+  if (medDetailId) { medDetailId = null; setRoute('medicals'); }
+  renderMedicals(val);
+}
 

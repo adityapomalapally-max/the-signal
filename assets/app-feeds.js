@@ -638,6 +638,12 @@ function handleHashRoute() {
     switchPage('teams');
     return;
   }
+  // #medicals/nabers — a medical profile is a thing you can send someone
+  if (parts[0] === 'medicals') {
+    medDetailId = parts[1] || null;
+    switchPage('medicals');
+    return;
+  }
   // #rankings/qb
   if (parts[0] === 'rankings') {
     if (parts[1] && ['overall', 'qb', 'rb', 'wr', 'te'].includes(parts[1])) currentRankTab = parts[1];
