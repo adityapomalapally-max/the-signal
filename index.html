@@ -151,7 +151,7 @@
           <span class="hero-tag-date" id="heroDate">May 26, 2026</span>
         </div>
         <h1 class="hero-headline" id="heroTitle">Why <em>Production Over Expected</em> Changes Everything About Draft Evaluation</h1>
-        <p class="hero-excerpt" id="heroExcerpt">Traditional college stats lie. Context-adjusted production reveals the prospects that actually translate to the NFL — and the model has a 92% accuracy rate within one tier to prove it.</p>
+        <p class="hero-excerpt" id="heroExcerpt">Traditional college stats lie. Context-adjusted production reveals the prospects that actually translate to the NFL — and it says so with the model's misses on the record next to its hits.</p>
         <div class="hero-byline">
           <span class="byline-author">Adi</span>
           <span class="byline-sep">·</span>
@@ -326,7 +326,7 @@
     <div class="tool-item" onclick="switchPage('draft')">
       <div class="tool-icon">📊</div>
       <h4>Draft Model</h4>
-      <p>92% accuracy POE-based prospect evaluation system.</p>
+      <p>POE-based prospect evaluation system, tiered and sourced.</p>
       <span class="tool-badge badge-soon">Coming Soon</span>
     </div>
   </div>
@@ -579,18 +579,18 @@
   <div style="max-width:1440px;margin:0 auto;">
     <div class="players-header">
       <h1>Draft Lab</h1>
-      <p>The Predictive Model — a regression-based system analyzing historical draft data that achieved 92% accuracy within one tier on blind validation testing.</p>
+      <p>The Predictive Model — a regression-based system that scores prospects on production over expected, adjusted for context, and sorts them into tiers. It has been checked retrospectively against one draft class; out-of-sample validation across classes is still outstanding, and until it exists this page reports what the model does, not how often it is right.</p>
     </div>
 
     <!-- Model overview stats -->
     <div class="draft-stats">
       <div class="medical-card" style="text-align:center;padding:24px;">
-        <div style="font-family:var(--serif);font-size:36px;font-weight:700;color:var(--gold);">92%</div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:6px;">Accuracy Within One Tier</div>
+        <div style="font-family:var(--serif);font-size:36px;font-weight:700;color:var(--text-muted);">Pending</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:6px;">Out-of-sample accuracy</div>
       </div>
       <div class="medical-card" style="text-align:center;padding:24px;">
-        <div style="font-family:var(--serif);font-size:36px;font-weight:700;color:var(--teal);">12/15</div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:6px;">Elite Players Identified</div>
+        <div style="font-family:var(--serif);font-size:36px;font-weight:700;color:var(--teal);">2023</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:6px;">Only class checked so far</div>
       </div>
       <div class="medical-card" style="text-align:center;padding:24px;">
         <div style="font-family:var(--serif);font-size:36px;font-weight:700;color:var(--text);">50%+</div>
@@ -668,23 +668,29 @@
       <div>
         <div class="sidebar-section">
           <div class="sidebar-section-title"><span>Model Validation</span></div>
-          <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px;">Validated against complete 3-year NFL outcome data from 2018-2023 draft classes. Success defined as top-12 positional performance within first 3 NFL seasons.</div>
+          <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px;">The model has been run back over the 2023 class and read against what those players went on to do. That is a retrospective check on one class, not validation: the outcomes were already known when the thresholds were set. A real test — scoring classes the model has never seen and grading it on three-year outcomes — has not been run yet, and this panel will carry its results when it has.</div>
           <div class="medical-card" style="padding:16px;margin-bottom:8px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:13px;">True Positives</span>
-              <span style="font-family:var(--mono);font-size:13px;color:var(--green);font-weight:600;">12 of 15</span>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+              <span style="font-size:13px;">2023 WRs</span>
+              <span style="font-family:var(--mono);font-size:13px;color:var(--text-secondary);font-weight:600;text-align:right;">6 of the top 7 producers</span>
             </div>
           </div>
           <div class="medical-card" style="padding:16px;margin-bottom:8px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:13px;">Accuracy (within 1 tier)</span>
-              <span style="font-family:var(--mono);font-size:13px;color:var(--gold);font-weight:600;">92%</span>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+              <span style="font-size:13px;">2023 RBs</span>
+              <span style="font-family:var(--mono);font-size:13px;color:var(--text-secondary);font-weight:600;text-align:right;">top 3 correct</span>
+            </div>
+          </div>
+          <div class="medical-card" style="padding:16px;margin-bottom:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+              <span style="font-size:13px;">Notable miss</span>
+              <span style="font-family:var(--mono);font-size:13px;color:var(--red);font-weight:600;text-align:right;">Puka Nacua</span>
             </div>
           </div>
           <div class="medical-card" style="padding:16px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:13px;">Notable Miss</span>
-              <span style="font-family:var(--mono);font-size:13px;color:var(--red);font-weight:600;">JSN (undervalued)</span>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+              <span style="font-size:13px;">Known bias</span>
+              <span style="font-family:var(--mono);font-size:13px;color:var(--red);font-weight:600;text-align:right;">Small-school power backs</span>
             </div>
           </div>
         </div>
