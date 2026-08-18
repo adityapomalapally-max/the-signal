@@ -44,6 +44,12 @@ jobs:
       - name: Fetch PFR advanced splits
         run: node scripts/fetch-advstats.js
 
+      # Depth chart position and combine testing. The depth chart says where a
+      # player sits on his OWN team, which no volume stat says; the combine
+      # percentiles replace hand-typed athletic numbers with generated ones.
+      - name: Fetch depth charts and combine testing
+        run: node scripts/fetch-context.js
+
       - name: Build aggregate return-to-play curves
         run: node scripts/build-injury-curves.js
 
