@@ -954,31 +954,160 @@ function switchPage(page) {
 }
 
 // ===== PLAYERS TABLE =====
+// Six columns over 350 rows, and until now the only way through them was a
+// search box. Every column sorts and the two categorical ones filter; the
+// count line states how many of the pool survived, because a filtered table
+// that does not say so reads as a short database rather than a narrow view.
+//
+// Fantasy rank is the column that made the nulls-last rule non-negotiable:
+// 258 of the 350 have no fRank, so a naive ascending sort opens on 258 dashes
+// and buries RB1 below the fold.
 let currentPosFilter = 'all';
+let playerSearch = '';
+const playerFilters = { team: 'all', status: 'all' };
 
-function renderPlayersTable(search = '') {
+defineTable('players', {
+  cols: {
+    name:   { get: p => p.name, type: 'text' },
+    pos:    { get: p => p.pos, type: 'text' },
+    team:   { get: p => p.team, type: 'text' },
+    age:    { get: p => p.age, type: 'num', dir: 'asc' },
+    // Sorting by status surfaces the hurt first — an alphabetical status
+    // column opens on "Doubtful" and means nothing.
+    status: { get: p => statusRank(p), type: 'num', dir: 'desc' },
+    // Positional rank, so the numbers repeat across positions. Ties break on
+    // the position rather than the name: QB1, RB1, TE1, WR1, then QB2.
+    frank:  { get: p => fRankValue(p.fRank), type: 'num', dir: 'asc',
+              tie: { get: p => fRankPos(p.fRank), type: 'text' } },
+  },
+  tie: { get: p => p.name, type: 'text' },
+  render: () => renderPlayersTable(),
+});
+
+function playerRows() {
+  let rows = playersDB;
+  if (currentPosFilter !== 'all') rows = rows.filter(p => p.pos === currentPosFilter);
+  if (playerFilters.team !== 'all') rows = rows.filter(p => p.team === playerFilters.team);
+  if (playerFilters.status !== 'all') rows = rows.filter(p => statusBase(p.status) === playerFilters.status);
+  if (playerSearch) {
+    const q = playerSearch.toLowerCase();
+    rows = rows.filter(p => (p.name + ' ' + p.team + ' ' + p.pos).toLowerCase().includes(q));
+  }
+  return sortTableRows('players', rows);
+}
+
+// The options come from the pool, never from a hardcoded list — a team that
+// leaves the data should leave the dropdown with it.
+function fillPlayerFilterOptions() {
+  const teamSel = document.getElementById('playerTeamFilter');
+  const statusSel = document.getElementById('playerStatusFilter');
+  if (!teamSel || !statusSel || !playersDB.length) return;
+  if (teamSel.options.length && statusSel.options.length) return;
+
+  const teams = [...new Set(playersDB.map(p => p.team).filter(Boolean))].sort();
+  teamSel.innerHTML = `<option value="all">All teams</option>`
+    + teams.map(t => `<option value="${rankEsc(t)}">${rankEsc(t)}</option>`).join('');
+
+  // Grouped by the vocabulary word, not the full string: the body part in the
+  // parenthesis makes 30 distinct statuses out of 5 real ones, and a filter
+  // with 30 options is a list, not a filter.
+  const counts = {};
+  playersDB.forEach(p => { const b = statusBase(p.status); if (b) counts[b] = (counts[b] || 0) + 1; });
+  const words = Object.keys(counts).sort((a, b) => statusRank({ status: a, statusClass: statusClassOf(a) })
+    - statusRank({ status: b, statusClass: statusClassOf(b) }));
+  statusSel.innerHTML = `<option value="all">Any status</option>`
+    + words.map(w => `<option value="${rankEsc(w)}">${rankEsc(w)} (${counts[w]})</option>`).join('');
+}
+
+// The class a status word carries in the pool, read off the data rather than
+// duplicating scripts/lib/status.js on the client.
+function statusClassOf(word) {
+  const hit = playersDB.find(p => statusBase(p.status) === word);
+  return hit ? hit.statusClass : '';
+}
+
+function renderPlayersTable(search) {
+  if (typeof search === 'string') playerSearch = search;
   const tbody = document.getElementById('playersTableBody');
-  let filtered = playersDB;
-  if (currentPosFilter !== 'all') filtered = filtered.filter(p => p.pos === currentPosFilter);
-  if (search) filtered = filtered.filter(p => (p.name + p.team + p.pos).toLowerCase().includes(search.toLowerCase()));
-  tbody.innerHTML = filtered.map(p => `
-    <tr onclick="openProfile('${p.id}')">
-      <td><div class="player-cell">${renderAvatar(p, 36, 12)}<div><div class="player-cell-name">${p.name}</div></div></div></td>
-      <td><span style="font-family:var(--mono);font-size:12px;color:var(--text-muted);">${p.pos}</span></td>
-      <td>${p.team || '—'}</td>
+  const thead = document.getElementById('playersTableHead');
+  if (!tbody) return;
+  fillPlayerFilterOptions();
+
+  if (thead) {
+    thead.innerHTML = '<tr>'
+      + sortTh('players', 'name', 'Player')
+      + sortTh('players', 'pos', 'Pos')
+      + sortTh('players', 'team', 'Team')
+      + sortTh('players', 'age', 'Age')
+      + sortTh('players', 'status', 'Status')
+      + sortTh('players', 'frank', 'Fantasy Rank')
+      + '</tr>';
+  }
+
+  const rows = playerRows();
+  tbody.innerHTML = rows.map(p => `
+    <tr onclick="openProfile('${jsAttr(p.id)}')">
+      <td><div class="player-cell">${renderAvatar(p, 36, 12)}<div><div class="player-cell-name">${rankEsc(p.name)}</div></div></div></td>
+      <td><span style="font-family:var(--mono);font-size:12px;color:var(--text-muted);">${rankEsc(p.pos)}</span></td>
+      <td>${rankEsc(p.team || '—')}</td>
       <td>${p.age ?? '—'}</td>
-      <td><span class="player-quick-status ${p.statusClass}">${p.status}</span></td>
-      <td><span style="font-family:var(--mono);font-size:12px;color:var(--gold);">${p.fRank || '—'}</span></td>
+      <td><span class="player-quick-status ${rankEsc(p.statusClass)}">${rankEsc(p.status)}</span></td>
+      <td><span style="font-family:var(--mono);font-size:12px;color:var(--gold);">${rankEsc(p.fRank || '—')}</span></td>
     </tr>
   `).join('');
+
+  if (!rows.length) {
+    tbody.innerHTML = `<tr class="table-empty"><td colspan="6">No player in the pool matches these filters.</td></tr>`;
+  }
+
+  const narrowed = currentPosFilter !== 'all' || playerFilters.team !== 'all'
+    || playerFilters.status !== 'all' || !!playerSearch;
+  const countEl = document.getElementById('playersCount');
+  if (countEl) {
+    countEl.textContent = narrowed
+      ? `${rows.length} of ${playersDB.length} players`
+      : `${playersDB.length} players`;
+  }
+  const resetEl = document.getElementById('playersReset');
+  if (resetEl) resetEl.hidden = !narrowed;
 }
 
 function filterPlayers(val) { renderPlayersTable(val); }
+
+function setPlayerFilter(which, value) {
+  playerFilters[which] = value;
+  renderPlayersTable();
+}
+
+function resetPlayerFilters() {
+  currentPosFilter = 'all';
+  playerFilters.team = 'all';
+  playerFilters.status = 'all';
+  playerSearch = '';
+  const search = document.getElementById('playerSearchGlobal');
+  if (search) search.value = '';
+  const teamSel = document.getElementById('playerTeamFilter');
+  if (teamSel) teamSel.value = 'all';
+  const statusSel = document.getElementById('playerStatusFilter');
+  if (statusSel) statusSel.value = 'all';
+  playersPosButtons().forEach(b => b.classList.toggle('active', b.dataset.filter === 'all'));
+  clearTableSort('players');
+  renderPlayersTable();
+}
+
+// Scoped to this page on purpose. A bare document.querySelectorAll('.pos-btn')
+// also clears the Value Board's filters and the rankings tabs, which sit in the
+// DOM at the same time — they came back looking as though nothing was selected.
+function playersPosButtons() {
+  const page = document.getElementById('page-players');
+  return page ? Array.from(page.querySelectorAll('.pos-btn')) : [];
+}
+
 function filterByPos(pos, btn) {
   currentPosFilter = pos;
-  document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderPlayersTable(document.getElementById('playerSearchGlobal').value);
+  playersPosButtons().forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderPlayersTable();
 }
 
 // ===== MEDICALS =====
@@ -1345,9 +1474,26 @@ function schemeArrow(d) {
 // in the league", which is the question that makes a scheme page worth opening
 // when you do not already have a team in mind. The movers lead because a shift
 // is news; the table is there to check the claim against everyone else.
-let schemeSort = '12';
-
-function setSchemeSort(v) { schemeSort = v; renderTeamPage(); }
+// Rows here are [team, data] entries, so every accessor reads r[0] or r[1].
+// A grouping the team has no rows for is null, never 0 — see the note on the
+// table itself.
+const schemeRate = (d, g) => (d.personnel && d.personnel[g] ? d.personnel[g].rate : null);
+defineTable('schemeLeague', {
+  cols: {
+    team:      { get: r => r[0], type: 'text' },
+    p11:       { get: r => schemeRate(r[1], '11'), type: 'num' },
+    p12:       { get: r => schemeRate(r[1], '12'), type: 'num' },
+    box:       { get: r => r[1].heavyBoxRate, type: 'num' },
+    explosive: { get: r => r[1].explosiveRate, type: 'num' },
+    epa:       { get: r => r[1].epaPerPlay, type: 'num' },
+    coach:     { get: r => r[1].coach, type: 'text' },
+  },
+  tie: { get: r => r[0], type: 'text' },
+  // 12 personnel opens the board because the heavier-personnel shift is the
+  // finding the page is built around.
+  initial: { key: 'p12', dir: 'desc' },
+  render: () => renderTeamPage(),
+});
 
 function schemeLeagueHtml() {
   if (!schemeData || !schemeData.seasons) return '';
@@ -1402,23 +1548,25 @@ function schemeLeagueHtml() {
     }
   }
 
-  const SORTS = { '12': '12 personnel', '11': '11 personnel', heavyBoxRate: 'Box drawn', explosiveRate: 'Explosive', epaPerPlay: 'EPA/play' };
-  const val = (d) => {
-    if (schemeSort === 'heavyBoxRate' || schemeSort === 'explosiveRate' || schemeSort === 'epaPerPlay') return d[schemeSort];
-    return d.personnel[schemeSort] ? d.personnel[schemeSort].rate : 0;
-  };
-  const rows = Object.entries(cur).sort((a, b) => (val(b[1]) ?? -99) - (val(a[1]) ?? -99));
+  // The columns sort themselves now. The "Rank by" strip that used to sit above
+  // this table only reached five of the seven columns and could not reverse any
+  // of them, and it named the same groupings differently from the headers under
+  // it ("12 personnel" over a column headed "12").
+  //
+  // It also read a missing grouping as 0%, which is a claim — a team with no
+  // rows for a package is not a team that never calls it. Missing is null here
+  // and sorts to the bottom in both directions.
+  const rows = sortTableRows('schemeLeague', Object.entries(cur));
 
-  h += `<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:16px 0 8px;">
-    <span style="font-family:var(--mono);font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-right:4px;">Rank by</span>`;
-  for (const [k, label] of Object.entries(SORTS)) {
-    h += `<button class="pos-btn${schemeSort === k ? ' active' : ''}" onclick="setSchemeSort('${k}')">${label}</button>`;
-  }
-  h += `</div>`;
-
-  h += `<div class="table-scroll"><table class="scheme-table"><thead><tr>
-    <th>Team</th><th>11</th><th>12</th><th>7+ box</th><th>Explosive</th><th>EPA/play</th><th>Head coach</th>
-  </tr></thead><tbody>`;
+  h += `<div class="table-scroll"><table class="scheme-table"><thead><tr>`
+    + sortTh('schemeLeague', 'team', 'Team')
+    + sortTh('schemeLeague', 'p11', '11', { title: '11 personnel' })
+    + sortTh('schemeLeague', 'p12', '12', { title: '12 personnel' })
+    + sortTh('schemeLeague', 'box', '7+ box', { title: 'heavy box rate' })
+    + sortTh('schemeLeague', 'explosive', 'Explosive', { title: 'explosive rate' })
+    + sortTh('schemeLeague', 'epa', 'EPA/play')
+    + sortTh('schemeLeague', 'coach', 'Head coach')
+    + `</tr></thead><tbody>`;
   for (const [team, d] of rows) {
     const p = (g) => d.personnel[g] ? schemePct(d.personnel[g].rate) : '—';
     h += `<tr style="cursor:pointer;" onclick="setTeam('${jsAttr(team)}')">

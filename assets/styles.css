@@ -1624,7 +1624,13 @@ a { color: inherit; text-decoration: none; }
   .footer-main { grid-template-columns: 1fr; padding: 32px 20px; }
   .footer-bottom { flex-direction: column; gap: 16px; text-align: center; padding: 24px 20px; }
   .players-header { padding: 32px 20px 24px; }
-  .players-table th, .players-table td { padding: 12px 14px; font-size: 13px; }
+  /* Font size only. This block used to also set `padding: 12px 14px`, which sat
+     later in the file than the 768px block at the top that sets `12px 10px` and
+     therefore won the cascade at equal specificity — so the mobile padding fix
+     written for this table never actually applied, while the comment beside it
+     said it had. Measured at 390px: 490px wide with the 14px padding, 478px
+     with the 10px it was supposed to have. Verify a change landed. */
+  .players-table th, .players-table td { font-size: 13px; }
   .article-page { padding: 24px 16px 60px; }
   .article-page-title { font-size: 26px; }
 }
@@ -1648,4 +1654,123 @@ a { color: inherit; text-decoration: none; }
   /* Box average is the column a phone can spare — 7+ box says the same thing
      more plainly, and the table has to fit rather than be swiped. */
   .scheme-table th:nth-child(4), .scheme-table td:nth-child(4) { display: none; }
+}
+
+/* ═══ SORTABLE COLUMN HEADERS ═══════════════════════════════════════════════
+   The clickable target is a real <button> filling the cell, so the column is
+   reachable by keyboard and announced with the <th>'s aria-sort. The arrow is
+   aria-hidden — it is a second copy of what aria-sort already says, and a
+   screen reader spelling out "up arrow" adds nothing.
+   The inactive glyph stays at low opacity rather than appearing on hover:
+   a control that is invisible until you touch it is a control nobody finds,
+   and on a touch screen there is no hover to reveal it with. */
+.th-sort { padding: 0 !important; }
+.th-sort-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 24px;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.th-sort-btn:hover { color: var(--text-secondary); }
+.th-sort.on .th-sort-btn { color: var(--gold); }
+.th-sort-btn:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: -2px;
+  border-radius: 2px;
+}
+.th-arrow { display: inline-block; font-size: 9px; opacity: 0.35; }
+.th-sort.on .th-arrow { opacity: 1; }
+
+/* The scheme board's numeric columns are right-aligned, so the button has to
+   push its label and arrow to the same edge the numbers under it use. */
+.scheme-table .th-sort-btn { padding: 6px 10px; }
+
+@media (max-width: 768px) {
+  .players-table .th-sort-btn { padding: 12px 10px; }
+  .players-table th:first-child .th-sort-btn { padding-left: 16px; }
+  .players-table th:last-child .th-sort-btn { padding-right: 16px; }
+  .scheme-table .th-sort-btn { padding: 6px 6px; }
+}
+
+/* ═══ COLUMN FILTERS ════════════════════════════════════════════════════════
+   The select options are built from the pool at render time. The count line
+   states how many rows survived out of the whole pool, because a filtered
+   table that does not say it is filtered reads as a small database. */
+.table-filters {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.filter-field { display: flex; align-items: center; gap: 7px; }
+.filter-label {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.filter-select {
+  padding: 7px 28px 7px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-family: var(--mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  /* The native arrow renders light-on-light in a dark theme on some platforms;
+     this one is drawn in a token that is known to pass on this surface. */
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='%238d8880' d='M1 1.5 6 6.5l5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 9px center;
+  background-size: 9px;
+}
+.filter-select:hover { border-color: var(--border-hover); color: var(--text); }
+.filter-select:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.table-count {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+.filter-reset {
+  padding: 6px 12px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-reset:hover { border-color: var(--gold); color: var(--gold); }
+.filter-reset:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+
+.table-empty td {
+  padding: 28px 24px !important;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: default;
+}
+.players-table tbody tr.table-empty:hover { background: none; }
+
+@media (max-width: 768px) {
+  .table-count { margin-left: 0; width: 100%; }
 }

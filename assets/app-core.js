@@ -447,3 +447,155 @@ function ensurePlayerDetail() {
   return detailPromise;
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SORTABLE TABLES
+
+   One sorting pattern for every table on the site, because three rules kept
+   being got wrong a table at a time:
+
+   1. A MISSING VALUE SORTS LAST IN BOTH DIRECTIONS. "Empty beats wrong" applies
+      to order too — ascending by age must not open with the seven players whose
+      age we do not know. A null is not a zero and it is not an empty string.
+   2. TIES BREAK ON A STABLE KEY. Sorting 350 players by position leaves runs of
+      129 ties; with nothing behind them the rows reshuffle on every keystroke in
+      the search box, which reads as a rendering bug rather than as a sort.
+   3. THE FIRST CLICK GOES THE USEFUL WAY. A rank column opens at #1, a rate
+      column opens at the highest, a name column opens at A. Defaulting every
+      column to ascending makes the reader click a fantasy-rank header twice,
+      every single time.
+
+   The header is a real <button> inside the <th> so it is reachable by keyboard,
+   and the <th> carries aria-sort so the order is announced rather than left to
+   an arrow glyph nobody can see.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+const TABLE_DEFS = {};   // id -> { cols, tie, render }
+const TABLE_SORT = {};   // id -> { key, dir } | null
+
+// cols: { key: { get(row), type: 'num'|'text', dir?: 'asc'|'desc' } }
+// tie:  a column spec used to break equal values, before falling back to input order
+function defineTable(id, def) {
+  TABLE_DEFS[id] = def;
+  if (!(id in TABLE_SORT)) {
+    TABLE_SORT[id] = def.initial ? { key: def.initial.key, dir: def.initial.dir } : null;
+  }
+}
+
+function tableSortState(id) { return TABLE_SORT[id] || null; }
+
+// Same column twice flips the direction; a new column starts at its own useful end.
+function setTableSort(id, key) {
+  const def = TABLE_DEFS[id];
+  if (!def || !def.cols[key]) return;
+  const cur = TABLE_SORT[id];
+  if (cur && cur.key === key) {
+    TABLE_SORT[id] = { key, dir: cur.dir === 'asc' ? 'desc' : 'asc' };
+  } else {
+    const col = def.cols[key];
+    TABLE_SORT[id] = { key, dir: col.dir || (col.type === 'text' ? 'asc' : 'desc') };
+  }
+  if (def.render) def.render();
+}
+
+function clearTableSort(id) {
+  const def = TABLE_DEFS[id];
+  TABLE_SORT[id] = def && def.initial ? { key: def.initial.key, dir: def.initial.dir } : null;
+}
+
+function sortIsEmpty(v) {
+  return v === null || v === undefined || v === ''
+    || (typeof v === 'number' && !isFinite(v));
+}
+
+// Rule 1 lives here: emptiness is decided before direction is, so a null lands
+// at the bottom whichever way the arrow points.
+function sortCompare(a, b, dir, type) {
+  const ae = sortIsEmpty(a), be = sortIsEmpty(b);
+  if (ae && be) return 0;
+  if (ae) return 1;
+  if (be) return -1;
+  let c;
+  if (type === 'text') c = String(a).localeCompare(String(b), 'en', { sensitivity: 'base' });
+  else c = a < b ? -1 : a > b ? 1 : 0;
+  return dir === 'asc' ? c : -c;
+}
+
+function sortTableRows(id, rows) {
+  const def = TABLE_DEFS[id];
+  const st = TABLE_SORT[id];
+  if (!def || !st || !def.cols[st.key]) return rows.slice();
+  const col = def.cols[st.key];
+  const tie = col.tie || def.tie;   // a column may break its own ties
+  return rows
+    .map((r, i) => ({ r, i }))
+    .sort((x, y) => {
+      const c = sortCompare(col.get(x.r), col.get(y.r), st.dir, col.type);
+      if (c) return c;
+      if (tie) {
+        const t = sortCompare(tie.get(x.r), tie.get(y.r), 'asc', tie.type || 'text');
+        if (t) return t;
+      }
+      return x.i - y.i;   // input order last, so the same list always renders the same way
+    })
+    .map(w => w.r);
+}
+
+// A <th> that sorts. `cls` and `attrs` pass through for the tables that need
+// their own alignment or a colspan.
+function sortTh(id, key, label, opts) {
+  const o = opts || {};
+  const def = TABLE_DEFS[id];
+  const col = def && def.cols[key];
+  const cls = o.cls ? ` ${o.cls}` : '';
+  if (!col) return `<th class="${(o.cls || '').trim()}"${o.attrs || ''}>${rankEsc(label)}</th>`;
+  const st = TABLE_SORT[id];
+  const on = st && st.key === key;
+  const aria = on ? (st.dir === 'asc' ? 'ascending' : 'descending') : 'none';
+  const arrow = on ? (st.dir === 'asc' ? '↑' : '↓') : '↕';
+  const nextDir = on ? (st.dir === 'asc' ? 'descending' : 'ascending')
+    : (col.dir || (col.type === 'text' ? 'asc' : 'desc')) === 'asc' ? 'ascending' : 'descending';
+  return `<th class="th-sort${on ? ' on' : ''}${cls}" aria-sort="${aria}"${o.attrs || ''}>`
+    + `<button type="button" class="th-sort-btn" onclick="setTableSort('${id}','${key}')"`
+    + ` title="Sort by ${rankEsc(o.title || label)}, ${nextDir}">`
+    // The arrow is inline, inside the text flow, so a label that wraps to two
+    // lines keeps its arrow beside the last word instead of stranding it at the
+    // far edge of the cell — which is what a flex row did to "Fantasy Rank".
+    + `${rankEsc(label)}&nbsp;<span class="th-arrow" aria-hidden="true">${arrow}</span>`
+    + `</button></th>`;
+}
+
+/* Status is written by scripts/lib/status.js as "Word (Detail)" — the word is
+   the vocabulary, the parenthesis is the body part. The profile badge already
+   splits there; the filter and the sort need the same split, so it lives in one
+   place now rather than in three. */
+function statusBase(status) {
+  return String(status || '').split('(')[0].trim();
+}
+
+// Sorting by status should surface the hurt, not run the alphabet. The order
+// comes from data we already own — statusClass first, which the pipeline sets
+// and the stylesheet validates — and only then from the vocabulary word, so a
+// status nobody has seen before still lands in the right band instead of first.
+const STATUS_CLASS_ORDER = { 'status-healthy': 0, 'status-quest': 1, 'status-out': 2 };
+const STATUS_WORD_ORDER = {
+  'Healthy': 0, 'Probable': 1, 'Questionable': 2, 'Doubtful': 3,
+  'Out': 4, 'NFI': 5, 'PUP': 6, 'IR': 7, 'Suspended': 8,
+};
+function statusRank(p) {
+  const cls = STATUS_CLASS_ORDER[p && p.statusClass];
+  const word = STATUS_WORD_ORDER[statusBase(p && p.status)];
+  return (cls === undefined ? 9 : cls) * 10 + (word === undefined ? 9 : word);
+}
+
+// fRank is "RB2", "WR14" — a position and a number in one string. Sorted as
+// text it puts RB10 ahead of RB2, which is the wrong answer in the one column
+// a fantasy reader is most likely to sort by.
+function fRankValue(fRank) {
+  const m = /(\d+)\s*$/.exec(String(fRank || ''));
+  return m ? Number(m[1]) : null;
+}
+function fRankPos(fRank) {
+  const m = /^([A-Za-z]+)/.exec(String(fRank || ''));
+  return m ? m[1].toUpperCase() : '';
+}

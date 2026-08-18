@@ -1530,7 +1530,7 @@ function renderInjuryWatch() {
         <div class="player-quick-name">${player.name}</div>
         <div class="player-quick-detail">${player.pos} · ${player.team} · ${shortInjury}</div>
       </div>
-      <span class="player-quick-status ${player.statusClass}">${player.status.split('(')[0].trim()}</span>
+      <span class="player-quick-status ${player.statusClass}">${statusBase(player.status)}</span>
     </div>`;
   }).join('');
 }

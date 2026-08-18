@@ -439,19 +439,22 @@
           <button class="pos-btn" data-filter="TE" onclick="filterByPos('TE', this)">TE</button>
         </div>
       </div>
+      <div class="table-filters">
+        <label class="filter-field">
+          <span class="filter-label">Team</span>
+          <select class="filter-select" id="playerTeamFilter" onchange="setPlayerFilter('team', this.value)"></select>
+        </label>
+        <label class="filter-field">
+          <span class="filter-label">Status</span>
+          <select class="filter-select" id="playerStatusFilter" onchange="setPlayerFilter('status', this.value)"></select>
+        </label>
+        <span class="table-count" id="playersCount" aria-live="polite"></span>
+        <button type="button" class="filter-reset" id="playersReset" onclick="resetPlayerFilters()" hidden>Clear filters</button>
+      </div>
     </div>
     <div class="table-scroll">
     <table class="players-table">
-      <thead>
-        <tr>
-          <th>Player</th>
-          <th>Pos</th>
-          <th>Team</th>
-          <th>Age</th>
-          <th>Status</th>
-          <th>Fantasy Rank</th>
-        </tr>
-      </thead>
+      <thead id="playersTableHead"></thead>
       <tbody id="playersTableBody"></tbody>
     </table>
     </div>
