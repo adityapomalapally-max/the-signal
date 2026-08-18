@@ -216,3 +216,30 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   `/teams/sea` and `/teams/league`. The switch sits ABOVE the division picker because the picker only
   applies to the by-team view, and the picker is emptied in league view rather than left to invite a
   click that changes nothing. The page intro follows the view too.
+
+## History — the series nobody else has
+- `scripts/build-history.js` appends ONE LINE A DAY to `data/history/*.jsonl`, last of the
+  data steps in the daily Action and before the commit. Every other file here answers "what is
+  true today" and is then overwritten; this is the only record that today ever happened, so a
+  morning it does not run is a morning gone for good.
+- JSONL, not a growing JSON object. A rewritten object makes the entire file a diff every
+  morning — 365 full copies a year in the repo. One appended line is one line of diff.
+- Continuous series (ADP, ranks, projections) get a line a day. STATUS IS AN EVENT, NOT A
+  SERIES: 286 of 350 players are healthy on a given day and logging "still healthy" 350 times
+  would bury the ten lines that matter. Only changes are written, against the state replayed
+  from the log itself — the log IS the state, so a replay that disagrees with players.json
+  means every future diff is computed against fiction. There is a test for exactly that.
+- A FIRST SIGHTING IS NOT A CHANGE. The day the pool first sees a player is the day we started
+  watching, not the day something happened to him; those rows carry `first: true` and a null
+  `from`. Reading them as injuries would invent 350 of them.
+- IDEMPOTENT — a second run replaces the day rather than appending it. The Action gets
+  re-dispatched by hand and a doubled day skews every average computed over the series later.
+- The join is guarded: if the name match rate against the pool falls below 70% the run FAILS
+  rather than writing an empty day. A silently empty series looks like a day when nobody was
+  ranked, and by the time anyone notices the real data is gone.
+- `scripts/backfill-history.js` is a ONE-OFF, deliberately not in the Action: it rewrites the
+  files from git rather than appending. The daily bot has been committing dated snapshots since
+  May, so 23 days and 77 real status changes were recovered from the repo's own history. What
+  it could not reach is permanent — adp.json only goes back to 2026-08-16 because that is when
+  it was added.
+

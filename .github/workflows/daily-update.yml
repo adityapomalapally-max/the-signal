@@ -64,6 +64,13 @@ jobs:
       - name: Build sitemap and robots.txt
         run: node scripts/build-sitemap.js
 
+      # Last of the data steps and before the commit, because it reads what the
+      # steps above just wrote. Every other file here answers "what is true
+      # today" and is then overwritten; this one is the only record that today
+      # ever happened. A morning it does not run is a morning gone for good.
+      - name: Append today to the history series
+        run: node scripts/build-history.js
+
       - name: Check for changes
         id: changes
         run: |
