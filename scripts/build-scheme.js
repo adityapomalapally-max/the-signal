@@ -127,6 +127,40 @@ function leanPbp(csv) {
   return map;
 }
 
+// The defence is the team in the game that is not in possession. The game id
+// is season_week_away_home, so both are on every row.
+function defenseOf(gameId, offense) {
+  const parts = String(gameId || '').split('_');
+  if (parts.length !== 4) return null;
+  const [, , away, home] = parts;
+  const off = teamKey(offense);
+  const a = teamKey(away), h = teamKey(home);
+  if (off === a) return h;
+  if (off === h) return a;
+  return null;
+}
+
+// Defensive personnel by defensive-back count, which is how coaches name it:
+// five backs is nickel, six is dime, four is base. Anything else is a package.
+function shellOf(personnel) {
+  if (!personnel || /\b(K|P|LS)\b/.test(personnel)) return null;
+  const counts = {};
+  for (const part of personnel.split(',')) {
+    const m = part.trim().match(/^(\d+)\s+([A-Z]+)$/);
+    if (m) counts[m[2]] = Number(m[1]);
+  }
+  const dbs = (counts.CB || 0) + (counts.FS || 0) + (counts.SS || 0) + (counts.DB || 0) + (counts.S || 0);
+  if (!dbs) return null;
+  if (dbs <= 4) return 'Base';
+  if (dbs === 5) return 'Nickel';
+  if (dbs === 6) return 'Dime';
+  return 'Quarter';
+}
+
+function blankDefense() {
+  return { snaps: 0, pass: 0, man: 0, zone: 0, blitz: 0, pressure: 0, coverage: {}, shell: {} };
+}
+
 function blank() {
   return {
     plays: 0, boxSum: 0, boxN: 0, heavyBox: 0,
@@ -246,6 +280,7 @@ async function buildSeason(season) {
   const gsisIndex = new Map(pool.filter(p => p.gsisId).map(p => [p.gsisId, p]));
 
   const teams = {};
+  const defenses = {};
   const usage = {};
   const league = { overall: blank(), byGrouping: {}, formation: {}, coverage: {}, manZone: {} };
   let joined = 0, counted = 0, skipped = 0;
@@ -275,6 +310,29 @@ async function buildSeason(season) {
     league.byGrouping[group] = league.byGrouping[group] || blank();
     tally(league.byGrouping[group], row, play);
 
+    // ===== THE DEFENCE THAT FACED THIS SNAP =====
+    const defTeam = defenseOf(r.nflverse_game_id, team);
+    if (defTeam) {
+      const d = defenses[defTeam] = defenses[defTeam] || blankDefense();
+      d.snaps++;
+      if (String(r.was_pressure).toLowerCase() === 'true' || r.was_pressure === '1') d.pressure++;
+      const shell = shellOf(r.defense_personnel);
+      if (shell) d.shell[shell] = (d.shell[shell] || 0) + 1;
+      // Coverage is only charted on dropbacks, so its rates are a share of
+      // PASS snaps. Dividing by every snap would halve every number and call
+      // an aggressive defence a passive one.
+      const mz = (r.defense_man_zone_type || '').trim();
+      const cov = (r.defense_coverage_type || '').trim();
+      if (mz || cov) {
+        d.pass++;
+        if (mz === 'MAN_COVERAGE') d.man++;
+        if (mz === 'ZONE_COVERAGE') d.zone++;
+        if (cov) d.coverage[cov] = (d.coverage[cov] || 0) + 1;
+        const rushers = parseFloat(r.number_of_pass_rushers);
+        if (!Number.isNaN(rushers) && rushers >= 5) d.blitz++;
+      }
+    }
+
     const form = (r.offense_formation || '').trim();
     if (form) {
       t.formation[form] = (t.formation[form] || 0) + 1;
@@ -295,7 +353,26 @@ async function buildSeason(season) {
   // Every counted snap should find its play. A gap here means the join key moved.
   log(`  ${counted} scrimmage snaps, ${joined} joined to pbp (${(joined / counted * 100).toFixed(1)}%), ${skipped} skipped as non-offense`);
   if (joined / counted < 0.99) throw new Error(`only ${(joined / counted * 100).toFixed(1)}% of snaps joined to pbp — the join key moved`);
-  return { teams, league, usage };
+  return { teams, league, usage, defenses };
+}
+
+function shapeDefense(d) {
+  const share = (obj, denom) => {
+    const out = {};
+    for (const [k, v] of Object.entries(obj)) out[k] = rate(v, denom);
+    return out;
+  };
+  return {
+    snaps: d.snaps,
+    passSnaps: d.pass,
+    // Of pass snaps, because that is when coverage exists.
+    manRate: rate(d.man, d.pass),
+    zoneRate: rate(d.zone, d.pass),
+    blitzRate: rate(d.blitz, d.pass),
+    pressureRate: rate(d.pressure, d.snaps),
+    coverage: share(d.coverage, d.pass),
+    shell: share(d.shell, d.snaps),
+  };
 }
 
 function shapeTeam(raw) {
@@ -337,12 +414,25 @@ async function main() {
 
   for (const season of wanted) {
     try {
-      const { teams, league: lg, usage } = await buildSeason(season);
+      const { teams, league: lg, usage, defenses } = await buildSeason(season);
       if (!Object.keys(teams).length) throw new Error('no team rows produced');
       const shaped = {};
       for (const [team, raw] of Object.entries(teams)) shaped[team] = shapeTeam(raw);
+      const leagueDef = blankDefense();
+      for (const [team, d] of Object.entries(defenses)) {
+        if (shaped[team]) shaped[team].defense = shapeDefense(d);
+        // A league baseline, so every team figure can be read as more or less
+        // than everyone else. Without it "18.8% man" is a number with nothing
+        // to be measured against.
+        leagueDef.snaps += d.snaps; leagueDef.pass += d.pass;
+        leagueDef.man += d.man; leagueDef.zone += d.zone;
+        leagueDef.blitz += d.blitz; leagueDef.pressure += d.pressure;
+        for (const [k, v] of Object.entries(d.coverage)) leagueDef.coverage[k] = (leagueDef.coverage[k] || 0) + v;
+        for (const [k, v] of Object.entries(d.shell)) leagueDef.shell[k] = (leagueDef.shell[k] || 0) + v;
+      }
       seasons[season] = shaped;
       league[season] = shapeTeam(lg);
+      league[season].defense = shapeDefense(leagueDef);
       // Share of his own snaps, per grouping. A raw count says how much he
       // played; the share says what he was used FOR.
       const shapedUsage = {};

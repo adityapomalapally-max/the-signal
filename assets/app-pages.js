@@ -1387,6 +1387,53 @@ function schemeLeagueHtml() {
   return h;
 }
 
+// The other half of a team's identity. Coverage only exists on a dropback, so
+// every rate here is a share of PASS snaps — dividing by all snaps would halve
+// each number and make an aggressive defence read as a passive one.
+function schemeDefenseHtml(def, leagueDef, season) {
+  if (!def || !def.passSnaps) return '';
+  const cmp = (v, l) => {
+    if (v === null || l === null || l === undefined) return '';
+    const d = +(v - l).toFixed(1);
+    if (Math.abs(d) < 1) return '<span style="color:var(--text-muted);"> = league</span>';
+    return `<span style="color:${d > 0 ? 'var(--gold)' : 'var(--text-muted)'};"> ${d > 0 ? '+' : ''}${d} vs league</span>`;
+  };
+  const stat = (label, v, l, note) => `<div style="display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:12.5px;">
+      <span style="color:var(--text-secondary);">${label}${note ? `<span style="color:var(--text-muted);font-size:11px;"> ${note}</span>` : ''}</span>
+      <span style="font-family:var(--mono);font-size:11.5px;white-space:nowrap;">${schemePct(v)}${cmp(v, l)}</span>
+    </div>`;
+
+  let h = `<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);">`;
+  h += `<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+    <span style="font-family:var(--mono);font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">What their defence plays</span>
+    <span style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);">${season} · ${def.passSnaps} DROPBACKS FACED</span>
+  </div>`;
+
+  h += `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:16px;">`;
+  h += `<div>`;
+  h += stat('Man coverage', def.manRate, leagueDef && leagueDef.manRate, 'of dropbacks');
+  h += stat('Zone coverage', def.zoneRate, leagueDef && leagueDef.zoneRate, 'of dropbacks');
+  h += stat('Blitz', def.blitzRate, leagueDef && leagueDef.blitzRate, '5+ rushers');
+  h += stat('Pressure', def.pressureRate, leagueDef && leagueDef.pressureRate, 'all snaps');
+  h += `</div>`;
+
+  const shells = Object.entries(def.shell || {}).sort((a, b) => b[1] - a[1]).filter(([, v]) => v >= 2);
+  const covs = Object.entries(def.coverage || {}).sort((a, b) => b[1] - a[1]).filter(([, v]) => v >= 3).slice(0, 4);
+  h += `<div>`;
+  if (shells.length) {
+    h += `<div style="font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">Personnel</div>`;
+    h += shells.map(([k, v]) => `<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0;color:var(--text-secondary);"><span>${rankEsc(k)}</span><span style="font-family:var(--mono);">${schemePct(v)}</span></div>`).join('');
+  }
+  if (covs.length) {
+    h += `<div style="font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin:10px 0 4px;">Coverage called</div>`;
+    h += covs.map(([k, v]) => `<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0;color:var(--text-secondary);"><span>${rankEsc(k.replace(/_/g, ' '))}</span><span style="font-family:var(--mono);">${schemePct(v)}</span></div>`).join('');
+  }
+  h += `</div></div>`;
+  h += `<div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.6;margin-top:10px;">Coverage and rush counts are charted on dropbacks only, so those rates are a share of pass snaps rather than of every snap. Nickel is five defensive backs, dime six, base four.</div>`;
+  h += `</div>`;
+  return h;
+}
+
 function schemeHtml(team) {
   if (!schemeData || !schemeData.seasons) return '';
   const years = (schemeData.meta.seasons || []).slice().sort();
@@ -1495,6 +1542,8 @@ function schemeHtml(team) {
     }
     h += `</div>`;
   }
+
+  h += schemeDefenseHtml(cur.defense, lg && lg.defense, latest);
 
   h += `<div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.7;margin-top:14px;">`
     + `Explosive is ${rankEsc(schemeData.meta.explosive)}; a loaded box is ${rankEsc(schemeData.meta.heavyBox)}. `

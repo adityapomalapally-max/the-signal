@@ -103,3 +103,43 @@ test('every team-season names its head coach', () => {
     }
   }
 });
+
+test('defensive rates are shares of the right denominator', () => {
+  // Coverage only exists on a dropback. Dividing by every snap would halve
+  // each number and read an aggressive defence as a passive one.
+  for (const yr of seasons) {
+    for (const [team, d] of Object.entries(scheme.seasons[yr])) {
+      const def = d.defense;
+      if (!def) continue;
+      assert.ok(def.passSnaps <= def.snaps, `${team} ${yr}: more dropbacks than snaps`);
+      for (const k of ['manRate', 'zoneRate', 'blitzRate', 'pressureRate']) {
+        if (def[k] === null) continue;
+        assert.ok(def[k] >= 0 && def[k] <= 100, `${team} ${yr} ${k} = ${def[k]}`);
+      }
+      if (def.manRate !== null && def.zoneRate !== null) {
+        const total = def.manRate + def.zoneRate;
+        assert.ok(Math.abs(total - 100) < 2, `${team} ${yr}: man + zone = ${total.toFixed(1)}%`);
+      }
+    }
+  }
+});
+
+test('every season has a league defensive baseline to compare against', () => {
+  for (const yr of seasons) {
+    const def = scheme.league[yr] && scheme.league[yr].defense;
+    assert.ok(def, `${yr} has no league defensive baseline`);
+    assert.ok(def.manRate > 5 && def.manRate < 95, `${yr} league man rate is ${def.manRate}%`);
+    const biggest = Math.max(...Object.values(scheme.seasons[yr]).filter(t => t.defense).map(t => t.defense.snaps));
+    assert.ok(def.snaps > biggest * 10, `${yr} league snaps ${def.snaps} vs biggest defence ${biggest}`);
+  }
+});
+
+test('a defensive shell distribution sums to 100', () => {
+  for (const yr of seasons) {
+    for (const [team, d] of Object.entries(scheme.seasons[yr])) {
+      if (!d.defense || !Object.keys(d.defense.shell).length) continue;
+      const total = Object.values(d.defense.shell).reduce((a, b) => a + b, 0);
+      assert.ok(Math.abs(total - 100) < 1.5, `${team} ${yr}: shells sum to ${total.toFixed(1)}%`);
+    }
+  }
+});

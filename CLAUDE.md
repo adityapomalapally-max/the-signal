@@ -191,3 +191,9 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - A `.then()` that re-renders the view it was called from must be guarded on the data still being
   missing. renderProfileTab called ensureUsage().then(render), the cached promise resolved
   immediately, and the tab locked up in an infinite render loop.
+- The defensive half of scheme.json: the defence is the team in the game NOT in possession, parsed out
+  of `nflverse_game_id` (season_week_away_home). Coverage, man/zone and rusher counts are charted on
+  DROPBACKS ONLY (49% of snaps), so those rates are a share of pass snaps — dividing by every snap
+  halves each number and reads an aggressive defence as a passive one. Shell is by defensive-back
+  count: five is nickel, six dime, four base. Every figure carries a league baseline for the same
+  season, because "18.8% man" means nothing without one.
