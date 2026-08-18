@@ -211,3 +211,8 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - A shell goes STALE the moment index.html changes, and a stale shell serves an old version of the
   whole site. The test suite compares every shell byte-for-byte with index.html below `</head>`.
   Edit index.html, re-run build-page-shells.js. `scripts/build-og-image.js` makes the cards.
+- The Teams page answers TWO questions and they were sharing one scroll: what is this team, and what
+  is happening across the league. They are tabs now (`teamsView`), each with its own URL —
+  `/teams/sea` and `/teams/league`. The switch sits ABOVE the division picker because the picker only
+  applies to the by-team view, and the picker is emptied in league view rather than left to invite a
+  click that changes nothing. The page intro follows the view too.

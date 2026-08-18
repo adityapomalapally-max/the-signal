@@ -416,10 +416,31 @@ function sosCellStyle(oppRank) {
 const DIVISION_ORDER = ['AFC East', 'AFC North', 'AFC South', 'AFC West',
   'NFC East', 'NFC North', 'NFC South', 'NFC West'];
 
+// The Teams page answers two different questions and they were sharing one
+// scroll: what is this team, and what is happening across the league. Putting
+// the league board on top buried the team the reader actually clicked, so the
+// two are tabs now, each with its own URL.
+let teamsView = 'team';   // 'team' | 'league'
+
+function setTeamsView(view) {
+  teamsView = view;
+  setRoute(view === 'league' ? 'teams/league' : 'teams/' + String(currentTeam || '').toLowerCase());
+  renderTeamPage();
+}
+
 function setTeam(abbr) {
   currentTeam = abbr;
+  teamsView = 'team';
   setRoute('teams/' + abbr.toLowerCase());
   renderTeamPage();
+}
+
+function teamsTabsHtml() {
+  const tab = (view, label, note) => `<button class="pos-btn${teamsView === view ? ' active' : ''}" onclick="setTeamsView('${view}')" title="${rankEsc(note)}">${label}</button>`;
+  return `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px;">
+    ${tab('team', 'By team', 'One team: who gets the ball, how they line up, what their defence plays, and the schedule')}
+    ${tab('league', 'Across the league', 'All 32 ranked, and the biggest identity shifts of the season')}
+  </div>`;
 }
 
 // One usage row: name, the bar, the number. Shares are already percentages.
@@ -458,6 +479,16 @@ function teamBlock(title, sub, list, valueOf, unitLabel) {
     ${teamUsageRows(sorted, valueOf, unitLabel, max)}</div>`;
 }
 
+// A labelled break between the three questions this page answers. Without them
+// the team view is one long scroll of cards and the reader has to work out
+// where target share stops and scheme begins.
+function teamSectionLabel(title, sub) {
+  return `<div style="margin:26px 0 12px;">
+    <div style="font-family:var(--serif);font-size:19px;font-weight:700;">${rankEsc(title)}</div>
+    <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-muted);margin-top:3px;">${rankEsc(sub)}</div>
+  </div>`;
+}
+
 function renderTeamPicker() {
   const el = document.getElementById('teamPicker');
   if (!el || !teamsData) return;
@@ -476,12 +507,27 @@ function renderTeamPage() {
   if (!body) return;
   if (!teamsData) { body.innerHTML = `<div class="medical-card"><div class="medical-detail">Loading teams…</div></div>`; return; }
   if (!currentTeam || !teamsData.teams[currentTeam]) currentTeam = Object.keys(teamsData.teams).sort()[0];
+
+  const tabsEl = document.getElementById('teamsTabs');
+  if (tabsEl) tabsEl.innerHTML = teamsTabsHtml();
+
+  const introEl = document.getElementById('teamsIntro');
+  const picker = document.getElementById('teamPicker');
+  if (teamsView === 'league') {
+    // The standing intro describes one team's page; leaving it up over a
+    // league board describes something the reader is not looking at.
+    if (introEl) introEl.textContent = 'All 32 offences side by side — personnel, the box each grouping draws, explosive rate and efficiency — and the biggest identity shifts of the season.';
+    // The picker is a team control; showing it above a league board invites a
+    // click that changes nothing on screen.
+    if (picker) picker.innerHTML = '';
+    body.innerHTML = schemeLeagueHtml() || `<div class="medical-card"><div class="medical-detail">Loading the league…</div></div>`;
+    return;
+  }
   renderTeamPicker();
 
   const t = teamsData.teams[currentTeam];
   const m = teamsData.meta;
-  const intro = document.getElementById('teamsIntro');
-  if (intro) intro.textContent = m.note;
+  if (introEl) introEl.textContent = m.note;
 
   // The live week. Before kickoff this is week 1, which is what a reader
   // wants to see in August anyway.
@@ -504,6 +550,7 @@ function renderTeamPage() {
   const backs = t.roster.filter(p => p.pos === 'RB');
   const qbs = t.roster.filter(p => p.pos === 'QB');
 
+  h += teamSectionLabel('Who gets the ball', `Volume as it was actually distributed in ${m.statsSeason}`);
   h += `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:14px;margin-bottom:14px;">`;
   h += teamBlock('Target share', `WHO THE PASSES GO TO · ${m.statsSeason}`, pass.filter(p => typeof p.tgtShare === 'number'), p => p.tgtShare, '%');
   h += teamBlock('Air yards share', `WHO THE OFFENSE THROWS TO DOWNFIELD · ${m.statsSeason}`, pass.filter(p => typeof p.airYardShare === 'number'), p => p.airYardShare, '%');
@@ -525,7 +572,10 @@ function renderTeamPage() {
   }
 
   // Full schedule strip — the bye shows as a gap, which is the point.
-  h = schemeLeagueHtml() + h + schemeHtml(currentTeam);
+  const scheme = schemeHtml(currentTeam);
+  h = h
+    + (scheme ? teamSectionLabel('How they line up', 'Personnel, what it draws from the defence, and what their own defence plays') + scheme : '')
+    + teamSectionLabel('The season ahead', 'Every week, shaded by what that defence conceded to the position you pick');
 
   const sosTeam = sosData && sosData.teams[currentTeam] && sosData.teams[currentTeam][sosPos];
   h += `<div class="medical-card" style="padding:18px;">

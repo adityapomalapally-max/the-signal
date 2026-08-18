@@ -677,9 +677,14 @@ function handleRoute() {
     switchPage('lab');
     return;
   }
-  // #teams/sea
+  // /teams/sea for one team, /teams/league for the league board
   if (parts[0] === 'teams') {
-    if (parts[1]) currentTeam = parts[1].toUpperCase();
+    if (parts[1] === 'league') {
+      teamsView = 'league';
+    } else if (parts[1]) {
+      teamsView = 'team';
+      currentTeam = parts[1].toUpperCase();
+    }
     switchPage('teams');
     return;
   }
@@ -810,6 +815,12 @@ function metaForRoute(route) {
   }
 
   if (parts[0] === 'teams') {
+    if (parts[1] === 'league') {
+      return {
+        title: 'League Scheme Board — The Signal',
+        description: 'All 32 offences ranked by personnel, the box they draw, explosive rate and EPA — plus the biggest identity shifts of the season.',
+      };
+    }
     const abbr = parts[1].toUpperCase();
     return {
       title: `${abbr} — Scheme, Personnel & Target Share | The Signal`,
