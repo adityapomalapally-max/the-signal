@@ -525,7 +525,7 @@ function renderTeamPage() {
   }
 
   // Full schedule strip — the bye shows as a gap, which is the point.
-  h += schemeHtml(currentTeam);
+  h = schemeLeagueHtml() + h + schemeHtml(currentTeam);
 
   const sosTeam = sosData && sosData.teams[currentTeam] && sosData.teams[currentTeam][sosPos];
   h += `<div class="medical-card" style="padding:18px;">
@@ -1288,6 +1288,103 @@ function schemeArrow(d) {
   const up = d > 0;
   const color = up ? 'var(--teal)' : 'var(--blue)';
   return `<span style="font-family:var(--mono);font-size:10px;color:${color};">${up ? '▲' : '▼'}${Math.abs(d).toFixed(1)}</span>`;
+}
+
+// ===== THE LEAGUE, AT A GLANCE =====
+// A team page answers "what is this offence". This answers "what is happening
+// in the league", which is the question that makes a scheme page worth opening
+// when you do not already have a team in mind. The movers lead because a shift
+// is news; the table is there to check the claim against everyone else.
+let schemeSort = '12';
+
+function setSchemeSort(v) { schemeSort = v; renderTeamPage(); }
+
+function schemeLeagueHtml() {
+  if (!schemeData || !schemeData.seasons) return '';
+  const years = (schemeData.meta.seasons || []).slice().sort();
+  const latest = years[years.length - 1];
+  const prevYear = years[years.length - 2];
+  const cur = schemeData.seasons[latest];
+  const prev = prevYear ? schemeData.seasons[prevYear] : null;
+  if (!cur) return '';
+
+  // Biggest year-over-year move in any grouping that is a real part of the diet.
+  const movers = [];
+  if (prev) {
+    for (const [team, d] of Object.entries(cur)) {
+      if (!prev[team]) continue;
+      for (const [g, s2] of Object.entries(d.personnel)) {
+        const before = prev[team].personnel[g] ? prev[team].personnel[g].rate : 0;
+        const delta = +(s2.rate - before).toFixed(1);
+        if (Math.abs(delta) >= SCHEME_SHIFT_PTS && (s2.rate >= SCHEME_MIN_RATE || before >= SCHEME_MIN_RATE)) {
+          movers.push({
+            team, g, delta, before, now: s2.rate,
+            coach: d.coach, coachChanged: prev[team].coach && d.coach && prev[team].coach !== d.coach,
+          });
+        }
+      }
+    }
+    movers.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+    // One row per team, keeping its biggest move. A team that went heavier
+    // necessarily went lighter somewhere else, so listing both halves tells the
+    // same story twice and costs another team its place on the list. The list
+    // is already sorted, so the first occurrence of a team is its largest.
+  }
+
+  const seenTeam = new Set();
+  const topMovers = movers.filter(m => (seenTeam.has(m.team) ? false : (seenTeam.add(m.team), true)));
+
+  let h = `<div class="medical-card" style="padding:18px;margin-bottom:16px;">`;
+  h += `<div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;">
+    <span style="font-family:var(--serif);font-size:17px;font-weight:700;">The League in ${latest}</span>
+    <span style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);letter-spacing:0.5px;">32 TEAMS · ${schemeData.league[latest] ? schemeData.league[latest].plays.toLocaleString() : ''} SNAPS</span>
+  </div>`;
+
+  if (topMovers.length) {
+    h += `<div style="font-family:var(--mono);font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin:14px 0 6px;">Biggest identity shifts from ${prevYear}</div>`;
+    for (const m of topMovers.slice(0, 5)) {
+      h += `<div style="display:flex;align-items:baseline;gap:10px;padding:5px 0;border-bottom:1px solid var(--border-subtle);font-size:13px;flex-wrap:wrap;">
+        <span style="font-family:var(--mono);font-size:11.5px;color:var(--gold);cursor:pointer;min-width:38px;" onclick="setTeam('${jsAttr(m.team)}')">${rankEsc(m.team)}</span>
+        <span style="color:var(--text);">${rankEsc(m.g)} personnel ${m.delta > 0 ? 'up' : 'down'} ${Math.abs(m.delta).toFixed(1)}</span>
+        <span style="color:var(--text-muted);font-family:var(--mono);font-size:11px;">${m.before.toFixed(1)}% → ${m.now.toFixed(1)}%</span>
+        ${m.coachChanged ? `<span style="font-family:var(--mono);font-size:10px;color:var(--teal);">NEW HC ${rankEsc((m.coach || '').split(' ').pop().toUpperCase())}</span>` : ''}
+      </div>`;
+    }
+  }
+
+  const SORTS = { '12': '12 personnel', '11': '11 personnel', heavyBoxRate: 'Box drawn', explosiveRate: 'Explosive', epaPerPlay: 'EPA/play' };
+  const val = (d) => {
+    if (schemeSort === 'heavyBoxRate' || schemeSort === 'explosiveRate' || schemeSort === 'epaPerPlay') return d[schemeSort];
+    return d.personnel[schemeSort] ? d.personnel[schemeSort].rate : 0;
+  };
+  const rows = Object.entries(cur).sort((a, b) => (val(b[1]) ?? -99) - (val(a[1]) ?? -99));
+
+  h += `<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:16px 0 8px;">
+    <span style="font-family:var(--mono);font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-right:4px;">Rank by</span>`;
+  for (const [k, label] of Object.entries(SORTS)) {
+    h += `<button class="pos-btn${schemeSort === k ? ' active' : ''}" onclick="setSchemeSort('${k}')">${label}</button>`;
+  }
+  h += `</div>`;
+
+  h += `<div class="table-scroll"><table class="scheme-table"><thead><tr>
+    <th>Team</th><th>11</th><th>12</th><th>7+ box</th><th>Explosive</th><th>EPA/play</th><th>Head coach</th>
+  </tr></thead><tbody>`;
+  for (const [team, d] of rows) {
+    const p = (g) => d.personnel[g] ? schemePct(d.personnel[g].rate) : '—';
+    h += `<tr style="cursor:pointer;" onclick="setTeam('${jsAttr(team)}')">
+      <td style="font-family:var(--mono);color:var(--gold);">${rankEsc(team)}</td>
+      <td class="scheme-num">${p('11')}</td>
+      <td class="scheme-num">${p('12')}</td>
+      <td class="scheme-num">${schemePct(d.heavyBoxRate)}</td>
+      <td class="scheme-num">${schemePct(d.explosiveRate)}</td>
+      <td class="scheme-num">${d.epaPerPlay === null || d.epaPerPlay === undefined ? '—' : (d.epaPerPlay > 0 ? '+' : '') + d.epaPerPlay}</td>
+      <td style="white-space:nowrap;color:var(--text-secondary);">${rankEsc(d.coach || '')}</td>
+    </tr>`;
+  }
+  h += `</tbody></table></div>`;
+  h += `<div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.6;margin-top:10px;">A shift counts when a grouping moves ${SCHEME_SHIFT_PTS}+ points and is at least ${SCHEME_MIN_RATE}% of the diet on one side of the move — below that a single game plan moves the number. Click a team for the full picture.</div>`;
+  h += `</div>`;
+  return h;
 }
 
 function schemeHtml(team) {
