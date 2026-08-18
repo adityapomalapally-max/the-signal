@@ -29,6 +29,27 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'og-image.png');
+const ASSET_DIR = path.join(ROOT, 'assets', 'og');
+
+/**
+ * A card per section, because the site now has 670 real URLs and a link to any
+ * of them unfurled as the same generic brand card. The section pages are the
+ * ones people actually paste into a group chat, so they get their own tagline
+ * and blurb; deeper pages keep the house card.
+ *
+ * The eyebrow stays "NFL Intelligence" on every one of them — the card should
+ * still read as this site first and the page second.
+ */
+const SECTIONS = {
+  players:  { tagline: 'Player Database', blurb: 'Athletic profiles, production, sourced injury history and current status for every fantasy-relevant player.' },
+  rankings: { tagline: 'Fantasy Rankings', blurb: 'Half-PPR redraft ranks with the projection range derived, and missed-time risk priced as a second downside.' },
+  medicals: { tagline: 'Medical Intelligence', blurb: 'Sourced injury histories, official injury-report records, and research-backed return-to-play curves.' },
+  teams:    { tagline: 'Scheme & Identity', blurb: 'Personnel groupings, the box they draw, coverage faced, and how each offence changed year over year.' },
+  lab:      { tagline: 'Leaders', blurb: 'Positional leaderboards from nflverse and Next Gen Stats. Every board states its qualifier.' },
+  fantasy:  { tagline: 'Value Board', blurb: 'Our positional ranks against consensus ADP, compared rank to rank so the gaps mean something.' },
+  draft:    { tagline: 'Draft Lab', blurb: 'Draft-capital hit rates by round and position — the base rate any prospect model has to beat.' },
+  compare:  { tagline: 'Player Comparison', blurb: 'Two or three players on the same axes, with percentiles stated against the position they actually play.' },
+};
 const W = 1200, H = 630;
 const SITE_HOST = 'the-signal-gamma.vercel.app';
 
@@ -39,7 +60,7 @@ const CHROME_CANDIDATES = [
   '/usr/bin/chromium'
 ];
 
-const card = `<!doctype html>
+const cardFor = ({ tagline, blurb }) => `<!doctype html>
 <html><head><meta charset="utf-8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -80,8 +101,8 @@ const card = `<!doctype html>
   <div style="position:relative;">
     <div class="eyebrow">NFL Intelligence</div>
     <div class="mark"><span class="the">THE</span><span class="name">Sign<em>al</em></span></div>
-    <div class="tagline">Signal over noise.</div>
-    <div class="blurb">Injury intelligence, Next Gen tracking data, and projections you can see the working for.</div>
+    <div class="tagline">${tagline}</div>
+    <div class="blurb">${blurb}</div>
   </div>
   <div class="foot"><span class="host">${SITE_HOST}</span><span class="by">by Adi</span></div>
 </div></body></html>`;
@@ -98,10 +119,11 @@ function main() {
   }
 
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'signal-og-'));
-  const html = path.join(tmp, 'card.html');
-  fs.writeFileSync(html, card);
+  fs.mkdirSync(ASSET_DIR, { recursive: true });
 
-  try {
+  const shoot = (spec, out) => {
+    const html = path.join(tmp, `card-${path.basename(out, '.png')}.html`);
+    fs.writeFileSync(html, cardFor(spec));
     execFileSync(chrome, [
       '--headless=new', '--disable-gpu', '--hide-scrollbars',
       '--force-device-scale-factor=1',
@@ -109,15 +131,23 @@ function main() {
       // Webfonts come off the network; give them a beat to arrive so the
       // card never ships in the Georgia fallback by accident.
       '--virtual-time-budget=4000',
-      `--screenshot=${OUT}`,
+      `--screenshot=${out}`,
       `file://${html}`
     ], { stdio: 'pipe' });
+  };
+
+  try {
+    shoot({ tagline: 'Signal over noise.', blurb: 'Injury intelligence, Next Gen tracking data, and projections you can see the working for.' }, OUT);
+    for (const [slug, spec] of Object.entries(SECTIONS)) {
+      shoot(spec, path.join(ASSET_DIR, `${slug}.png`));
+    }
   } catch (e) {
     console.error(`[og] Chrome failed: ${e.message}`);
     process.exit(1);
   } finally {
     fs.rmSync(tmp, { recursive: true, force: true });
   }
+  console.log(`[og] wrote ${Object.keys(SECTIONS).length} section cards to assets/og/`);
 
   if (!fs.existsSync(OUT)) {
     console.error('[og] Chrome reported success but wrote no file.');

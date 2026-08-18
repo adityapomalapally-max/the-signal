@@ -197,3 +197,17 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   halves each number and reads an aggressive defence as a passive one. Shell is by defensive-back
   count: five is nickel, six dime, four base. Every figure carries a league baseline for the same
   season, because "18.8% man" means nothing without one.
+
+## Social cards and page shells
+- SOCIAL SCRAPERS DO NOT RUN JAVASCRIPT. Twitter, Slack, iMessage and Discord read the HTML as served,
+  so the per-route title/description/og:image that `applyRouteMeta()` sets at runtime is invisible to
+  them. Google renders JS and does see it; a link pasted in a group chat does not.
+- `scripts/build-page-shells.js` writes one real file per section (players.html, medicals.html, …),
+  identical to index.html except in the head. `cleanUrls` serves players.html at /players, and the
+  filesystem is checked before rewrites so it beats the catch-all. The router reads the same path and
+  renders the same page — a shared link and a click still land on identical markup.
+- Sections only. A shell per player would be 350 copies of a 43KB document for a card that says little
+  more than the house one; deep pages keep the site card and their JS-set title.
+- A shell goes STALE the moment index.html changes, and a stale shell serves an old version of the
+  whole site. The test suite compares every shell byte-for-byte with index.html below `</head>`.
+  Edit index.html, re-run build-page-shells.js. `scripts/build-og-image.js` makes the cards.
