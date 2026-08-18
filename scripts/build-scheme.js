@@ -1,0 +1,359 @@
+#!/usr/bin/env node
+
+/**
+ * The Signal — Scheme & Identity Builder
+ *
+ * Generates data/scheme.json: how each team actually lines up, what that draws
+ * from the defense, and what it produces.
+ *
+ * Two nflverse sources, joined per play:
+ *   pbp_participation — offense_personnel, offense_formation, defenders_in_box,
+ *                       defense_personnel, coverage, pressure
+ *   pbp               — play_type, yards_gained, epa
+ * The join is game_id + play_id and it is exact: 45,184 of 45,184 rows in 2025.
+ *
+ * WHY THIS EXISTS. Personnel is the one public number that shows a coach's
+ * intent rather than his results. It is also the rare case where the causal
+ * story is measurable end to end: heavier personnel draws more defenders into
+ * the box, a heavier box is easier to throw over, and the explosive rate moves.
+ * The site can show all three links instead of asserting the last one.
+ *
+ * Run: node scripts/build-scheme.js                 (current season only)
+ *      node scripts/build-scheme.js --all           (rebuild every season)
+ *      node scripts/build-scheme.js --seasons 2024,2025
+ *
+ * Past seasons never change, so the default run refreshes only the live one and
+ * keeps the rest from the committed file. That is what keeps this affordable in
+ * the daily Action: one season is ~70MB, all of them is not.
+ */
+
+const fs = require('fs');
+const path = require('path');
+const { fetchCSV, parseCSV, parseCSVLine } = require('./lib/match');
+
+const DATA_DIR = path.join(__dirname, '..', 'data');
+const OUT = path.join(DATA_DIR, 'scheme.json');
+
+// The seasons participation data covers well. 2016-2022 exists but the schema
+// and the league both moved; three seasons is enough to read a trend and short
+// enough that every number on the page is about the current game.
+const HISTORY = [2023, 2024, 2025];
+
+// An NFL season is named for the year it starts, and starts in September.
+function currentSeason(now = new Date()) {
+  return now.getUTCMonth() >= 8 ? now.getUTCFullYear() : now.getUTCFullYear() - 1;
+}
+
+// Explosive play, stated so nobody has to guess: 20+ yards passing, 10+ rushing.
+// These are the conventional thresholds; the number moves a lot if you change
+// them, so the page prints the definition next to the figure.
+const EXPLOSIVE_PASS = 20;
+const EXPLOSIVE_RUSH = 10;
+
+// A box of 7+ is "loaded" — the defense has committed an extra man to the run
+// and is short a defender in coverage.
+const HEAVY_BOX = 7;
+
+// Below this a grouping's splits are noise wearing a number's clothes. Reported
+// as present in the mix, but no EPA or explosive rate is drawn for it.
+const MIN_GROUPING_PLAYS = 40;
+
+function log(msg) { console.log(`[scheme] ${msg}`); }
+
+// nflverse calls the Rams LA; every other file on this site calls them LAR.
+// Unaliased, scheme.json is keyed differently from teams.json and the Rams'
+// whole section renders as nothing — a silent join failure, not an error.
+const TEAM_ALIAS = { LA: 'LAR', OAK: 'LV', SD: 'LAC', STL: 'LAR' };
+const teamKey = (abbr) => TEAM_ALIAS[abbr] || abbr;
+
+// Zero defenders in the box is not a reading, it is an unrecorded value — it
+// occurs on 9,093 of 45,184 rows in 2025. Averaged in as a zero it drags every
+// box figure on the page down. Empty beats wrong.
+function boxOrNull(raw) {
+  const n = parseFloat(raw);
+  return (Number.isNaN(n) || n <= 0) ? null : n;
+}
+
+// Positions that mean this is not an offensive scrimmage snap. Participation
+// includes punts and kickoffs, whose "offense personnel" is a coverage unit.
+const NON_OFFENSE = /\b(CB|FS|SS|DB|LB|ILB|OLB|MLB|DE|DT|NT|K|P|LS)\b/;
+
+/**
+ * "1 RB, 2 TE, 2 WR" -> "12". First digit backs, second tight ends, which is
+ * how everyone in football says it. FB counts as a back, so 21 personnel is
+ * two backs and one tight end.
+ */
+function grouping(personnel) {
+  if (!personnel || NON_OFFENSE.test(personnel)) return null;
+  const counts = {};
+  for (const part of personnel.split(',')) {
+    const m = part.trim().match(/^(\d+)\s+([A-Z]+)$/);
+    if (m) counts[m[2]] = Number(m[1]);
+  }
+  const backs = (counts.RB || 0) + (counts.FB || 0);
+  const tes = counts.TE || 0;
+  // A snap with no skill players at all is a spike, kneel or bad row.
+  if (!counts.WR && !tes && !backs) return null;
+  return `${backs}${tes}`;
+}
+
+// pbp is ~380 columns and we need six. Building full objects for 48k rows of
+// that is minutes of work and a lot of memory for nothing.
+function leanPbp(csv) {
+  const lines = csv.split('\n');
+  const header = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+  const idx = {};
+  for (const col of ['game_id', 'play_id', 'play_type', 'yards_gained', 'epa', 'pass', 'rush']) {
+    idx[col] = header.indexOf(col);
+    if (idx[col] === -1) throw new Error(`pbp is missing the ${col} column — the schema moved`);
+  }
+  const map = new Map();
+  for (let i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    const v = parseCSVLine(lines[i]);
+    const num = c => { const n = parseFloat(v[idx[c]]); return Number.isNaN(n) ? null : n; };
+    map.set(`${v[idx.game_id].replace(/"/g, '')}|${v[idx.play_id]}`, {
+      playType: v[idx.play_type].replace(/"/g, ''),
+      yards: num('yards_gained'),
+      epa: num('epa'),
+      isPass: num('pass') === 1,
+      isRush: num('rush') === 1,
+    });
+  }
+  return map;
+}
+
+function blank() {
+  return {
+    plays: 0, boxSum: 0, boxN: 0, heavyBox: 0,
+    epaSum: 0, epaN: 0, explosive: 0, explosiveN: 0, pass: 0,
+  };
+}
+
+function tally(bucket, row, play) {
+  bucket.plays++;
+  if (row.box !== null) {
+    bucket.boxSum += row.box;
+    bucket.boxN++;
+    if (row.box >= HEAVY_BOX) bucket.heavyBox++;
+  }
+  if (!play) return;
+  if (play.epa !== null) { bucket.epaSum += play.epa; bucket.epaN++; }
+  if (play.isPass || play.isRush) {
+    bucket.explosiveN++;
+    if (play.isPass) bucket.pass++;
+    const bar = play.isPass ? EXPLOSIVE_PASS : EXPLOSIVE_RUSH;
+    if (play.yards !== null && play.yards >= bar) bucket.explosive++;
+  }
+}
+
+const rate = (n, d) => (d ? +(n / d * 100).toFixed(1) : null);
+const mean = (sum, n) => (n ? +(sum / n).toFixed(2) : null);
+
+function summarise(b, { withSplits = true } = {}) {
+  const out = { plays: b.plays };
+  // The box figures carry the whole mechanism argument, so they answer to the
+  // same qualifier as everything else. A 1.0 box average off four snaps is not
+  // a finding, and gating the EPA while publishing that was inconsistent.
+  if (b.boxN >= MIN_GROUPING_PLAYS) {
+    out.boxAvg = mean(b.boxSum, b.boxN);
+    out.heavyBoxRate = rate(b.heavyBox, b.boxN);
+  } else {
+    out.boxAvg = null;
+    out.heavyBoxRate = null;
+  }
+  // Empty beats wrong: under the qualifier the splits are simply absent.
+  if (withSplits && b.plays >= MIN_GROUPING_PLAYS) {
+    out.epaPerPlay = b.epaN ? +(b.epaSum / b.epaN).toFixed(3) : null;
+    out.explosiveRate = rate(b.explosive, b.explosiveN);
+    out.passRate = rate(b.pass, b.explosiveN);
+  }
+  return out;
+}
+
+async function coachesBySeason() {
+  // Head coach per game. The play-caller is usually the coordinator and is not
+  // in any public dataset — see data/playcallers.json for the hand-kept layer.
+  const csv = await fetchCSV('https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv');
+  const rows = parseCSV(csv);
+  const out = {};
+  for (const r of rows) {
+    const season = Number(r.season);
+    if (!season) continue;
+    for (const side of ['home', 'away']) {
+      const team = teamKey(r[`${side}_team`]);
+      const coach = r[`${side}_coach`];
+      if (!team || !coach) continue;
+      out[season] = out[season] || {};
+      out[season][team] = out[season][team] || {};
+      out[season][team][coach] = (out[season][team][coach] || 0) + 1;
+    }
+  }
+  // A team that changed coaches mid-season gets the one who coached the most
+  // games, and the fact that it changed is recorded alongside.
+  const resolved = {};
+  for (const [season, teams] of Object.entries(out)) {
+    resolved[season] = {};
+    for (const [team, tally] of Object.entries(teams)) {
+      const ranked = Object.entries(tally).sort((a, b) => b[1] - a[1]);
+      resolved[season][team] = { coach: ranked[0][0], games: ranked[0][1] };
+      if (ranked.length > 1) {
+        resolved[season][team].alsoCoachedBy = ranked.slice(1).map(([name, games]) => ({ name, games }));
+      }
+    }
+  }
+  return resolved;
+}
+
+async function buildSeason(season) {
+  log(`fetching ${season}...`);
+  const base = 'https://github.com/nflverse/nflverse-data/releases/download';
+  const [partCsv, pbpCsv] = await Promise.all([
+    // participation ships uncompressed only — there is no .csv.gz asset.
+    fetchCSV(`${base}/pbp_participation/pbp_participation_${season}.csv`),
+    fetchCSV(`${base}/pbp/play_by_play_${season}.csv.gz`),
+  ]);
+
+  const plays = leanPbp(pbpCsv);
+  const part = parseCSV(partCsv);
+  log(`  ${part.length} participation rows, ${plays.size} plays`);
+
+  const teams = {};
+  const league = { overall: blank(), byGrouping: {}, formation: {}, coverage: {}, manZone: {} };
+  let joined = 0, counted = 0, skipped = 0;
+
+  for (const r of part) {
+    const team = r.possession_team;
+    const group = grouping(r.offense_personnel);
+    if (!team || !group) { skipped++; continue; }
+
+    const row = { box: boxOrNull(r.defenders_in_box) };
+    const play = plays.get(`${r.nflverse_game_id}|${r.play_id}`) || null;
+    // Kneels and spikes are not scheme.
+    if (play && (play.playType === 'qb_kneel' || play.playType === 'qb_spike')) { skipped++; continue; }
+
+    const t = teams[teamKey(team)] = teams[teamKey(team)] || {
+      overall: blank(), byGrouping: {}, formation: {}, coverage: {}, manZone: {},
+    };
+
+    counted++;
+    if (play) joined++;
+    tally(t.overall, row, play);
+    t.byGrouping[group] = t.byGrouping[group] || blank();
+    tally(t.byGrouping[group], row, play);
+
+    tally(league.overall, row, play);
+    league.byGrouping[group] = league.byGrouping[group] || blank();
+    tally(league.byGrouping[group], row, play);
+
+    const form = (r.offense_formation || '').trim();
+    if (form) {
+      t.formation[form] = (t.formation[form] || 0) + 1;
+      league.formation[form] = (league.formation[form] || 0) + 1;
+    }
+    const cov = (r.defense_coverage_type || '').trim();
+    if (cov) {
+      t.coverage[cov] = (t.coverage[cov] || 0) + 1;
+      league.coverage[cov] = (league.coverage[cov] || 0) + 1;
+    }
+    const mz = (r.defense_man_zone_type || '').trim();
+    if (mz) {
+      t.manZone[mz] = (t.manZone[mz] || 0) + 1;
+      league.manZone[mz] = (league.manZone[mz] || 0) + 1;
+    }
+  }
+
+  // Every counted snap should find its play. A gap here means the join key moved.
+  log(`  ${counted} scrimmage snaps, ${joined} joined to pbp (${(joined / counted * 100).toFixed(1)}%), ${skipped} skipped as non-offense`);
+  if (joined / counted < 0.99) throw new Error(`only ${(joined / counted * 100).toFixed(1)}% of snaps joined to pbp — the join key moved`);
+  return { teams, league };
+}
+
+function shapeTeam(raw) {
+  const total = raw.overall.plays;
+  const personnel = {};
+  for (const [g, b] of Object.entries(raw.byGrouping)) {
+    personnel[g] = { rate: rate(b.plays, total), ...summarise(b) };
+  }
+  const distribution = (obj) => {
+    const sum = Object.values(obj).reduce((a, b) => a + b, 0);
+    const out = {};
+    for (const [k, v] of Object.entries(obj)) out[k] = rate(v, sum);
+    return out;
+  };
+  return {
+    plays: total,
+    ...summarise(raw.overall, { withSplits: true }),
+    personnel,
+    formation: distribution(raw.formation),
+    coverageFaced: distribution(raw.coverage),
+    manZoneFaced: distribution(raw.manZone),
+  };
+}
+
+async function main() {
+  const args = process.argv.slice(2);
+  const all = args.includes('--all');
+  const explicit = args.includes('--seasons') ? args[args.indexOf('--seasons') + 1].split(',').map(Number) : null;
+
+  const existing = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, 'utf8')) : { seasons: {} };
+  const live = currentSeason();
+  const wanted = explicit || (all ? HISTORY : [live]);
+
+  const seasons = { ...(existing.seasons || {}) };
+  const league = { ...(existing.league || {}) };
+  const failures = [];
+
+  for (const season of wanted) {
+    try {
+      const { teams, league: lg } = await buildSeason(season);
+      if (!Object.keys(teams).length) throw new Error('no team rows produced');
+      const shaped = {};
+      for (const [team, raw] of Object.entries(teams)) shaped[team] = shapeTeam(raw);
+      seasons[season] = shaped;
+      league[season] = shapeTeam(lg);
+      log(`  ${season}: ${Object.keys(shaped).length} teams`);
+    } catch (e) {
+      // A season that has not kicked off yet is not a failure. A past season
+      // that disappeared is — nflverse moved a file on us once already.
+      // Only a season that has not happened yet is allowed to be missing.
+      if (season > live) log(`  ${season} has not started yet (${e.message})`);
+      else failures.push(`${season}: ${e.message}`);
+    }
+  }
+
+  if (failures.length) {
+    console.error('[scheme] FAILED — a past season should never stop resolving:');
+    failures.forEach(f => console.error(`  ${f}`));
+    process.exit(1);
+  }
+
+  const coaches = await coachesBySeason();
+  for (const [season, teams] of Object.entries(seasons)) {
+    for (const [team, data] of Object.entries(teams)) {
+      const c = coaches[season] && coaches[season][team];
+      if (c) { data.coach = c.coach; if (c.alsoCoachedBy) data.alsoCoachedBy = c.alsoCoachedBy; }
+    }
+  }
+
+  const years = Object.keys(seasons).map(Number).sort();
+  const out = {
+    meta: {
+      generated: new Date().toISOString(),
+      seasons: years,
+      source: 'nflverse pbp_participation joined to pbp on game_id + play_id; head coaches from nflverse schedules',
+      explosive: `${EXPLOSIVE_PASS}+ yards on a pass, ${EXPLOSIVE_RUSH}+ on a run`,
+      heavyBox: `${HEAVY_BOX} or more defenders in the box`,
+      qualifier: `EPA and explosive splits are drawn only for groupings with ${MIN_GROUPING_PLAYS}+ snaps`,
+      caveats: 'Personnel is the offense as charted, and charting misses exist. Kneels and spikes are excluded. A grouping under the qualifier appears in the mix with no splits rather than a number built on nothing.',
+    },
+    league,
+    seasons,
+  };
+
+  fs.writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n');
+  const kb = Math.round(fs.statSync(OUT).size / 1024);
+  log(`wrote scheme.json: ${years.join(', ')} — ${kb}KB`);
+}
+
+main().catch(e => { console.error('[scheme] fatal:', e.message); process.exit(1); });

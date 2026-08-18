@@ -750,7 +750,7 @@ const ROUTE_META = {
   },
   teams: {
     title: 'Teams — The Signal',
-    description: 'Who gets the ball: target and carry share by team, with the schedule strip read as a matchup map.',
+    description: 'Who gets the ball, and how each offense lines up: personnel groupings, the box they draw, coverage faced, and year-over-year identity shifts.',
   },
   fantasy: {
     title: 'Value Board — The Signal',
@@ -812,8 +812,8 @@ function metaForRoute(route) {
   if (parts[0] === 'teams') {
     const abbr = parts[1].toUpperCase();
     return {
-      title: `${abbr} — Target & Carry Share | The Signal`,
-      description: `Who gets the ball in ${abbr}: target share, carry share and the schedule read as a matchup map.`,
+      title: `${abbr} — Scheme, Personnel & Target Share | The Signal`,
+      description: `${abbr} offensive identity: personnel groupings and how they changed, the box those groupings draw, coverage faced, target and carry share, and the schedule as a matchup map.`,
     };
   }
 

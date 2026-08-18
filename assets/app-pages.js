@@ -365,6 +365,14 @@ function renderLabPage() {
 // alternative is a page quietly claiming a receiver did that here.
 let teamsData = null, currentTeam = null, sosData = null, sosPos = 'WR';
 let teamsPromise = null;
+// Scheme is 216KB and only the Teams page reads it, so it is fetched when that
+// page opens and never on first paint.
+let schemePromise = null, schemeData = null;
+function ensureScheme() {
+  if (!schemePromise) schemePromise = loadJSON('/data/scheme.json').then(d => (schemeData = d));
+  return schemePromise;
+}
+
 function ensureTeams() {
   if (!teamsPromise) teamsPromise = loadJSON('/data/teams.json').then(d => (teamsData = d));
   return teamsPromise;
@@ -502,6 +510,8 @@ function renderTeamPage() {
   }
 
   // Full schedule strip — the bye shows as a gap, which is the point.
+  h += schemeHtml(currentTeam);
+
   const sosTeam = sosData && sosData.teams[currentTeam] && sosData.teams[currentTeam][sosPos];
   h += `<div class="medical-card" style="padding:18px;">
     <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:2px;">
@@ -848,6 +858,7 @@ function switchPage(page) {
     renderTeamPage();
     ensureTeams().then(redrawTeams);
     ensureSos().then(redrawTeams);
+    ensureScheme().then(redrawTeams);
   }
   if (page === 'fantasy') {
     renderValueBoard();
@@ -1213,3 +1224,164 @@ function filterMedicals(val) {
   renderMedicals(val);
 }
 
+
+// ===== SCHEME & IDENTITY =====
+// Personnel is the one public number that shows a coach's INTENT rather than
+// his results, and it is the rare case where the whole causal chain is
+// measurable: heavier personnel draws defenders into the box, a loaded box is
+// short a man in coverage, and the explosive rate moves. The page shows all
+// three links and lets the reader judge the last one, instead of asserting it.
+//
+// Every figure is compared against the league in the SAME season. A team's 12
+// personnel rate means nothing without knowing what everyone else did that year.
+const SCHEME_LABELS = {
+  '11': '11 — 1 back, 1 TE, 3 WR',
+  '12': '12 — 1 back, 2 TE, 2 WR',
+  '13': '13 — 1 back, 3 TE, 1 WR',
+  '21': '21 — 2 backs, 1 TE, 2 WR',
+  '22': '22 — 2 backs, 2 TE, 1 WR',
+  '10': '10 — 1 back, 0 TE, 4 WR',
+  '20': '20 — 2 backs, 0 TE, 3 WR',
+  '23': '23 — 2 backs, 3 TE',
+  '01': '01 — no back, 1 TE, 4 WR',
+  '02': '02 — no back, 2 TE, 3 WR',
+  '00': '00 — empty, 5 WR',
+};
+
+// A grouping has to be a real part of the diet before a shift in it is worth
+// reporting. Below this, one game plan moves the number several points.
+const SCHEME_MIN_RATE = 5;
+const SCHEME_SHIFT_PTS = 6;
+
+function schemeLabel(g) {
+  return SCHEME_LABELS[g] || `${g} personnel`;
+}
+
+// Always one decimal. toFixed(1) on a whole number gives "11.0" but the value
+// arrives already rounded, so 11 and 9.9 sat in the same column looking ragged.
+function schemePct(v) {
+  return (v === null || v === undefined) ? '—' : `${Number(v).toFixed(1)}%`;
+}
+
+function schemeDelta(now, before) {
+  if (now === null || now === undefined || before === null || before === undefined) return null;
+  return +(now - before).toFixed(1);
+}
+
+function schemeArrow(d) {
+  if (d === null || Math.abs(d) < 0.05) return '';
+  const up = d > 0;
+  const color = up ? 'var(--teal)' : 'var(--blue)';
+  return `<span style="font-family:var(--mono);font-size:10px;color:${color};">${up ? '▲' : '▼'}${Math.abs(d).toFixed(1)}</span>`;
+}
+
+function schemeHtml(team) {
+  if (!schemeData || !schemeData.seasons) return '';
+  const years = (schemeData.meta.seasons || []).slice().sort();
+  const latest = years[years.length - 1];
+  const cur = schemeData.seasons[latest] && schemeData.seasons[latest][team];
+  if (!cur) return '';
+  const prevYear = years[years.length - 2];
+  const prev = prevYear && schemeData.seasons[prevYear] && schemeData.seasons[prevYear][team];
+  const lg = schemeData.league[latest];
+
+  const mix = Object.entries(cur.personnel).sort((a, b) => b[1].rate - a[1].rate);
+  const top = mix.filter(([, d]) => d.rate >= 1);
+
+  let h = `<div class="medical-card" style="padding:18px;margin-bottom:14px;">`;
+  h += `<div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;">
+    <span style="font-family:var(--serif);font-size:17px;font-weight:700;">Scheme &amp; Identity</span>
+    <span style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);letter-spacing:0.5px;">${latest} · ${cur.plays} SNAPS${cur.coach ? ` · ${rankEsc(cur.coach.toUpperCase())}` : ''}</span>
+  </div>`;
+
+  // Did the identity change? This is the headline, so it goes first and only
+  // appears when there is genuinely something to report.
+  if (prev) {
+    const shifts = [];
+    for (const [g, d] of mix) {
+      const before = prev.personnel[g] ? prev.personnel[g].rate : 0;
+      const delta = schemeDelta(d.rate, before);
+      if (delta === null) continue;
+      if (Math.abs(delta) >= SCHEME_SHIFT_PTS && (d.rate >= SCHEME_MIN_RATE || before >= SCHEME_MIN_RATE)) {
+        shifts.push({ g, delta, before, now: d.rate });
+      }
+    }
+    shifts.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+    const coachChanged = prev.coach && cur.coach && prev.coach !== cur.coach;
+
+    if (shifts.length || coachChanged) {
+      h += `<div style="border-left:3px solid var(--gold);padding:10px 0 10px 14px;margin:14px 0 4px;">`;
+      h += `<div style="font-family:var(--mono);font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">What changed from ${prevYear}</div>`;
+      if (coachChanged) {
+        h += `<div style="font-size:13.5px;line-height:1.7;color:var(--text-secondary);">${rankEsc(prev.coach)} → <strong style="color:var(--text);">${rankEsc(cur.coach)}</strong>. A new head coach is the most likely reason any of the below moved.</div>`;
+      }
+      for (const s of shifts.slice(0, 3)) {
+        h += `<div style="font-size:13.5px;line-height:1.7;color:var(--text-secondary);">`
+          + `<strong style="color:var(--text);">${schemeLabel(s.g).split(' — ')[0]} personnel ${s.delta > 0 ? 'up' : 'down'} ${Math.abs(s.delta).toFixed(1)} points</strong>`
+          + ` — ${s.before.toFixed(1)}% of snaps in ${prevYear}, ${s.now.toFixed(1)}% in ${latest}.</div>`;
+      }
+      h += `</div>`;
+    } else {
+      h += `<div style="font-size:13px;color:var(--text-muted);line-height:1.7;margin:12px 0 4px;">No personnel grouping moved more than ${SCHEME_SHIFT_PTS} points from ${prevYear}. This offence is who it was.</div>`;
+    }
+  }
+
+  // The mechanism, one row per grouping: how often, what it draws, what it produced.
+  h += `<div class="table-scroll" style="margin-top:14px;"><table class="scheme-table">
+    <thead><tr>
+      <th>Personnel</th><th>Snaps</th><th>vs league</th><th>Box</th><th>7+ box</th><th>Explosive</th><th>EPA/play</th>
+    </tr></thead><tbody>`;
+  for (const [g, d] of top) {
+    const lgG = lg && lg.personnel[g];
+    const vsLeague = lgG ? schemeDelta(d.rate, lgG.rate) : null;
+    const prevRate = prev && prev.personnel[g] ? prev.personnel[g].rate : null;
+    const yoy = prevRate === null ? null : schemeDelta(d.rate, prevRate);
+    h += `<tr>
+      <td style="white-space:nowrap;">${rankEsc(schemeLabel(g))}</td>
+      <td class="scheme-num">${schemePct(d.rate)} ${schemeArrow(yoy)}</td>
+      <td class="scheme-num" style="color:var(--text-muted);">${vsLeague === null ? '—' : (vsLeague > 0 ? '+' : '') + vsLeague}</td>
+      <td class="scheme-num">${d.boxAvg === null ? '—' : d.boxAvg}</td>
+      <td class="scheme-num">${schemePct(d.heavyBoxRate)}</td>
+      <td class="scheme-num">${schemePct(d.explosiveRate)}</td>
+      <td class="scheme-num">${d.epaPerPlay === undefined || d.epaPerPlay === null ? '—' : (d.epaPerPlay > 0 ? '+' : '') + d.epaPerPlay}</td>
+    </tr>`;
+  }
+  h += `</tbody></table></div>`;
+
+  // The league row is the reference the whole table is read against.
+  if (lg) {
+    const l11 = lg.personnel['11'], l12 = lg.personnel['12'];
+    if (l11 && l12) {
+      h += `<div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;margin-top:12px;">
+        League ${latest}: 11 personnel drew a loaded box on <strong style="color:var(--text);">${schemePct(l11.heavyBoxRate)}</strong> of snaps and went explosive on ${schemePct(l11.explosiveRate)}.
+        12 personnel drew one on <strong style="color:var(--text);">${schemePct(l12.heavyBoxRate)}</strong> and went explosive on ${schemePct(l12.explosiveRate)}, at ${l12.epaPerPlay > 0 ? '+' : ''}${l12.epaPerPlay} EPA against ${l11.epaPerPlay > 0 ? '+' : ''}${l11.epaPerPlay}.
+        Going heavy buys a lighter secondary and costs efficiency — which way that trade lands is a team-by-team question, and it is what this table is for.</div>`;
+    }
+  }
+
+  // Formation and what defences answered with.
+  const formTop = Object.entries(cur.formation || {}).sort((a, b) => b[1] - a[1]).filter(([, v]) => v >= 1).slice(0, 4);
+  const covTop = Object.entries(cur.coverageFaced || {}).sort((a, b) => b[1] - a[1]).filter(([, v]) => v >= 3).slice(0, 5);
+  if (formTop.length || covTop.length) {
+    h += `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:16px;margin-top:16px;">`;
+    if (formTop.length) {
+      h += `<div><div style="font-family:var(--mono);font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Formation</div>`
+        + formTop.map(([k, v]) => `<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0;color:var(--text-secondary);"><span>${rankEsc(k.replace(/_/g, ' '))}</span><span style="font-family:var(--mono);">${v}%</span></div>`).join('')
+        + `</div>`;
+    }
+    if (covTop.length) {
+      h += `<div><div style="font-family:var(--mono);font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Coverage faced</div>`
+        + covTop.map(([k, v]) => `<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0;color:var(--text-secondary);"><span>${rankEsc(k.replace(/_/g, ' '))}</span><span style="font-family:var(--mono);">${v}%</span></div>`).join('')
+        + `</div>`;
+    }
+    h += `</div>`;
+  }
+
+  h += `<div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.7;margin-top:14px;">`
+    + `Explosive is ${rankEsc(schemeData.meta.explosive)}; a loaded box is ${rankEsc(schemeData.meta.heavyBox)}. `
+    + `${rankEsc(schemeData.meta.qualifier)}. ${rankEsc(schemeData.meta.caveats)}`
+    + `</div>`;
+
+  h += `</div>`;
+  return h;
+}

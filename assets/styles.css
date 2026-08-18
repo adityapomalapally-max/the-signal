@@ -1628,3 +1628,24 @@ a { color: inherit; text-decoration: none; }
   .article-page { padding: 24px 16px 60px; }
   .article-page-title { font-size: 26px; }
 }
+
+/* ===== SCHEME TABLE ===== */
+.scheme-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.scheme-table th {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text-muted); text-align: right; padding: 6px 10px; border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.scheme-table th:first-child { text-align: left; }
+.scheme-table td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+.scheme-table tbody tr:last-child td { border-bottom: none; }
+.scheme-table .scheme-num {
+  text-align: right; font-family: var(--mono); font-size: 11.5px;
+  font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--text);
+}
+@media (max-width: 768px) {
+  .scheme-table th, .scheme-table td { padding: 6px 6px; }
+  /* Box average is the column a phone can spare — 7+ box says the same thing
+     more plainly, and the table has to fit rather than be swiped. */
+  .scheme-table th:nth-child(4), .scheme-table td:nth-child(4) { display: none; }
+}

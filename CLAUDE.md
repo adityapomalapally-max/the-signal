@@ -122,3 +122,20 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   every medical injury, a game log behind every dated injury event, no invented projections, ordered
   rankings, no draft article in the sitemap. When you learn a new rule the hard way, add a test with it.
 - A test that cannot fail is decoration. Mutate the data and watch it go red before you trust it.
+
+## Scheme & identity
+- `scripts/build-scheme.js` — generates data/scheme.json from nflverse `pbp_participation` joined to
+  `pbp` on game_id + play_id. The join is exact and the script FAILS if it drops below 99%.
+  Current season only by default (~70MB); `--all` rebuilds history. Past seasons never change.
+- Personnel is the one public number showing a coach's INTENT rather than his results, and the causal
+  chain is measurable end to end: heavier personnel → more defenders in the box → a lighter secondary
+  → explosive rate moves. Show all three links; never assert the last one alone.
+- `defenders_in_box` of 0 is UNRECORDED, not zero defenders — 9,093 of 45,184 rows in 2025. Averaged
+  in as a zero it drags every box figure down. Treat <= 0 as null.
+- nflverse calls the Rams `LA`; every other file here calls them `LAR`. Unaliased, scheme.json keys
+  differently from teams.json and the Rams' whole section renders as nothing — silent, not an error.
+  `TEAM_ALIAS` also covers OAK/SD/STL for older seasons.
+- Box figures answer to the SAME sample qualifier as EPA and explosive rate. Publishing a 1.0 box
+  average off four snaps while gating the EPA was the inconsistency that made the rule obvious.
+- Head coach comes from nflverse `schedules` and is generated. THE PLAY-CALLER IS NOT IN ANY PUBLIC
+  DATASET — if that layer is ever wanted it has to be hand-kept and sourced, like medicals.json.

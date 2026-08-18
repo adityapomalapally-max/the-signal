@@ -49,6 +49,11 @@ jobs:
 
       - name: Build strength of schedule
         run: node scripts/build-sos.js
+
+      # Current season only by default — past seasons never change and each one
+      # is ~70MB of participation + play-by-play. Use --all to rebuild history.
+      - name: Build scheme and identity
+        run: node scripts/build-scheme.js
       
       # After the data steps: the pool changes, and a sitemap listing yesterday's
       # players is a list of soft 404s submitted to Google.
