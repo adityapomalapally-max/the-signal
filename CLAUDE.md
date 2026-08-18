@@ -301,3 +301,22 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   that exchanged the two columns passed it — while saying the exact opposite of what the split
   exists to say. The per-reception rates come from their own columns and are the asymmetric
   witness. When a test is symmetric in the thing it is checking, it is decoration.
+
+## Charting — who was the READ
+- `data/charting.json` is built by `build-scheme.js`, not by a script of its own. FTN charts
+  per PLAY and carries no player id, so attributing a drop or a first read to a person needs
+  pbp's `receiver_player_id` — 93MB that build-scheme already downloads. ONE DOWNLOAD, THREE
+  OUTPUTS (scheme, usage, charting). A separate script would double the cost of the most
+  expensive step in the daily Action for nothing.
+- `read_thrown` is a CATEGORY, NOT A COUNT: `1` first read, `2` second read, `CHK` checkdown,
+  `SD` scramble drill, `DES` designed (screens and the like), and `0` for everything that is not
+  a charted dropback. Reading it as a number, or letting an unmapped value through, makes every
+  rate computed from it quietly wrong — there is a test that the buckets sum to the targets.
+- THIS IS THE LAYER VOLUME CANNOT REACH. 90 targets of which 60 are first reads is the centre of
+  an offence; 90 of which 45 are checkdowns is a safety valve. Measured 2025: Tee Higgins 90.8%
+  first read, and Chase Brown 52.8% checkdown against 19.1% first read.
+- Rates are a share of DROPBACKS, never of all snaps — dividing play-action by every play halves
+  it and reads a play-action offence as a conventional one. External validity: LAR top the
+  play-action table at 32.7%, which is McVay exactly, and KC sit bottom at 14.3%.
+- A charted pass with no `receiver_player_id` counts for the TEAM and for nobody in particular.
+  That is the honest split: the play happened, the attribution did not.

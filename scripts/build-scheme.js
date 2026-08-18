@@ -34,6 +34,7 @@ const { fetchCSV, parseCSV, parseCSVLine } = require('./lib/match');
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA_DIR, 'scheme.json');
 const OUT_USAGE = path.join(DATA_DIR, 'player-usage.json');
+const OUT_CHARTING = path.join(DATA_DIR, 'charting.json');
 
 // The seasons participation data covers well. 2016-2022 exists but the schema
 // and the league both moved; three seasons is enough to read a trend and short
@@ -112,17 +113,29 @@ function leanPbp(csv) {
     idx[col] = header.indexOf(col);
     if (idx[col] === -1) throw new Error(`pbp is missing the ${col} column — the schema moved`);
   }
+  // The charting layer needs to know WHO a charted pass went to. These are
+  // optional on purpose: if nflverse renames one, scheme still builds and only
+  // the charting output goes thin, which is the right failure for a layer that
+  // rides along on somebody else's download.
+  for (const col of ['receiver_player_id', 'passer_player_id', 'posteam', 'complete_pass']) {
+    idx[col] = header.indexOf(col);
+  }
   const map = new Map();
   for (let i = 1; i < lines.length; i++) {
     if (!lines[i].trim()) continue;
     const v = parseCSVLine(lines[i]);
     const num = c => { const n = parseFloat(v[idx[c]]); return Number.isNaN(n) ? null : n; };
+    const str = c => (idx[c] === -1 || v[idx[c]] === undefined) ? null : (v[idx[c]].replace(/"/g, '').trim() || null);
     map.set(`${v[idx.game_id].replace(/"/g, '')}|${v[idx.play_id]}`, {
       playType: v[idx.play_type].replace(/"/g, ''),
       yards: num('yards_gained'),
       epa: num('epa'),
       isPass: num('pass') === 1,
       isRush: num('rush') === 1,
+      receiver: str('receiver_player_id'),
+      passer: str('passer_player_id'),
+      posteam: str('posteam'),
+      complete: num('complete_pass') === 1,
     });
   }
   return map;
@@ -264,6 +277,146 @@ function tallyUsage(usage, row, group, gsisIndex) {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   FTN CHARTING — who was the READ, not just who was on the field
+
+   player-usage.json answers which personnel package a player is on the field
+   for. It cannot answer the question a fantasy manager is actually asking,
+   which is whether the offence is trying to get him the ball. FTN charts that
+   directly: `read_thrown` records WHICH READ the quarterback threw to.
+
+   The values are not a plain count and reading them as one would be wrong:
+     1    the first read — the throw the play was designed to produce
+     2    the second read
+     CHK  a checkdown, which is a target that means the play broke down
+     SD   scramble drill, an improvised target
+     DES  a designed throw, screens and the like
+     0    not a charted dropback at all (runs, kneels, spikes)
+
+   A receiver on 90 targets of which 60 are first reads is the centre of an
+   offence. One on 90 targets of which 45 are checkdowns is a safety valve, and
+   volume alone cannot tell them apart.
+
+   THIS RIDES ALONG ON THE pbp DOWNLOAD. FTN is charted per PLAY and carries no
+   player id, so attributing a drop or a first read to a person needs pbp's
+   receiver_player_id — 93MB that build-scheme already pays for. A separate
+   script would double the daily cost of the most expensive step in the Action
+   for no reason. One download, three outputs.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+const READ_LABELS = { 1: 'firstRead', 2: 'secondRead', CHK: 'checkdown', SD: 'scrambleDrill', DES: 'designed' };
+const truthy = (v) => { const s = String(v).trim().toUpperCase(); return s === 'TRUE' || s === '1'; };
+
+function blankCharting() {
+  return {
+    chartedTargets: 0, firstRead: 0, secondRead: 0, checkdown: 0, scrambleDrill: 0, designed: 0,
+    catchable: 0, contested: 0, created: 0, drops: 0,
+  };
+}
+
+function blankTeamCharting() {
+  return {
+    dropbacks: 0, playAction: 0, screen: 0, rpo: 0, noHuddle: 0, motion: 0,
+    blitzFaced: 0, rushersFaced: 0, rushersCounted: 0, outOfPocket: 0,
+  };
+}
+
+async function buildCharting(season, plays, gsisIndex) {
+  const base = 'https://github.com/nflverse/nflverse-data/releases/download';
+  let rows;
+  try {
+    rows = parseCSV(await fetchCSV(`${base}/ftn_charting/ftn_charting_${season}.csv`));
+  } catch (e) {
+    // Charting only exists for recent seasons. A missing year is a real answer,
+    // not a failure — but a year that SHOULD be there failing is caught by the
+    // join-rate check below.
+    log(`  no FTN charting for ${season} (${e.message})`);
+    return null;
+  }
+
+  const players = {};
+  const teams = {};
+  let joined = 0, dropbacks = 0, attributed = 0;
+
+  for (const r of rows) {
+    const play = plays.get(`${r.nflverse_game_id}|${r.nflverse_play_id}`);
+    if (!play) continue;
+    joined++;
+
+    // read_thrown is 0 on everything that is not a charted dropback, so it is
+    // the cheapest correct filter for "was this a pass attempt".
+    const read = r.read_thrown;
+    const isDropback = read !== 0 && read !== '0' && read !== null && read !== undefined;
+    if (!isDropback) continue;
+    dropbacks++;
+
+    const team = play.posteam ? teamKey(play.posteam) : null;
+    if (team) {
+      const tc = teams[team] = teams[team] || blankTeamCharting();
+      tc.dropbacks++;
+      if (truthy(r.is_play_action)) tc.playAction++;
+      if (truthy(r.is_screen_pass)) tc.screen++;
+      if (truthy(r.is_rpo)) tc.rpo++;
+      if (truthy(r.is_no_huddle)) tc.noHuddle++;
+      if (truthy(r.is_motion)) tc.motion++;
+      if (truthy(r.is_qb_out_of_pocket)) tc.outOfPocket++;
+      const rushers = Number(r.n_pass_rushers);
+      if (Number.isFinite(rushers) && rushers > 0) {
+        tc.rushersFaced += rushers;
+        tc.rushersCounted++;
+        if (rushers >= 5) tc.blitzFaced++;
+      }
+    }
+
+    // Attribution needs pbp's receiver id — FTN charts the PLAY and never says
+    // who it was thrown to.
+    const target = play.receiver ? gsisIndex.get(play.receiver) : null;
+    if (!target) continue;
+    attributed++;
+    const pc = players[target.id] = players[target.id] || { name: target.name, pos: target.pos, ...blankCharting() };
+    pc.chartedTargets++;
+    const label = READ_LABELS[read];
+    if (label) pc[label]++;
+    if (truthy(r.is_catchable_ball)) pc.catchable++;
+    if (truthy(r.is_contested_ball)) pc.contested++;
+    if (truthy(r.is_created_reception)) pc.created++;
+    if (truthy(r.is_drop)) pc.drops++;
+  }
+
+  const rate = rows.length ? joined / rows.length : 0;
+  log(`  charting: ${rows.length} rows, ${joined} joined to pbp (${(rate * 100).toFixed(1)}%), `
+    + `${dropbacks} dropbacks, ${attributed} attributed to the pool`);
+  if (rate < 0.99) {
+    throw new Error(`only ${(rate * 100).toFixed(1)}% of FTN rows joined to pbp — the join key moved`);
+  }
+  if (!attributed) {
+    throw new Error('no charted target attributed to any player — receiver_player_id is missing from pbp');
+  }
+
+  // Rates last, from the totals. A share of dropbacks, never of all snaps:
+  // dividing play-action by every play halves it and reads a play-action
+  // offence as a conventional one.
+  for (const tc of Object.values(teams)) {
+    const d = tc.dropbacks || 1;
+    tc.playActionRate = +(100 * tc.playAction / d).toFixed(1);
+    tc.screenRate = +(100 * tc.screen / d).toFixed(1);
+    tc.rpoRate = +(100 * tc.rpo / d).toFixed(1);
+    tc.noHuddleRate = +(100 * tc.noHuddle / d).toFixed(1);
+    tc.motionRate = +(100 * tc.motion / d).toFixed(1);
+    tc.blitzFacedRate = +(100 * tc.blitzFaced / d).toFixed(1);
+    tc.avgRushersFaced = tc.rushersCounted ? +(tc.rushersFaced / tc.rushersCounted).toFixed(2) : null;
+  }
+  for (const pc of Object.values(players)) {
+    const t = pc.chartedTargets || 1;
+    pc.firstReadRate = +(100 * pc.firstRead / t).toFixed(1);
+    pc.checkdownRate = +(100 * pc.checkdown / t).toFixed(1);
+    pc.catchableRate = +(100 * pc.catchable / t).toFixed(1);
+    pc.contestedRate = +(100 * pc.contested / t).toFixed(1);
+  }
+
+  return { players, teams };
+}
+
 async function buildSeason(season) {
   log(`fetching ${season}...`);
   const base = 'https://github.com/nflverse/nflverse-data/releases/download';
@@ -354,7 +507,11 @@ async function buildSeason(season) {
   // Every counted snap should find its play. A gap here means the join key moved.
   log(`  ${counted} scrimmage snaps, ${joined} joined to pbp (${(joined / counted * 100).toFixed(1)}%), ${skipped} skipped as non-offense`);
   if (joined / counted < 0.99) throw new Error(`only ${(joined / counted * 100).toFixed(1)}% of snaps joined to pbp — the join key moved`);
-  return { teams, league, usage, defenses };
+
+  // Rides along on the pbp map already in memory — see the FTN block above.
+  const charting = await buildCharting(season, plays, gsisIndex);
+
+  return { teams, league, usage, defenses, charting };
 }
 
 function shapeDefense(d) {
@@ -408,14 +565,16 @@ async function main() {
   const wanted = explicit || (all ? HISTORY : [live]);
 
   const existingUsage = fs.existsSync(OUT_USAGE) ? JSON.parse(fs.readFileSync(OUT_USAGE, 'utf8')) : { seasons: {} };
+  const existingCharting = fs.existsSync(OUT_CHARTING) ? JSON.parse(fs.readFileSync(OUT_CHARTING, 'utf8')) : { seasons: {} };
   const seasons = { ...(existing.seasons || {}) };
   const league = { ...(existing.league || {}) };
   const usageSeasons = { ...(existingUsage.seasons || {}) };
+  const chartingSeasons = { ...(existingCharting.seasons || {}) };
   const failures = [];
 
   for (const season of wanted) {
     try {
-      const { teams, league: lg, usage, defenses } = await buildSeason(season);
+      const { teams, league: lg, usage, defenses, charting } = await buildSeason(season);
       if (!Object.keys(teams).length) throw new Error('no team rows produced');
       const shaped = {};
       for (const [team, raw] of Object.entries(teams)) shaped[team] = shapeTeam(raw);
@@ -432,6 +591,7 @@ async function main() {
         for (const [k, v] of Object.entries(d.shell)) leagueDef.shell[k] = (leagueDef.shell[k] || 0) + v;
       }
       seasons[season] = shaped;
+      if (charting) chartingSeasons[season] = charting;
       league[season] = shapeTeam(lg);
       league[season].defense = shapeDefense(leagueDef);
       // Share of his own snaps, per grouping. A raw count says how much he
@@ -508,6 +668,38 @@ async function main() {
   fs.writeFileSync(OUT_USAGE, JSON.stringify(usageOut, null, 2) + '\n');
   const latestUsage = usageSeasons[years[years.length - 1]] || {};
   log(`wrote player-usage.json: ${Object.keys(latestUsage).length} players in ${years[years.length - 1]} — ${Math.round(fs.statSync(OUT_USAGE).size / 1024)}KB`);
+
+  // The third output of the one pbp download. Only written when a season
+  // actually produced charting — FTN does not cover every year, and an empty
+  // file would read as "nobody was ever the first read".
+  const chartYears = Object.keys(chartingSeasons).map(Number).sort();
+  if (chartYears.length) {
+    const chartingOut = {
+      meta: {
+        generated: new Date().toISOString(),
+        seasons: chartYears,
+        source: 'FTN charting joined to nflverse pbp on game_id + play_id; targets attributed via pbp receiver_player_id',
+        readValues: {
+          firstRead: 'the throw the play was designed to produce',
+          secondRead: 'the quarterback came off his first look',
+          checkdown: 'a target that means the play broke down',
+          scrambleDrill: 'improvised after the pocket moved',
+          designed: 'screens and other designed throws',
+        },
+        caveats: [
+          'Rates are a share of DROPBACKS, never of all snaps — dividing play-action by every '
+          + 'play halves it and reads a play-action offence as a conventional one.',
+          'FTN charting is done by humans and the standard is not identical across seasons.',
+          'A target is attributed through pbp\'s receiver_player_id, so a charted pass with no '
+          + 'recorded receiver counts for the team and for nobody in particular.',
+        ],
+      },
+      seasons: chartingSeasons,
+    };
+    fs.writeFileSync(OUT_CHARTING, JSON.stringify(chartingOut, null, 2) + '\n');
+    const latestChart = chartingSeasons[chartYears[chartYears.length - 1]] || { players: {} };
+    log(`wrote charting.json: ${Object.keys(latestChart.players).length} players in ${chartYears[chartYears.length - 1]} — ${Math.round(fs.statSync(OUT_CHARTING).size / 1024)}KB`);
+  }
 }
 
 main().catch(e => { console.error('[scheme] fatal:', e.message); process.exit(1); });
