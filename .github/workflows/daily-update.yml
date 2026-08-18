@@ -121,3 +121,12 @@ jobs:
       - name: Check every feed reported in
         if: always()
         run: node scripts/check-feeds.js
+
+      # The season rollover is the failure with no symptom: on the first Sunday
+      # of the regular season every script still succeeds, the site still
+      # renders, and every number on it belongs to last year. Nothing errors, so
+      # nothing tells anyone. This asks the only question that matters — does the
+      # data on disk contain the season the league is actually playing.
+      - name: Check the data matches the season being played
+        if: always()
+        run: node scripts/check-season.js

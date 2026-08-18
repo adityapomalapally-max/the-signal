@@ -24,9 +24,15 @@
 const fs = require('fs');
 const path = require('path');
 const { fetchCSV, parseCSV, buildMatchIndex, matchRow } = require('./lib/match');
+const seasonLib = require('./lib/season');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
-const SEASONS = [2023, 2024, 2025];   // keep in step with fetch-stats.js
+// Derived, never typed. These used to be a hand-written [2023, 2024, 2025] in each of
+// three files, each with a comment asking the next person to keep them in step by
+// remembering. On the first Sunday of the regular season none of them would have asked
+// for the new year's data, nothing would have errored, and every profile would quietly
+// have been a season stale. scripts/lib/season.js reads the NFL calendar instead.
+let SEASONS = [];   // filled in main() from the live season
 const OUT = path.join(DATA_DIR, 'injuries.json');
 // Below this the feed or the schema has moved and the file would be a
 // quietly emptied version of something real.
@@ -80,6 +86,9 @@ function buildEpisodes(weeks) {
 }
 
 async function main() {
+  SEASONS = await seasonLib.dataSeasons(3);
+  console.log(`[seasons] ${SEASONS.join(', ')} — league is in ${await seasonLib.describe()}`);
+
   log('=== Injury Report Pipeline Start ===');
   const players = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'players.json'), 'utf8'));
   const index = buildMatchIndex(

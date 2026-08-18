@@ -1,0 +1,120 @@
+#!/usr/bin/env node
+/**
+ * check-season.js — the alarm for the failure that has no symptom
+ *
+ * When the regular season starts, the risk is not that something breaks. It is
+ * that nothing does: the fetch scripts go on asking for the seasons they were
+ * told about, the builds go on succeeding, the site goes on rendering, and every
+ * number on it quietly belongs to last year. There is no error to notice.
+ *
+ * So this asks the only question that matters — does the data on disk contain
+ * the season the league is actually playing — and reds the run when it does not.
+ *
+ * Runs LAST in the Action, after the push, on the same bargain as
+ * check-overrides and check-feeds: a stale season should colour the run without
+ * holding up the day's real data.
+ *
+ *   node scripts/check-season.js
+ */
+
+const fs = require('fs');
+const path = require('path');
+const season = require('./lib/season');
+
+const DATA = path.join(__dirname, '..', 'data');
+const read = (f) => JSON.parse(fs.readFileSync(path.join(DATA, f), 'utf8'));
+
+const problems = [];
+const notes = [];
+
+function has(file) {
+  return fs.existsSync(path.join(DATA, file));
+}
+
+async function main() {
+  const st = await season.state();
+  const latest = await season.latestDataSeason();
+  const target = await season.targetSeason();
+  const inSeason = await season.isInSeason();
+
+  console.log(`[season] the league is in ${await season.describe()}`);
+  console.log(`[season] latest season with data: ${latest} | projections are about: ${target}`);
+
+  if (st.source.startsWith('date fallback')) {
+    notes.push(`the season feed was unreachable, so this ran off the calendar — ${st.source}`);
+  }
+
+  // ---- Do the stat layers contain the season being played? ----------------
+  // Only meaningful once real games exist. In August, 2026 stats SHOULD be
+  // missing and their absence is not a fault.
+  if (inSeason) {
+    const checks = [
+      { file: 'stats.json', label: 'season stats', seasons: (j) => collect(j, p => Object.keys(p.seasons || {})) },
+      { file: 'ngs.json', label: 'Next Gen Stats', seasons: (j) => collect(j, p => Object.keys(p).filter(k => /^\d{4}$/.test(k))) },
+      { file: 'injuries.json', label: 'injury reports', seasons: (j) => collect(j, p => Object.keys(p).filter(k => /^\d{4}$/.test(k))) },
+    ];
+    for (const c of checks) {
+      if (!has(c.file)) { problems.push(`${c.file} is missing entirely`); continue; }
+      const years = c.seasons(read(c.file));
+      if (!years.includes(String(latest))) {
+        problems.push(
+          `${c.label} (${c.file}) has no ${latest} rows — the season is under way and this layer is still `
+          + `showing ${years[years.length - 1] || 'nothing'}. Every profile reading from it is a year stale.`);
+      }
+    }
+
+    const scheme = has('scheme.json') ? read('scheme.json') : null;
+    if (scheme && !(scheme.meta.seasons || []).map(String).includes(String(latest))) {
+      problems.push(`scheme.json has no ${latest} — personnel and identity are last season's.`);
+    }
+  } else {
+    notes.push(`not in season yet, so ${target} stat rows are correctly absent`);
+  }
+
+  // ---- Are the preseason-built products still claiming to be current? -----
+  if (inSeason) {
+    if (has('adp.json')) {
+      const adp = read('adp.json');
+      problems.push(
+        `ADP is a DRAFT artefact and the season has started. adp.json is from ${adp.meta.fetchedAt ? adp.meta.fetchedAt.slice(0, 10) : 'an unknown date'} `
+        + `— the Value Board compares ranks to it and now describes a market that has closed. Retire it or label it as historical.`);
+    }
+    if (has('sos.json')) {
+      const sos = read('sos.json');
+      notes.push(`SOS was built for ${sos.meta.season} off ${sos.meta.defenseSeason} defences — decays every week now that ${latest} defences are playing`);
+    }
+    if (has('projections-2026.json')) {
+      notes.push('projections are preseason season-long medians; in-season the useful number is rest-of-season, which nothing generates yet');
+    }
+  }
+
+  // ---- Is the target season itself stale? --------------------------------
+  const teams = has('teams.json') ? read('teams.json') : null;
+  if (teams && teams.meta && teams.meta.season && Number(teams.meta.season) !== target) {
+    problems.push(`teams.json is built for ${teams.meta.season} but the league year is ${target}`);
+  }
+
+  for (const n of notes) console.log(`[season] note: ${n}`);
+  if (!problems.length) {
+    console.log('[season] OK — the data on disk matches the season being played.');
+    return;
+  }
+  console.error(`\n[season] ${problems.length} problem(s):`);
+  for (const p of problems) console.error('  ✗ ' + p);
+  console.error('\nThe season rolled over and the pipeline did not. See scripts/lib/season.js.');
+  process.exit(1);
+}
+
+function collect(json, fn) {
+  const years = new Set();
+  for (const [k, v] of Object.entries(json)) {
+    if (k === 'meta' || !v || typeof v !== 'object') continue;
+    for (const y of fn(v)) if (/^\d{4}$/.test(y)) years.add(y);
+  }
+  return [...years].sort();
+}
+
+main().catch(e => {
+  console.error('[season] check failed to run:', e.message);
+  process.exit(1);
+});

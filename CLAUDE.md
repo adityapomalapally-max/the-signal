@@ -243,3 +243,29 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   it could not reach is permanent — adp.json only goes back to 2026-08-16 because that is when
   it was added.
 
+## The season rollover
+- `scripts/lib/season.js` is the ONLY place that knows what season it is. It reads Sleeper's
+  free `/state/nfl` (season, week, season_type) and falls back to the calendar if that is
+  unreachable. Nine scripts used to carry their own hand-typed `[2023, 2024, 2025]`, three of
+  them with comments asking the next person to keep them in step by remembering.
+- THE ROLLOVER IS A FAILURE WITH NO SYMPTOM. On the first Sunday of the regular season the
+  fetch scripts go on asking for the seasons they were told about, every build succeeds, the
+  site renders, and every number on it belongs to last year. Nothing errors, so nothing tells
+  anyone — the same shape as nflverse moving the stats file, which went unnoticed for months.
+- `dataSeasons(3)` is the window to fetch and it moves by itself: `[2023,2024,2025]` in August,
+  `[2024,2025,2026]` the moment real games count. `latestDataSeason()` is the newest season that
+  actually HAS rows — in the preseason that is LAST season, because asking nflverse for a 2026
+  stats file in August gets a 404 or an empty file that reads as everyone scoring zero.
+- The date fallback is deliberately conservative: it calls a season "pre" for a few days longer
+  than it should rather than declare a regular season that has not started. And the league year
+  rolls over in MARCH — January's playoffs still belong to the season that started in September.
+- `scripts/check-season.js` runs LAST in the Action, after the push, `if: always()`, same bargain
+  as check-overrides and check-feeds. It fails when the data on disk does not contain the season
+  being played. There is a test that drives the calendar to Week 1 with today's data and asserts
+  the check GOES RED — an alarm that cannot be made to ring is not an alarm.
+- Still hand-pinned and still needing a decision each year, because they are editorial rather
+  than mechanical: `build-teams.js` SEASON/STATS_SEASON, `build-sos.js` SEASON/DEF_SEASON,
+  `fetch-adp.js` SEASON, `build-draft-outcomes.js` FIRST_CLASS/LAST_CLASS.
+- IN-SEASON, THREE PRESEASON PRODUCTS START LYING and check-season says so: ADP describes a
+  market that has closed, SOS was built off last season's defences, and the projections are
+  season-long medians when the useful number has become rest-of-season.
