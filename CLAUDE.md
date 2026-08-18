@@ -182,3 +182,12 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - Pool churn makes derived files stale: change the pool and injuries.json and sitemap.xml must be
   rebuilt too. The daily Action does this in order; a standalone `build-players.js` run does not, and
   the test suite will catch it.
+- `data/player-usage.json` — which personnel a PLAYER is on the field for, from participation's
+  `offense_players` joined on GSIS id. Built alongside scheme.json (one download, two outputs).
+  The comparison is the point: 68% of a tight end's snaps in 12 personnel, on an offence that runs it
+  21% of the time, means his volume is capped by how often the package is called. Usage records the
+  team he played those snaps FOR — comparing a season to his current employer's scheme reads a traded
+  player against an offence he never took a snap in.
+- A `.then()` that re-renders the view it was called from must be guarded on the data still being
+  missing. renderProfileTab called ensureUsage().then(render), the cached promise resolved
+  immediately, and the tab locked up in an infinite render loop.

@@ -122,6 +122,22 @@ function renderProfileTab(tab) {
   }
 
   else if (tab === 'overview') {
+    // Personnel usage leads the overview: it is the most concrete thing on the
+    // page about what this player's job actually is. Fills in when the data
+    // lands — the tab renders immediately either way.
+    html += usageHtml(currentProfileId);
+    // Only schedule a redraw while the data is still missing. Re-rendering
+    // unconditionally re-enters this branch, calls ensureUsage again, and the
+    // cached promise resolves immediately — an infinite render loop that hangs
+    // the tab. The guard is what makes it fire exactly once.
+    if (!usageData) {
+      ensureUsage().then(() => {
+        if (currentProfileId !== player.id) return;
+        const active = document.querySelector('.profile-tab.active');
+        if (active && active.dataset.tab === 'overview') renderProfileTab('overview');
+      });
+    }
+
     // ===== HELPERS (null-safe, honest labels) =====
     const isQBProfile = player.pos === 'QB';
     const ordinal = (n) => {
@@ -711,6 +727,73 @@ async function loadNgsSection(playerId, pos) {
 // page: a player placed on IR drops off the report entirely, so the weeks
 // listed here undercount a season-ending injury rather than capturing it.
 // Games actually missed live in the availability figure on Rankings.
+// Personnel usage, fetched only when a profile is opened.
+let usagePromise = null, usageData = null, usageScheme = null;
+function ensureUsage() {
+  if (!usagePromise) {
+    usagePromise = Promise.all([
+      loadJSON('/data/player-usage.json').then(d => (usageData = d)),
+      loadJSON('/data/scheme.json').then(d => (usageScheme = d)),
+    ]);
+  }
+  return usagePromise;
+}
+
+/**
+ * How a player was used, against the offence he actually played in.
+ *
+ * The comparison is the point. A tight end on the field for 68% of his snaps in
+ * 12 personnel, for a team that runs 12 personnel a fifth of the time, is not a
+ * every-down tight end — he is a package player, and his target ceiling is
+ * capped by how often his coach calls that package. The raw share alone does
+ * not say that; the gap does.
+ */
+function usageHtml(playerId) {
+  if (!usageData || !usageData.seasons) return '';
+  const years = (usageData.meta.seasons || []).slice().sort();
+  const season = years[years.length - 1];
+  const u = usageData.seasons[season] && usageData.seasons[season][playerId];
+  if (!u) return '';
+
+  const team = usageScheme && u.team && usageScheme.seasons[season] && usageScheme.seasons[season][u.team];
+  const mix = Object.entries(u.mix).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  if (!mix.length) return '';
+
+  let h = `<div class="medical-card" style="margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px;">
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">How he was used</span>
+      <span style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);">${season} · ${u.snaps} SNAPS${u.team ? ` · ${rankEsc(u.team)}` : ''}</span>
+    </div>`;
+
+  h += `<div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;margin-bottom:10px;">Share of his own snaps by personnel grouping, against how often that offence used it.</div>`;
+
+  for (const [g, share] of mix) {
+    const teamRate = team && team.personnel[g] ? team.personnel[g].rate : null;
+    const gap = teamRate === null ? null : +(share - teamRate).toFixed(1);
+    const w = Math.max(2, Math.min(100, share));
+    h += `<div style="margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:3px;">
+        <span>${rankEsc(g)} personnel</span>
+        <span style="font-family:var(--mono);font-size:11.5px;">${share.toFixed(1)}%${teamRate !== null ? ` <span style="color:var(--text-muted);">vs ${teamRate.toFixed(1)}% team</span>` : ''}</span>
+      </div>
+      <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
+        <div style="height:100%;width:${w}%;background:${gap !== null && gap > 15 ? 'var(--gold)' : 'var(--teal)'};"></div>
+      </div>
+    </div>`;
+  }
+
+  // Only say something when the gap is big enough to mean something.
+  const lead = mix[0];
+  const leadTeamRate = team && team.personnel[lead[0]] ? team.personnel[lead[0]].rate : null;
+  if (leadTeamRate !== null && lead[1] - leadTeamRate > 15) {
+    h += `<div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;margin-top:10px;">He is a <strong style="color:var(--text);">${rankEsc(lead[0])} personnel</strong> player on an offence that used it ${leadTeamRate.toFixed(1)}% of the time. His volume is capped by how often that package is called, not only by how well he plays.</div>`;
+  }
+
+  h += `<div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.6;margin-top:10px;">${rankEsc(usageData.meta.qualifier)}. ${rankEsc(usageData.meta.caveats)}</div>`;
+  h += `</div>`;
+  return h;
+}
+
 let injAllPromise = null;
 function ensureInjuries() {
   if (!injAllPromise) injAllPromise = loadJSON('/data/injuries.json').then(d => d || {});

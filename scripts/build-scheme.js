@@ -33,6 +33,7 @@ const { fetchCSV, parseCSV, parseCSVLine } = require('./lib/match');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA_DIR, 'scheme.json');
+const OUT_USAGE = path.join(DATA_DIR, 'player-usage.json');
 
 // The seasons participation data covers well. 2016-2022 exists but the schema
 // and the league both moved; three seasons is enough to read a trend and short
@@ -57,6 +58,9 @@ const HEAVY_BOX = 7;
 // Below this a grouping's splits are noise wearing a number's clothes. Reported
 // as present in the mix, but no EPA or explosive rate is drawn for it.
 const MIN_GROUPING_PLAYS = 40;
+
+// A player's mix off a handful of snaps describes one game plan, not a role.
+const MIN_USAGE_SNAPS = 100;
 
 function log(msg) { console.log(`[scheme] ${msg}`); }
 
@@ -205,6 +209,26 @@ async function coachesBySeason() {
   return resolved;
 }
 
+// Which personnel a PLAYER is on the field for. participation lists every
+// player on every snap by GSIS id, so once the pool carries those ids this is
+// a direct count rather than an inference. It is the bridge between a team's
+// scheme and one player's job: a tight end who only appears in 12 personnel has
+// a different outlook from one his offence trusts in 11.
+function tallyUsage(usage, row, group, gsisIndex) {
+  if (!row.players) return;
+  for (const raw of row.players.split(';')) {
+    const player = gsisIndex.get(raw.trim());
+    if (!player) continue;
+    const u = usage[player.id] = usage[player.id] || { name: player.name, pos: player.pos, snaps: 0, groupings: {}, teams: {} };
+    u.snaps++;
+    u.groupings[group] = (u.groupings[group] || 0) + 1;
+    // The team he played these snaps FOR, which is not necessarily the team he
+    // is on now. Comparing a 2025 season to his 2026 employer's scheme reads a
+    // traded player against an offence he never took a snap in.
+    if (row.team) u.teams[row.team] = (u.teams[row.team] || 0) + 1;
+  }
+}
+
 async function buildSeason(season) {
   log(`fetching ${season}...`);
   const base = 'https://github.com/nflverse/nflverse-data/releases/download';
@@ -218,7 +242,11 @@ async function buildSeason(season) {
   const part = parseCSV(partCsv);
   log(`  ${part.length} participation rows, ${plays.size} plays`);
 
+  const pool = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'players.json'), 'utf8'));
+  const gsisIndex = new Map(pool.filter(p => p.gsisId).map(p => [p.gsisId, p]));
+
   const teams = {};
+  const usage = {};
   const league = { overall: blank(), byGrouping: {}, formation: {}, coverage: {}, manZone: {} };
   let joined = 0, counted = 0, skipped = 0;
 
@@ -239,6 +267,7 @@ async function buildSeason(season) {
     counted++;
     if (play) joined++;
     tally(t.overall, row, play);
+    tallyUsage(usage, { players: r.offense_players, team: teamKey(team) }, group, gsisIndex);
     t.byGrouping[group] = t.byGrouping[group] || blank();
     tally(t.byGrouping[group], row, play);
 
@@ -266,7 +295,7 @@ async function buildSeason(season) {
   // Every counted snap should find its play. A gap here means the join key moved.
   log(`  ${counted} scrimmage snaps, ${joined} joined to pbp (${(joined / counted * 100).toFixed(1)}%), ${skipped} skipped as non-offense`);
   if (joined / counted < 0.99) throw new Error(`only ${(joined / counted * 100).toFixed(1)}% of snaps joined to pbp — the join key moved`);
-  return { teams, league };
+  return { teams, league, usage };
 }
 
 function shapeTeam(raw) {
@@ -300,18 +329,38 @@ async function main() {
   const live = currentSeason();
   const wanted = explicit || (all ? HISTORY : [live]);
 
+  const existingUsage = fs.existsSync(OUT_USAGE) ? JSON.parse(fs.readFileSync(OUT_USAGE, 'utf8')) : { seasons: {} };
   const seasons = { ...(existing.seasons || {}) };
   const league = { ...(existing.league || {}) };
+  const usageSeasons = { ...(existingUsage.seasons || {}) };
   const failures = [];
 
   for (const season of wanted) {
     try {
-      const { teams, league: lg } = await buildSeason(season);
+      const { teams, league: lg, usage } = await buildSeason(season);
       if (!Object.keys(teams).length) throw new Error('no team rows produced');
       const shaped = {};
       for (const [team, raw] of Object.entries(teams)) shaped[team] = shapeTeam(raw);
       seasons[season] = shaped;
       league[season] = shapeTeam(lg);
+      // Share of his own snaps, per grouping. A raw count says how much he
+      // played; the share says what he was used FOR.
+      const shapedUsage = {};
+      for (const [id, u] of Object.entries(usage)) {
+        if (u.snaps < MIN_USAGE_SNAPS) continue;
+        const mix = {};
+        for (const [g, n] of Object.entries(u.groupings)) {
+          const share = +(n / u.snaps * 100).toFixed(1);
+          if (share >= 1) mix[g] = share;
+        }
+        const teams = Object.entries(u.teams).sort((a, b) => b[1] - a[1]);
+        shapedUsage[id] = {
+          name: u.name, pos: u.pos, snaps: u.snaps, mix,
+          team: teams.length ? teams[0][0] : null,
+          ...(teams.length > 1 ? { alsoWith: teams.slice(1).map(([t, n]) => ({ team: t, snaps: n })) } : {}),
+        };
+      }
+      usageSeasons[season] = shapedUsage;
       log(`  ${season}: ${Object.keys(shaped).length} teams`);
     } catch (e) {
       // A season that has not kicked off yet is not a failure. A past season
@@ -354,6 +403,20 @@ async function main() {
   fs.writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n');
   const kb = Math.round(fs.statSync(OUT).size / 1024);
   log(`wrote scheme.json: ${years.join(', ')} — ${kb}KB`);
+
+  const usageOut = {
+    meta: {
+      generated: new Date().toISOString(),
+      seasons: Object.keys(usageSeasons).map(Number).sort(),
+      source: 'nflverse pbp_participation offense_players, joined to the pool on GSIS id',
+      qualifier: `Players with at least ${MIN_USAGE_SNAPS} charted snaps in a season`,
+      caveats: 'Share of the player\'s OWN snaps, not his team\'s. A player is only counted on snaps where the offensive personnel could be read, and only if the pool carries his GSIS id.',
+    },
+    seasons: usageSeasons,
+  };
+  fs.writeFileSync(OUT_USAGE, JSON.stringify(usageOut, null, 2) + '\n');
+  const latestUsage = usageSeasons[years[years.length - 1]] || {};
+  log(`wrote player-usage.json: ${Object.keys(latestUsage).length} players in ${years[years.length - 1]} — ${Math.round(fs.statSync(OUT_USAGE).size / 1024)}KB`);
 }
 
 main().catch(e => { console.error('[scheme] fatal:', e.message); process.exit(1); });
