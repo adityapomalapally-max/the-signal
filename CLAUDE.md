@@ -351,3 +351,27 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - `build-sos.js` follows the season: last season's defences until FOUR weeks of the new one are
   played, then this season's. Four weeks is thin, but past that a thin sample of the defences
   that actually exist beats a full sample of the ones that do not.
+
+## Vegas and weather — measured, then declined
+- `scripts/research-vegas-weather.js` is RESEARCH, not a build: it writes no data file and is
+  not in the Action. It exists to answer a question before we pay for it, and to stop the same
+  question being reopened from memory later.
+- Implied team total is widely held to be among the best weekly fantasy inputs, and it is not in
+  our feeds going forward — adding it means a live odds API, a key, a rate limit and a new way
+  for the 6am run to fail. So the value was measured first, for free, out of nflverse's
+  `schedules/games.csv`, which already carries `total_line`, `spread_line`, `temp`, `wind` and
+  `roof` for every past game.
+- THE TEST IS INCREMENTAL, not correlational. A good player scores well and also plays in
+  high-total games, so raw correlation flatters the market badly. The only question that decides
+  anything is whether the line improves a forecast that ALREADY knows the player's trailing
+  average — because that average is what we would use otherwise.
+- MEASURED over 12,758 player-weeks, 2023-25: implied team total improves RMSE by **+0.04%
+  overall**. By position: QB +0.63%, RB +0.15%, TE +0.07%, WR +0.00%. Weather is the same story
+  — wind +0.04%, temperature +0.04%. The extreme-wind split is real but tiny: 15mph+ costs about
+  0.65 points against trailing form, calm days give about 0.34 back.
+- CONCLUSION: NOT WORTH A LIVE DEPENDENCY. The market is genuinely informative about GAMES
+  (implied total correlates with points scored at r=0.415) — it is just nearly redundant with
+  what a player's own recent scoring already tells us. The one arguable exception is quarterbacks.
+- The honest limitation: this used a season-long trailing average and a linear fit. A sharper
+  baseline or a non-linear treatment might extract more. But 0.04% is not a close call, and
+  re-running this script is how to revisit it rather than arguing from memory.
