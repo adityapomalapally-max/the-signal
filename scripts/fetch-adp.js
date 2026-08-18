@@ -21,12 +21,21 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const { USER_AGENT } = require('./lib/agent');
+const seasonLib = require('./lib/season');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA_DIR, 'adp.json');
 const TEAMS = 12;
 const FORMAT = 'half-ppr';
-const SEASON = 2026;
+let SEASON = 2026;   // set from the live calendar in main()
+
+// ADP IS A DRAFT ARTEFACT. Once the season starts the mock-draft feed stops
+// describing anything a reader can act on: the drafts are done, the market has
+// closed, and a Value Board still comparing ranks to it is describing an
+// argument nobody is having any more. Rather than keep overwriting the file
+// with a feed that is now meaningless, the last preseason board is FROZEN and
+// stamped as historical, so the page can label it honestly instead of implying
+// it is live.
 // Below this the feed has changed shape or the season has not started; a
 // near-empty board is worse than yesterday's.
 const MIN_PLAYERS = 100;
@@ -51,6 +60,23 @@ function fetchJSON(url) {
 }
 
 async function main() {
+  const st = await seasonLib.state();
+  SEASON = st.season;
+  if (st.phase === 'regular' || st.phase === 'post') {
+    const existing = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, 'utf8')) : null;
+    if (existing) {
+      existing.meta.historical = true;
+      existing.meta.closedAt = existing.meta.closedAt || new Date().toISOString();
+      existing.meta.closedNote = `Drafts are over. This board is the last preseason snapshot and `
+        + `is kept as history, not as a live market. Season ${st.season} began before this run.`;
+      fs.writeFileSync(OUT, JSON.stringify(existing, null, 2) + '\n');
+      log('season has started — froze the board and marked it historical. Not refetching.');
+    } else {
+      log('season has started and there is no board on file; nothing to freeze.');
+    }
+    return;
+  }
+
   const url = `https://fantasyfootballcalculator.com/api/v1/adp/${FORMAT}?teams=${TEAMS}&year=${SEASON}`;
   log(`Fetching ${FORMAT} / ${TEAMS}-team / ${SEASON}...`);
   let json;

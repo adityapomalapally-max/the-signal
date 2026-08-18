@@ -320,3 +320,34 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   play-action table at 32.7%, which is McVay exactly, and KC sit bottom at 14.3%.
 - A charted pass with no `receiver_player_id` counts for the TEAM and for nobody in particular.
   That is the honest split: the play happened, the attribution did not.
+
+## In season
+- `data/ros.json` — rest-of-season projections, built by `scripts/build-ros.js`. From the first
+  Sunday, projections-2026.json answers a question nobody is asking: what matters in Week 8 is
+  not the seventeen-game median built in August, it is the nine games left.
+- THE WEIGHT IS THE PRODUCT, and it is DERIVED, not chosen. `scripts/build-ros-weights.js` fits
+  it against our own game logs: for every player-season-week, how well does
+  `w·(season so far) + (1-w)·(prior expectation)` predict the rest of the season. Measured:
+  **0.32 on actuals after two games, crossing 0.5 at week seven, 0.83 by week fourteen** — which
+  is the quantified version of "do not overreact to three games". The blend beats BOTH ends at
+  every week, by up to 29% on RMSE against trusting the season so far; if it ever stops doing
+  that, publish the better end instead of the blend.
+- **Tight ends stabilise much later than backs** — 0.25 weight at week 3 against a back's 0.40 —
+  so a TE breakout deserves less trust than an RB breakout at the same point. Each position has
+  its own curve for this reason.
+- The prior is currently LAST SEASON'S PPG standing in for a preseason projection, because
+  nobody archived the projections actually published. From 2026 the history series holds the
+  real thing and the weights should be refitted on it.
+- ROS IS NOT A RE-RANKING. rankings.json is untouched and the medians there stay the analyst's
+  call. ros.json answers a different question and is allowed to order players differently.
+- IN THE PRESEASON IT WRITES NOTHING and says why. A rest-of-season projection before any
+  football has been played is the season projection under another name, and shipping it implies
+  an update that never happened. Not in the daily Action's critical path for that reason —
+  it no-ops until September and there is a test asserting it.
+- `fetch-adp.js` FREEZES AT KICKOFF. ADP is a draft artefact; once drafts are done the feed
+  describes a market that has closed, and a Value Board still comparing ranks to it is
+  describing an argument nobody is having. The last preseason board is kept and stamped
+  `historical` with `closedAt`, rather than overwritten with a meaningless feed.
+- `build-sos.js` follows the season: last season's defences until FOUR weeks of the new one are
+  played, then this season's. Four weeks is thin, but past that a thin sample of the defences
+  that actually exist beats a full sample of the ones that do not.

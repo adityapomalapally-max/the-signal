@@ -50,6 +50,12 @@ jobs:
       - name: Fetch average draft position
         run: node scripts/fetch-adp.js
 
+      # Writes nothing until the season starts, by design: a rest-of-season
+      # projection before any football has been played is the season projection
+      # under another name.
+      - name: Build rest-of-season projections
+        run: node scripts/build-ros.js
+
       - name: Build team pages and schedule
         run: node scripts/build-teams.js
 

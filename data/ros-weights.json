@@ -1,0 +1,403 @@
+{
+  "meta": {
+    "builtBy": "scripts/build-ros-weights.js",
+    "builtAt": "2026-08-18T21:57:21.394Z",
+    "question": "after N games, how much of a rest-of-season forecast should come from what a player has actually done, and how much from what was expected of him before the season",
+    "method": "grid search on w minimising RMSE of (w·actualPPG + (1-w)·priorPPG) against rest-of-season PPG, over every player-season-week in our own game logs",
+    "priorIs": "the player's points per game the PREVIOUS season — a stand-in for a preseason expectation, because nobody archived the projections that were actually published. From 2026 the history series makes the real thing available and this should be rebuilt on it.",
+    "qualifiers": {
+      "minGamesBefore": 2,
+      "minGamesAfter": 4,
+      "minPriorGames": 6,
+      "minObservations": 40
+    },
+    "caveats": [
+      "Fitted on the same seasons it describes, so these weights are in-sample and will read a little better here than they will perform live.",
+      "A weight is about the CENTRE of a forecast. It says nothing about the range, which is what floor and ceiling are for.",
+      "Nothing here changes a rank. It changes what a player is expected to do from here."
+    ],
+    "observations": 3587
+  },
+  "byWeek": {
+    "2": {
+      "weightOnActual": 0.32,
+      "weightOnPrior": 0.68,
+      "rmse": 3.738,
+      "rmseActualOnly": 5.269,
+      "rmsePriorOnly": 4.128,
+      "improvementOverActualOnly": 29.1,
+      "beatsBothEnds": true,
+      "observations": 270
+    },
+    "3": {
+      "weightOnActual": 0.42,
+      "weightOnPrior": 0.58,
+      "rmse": 3.798,
+      "rmseActualOnly": 4.738,
+      "rmsePriorOnly": 4.302,
+      "improvementOverActualOnly": 19.8,
+      "beatsBothEnds": true,
+      "observations": 283
+    },
+    "4": {
+      "weightOnActual": 0.43,
+      "weightOnPrior": 0.57,
+      "rmse": 3.887,
+      "rmseActualOnly": 4.716,
+      "rmsePriorOnly": 4.385,
+      "improvementOverActualOnly": 17.6,
+      "beatsBothEnds": true,
+      "observations": 291
+    },
+    "5": {
+      "weightOnActual": 0.44,
+      "weightOnPrior": 0.56,
+      "rmse": 4.025,
+      "rmseActualOnly": 4.797,
+      "rmsePriorOnly": 4.52,
+      "improvementOverActualOnly": 16.1,
+      "beatsBothEnds": true,
+      "observations": 294
+    },
+    "6": {
+      "weightOnActual": 0.48,
+      "weightOnPrior": 0.52,
+      "rmse": 4.138,
+      "rmseActualOnly": 4.741,
+      "rmsePriorOnly": 4.674,
+      "improvementOverActualOnly": 12.7,
+      "beatsBothEnds": true,
+      "observations": 295
+    },
+    "7": {
+      "weightOnActual": 0.51,
+      "weightOnPrior": 0.49,
+      "rmse": 4.196,
+      "rmseActualOnly": 4.733,
+      "rmsePriorOnly": 4.765,
+      "improvementOverActualOnly": 11.4,
+      "beatsBothEnds": true,
+      "observations": 296
+    },
+    "8": {
+      "weightOnActual": 0.54,
+      "weightOnPrior": 0.46,
+      "rmse": 4.263,
+      "rmseActualOnly": 4.681,
+      "rmsePriorOnly": 4.841,
+      "improvementOverActualOnly": 8.9,
+      "beatsBothEnds": true,
+      "observations": 299
+    },
+    "9": {
+      "weightOnActual": 0.58,
+      "weightOnPrior": 0.42,
+      "rmse": 4.43,
+      "rmseActualOnly": 4.762,
+      "rmsePriorOnly": 5.052,
+      "improvementOverActualOnly": 7,
+      "beatsBothEnds": true,
+      "observations": 298
+    },
+    "10": {
+      "weightOnActual": 0.64,
+      "weightOnPrior": 0.36,
+      "rmse": 4.531,
+      "rmseActualOnly": 4.771,
+      "rmsePriorOnly": 5.228,
+      "improvementOverActualOnly": 5,
+      "beatsBothEnds": true,
+      "observations": 292
+    },
+    "11": {
+      "weightOnActual": 0.69,
+      "weightOnPrior": 0.31,
+      "rmse": 4.317,
+      "rmseActualOnly": 4.506,
+      "rmsePriorOnly": 5.181,
+      "improvementOverActualOnly": 4.2,
+      "beatsBothEnds": true,
+      "observations": 282
+    },
+    "12": {
+      "weightOnActual": 0.71,
+      "weightOnPrior": 0.29,
+      "rmse": 4.447,
+      "rmseActualOnly": 4.606,
+      "rmsePriorOnly": 5.353,
+      "improvementOverActualOnly": 3.4,
+      "beatsBothEnds": true,
+      "observations": 265
+    },
+    "13": {
+      "weightOnActual": 0.83,
+      "weightOnPrior": 0.17,
+      "rmse": 4.726,
+      "rmseActualOnly": 4.78,
+      "rmsePriorOnly": 5.833,
+      "improvementOverActualOnly": 1.1,
+      "beatsBothEnds": true,
+      "observations": 239
+    },
+    "14": {
+      "weightOnActual": 0.83,
+      "weightOnPrior": 0.17,
+      "rmse": 4.841,
+      "rmseActualOnly": 4.891,
+      "rmsePriorOnly": 5.981,
+      "improvementOverActualOnly": 1,
+      "beatsBothEnds": true,
+      "observations": 183
+    }
+  },
+  "byPosition": {
+    "QB": {
+      "2": {
+        "weightOnActual": 0.4,
+        "rmse": 4.211,
+        "observations": 48
+      },
+      "3": {
+        "weightOnActual": 0.44,
+        "rmse": 4.766,
+        "observations": 50
+      },
+      "4": {
+        "weightOnActual": 0.48,
+        "rmse": 4.737,
+        "observations": 51
+      },
+      "5": {
+        "weightOnActual": 0.34,
+        "rmse": 5.444,
+        "observations": 52
+      },
+      "6": {
+        "weightOnActual": 0.42,
+        "rmse": 5.591,
+        "observations": 51
+      },
+      "7": {
+        "weightOnActual": 0.43,
+        "rmse": 5.749,
+        "observations": 48
+      },
+      "8": {
+        "weightOnActual": 0.49,
+        "rmse": 5.817,
+        "observations": 48
+      },
+      "9": {
+        "weightOnActual": 0.56,
+        "rmse": 5.974,
+        "observations": 48
+      },
+      "10": {
+        "weightOnActual": 0.67,
+        "rmse": 6.176,
+        "observations": 46
+      },
+      "11": {
+        "weightOnActual": 0.72,
+        "rmse": 5.155,
+        "observations": 43
+      },
+      "12": {
+        "weightOnActual": 0.72,
+        "rmse": 5.157,
+        "observations": 41
+      }
+    },
+    "RB": {
+      "2": {
+        "weightOnActual": 0.29,
+        "rmse": 4.229,
+        "observations": 70
+      },
+      "3": {
+        "weightOnActual": 0.4,
+        "rmse": 4.236,
+        "observations": 73
+      },
+      "4": {
+        "weightOnActual": 0.44,
+        "rmse": 4.082,
+        "observations": 75
+      },
+      "5": {
+        "weightOnActual": 0.52,
+        "rmse": 3.999,
+        "observations": 76
+      },
+      "6": {
+        "weightOnActual": 0.54,
+        "rmse": 4.193,
+        "observations": 78
+      },
+      "7": {
+        "weightOnActual": 0.57,
+        "rmse": 4.212,
+        "observations": 77
+      },
+      "8": {
+        "weightOnActual": 0.61,
+        "rmse": 4.23,
+        "observations": 77
+      },
+      "9": {
+        "weightOnActual": 0.67,
+        "rmse": 4.225,
+        "observations": 77
+      },
+      "10": {
+        "weightOnActual": 0.68,
+        "rmse": 4.421,
+        "observations": 78
+      },
+      "11": {
+        "weightOnActual": 0.77,
+        "rmse": 4.407,
+        "observations": 76
+      },
+      "12": {
+        "weightOnActual": 0.76,
+        "rmse": 4.616,
+        "observations": 73
+      },
+      "13": {
+        "weightOnActual": 0.78,
+        "rmse": 5.17,
+        "observations": 69
+      },
+      "14": {
+        "weightOnActual": 0.77,
+        "rmse": 5.445,
+        "observations": 50
+      }
+    },
+    "WR": {
+      "2": {
+        "weightOnActual": 0.33,
+        "rmse": 3.552,
+        "observations": 107
+      },
+      "3": {
+        "weightOnActual": 0.46,
+        "rmse": 3.367,
+        "observations": 110
+      },
+      "4": {
+        "weightOnActual": 0.45,
+        "rmse": 3.719,
+        "observations": 112
+      },
+      "5": {
+        "weightOnActual": 0.51,
+        "rmse": 3.584,
+        "observations": 111
+      },
+      "6": {
+        "weightOnActual": 0.56,
+        "rmse": 3.737,
+        "observations": 112
+      },
+      "7": {
+        "weightOnActual": 0.57,
+        "rmse": 3.877,
+        "observations": 116
+      },
+      "8": {
+        "weightOnActual": 0.56,
+        "rmse": 4.039,
+        "observations": 118
+      },
+      "9": {
+        "weightOnActual": 0.6,
+        "rmse": 4.243,
+        "observations": 118
+      },
+      "10": {
+        "weightOnActual": 0.63,
+        "rmse": 4.327,
+        "observations": 114
+      },
+      "11": {
+        "weightOnActual": 0.67,
+        "rmse": 4.221,
+        "observations": 111
+      },
+      "12": {
+        "weightOnActual": 0.71,
+        "rmse": 4.334,
+        "observations": 105
+      },
+      "13": {
+        "weightOnActual": 0.82,
+        "rmse": 4.532,
+        "observations": 95
+      },
+      "14": {
+        "weightOnActual": 0.79,
+        "rmse": 4.326,
+        "observations": 73
+      }
+    },
+    "TE": {
+      "2": {
+        "weightOnActual": 0.23,
+        "rmse": 2.583,
+        "observations": 45
+      },
+      "3": {
+        "weightOnActual": 0.25,
+        "rmse": 2.685,
+        "observations": 50
+      },
+      "4": {
+        "weightOnActual": 0.25,
+        "rmse": 2.834,
+        "observations": 53
+      },
+      "5": {
+        "weightOnActual": 0.19,
+        "rmse": 2.995,
+        "observations": 55
+      },
+      "6": {
+        "weightOnActual": 0.22,
+        "rmse": 2.877,
+        "observations": 54
+      },
+      "7": {
+        "weightOnActual": 0.26,
+        "rmse": 2.872,
+        "observations": 55
+      },
+      "8": {
+        "weightOnActual": 0.39,
+        "rmse": 2.932,
+        "observations": 56
+      },
+      "9": {
+        "weightOnActual": 0.33,
+        "rmse": 3.272,
+        "observations": 55
+      },
+      "10": {
+        "weightOnActual": 0.46,
+        "rmse": 3.234,
+        "observations": 54
+      },
+      "11": {
+        "weightOnActual": 0.49,
+        "rmse": 3.483,
+        "observations": 52
+      },
+      "12": {
+        "weightOnActual": 0.56,
+        "rmse": 3.648,
+        "observations": 46
+      }
+    }
+  }
+}

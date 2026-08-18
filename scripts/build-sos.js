@@ -27,11 +27,22 @@
 const fs = require('fs');
 const path = require('path');
 const { fetchCSV, parseCSV } = require('./lib/match');
+const seasonLib = require('./lib/season');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA_DIR, 'sos.json');
-const SEASON = 2026;
-const DEF_SEASON = 2025;          // most recent completed season
+// Derived, not typed. In August the only defensive results that exist are last
+// season's, and that is what SOS has to be built on. Once a few weeks of the new
+// season are played, LAST season's defences stop being the right answer — the
+// coordinators, the personnel and the injuries have all moved — and continuing
+// to publish them is a schedule strength describing teams that no longer exist.
+//
+// MIN_WEEKS_FOR_LIVE is the honest floor: four weeks of defensive results is a
+// thin sample, but it is a sample of THIS season, and past it the current data
+// beats the stale data. Below it, last season is still the better guess.
+const MIN_WEEKS_FOR_LIVE = 4;
+let SEASON = 2026;
+let DEF_SEASON = 2025;
 const POSITIONS = ['QB', 'RB', 'WR', 'TE'];
 const SEGMENTS = {
   early: { label: 'Weeks 1–4', from: 1, to: 4 },
@@ -45,6 +56,14 @@ const log = (m) => console.log(`[sos] ${m}`);
 const r1 = (n) => Math.round(n * 10) / 10;
 
 async function main() {
+  const st = await seasonLib.state();
+  SEASON = st.season;
+  // The defensive season is this one once enough of it has been played, and
+  // last one until then.
+  const live = (st.phase === 'regular' || st.phase === 'post') && st.week > MIN_WEEKS_FOR_LIVE;
+  DEF_SEASON = live ? st.season : await seasonLib.lastCompletedSeason();
+  log(`schedule for ${SEASON}, defences from ${DEF_SEASON} (${live ? `${st.week} weeks played` : 'not enough of this season played yet'})`);
+
   log('=== SOS Start ===');
 
   log(`Fetching ${DEF_SEASON} weekly stats...`);

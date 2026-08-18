@@ -75,9 +75,17 @@ async function main() {
   if (inSeason) {
     if (has('adp.json')) {
       const adp = read('adp.json');
-      problems.push(
-        `ADP is a DRAFT artefact and the season has started. adp.json is from ${adp.meta.fetchedAt ? adp.meta.fetchedAt.slice(0, 10) : 'an unknown date'} `
-        + `— the Value Board compares ranks to it and now describes a market that has closed. Retire it or label it as historical.`);
+      if (!adp.meta.historical) {
+        problems.push(
+          `ADP is a DRAFT artefact and the season has started. adp.json is from ${adp.meta.fetchedAt ? adp.meta.fetchedAt.slice(0, 10) : 'an unknown date'} `
+          + `— the Value Board compares ranks to it and now describes a market that has closed. fetch-adp.js should have frozen it.`);
+      } else {
+        notes.push(`ADP is frozen and labelled historical (closed ${String(adp.meta.closedAt).slice(0, 10)}) — correct for a season in progress`);
+      }
+    }
+    if (!has('ros.json')) {
+      problems.push('no ros.json — the season is under way and nothing is producing rest-of-season '
+        + 'projections, so the only forecast on the site is the one built in August.');
     }
     if (has('sos.json')) {
       const sos = read('sos.json');
