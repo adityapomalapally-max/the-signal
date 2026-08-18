@@ -54,6 +54,10 @@ jobs:
       # is ~70MB of participation + play-by-play. Use --all to rebuild history.
       - name: Build scheme and identity
         run: node scripts/build-scheme.js
+
+      # Adds a row for any team-season that appeared; never overwrites an answer.
+      - name: Scaffold play-caller rows
+        run: node scripts/build-playcallers.js
       
       # After the data steps: the pool changes, and a sitemap listing yesterday's
       # players is a list of soft 404s submitted to Google.

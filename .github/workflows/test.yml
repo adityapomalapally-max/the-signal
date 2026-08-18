@@ -26,6 +26,9 @@ jobs:
       - name: Validate injury overrides
         run: node scripts/check-overrides.js
 
+      - name: Validate play-callers
+        run: node scripts/check-playcallers.js
+
       - name: Every script parses
         run: |
           for f in scripts/*.js scripts/lib/*.js assets/*.js; do

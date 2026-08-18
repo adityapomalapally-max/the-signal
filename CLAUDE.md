@@ -139,3 +139,9 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   average off four snaps while gating the EPA was the inconsistency that made the rule obvious.
 - Head coach comes from nflverse `schedules` and is generated. THE PLAY-CALLER IS NOT IN ANY PUBLIC
   DATASET — if that layer is ever wanted it has to be hand-kept and sourced, like medicals.json.
+- `data/playcallers.json` — hand-kept, scaffolded by `scripts/build-playcallers.js` (adds rows, never
+  overwrites an answer; refreshes the generated `headCoach` column only). Fill `playCaller`,
+  `callerIsHeadCoach`, `source`. A blank row is HONEST — the page falls back to the head coach rather
+  than guessing. `scripts/check-playcallers.js` reports what is blank and fails on a claim with no
+  source. A play-caller change leads the "what changed" note ahead of a head-coach change, because it
+  explains more scheme movement.

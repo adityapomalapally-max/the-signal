@@ -367,10 +367,25 @@ let teamsData = null, currentTeam = null, sosData = null, sosPos = 'WR';
 let teamsPromise = null;
 // Scheme is 216KB and only the Teams page reads it, so it is fetched when that
 // page opens and never on first paint.
-let schemePromise = null, schemeData = null;
+let schemePromise = null, schemeData = null, callerData = null;
 function ensureScheme() {
-  if (!schemePromise) schemePromise = loadJSON('/data/scheme.json').then(d => (schemeData = d));
+  if (!schemePromise) {
+    schemePromise = Promise.all([
+      loadJSON('/data/scheme.json').then(d => (schemeData = d)),
+      // Small, hand-kept, and allowed to be absent or half-filled. An unknown
+      // play-caller shows the head coach alone rather than a guess.
+      loadJSON('/data/playcallers.json').then(d => (callerData = d)).catch(() => null),
+    ]);
+  }
   return schemePromise;
+}
+
+// The play-caller is the more predictive of the two: a coordinator change moves
+// scheme more reliably than a head-coach change, and plenty of head coaches do
+// not call it. Returns null when nobody has filled the row in.
+function playCaller(team, season) {
+  const e = callerData && callerData.entries && callerData.entries[`${season}|${team}`];
+  return e && e.playCaller ? e : null;
 }
 
 function ensureTeams() {
@@ -1285,13 +1300,16 @@ function schemeHtml(team) {
   const prev = prevYear && schemeData.seasons[prevYear] && schemeData.seasons[prevYear][team];
   const lg = schemeData.league[latest];
 
+  const callerNow = playCaller(team, latest);
+  const callerBefore = prevYear ? playCaller(team, prevYear) : null;
+
   const mix = Object.entries(cur.personnel).sort((a, b) => b[1].rate - a[1].rate);
   const top = mix.filter(([, d]) => d.rate >= 1);
 
   let h = `<div class="medical-card" style="padding:18px;margin-bottom:14px;">`;
   h += `<div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;">
     <span style="font-family:var(--serif);font-size:17px;font-weight:700;">Scheme &amp; Identity</span>
-    <span style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);letter-spacing:0.5px;">${latest} · ${cur.plays} SNAPS${cur.coach ? ` · ${rankEsc(cur.coach.toUpperCase())}` : ''}</span>
+    <span style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);letter-spacing:0.5px;">${latest} · ${cur.plays} SNAPS${cur.coach ? ` · ${rankEsc(cur.coach.toUpperCase())}` : ''}${callerNow && !callerNow.callerIsHeadCoach ? ` · CALLED BY ${rankEsc(callerNow.playCaller.toUpperCase())}` : ''}</span>
   </div>`;
 
   // Did the identity change? This is the headline, so it goes first and only
@@ -1308,12 +1326,16 @@ function schemeHtml(team) {
     }
     shifts.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
     const coachChanged = prev.coach && cur.coach && prev.coach !== cur.coach;
+    const callerChanged = callerNow && callerBefore && callerNow.playCaller !== callerBefore.playCaller;
 
-    if (shifts.length || coachChanged) {
+    if (shifts.length || coachChanged || callerChanged) {
       h += `<div style="border-left:3px solid var(--gold);padding:10px 0 10px 14px;margin:14px 0 4px;">`;
       h += `<div style="font-family:var(--mono);font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">What changed from ${prevYear}</div>`;
-      if (coachChanged) {
-        h += `<div style="font-size:13.5px;line-height:1.7;color:var(--text-secondary);">${rankEsc(prev.coach)} → <strong style="color:var(--text);">${rankEsc(cur.coach)}</strong>. A new head coach is the most likely reason any of the below moved.</div>`;
+      // Whoever actually calls it is the better explanation, so it leads.
+      if (callerChanged) {
+        h += `<div style="font-size:13.5px;line-height:1.7;color:var(--text-secondary);">Play-calling passed from ${rankEsc(callerBefore.playCaller)} to <strong style="color:var(--text);">${rankEsc(callerNow.playCaller)}</strong>${coachChanged ? ` (and the head coach changed too, ${rankEsc(prev.coach)} → ${rankEsc(cur.coach)})` : ''}. That is the likeliest reason any of the below moved.</div>`;
+      } else if (coachChanged) {
+        h += `<div style="font-size:13.5px;line-height:1.7;color:var(--text-secondary);">${rankEsc(prev.coach)} → <strong style="color:var(--text);">${rankEsc(cur.coach)}</strong>. A new head coach is the most likely reason any of the below moved.${callerNow && callerBefore && callerNow.playCaller === callerBefore.playCaller ? ` The play-caller did not change — ${rankEsc(callerNow.playCaller)} kept it — which makes a wholesale shift less expected.` : ''}</div>`;
       }
       for (const s of shifts.slice(0, 3)) {
         h += `<div style="font-size:13.5px;line-height:1.7;color:var(--text-secondary);">`
