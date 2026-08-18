@@ -4,11 +4,137 @@
     "format": "Half-PPR, 1QB, 12-team redraft (rec x0.5, yds/10, TD x6; QB pass yds/25, pass TD 4, INT -2)",
     "method": "Health assumed — every player projected at 17 games. Ranked by projected median season total. Floor ~15th percentile, ceiling ~85th percentile.",
     "healthNote": "Injury history is not applied to the median. It belongs in the floor case, where it reads as risk rather than being smuggled into the rank as production.",
-    "bandCaveat": "Ceiling and floor bands are hand-set judgment, not simulated. A Monte Carlo resample of the top WRs found hand-set bands run systematically 10-28 points too narrow and too symmetric (true distributions are right-skewed, ~1.24). Trust the ordering; treat the spreads as one significant figure.",
+    "bandCaveat": "Bands are derived, not hand-set: the 15th and 85th percentile of year-over-year change in points per game, taken from the seasons that began nearest each player's projected level. They are right-skewed because outcomes are. The median they surround is the analyst's forecast, not a simulation. Availability is priced separately as the missed-time case, so it is not inside these bands.",
     "source": "The Signal 2026 projection set",
     "generated": "2026-08-13",
+    "bands": {
+      "generated": "2026-08-18T03:53:57.686Z",
+      "method": "Floor and ceiling are the 15th and 85th percentile of year-over-year change in points per game across this pool, centred on the median outcome so the analyst's projection stays the expected case.",
+      "perGame": "Measured per game, because the projections assume 17 games and the rankings chart draws availability as a separate downside. Folding missed games in here would count one injury twice.",
+      "level": "Each player is compared to the historical seasons that began nearest his projected points per game, because upside depends on level. Pooling them gave a 12-point-a-game back the upside of a promoted backup and a ceiling of 512, which is higher than any back has ever scored — that promotion is already inside the analyst's median.",
+      "medianIsHandSet": "Medians are the analyst's forecast and are never generated. Only the range around them is.",
+      "sample": {
+        "QB": {
+          "pairs": 50,
+          "curve": {
+            "6ppg": {
+              "floor": 0.747,
+              "ceiling": 1.193
+            },
+            "9ppg": {
+              "floor": 0.747,
+              "ceiling": 1.193
+            },
+            "12ppg": {
+              "floor": 0.741,
+              "ceiling": 1.223
+            },
+            "15ppg": {
+              "floor": 0.791,
+              "ceiling": 1.274
+            },
+            "18ppg": {
+              "floor": 0.761,
+              "ceiling": 1.174
+            },
+            "21ppg": {
+              "floor": 0.762,
+              "ceiling": 1.146
+            }
+          }
+        },
+        "RB": {
+          "pairs": 79,
+          "curve": {
+            "6ppg": {
+              "floor": 0.633,
+              "ceiling": 2.562
+            },
+            "9ppg": {
+              "floor": 0.649,
+              "ceiling": 1.605
+            },
+            "12ppg": {
+              "floor": 0.729,
+              "ceiling": 1.231
+            },
+            "15ppg": {
+              "floor": 0.708,
+              "ceiling": 1.215
+            },
+            "18ppg": {
+              "floor": 0.67,
+              "ceiling": 1.249
+            },
+            "21ppg": {
+              "floor": 0.67,
+              "ceiling": 1.249
+            }
+          }
+        },
+        "WR": {
+          "pairs": 117,
+          "curve": {
+            "6ppg": {
+              "floor": 0.665,
+              "ceiling": 1.444
+            },
+            "9ppg": {
+              "floor": 0.689,
+              "ceiling": 1.497
+            },
+            "12ppg": {
+              "floor": 0.698,
+              "ceiling": 1.336
+            },
+            "15ppg": {
+              "floor": 0.765,
+              "ceiling": 1.26
+            },
+            "18ppg": {
+              "floor": 0.765,
+              "ceiling": 1.236
+            },
+            "21ppg": {
+              "floor": 0.77,
+              "ceiling": 1.238
+            }
+          }
+        },
+        "TE": {
+          "pairs": 58,
+          "curve": {
+            "6ppg": {
+              "floor": 0.716,
+              "ceiling": 1.227
+            },
+            "9ppg": {
+              "floor": 0.702,
+              "ceiling": 1.293
+            },
+            "12ppg": {
+              "floor": 0.809,
+              "ceiling": 1.406
+            },
+            "15ppg": {
+              "floor": 0.771,
+              "ceiling": 1.331
+            },
+            "18ppg": {
+              "floor": 0.771,
+              "ceiling": 1.331
+            },
+            "21ppg": {
+              "floor": 0.771,
+              "ceiling": 1.331
+            }
+          }
+        }
+      },
+      "caveats": "Three seasons of game logs, and only players who played 8+ games in consecutive seasons. That is survivorship: a player who lost his job or his season entirely leaves the sample, so the real downside is likely worse than the floor shown."
+    },
     "builtBy": "scripts/build-rankings.js",
-    "builtAt": "2026-08-17T00:50:52.493Z",
+    "builtAt": "2026-08-18T03:53:57.755Z",
     "overallMethod": "Derived from the hand-ordered positional tabs. Each player inherits the projected median of the slot he was ranked into, then VORP is taken against replacement level. Ordering is the analyst's; the replacement math is the model's.",
     "availabilityMethod": "The missed-time case is a different downside from the floor beside it. The floor is a cold season played out in full; this is a normal season cut short. It holds the projected per-game rate flat and applies it to a low-availability year. League-wide that year is 11 of 17 games — the 15th percentile of 293 player-seasons across 2023–2025, the same percentile the projection set uses for its floor — then scaled by how available the player himself has been against the league average of 86%. It counts every missed game regardless of cause, suspensions included, because the question is how often he was not in your lineup. The per-game rate is deliberately NOT reduced: this prices availability only, never diminished play on return. Ordering is untouched — it moves the downside, never the rank.",
     "availabilityCaveat": "A record of one or two seasons is too short to read a player-specific floor from, so those fall back to the league figure. A player who is not currently healthy is flagged, not adjusted: history cannot see the knock he is carrying now, and a games-missed number inferred from a one-word status would be invented.",
@@ -56,8 +182,8 @@
       "median": 380,
       "ppg": 22.4,
       "vorp": 60,
-      "floor": 324,
-      "ceiling": 444,
+      "floor": 289,
+      "ceiling": 441,
       "availability": {
         "pct": 96,
         "seasons": [
@@ -85,8 +211,8 @@
       "median": 374,
       "ppg": 22,
       "vorp": 54,
-      "floor": 306,
-      "ceiling": 435,
+      "floor": 285,
+      "ceiling": 434,
       "availability": {
         "pct": 90,
         "seasons": [
@@ -114,8 +240,8 @@
       "median": 359,
       "ppg": 21.1,
       "vorp": 39,
-      "floor": 294,
-      "ceiling": 418,
+      "floor": 273,
+      "ceiling": 417,
       "availability": {
         "pct": 71,
         "seasons": [
@@ -141,8 +267,8 @@
       "median": 349,
       "ppg": 20.5,
       "vorp": 29,
-      "floor": 287,
-      "ceiling": 402,
+      "floor": 266,
+      "ceiling": 400,
       "availability": {
         "pct": 88,
         "seasons": [
@@ -168,8 +294,8 @@
       "median": 347,
       "ppg": 20.4,
       "vorp": 27,
-      "floor": 278,
-      "ceiling": 390,
+      "floor": 264,
+      "ceiling": 398,
       "availability": {
         "pct": 69,
         "seasons": [
@@ -197,8 +323,8 @@
       "median": 352,
       "ppg": 20.7,
       "vorp": 32,
-      "floor": 293,
-      "ceiling": 414,
+      "floor": 268,
+      "ceiling": 403,
       "availability": {
         "pct": 94,
         "seasons": [
@@ -226,8 +352,8 @@
       "median": 322,
       "ppg": 18.9,
       "vorp": 2,
-      "floor": 271,
-      "ceiling": 380,
+      "floor": 250,
+      "ceiling": 385,
       "availability": {
         "pct": 90,
         "seasons": [
@@ -255,8 +381,8 @@
       "median": 328,
       "ppg": 19.3,
       "vorp": 8,
-      "floor": 268,
-      "ceiling": 389,
+      "floor": 254,
+      "ceiling": 392,
       "availability": {
         "pct": 84,
         "seasons": [
@@ -284,8 +410,8 @@
       "median": 320,
       "ppg": 18.8,
       "vorp": 0,
-      "floor": 228,
-      "ceiling": 377,
+      "floor": 248,
+      "ceiling": 383,
       "availability": {
         "pct": 59,
         "seasons": [
@@ -313,8 +439,8 @@
       "median": 322,
       "ppg": 18.9,
       "vorp": 2,
-      "floor": 272,
-      "ceiling": 378,
+      "floor": 250,
+      "ceiling": 385,
       "availability": {
         "pct": 100,
         "seasons": [
@@ -340,8 +466,8 @@
       "median": 320,
       "ppg": 18.8,
       "vorp": 0,
-      "floor": 270,
-      "ceiling": 369,
+      "floor": 248,
+      "ceiling": 383,
       "availability": {
         "pct": 82,
         "seasons": [
@@ -369,8 +495,8 @@
       "median": 355,
       "ppg": 20.9,
       "vorp": 35,
-      "floor": 281,
-      "ceiling": 420,
+      "floor": 270,
+      "ceiling": 407,
       "availability": {
         "pct": 82,
         "seasons": [
@@ -394,8 +520,8 @@
       "median": 314,
       "ppg": 18.5,
       "vorp": -6,
-      "floor": 262,
-      "ceiling": 362,
+      "floor": 239,
+      "ceiling": 377,
       "availability": {
         "pct": 78,
         "seasons": [
@@ -423,8 +549,8 @@
       "median": 286,
       "ppg": 16.8,
       "vorp": -34,
-      "floor": 229,
-      "ceiling": 335,
+      "floor": 213,
+      "ceiling": 333,
       "availability": {
         "pct": 94,
         "seasons": [
@@ -452,8 +578,8 @@
       "median": 296,
       "ppg": 17.4,
       "vorp": -24,
-      "floor": 244,
-      "ceiling": 362,
+      "floor": 221,
+      "ceiling": 339,
       "availability": {
         "pct": 100,
         "seasons": [
@@ -479,8 +605,8 @@
       "median": 314,
       "ppg": 18.5,
       "vorp": -6,
-      "floor": 256,
-      "ceiling": 378,
+      "floor": 239,
+      "ceiling": 377,
       "availability": {
         "pct": 100,
         "seasons": [
@@ -508,8 +634,8 @@
       "median": 286,
       "ppg": 16.8,
       "vorp": -34,
-      "floor": 241,
-      "ceiling": 323,
+      "floor": 213,
+      "ceiling": 333,
       "availability": {
         "pct": 100,
         "seasons": [
@@ -537,8 +663,8 @@
       "median": 311,
       "ppg": 18.3,
       "vorp": -9,
-      "floor": 257,
-      "ceiling": 374,
+      "floor": 237,
+      "ceiling": 373,
       "availability": {
         "pct": 90,
         "seasons": [
@@ -555,7 +681,7 @@
         "floorGames": 11,
         "basis": "league",
         "floor": 201,
-        "statusFlag": "Questionable"
+        "statusFlag": "Questionable (Knee - ACL)"
       }
     },
     {
@@ -566,8 +692,8 @@
       "median": 270,
       "ppg": 15.9,
       "vorp": -50,
-      "floor": 223,
-      "ceiling": 324,
+      "floor": 205,
+      "ceiling": 344,
       "availability": {
         "pct": 92,
         "seasons": [
@@ -603,8 +729,8 @@
       "median": 315,
       "ppg": 18.5,
       "vorp": 137,
-      "floor": 254,
-      "ceiling": 365,
+      "floor": 211,
+      "ceiling": 393,
       "availability": {
         "pct": 96,
         "seasons": [
@@ -632,8 +758,8 @@
       "median": 311,
       "ppg": 18.3,
       "vorp": 133,
-      "floor": 252,
-      "ceiling": 374,
+      "floor": 208,
+      "ceiling": 388,
       "availability": {
         "pct": 100,
         "seasons": [
@@ -661,8 +787,8 @@
       "median": 300,
       "ppg": 17.6,
       "vorp": 122,
-      "floor": 233,
-      "ceiling": 366,
+      "floor": 209,
+      "ceiling": 375,
       "availability": {
         "pct": 73,
         "seasons": [
@@ -690,8 +816,8 @@
       "median": 298,
       "ppg": 17.5,
       "vorp": 120,
-      "floor": 241,
-      "ceiling": 356,
+      "floor": 208,
+      "ceiling": 372,
       "availability": {
         "pct": 80,
         "seasons": [
@@ -719,8 +845,8 @@
       "median": 254,
       "ppg": 14.9,
       "vorp": 76,
-      "floor": 195,
-      "ceiling": 319,
+      "floor": 180,
+      "ceiling": 308,
       "availability": {
         "pct": 98,
         "seasons": [
@@ -748,8 +874,8 @@
       "median": 285,
       "ppg": 16.8,
       "vorp": 107,
-      "floor": 206,
-      "ceiling": 351,
+      "floor": 198,
+      "ceiling": 355,
       "availability": {
         "pct": 90,
         "seasons": [
@@ -777,8 +903,8 @@
       "median": 266,
       "ppg": 15.6,
       "vorp": 88,
-      "floor": 208,
-      "ceiling": 324,
+      "floor": 180,
+      "ceiling": 323,
       "availability": {
         "pct": 100,
         "seasons": [
@@ -802,8 +928,8 @@
       "median": 251,
       "ppg": 14.8,
       "vorp": 73,
-      "floor": 190,
-      "ceiling": 318,
+      "floor": 178,
+      "ceiling": 305,
       "availability": {
         "pct": 84,
         "seasons": [
@@ -831,8 +957,8 @@
       "median": 290,
       "ppg": 17.1,
       "vorp": 112,
-      "floor": 224,
-      "ceiling": 352,
+      "floor": 202,
+      "ceiling": 362,
       "availability": {
         "pct": 86,
         "seasons": [
@@ -860,8 +986,8 @@
       "median": 247,
       "ppg": 14.5,
       "vorp": 69,
-      "floor": 193,
-      "ceiling": 303,
+      "floor": 175,
+      "ceiling": 300,
       "availability": {
         "pct": 100,
         "seasons": [
@@ -889,8 +1015,8 @@
       "median": 250,
       "ppg": 14.7,
       "vorp": 72,
-      "floor": 192,
-      "ceiling": 312,
+      "floor": 177,
+      "ceiling": 304,
       "availability": {
         "pct": 53,
         "seasons": [
@@ -914,8 +1040,8 @@
       "median": 239,
       "ppg": 14.1,
       "vorp": 61,
-      "floor": 182,
-      "ceiling": 300,
+      "floor": 170,
+      "ceiling": 305,
       "availability": {
         "pct": 84,
         "seasons": [
@@ -944,7 +1070,7 @@
       "ppg": 14.1,
       "vorp": 61,
       "floor": 170,
-      "ceiling": 298,
+      "ceiling": 305,
       "availability": {
         "pct": 88,
         "seasons": [
@@ -961,7 +1087,7 @@
         "floorGames": 11,
         "basis": "league",
         "floor": 155,
-        "statusFlag": "Questionable"
+        "statusFlag": "Questionable (Groin)"
       }
     },
     {
@@ -972,8 +1098,8 @@
       "median": 204,
       "ppg": 12,
       "vorp": 26,
-      "floor": 150,
-      "ceiling": 263,
+      "floor": 149,
+      "ceiling": 251,
       "availability": {
         "pct": 96,
         "seasons": [
@@ -1001,8 +1127,8 @@
       "median": 218,
       "ppg": 12.8,
       "vorp": 40,
-      "floor": 157,
-      "ceiling": 283,
+      "floor": 152,
+      "ceiling": 268,
       "availability": {
         "pct": 96,
         "seasons": [
@@ -1019,7 +1145,7 @@
         "floorGames": 12,
         "basis": "above-league",
         "floor": 154,
-        "statusFlag": null
+        "statusFlag": "Questionable (Thigh)"
       }
     },
     {
@@ -1030,8 +1156,8 @@
       "median": 216,
       "ppg": 12.7,
       "vorp": 38,
-      "floor": 150,
-      "ceiling": 284
+      "floor": 154,
+      "ceiling": 271
     },
     {
       "rank": 17,
@@ -1041,8 +1167,8 @@
       "median": 214,
       "ppg": 12.6,
       "vorp": 36,
-      "floor": 155,
-      "ceiling": 276,
+      "floor": 156,
+      "ceiling": 263,
       "availability": {
         "pct": 79,
         "seasons": [
@@ -1068,8 +1194,8 @@
       "median": 226,
       "ppg": 13.3,
       "vorp": 48,
-      "floor": 164,
-      "ceiling": 295,
+      "floor": 155,
+      "ceiling": 278,
       "availability": {
         "pct": 47,
         "seasons": [
@@ -1093,8 +1219,8 @@
       "median": 196,
       "ppg": 11.5,
       "vorp": 18,
-      "floor": 125,
-      "ceiling": 280,
+      "floor": 146,
+      "ceiling": 266,
       "availability": {
         "pct": 88,
         "seasons": [
@@ -1118,8 +1244,8 @@
       "median": 214,
       "ppg": 12.6,
       "vorp": 36,
-      "floor": 168,
-      "ceiling": 270,
+      "floor": 156,
+      "ceiling": 263,
       "availability": {
         "pct": 88,
         "seasons": [
@@ -1147,8 +1273,8 @@
       "median": 198,
       "ppg": 11.6,
       "vorp": 20,
-      "floor": 148,
-      "ceiling": 248,
+      "floor": 147,
+      "ceiling": 268,
       "availability": {
         "pct": 82,
         "seasons": [
@@ -1172,8 +1298,8 @@
       "median": 228,
       "ppg": 13.4,
       "vorp": 50,
-      "floor": 167,
-      "ceiling": 290,
+      "floor": 156,
+      "ceiling": 281,
       "availability": {
         "pct": 96,
         "seasons": [
@@ -1201,8 +1327,8 @@
       "median": 212,
       "ppg": 12.5,
       "vorp": 34,
-      "floor": 156,
-      "ceiling": 272,
+      "floor": 155,
+      "ceiling": 260,
       "availability": {
         "pct": 88,
         "seasons": [
@@ -1230,8 +1356,8 @@
       "median": 226,
       "ppg": 13.3,
       "vorp": 48,
-      "floor": 171,
-      "ceiling": 284,
+      "floor": 155,
+      "ceiling": 278,
       "availability": {
         "pct": 96,
         "seasons": [
@@ -1261,8 +1387,8 @@
       "median": 264,
       "ppg": 15.5,
       "vorp": 108,
-      "floor": 210,
-      "ceiling": 316,
+      "floor": 202,
+      "ceiling": 329,
       "availability": {
         "pct": 96,
         "seasons": [
@@ -1290,8 +1416,8 @@
       "median": 255,
       "ppg": 15,
       "vorp": 99,
-      "floor": 204,
-      "ceiling": 304,
+      "floor": 195,
+      "ceiling": 321,
       "availability": {
         "pct": 86,
         "seasons": [
@@ -1319,8 +1445,8 @@
       "median": 248,
       "ppg": 14.6,
       "vorp": 92,
-      "floor": 192,
-      "ceiling": 300,
+      "floor": 190,
+      "ceiling": 318,
       "availability": {
         "pct": 86,
         "seasons": [
@@ -1348,8 +1474,8 @@
       "median": 252,
       "ppg": 14.8,
       "vorp": 96,
-      "floor": 202,
-      "ceiling": 300,
+      "floor": 193,
+      "ceiling": 317,
       "availability": {
         "pct": 88,
         "seasons": [
@@ -1377,8 +1503,8 @@
       "median": 245,
       "ppg": 14.4,
       "vorp": 89,
-      "floor": 204,
-      "ceiling": 290,
+      "floor": 184,
+      "ceiling": 316,
       "availability": {
         "pct": 98,
         "seasons": [
@@ -1406,8 +1532,8 @@
       "median": 240,
       "ppg": 14.1,
       "vorp": 84,
-      "floor": 200,
-      "ceiling": 294,
+      "floor": 184,
+      "ceiling": 315,
       "availability": {
         "pct": 100,
         "seasons": [
@@ -1435,8 +1561,8 @@
       "median": 230,
       "ppg": 13.5,
       "vorp": 74,
-      "floor": 180,
-      "ceiling": 280,
+      "floor": 173,
+      "ceiling": 313,
       "availability": {
         "pct": 88,
         "seasons": [
@@ -1464,8 +1590,8 @@
       "median": 230,
       "ppg": 13.5,
       "vorp": 74,
-      "floor": 182,
-      "ceiling": 277,
+      "floor": 173,
+      "ceiling": 313,
       "availability": {
         "pct": 94,
         "seasons": [
@@ -1493,8 +1619,8 @@
       "median": 222,
       "ppg": 13.1,
       "vorp": 66,
-      "floor": 176,
-      "ceiling": 268,
+      "floor": 162,
+      "ceiling": 294,
       "availability": {
         "pct": 82,
         "seasons": [
@@ -1522,8 +1648,8 @@
       "median": 236,
       "ppg": 13.9,
       "vorp": 80,
-      "floor": 190,
-      "ceiling": 284,
+      "floor": 180,
+      "ceiling": 317,
       "availability": {
         "pct": 88,
         "seasons": [
@@ -1551,8 +1677,8 @@
       "median": 230,
       "ppg": 13.5,
       "vorp": 74,
-      "floor": 178,
-      "ceiling": 285,
+      "floor": 173,
+      "ceiling": 313,
       "availability": {
         "pct": 56,
         "seasons": [
@@ -1567,7 +1693,7 @@
         "floorGames": 7,
         "basis": "below-league",
         "floor": 95,
-        "statusFlag": "Questionable"
+        "statusFlag": "Questionable (Knee - ACL)"
       }
     },
     {
@@ -1578,8 +1704,8 @@
       "median": 209,
       "ppg": 12.3,
       "vorp": 53,
-      "floor": 164,
-      "ceiling": 256,
+      "floor": 147,
+      "ceiling": 277,
       "availability": {
         "pct": 90,
         "seasons": [
@@ -1596,7 +1722,7 @@
         "floorGames": 11,
         "basis": "league",
         "floor": 135,
-        "statusFlag": "Questionable"
+        "statusFlag": "Questionable (Hamstring)"
       }
     },
     {
@@ -1607,8 +1733,8 @@
       "median": 206,
       "ppg": 12.1,
       "vorp": 50,
-      "floor": 162,
-      "ceiling": 252,
+      "floor": 145,
+      "ceiling": 273,
       "availability": {
         "pct": 98,
         "seasons": [
@@ -1636,8 +1762,8 @@
       "median": 209,
       "ppg": 12.3,
       "vorp": 53,
-      "floor": 162,
-      "ceiling": 260,
+      "floor": 147,
+      "ceiling": 277,
       "availability": {
         "pct": 100,
         "seasons": [
@@ -1661,8 +1787,8 @@
       "median": 202,
       "ppg": 11.9,
       "vorp": 46,
-      "floor": 154,
-      "ceiling": 254,
+      "floor": 138,
+      "ceiling": 276,
       "availability": {
         "pct": 94,
         "seasons": [
@@ -1688,8 +1814,8 @@
       "median": 208,
       "ppg": 12.2,
       "vorp": 52,
-      "floor": 162,
-      "ceiling": 255,
+      "floor": 146,
+      "ceiling": 275,
       "availability": {
         "pct": 78,
         "seasons": [
@@ -1706,7 +1832,7 @@
         "floorGames": 10,
         "basis": "below-league",
         "floor": 122,
-        "statusFlag": "Monitor (Concussion Hx)"
+        "statusFlag": null
       }
     },
     {
@@ -1717,8 +1843,8 @@
       "median": 198,
       "ppg": 11.6,
       "vorp": 42,
-      "floor": 154,
-      "ceiling": 246,
+      "floor": 135,
+      "ceiling": 258,
       "availability": {
         "pct": 88,
         "seasons": [
@@ -1746,8 +1872,8 @@
       "median": 220,
       "ppg": 12.9,
       "vorp": 64,
-      "floor": 135,
-      "ceiling": 269,
+      "floor": 161,
+      "ceiling": 292,
       "availability": {
         "pct": 53,
         "seasons": [
@@ -1775,8 +1901,8 @@
       "median": 214,
       "ppg": 12.6,
       "vorp": 58,
-      "floor": 167,
-      "ceiling": 261,
+      "floor": 156,
+      "ceiling": 287,
       "availability": {
         "pct": 76,
         "seasons": [
@@ -1804,8 +1930,8 @@
       "median": 202,
       "ppg": 11.9,
       "vorp": 46,
-      "floor": 157,
-      "ceiling": 254,
+      "floor": 138,
+      "ceiling": 276,
       "availability": {
         "pct": 80,
         "seasons": [
@@ -1822,7 +1948,7 @@
         "floorGames": 10,
         "basis": "below-league",
         "floor": 119,
-        "statusFlag": null
+        "statusFlag": "Questionable (Illness)"
       }
     },
     {
@@ -1833,8 +1959,8 @@
       "median": 201,
       "ppg": 11.8,
       "vorp": 45,
-      "floor": 154,
-      "ceiling": 248,
+      "floor": 137,
+      "ceiling": 275,
       "availability": {
         "pct": 86,
         "seasons": [
@@ -1862,8 +1988,8 @@
       "median": 190,
       "ppg": 11.2,
       "vorp": 34,
-      "floor": 145,
-      "ceiling": 240,
+      "floor": 130,
+      "ceiling": 257,
       "availability": {
         "pct": 76,
         "seasons": [
@@ -1891,8 +2017,8 @@
       "median": 196,
       "ppg": 11.5,
       "vorp": 40,
-      "floor": 151,
-      "ceiling": 242,
+      "floor": 133,
+      "ceiling": 265,
       "availability": {
         "pct": 100,
         "seasons": [
@@ -1916,8 +2042,8 @@
       "median": 192,
       "ppg": 11.3,
       "vorp": 36,
-      "floor": 148,
-      "ceiling": 240,
+      "floor": 132,
+      "ceiling": 259,
       "availability": {
         "pct": 86,
         "seasons": [
@@ -1945,8 +2071,8 @@
       "median": 194,
       "ppg": 11.4,
       "vorp": 38,
-      "floor": 144,
-      "ceiling": 246,
+      "floor": 131,
+      "ceiling": 262,
       "availability": {
         "pct": 65,
         "seasons": [
@@ -1974,8 +2100,8 @@
       "median": 194,
       "ppg": 11.4,
       "vorp": 38,
-      "floor": 144,
-      "ceiling": 256,
+      "floor": 131,
+      "ceiling": 262,
       "availability": {
         "pct": 88,
         "seasons": [
@@ -1988,7 +2114,7 @@
         "floorGames": 11,
         "basis": "league-short-record",
         "floor": 126,
-        "statusFlag": "Questionable"
+        "statusFlag": "Questionable (Lower Body)"
       }
     },
     {
@@ -1999,8 +2125,8 @@
       "median": 189,
       "ppg": 11.1,
       "vorp": 33,
-      "floor": 146,
-      "ceiling": 234,
+      "floor": 130,
+      "ceiling": 255,
       "availability": {
         "pct": 88,
         "seasons": [
@@ -2028,8 +2154,8 @@
       "median": 185,
       "ppg": 10.9,
       "vorp": 29,
-      "floor": 145,
-      "ceiling": 235,
+      "floor": 130,
+      "ceiling": 264,
       "availability": {
         "pct": 65,
         "seasons": [
@@ -2057,8 +2183,8 @@
       "median": 192,
       "ppg": 11.3,
       "vorp": 36,
-      "floor": 149,
-      "ceiling": 235,
+      "floor": 132,
+      "ceiling": 259,
       "availability": {
         "pct": 90,
         "seasons": [
@@ -2101,8 +2227,8 @@
       "median": 210,
       "ppg": 12.4,
       "vorp": 54,
-      "floor": 158,
-      "ceiling": 259,
+      "floor": 147,
+      "ceiling": 278,
       "availability": {
         "pct": 85,
         "seasons": [
@@ -2130,8 +2256,8 @@
       "median": 208,
       "ppg": 12.2,
       "vorp": 59,
-      "floor": 161,
-      "ceiling": 246,
+      "floor": 160,
+      "ceiling": 277,
       "availability": {
         "pct": 85,
         "seasons": [
@@ -2157,8 +2283,8 @@
       "median": 213,
       "ppg": 12.5,
       "vorp": 64,
-      "floor": 168,
-      "ceiling": 256,
+      "floor": 164,
+      "ceiling": 284,
       "availability": {
         "pct": 98,
         "seasons": [
@@ -2186,8 +2312,8 @@
       "median": 186,
       "ppg": 10.9,
       "vorp": 37,
-      "floor": 136,
-      "ceiling": 238,
+      "floor": 137,
+      "ceiling": 242,
       "availability": {
         "pct": 94,
         "seasons": [
@@ -2211,8 +2337,8 @@
       "median": 182,
       "ppg": 10.7,
       "vorp": 33,
-      "floor": 136,
-      "ceiling": 227,
+      "floor": 130,
+      "ceiling": 235,
       "availability": {
         "pct": 69,
         "seasons": [
@@ -2229,7 +2355,7 @@
         "floorGames": 9,
         "basis": "below-league",
         "floor": 96,
-        "statusFlag": "Questionable"
+        "statusFlag": "Questionable (Knee - ACL)"
       }
     },
     {
@@ -2240,8 +2366,8 @@
       "median": 176,
       "ppg": 10.4,
       "vorp": 27,
-      "floor": 135,
-      "ceiling": 222,
+      "floor": 118,
+      "ceiling": 217,
       "availability": {
         "pct": 100,
         "seasons": [
@@ -2265,8 +2391,8 @@
       "median": 169,
       "ppg": 9.9,
       "vorp": 20,
-      "floor": 128,
-      "ceiling": 214,
+      "floor": 117,
+      "ceiling": 227,
       "availability": {
         "pct": 82,
         "seasons": [
@@ -2294,8 +2420,8 @@
       "median": 154,
       "ppg": 9.1,
       "vorp": 5,
-      "floor": 116,
-      "ceiling": 202,
+      "floor": 108,
+      "ceiling": 199,
       "availability": {
         "pct": 94,
         "seasons": [
@@ -2319,8 +2445,8 @@
       "median": 171,
       "ppg": 10.1,
       "vorp": 22,
-      "floor": 119,
-      "ceiling": 222,
+      "floor": 114,
+      "ceiling": 221,
       "availability": {
         "pct": 100,
         "seasons": [
@@ -2348,8 +2474,8 @@
       "median": 159,
       "ppg": 9.4,
       "vorp": 10,
-      "floor": 110,
-      "ceiling": 208,
+      "floor": 106,
+      "ceiling": 206,
       "availability": {
         "pct": 82,
         "seasons": [
@@ -2366,7 +2492,7 @@
         "floorGames": 10,
         "basis": "below-league",
         "floor": 94,
-        "statusFlag": "PUP"
+        "statusFlag": "PUP (Achilles)"
       }
     },
     {
@@ -2377,8 +2503,8 @@
       "median": 154,
       "ppg": 9.1,
       "vorp": 5,
-      "floor": 106,
-      "ceiling": 203,
+      "floor": 108,
+      "ceiling": 199,
       "availability": {
         "pct": 80,
         "seasons": [
@@ -2433,8 +2559,8 @@
       "median": 149,
       "ppg": 8.8,
       "vorp": 0,
-      "floor": 111,
-      "ceiling": 194,
+      "floor": 105,
+      "ceiling": 203,
       "availability": {
         "pct": 94,
         "seasons": [
@@ -2495,8 +2621,8 @@
       "median": 129,
       "ppg": 7.6,
       "vorp": -20,
-      "floor": 84,
-      "ceiling": 175,
+      "floor": 87,
+      "ceiling": 173,
       "availability": {
         "pct": 86,
         "seasons": [
@@ -2532,8 +2658,8 @@
       "median": 315,
       "ppg": 18.5,
       "vorp": 137,
-      "floor": 254,
-      "ceiling": 365,
+      "floor": 211,
+      "ceiling": 393,
       "availability": {
         "pct": 96,
         "seasons": [
@@ -2563,8 +2689,8 @@
       "median": 311,
       "ppg": 18.3,
       "vorp": 133,
-      "floor": 252,
-      "ceiling": 374,
+      "floor": 208,
+      "ceiling": 388,
       "availability": {
         "pct": 100,
         "seasons": [
@@ -2594,8 +2720,8 @@
       "median": 300,
       "ppg": 17.6,
       "vorp": 122,
-      "floor": 233,
-      "ceiling": 366,
+      "floor": 209,
+      "ceiling": 375,
       "availability": {
         "pct": 73,
         "seasons": [
@@ -2625,8 +2751,8 @@
       "median": 298,
       "ppg": 17.5,
       "vorp": 120,
-      "floor": 241,
-      "ceiling": 356,
+      "floor": 208,
+      "ceiling": 372,
       "availability": {
         "pct": 80,
         "seasons": [
@@ -2656,8 +2782,8 @@
       "median": 290,
       "ppg": 17.1,
       "vorp": 112,
-      "floor": 195,
-      "ceiling": 319,
+      "floor": 180,
+      "ceiling": 308,
       "availability": {
         "pct": 98,
         "seasons": [
@@ -2687,8 +2813,8 @@
       "median": 264,
       "ppg": 15.5,
       "vorp": 108,
-      "floor": 210,
-      "ceiling": 316,
+      "floor": 202,
+      "ceiling": 329,
       "availability": {
         "pct": 96,
         "seasons": [
@@ -2718,8 +2844,8 @@
       "median": 285,
       "ppg": 16.8,
       "vorp": 107,
-      "floor": 206,
-      "ceiling": 351,
+      "floor": 198,
+      "ceiling": 355,
       "availability": {
         "pct": 90,
         "seasons": [
@@ -2749,8 +2875,8 @@
       "median": 255,
       "ppg": 15,
       "vorp": 99,
-      "floor": 204,
-      "ceiling": 304,
+      "floor": 195,
+      "ceiling": 321,
       "availability": {
         "pct": 86,
         "seasons": [
@@ -2780,8 +2906,8 @@
       "median": 252,
       "ppg": 14.8,
       "vorp": 96,
-      "floor": 192,
-      "ceiling": 300,
+      "floor": 190,
+      "ceiling": 318,
       "availability": {
         "pct": 86,
         "seasons": [
@@ -2811,8 +2937,8 @@
       "median": 248,
       "ppg": 14.6,
       "vorp": 92,
-      "floor": 202,
-      "ceiling": 300,
+      "floor": 193,
+      "ceiling": 317,
       "availability": {
         "pct": 88,
         "seasons": [
@@ -2842,8 +2968,8 @@
       "median": 245,
       "ppg": 14.4,
       "vorp": 89,
-      "floor": 204,
-      "ceiling": 290,
+      "floor": 184,
+      "ceiling": 316,
       "availability": {
         "pct": 98,
         "seasons": [
@@ -2873,8 +2999,8 @@
       "median": 266,
       "ppg": 15.6,
       "vorp": 88,
-      "floor": 208,
-      "ceiling": 324,
+      "floor": 180,
+      "ceiling": 323,
       "availability": {
         "pct": 100,
         "seasons": [
@@ -2900,8 +3026,8 @@
       "median": 240,
       "ppg": 14.1,
       "vorp": 84,
-      "floor": 200,
-      "ceiling": 294,
+      "floor": 184,
+      "ceiling": 315,
       "availability": {
         "pct": 100,
         "seasons": [
@@ -2931,8 +3057,8 @@
       "median": 236,
       "ppg": 13.9,
       "vorp": 80,
-      "floor": 180,
-      "ceiling": 280,
+      "floor": 173,
+      "ceiling": 313,
       "availability": {
         "pct": 88,
         "seasons": [
@@ -2962,8 +3088,8 @@
       "median": 254,
       "ppg": 14.9,
       "vorp": 76,
-      "floor": 190,
-      "ceiling": 318,
+      "floor": 178,
+      "ceiling": 305,
       "availability": {
         "pct": 84,
         "seasons": [
@@ -2993,8 +3119,8 @@
       "median": 230,
       "ppg": 13.5,
       "vorp": 74,
-      "floor": 182,
-      "ceiling": 277,
+      "floor": 173,
+      "ceiling": 313,
       "availability": {
         "pct": 94,
         "seasons": [
@@ -3024,8 +3150,8 @@
       "median": 230,
       "ppg": 13.5,
       "vorp": 74,
-      "floor": 176,
-      "ceiling": 268,
+      "floor": 162,
+      "ceiling": 294,
       "availability": {
         "pct": 82,
         "seasons": [
@@ -3055,8 +3181,8 @@
       "median": 230,
       "ppg": 13.5,
       "vorp": 74,
-      "floor": 190,
-      "ceiling": 284,
+      "floor": 180,
+      "ceiling": 317,
       "availability": {
         "pct": 88,
         "seasons": [
@@ -3086,8 +3212,8 @@
       "median": 251,
       "ppg": 14.8,
       "vorp": 73,
-      "floor": 224,
-      "ceiling": 352,
+      "floor": 202,
+      "ceiling": 362,
       "availability": {
         "pct": 86,
         "seasons": [
@@ -3117,8 +3243,8 @@
       "median": 250,
       "ppg": 14.7,
       "vorp": 72,
-      "floor": 193,
-      "ceiling": 303,
+      "floor": 175,
+      "ceiling": 300,
       "availability": {
         "pct": 100,
         "seasons": [
@@ -3148,8 +3274,8 @@
       "median": 247,
       "ppg": 14.5,
       "vorp": 69,
-      "floor": 192,
-      "ceiling": 312,
+      "floor": 177,
+      "ceiling": 304,
       "availability": {
         "pct": 53,
         "seasons": [
@@ -3175,8 +3301,8 @@
       "median": 222,
       "ppg": 13.1,
       "vorp": 66,
-      "floor": 178,
-      "ceiling": 285,
+      "floor": 173,
+      "ceiling": 313,
       "availability": {
         "pct": 56,
         "seasons": [
@@ -3191,7 +3317,7 @@
         "floorGames": 7,
         "basis": "below-league",
         "floor": 95,
-        "statusFlag": "Questionable"
+        "statusFlag": "Questionable (Knee - ACL)"
       },
       "ownPpg": 13.5,
       "ownMedian": 230
@@ -3204,8 +3330,8 @@
       "median": 220,
       "ppg": 12.9,
       "vorp": 64,
-      "floor": 164,
-      "ceiling": 256,
+      "floor": 147,
+      "ceiling": 277,
       "availability": {
         "pct": 90,
         "seasons": [
@@ -3222,7 +3348,7 @@
         "floorGames": 11,
         "basis": "league",
         "floor": 135,
-        "statusFlag": "Questionable"
+        "statusFlag": "Questionable (Hamstring)"
       },
       "ownPpg": 12.3,
       "ownMedian": 209
@@ -3235,8 +3361,8 @@
       "median": 213,
       "ppg": 12.5,
       "vorp": 64,
-      "floor": 161,
-      "ceiling": 246,
+      "floor": 160,
+      "ceiling": 277,
       "availability": {
         "pct": 85,
         "seasons": [

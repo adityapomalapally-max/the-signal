@@ -145,3 +145,23 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   than guessing. `scripts/check-playcallers.js` reports what is blank and fails on a claim with no
   source. A play-caller change leads the "what changed" note ahead of a head-coach change, because it
   explains more scheme movement.
+
+## Projections
+- `data/projections-2026.json` — MEDIANS ARE THE ANALYST'S and are never generated, the same standing
+  as rankings-manual.json. Generating them would mean resampling a player's own past, which is
+  impossible for the rookies in the file and misleading for anyone who changed offences; a
+  backward-looking number presented as a projection is worse than a labelled human one because a
+  script makes it look measured.
+- `scripts/build-projection-bands.js` — generates ONLY floor and ceiling: the 15th and 85th percentile
+  of year-over-year change in POINTS PER GAME across this pool, centred on the median. Not in the
+  daily Action; re-run it when the medians change or a season completes.
+- Per game, deliberately. The projections assume 17 games and the rankings chart draws availability as
+  a SEPARATE downside — folding missed games into the band counts one injury twice.
+- The band must move the DOWNSIDE, NEVER THE RANK. Ranks come from the median, so regenerating bands
+  must reorder nothing; verify by diffing rankings.json before and after (108 floors moved, 0 ranks).
+- Compare each player to the historical seasons that began NEAREST his projected points per game.
+  Two tiers was not enough: a 12-points-a-game back shared a bucket with 3-ppg backups whose
+  promotions drove the 85th percentile, and inherited a 512-point ceiling — higher than any back has
+  ever scored. That promotion is already inside the analyst's median.
+- The hand-set bands were roughly ±15-20%; the data says -25%/+25% for an established player and much
+  wider below that. The old ranges conveyed more confidence than the evidence supports.
