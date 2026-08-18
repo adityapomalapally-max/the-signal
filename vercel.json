@@ -1,8 +1,39 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
+    {
+      "source": "/players",
+      "destination": "/players.html"
+    },
+    {
+      "source": "/rankings",
+      "destination": "/rankings.html"
+    },
+    {
+      "source": "/medicals",
+      "destination": "/medicals.html"
+    },
+    {
+      "source": "/teams",
+      "destination": "/teams.html"
+    },
+    {
+      "source": "/lab",
+      "destination": "/lab.html"
+    },
+    {
+      "source": "/fantasy",
+      "destination": "/fantasy.html"
+    },
+    {
+      "source": "/draft",
+      "destination": "/draft.html"
+    },
+    {
+      "source": "/compare",
+      "destination": "/compare.html"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
