@@ -85,6 +85,22 @@ jobs:
           - Player stats synced from nflverse"
           git push
 
+      # The data-integrity suite has to run HERE, not only in test.yml.
+      #
+      # test.yml is `on: push`, and CLAUDE.md claimed that covered "the daily
+      # bot's data commit, which is the commit most likely to break a rule".
+      # It never did: GitHub does not trigger workflows for a push made with the
+      # default GITHUB_TOKEN, which is exactly how the step above pushes. So the
+      # suite written for the bot's commits had never once run against one.
+      #
+      # 2026-08-18 is the proof — the pool churned, player-usage.json kept rows
+      # for four players who left it, and the run stayed green because nothing
+      # ran. Same bargain as the two checks below: after the push, `always()`,
+      # so a data rule that breaks reds the run without holding up the day's data.
+      - name: Data-integrity tests
+        if: always()
+        run: node --test 'tests/*.test.js'
+
       # Last, and deliberately after the push: a broken hand-written override is
       # a silent no-op — the file claims a player is on PUP and the site shows
       # him healthy — so the run has to go red. Running it here means a typo in

@@ -15,10 +15,36 @@ const scheme = JSON.parse(fs.readFileSync(path.join(D, 'scheme.json'), 'utf8'));
 const pool = JSON.parse(fs.readFileSync(path.join(D, 'players.json'), 'utf8'));
 const poolIds = new Set(pool.map(p => p.id));
 
-test('usage is keyed by players who exist in the pool', () => {
+// The CURRENT season is rebuilt against the current pool every morning, so a
+// stranger in it means the join is wrong and the assertion stands as written.
+//
+// Past seasons are a different case, and asserting the same thing about them
+// was wrong. They are never rebuilt — "past seasons never change" is why
+// build-scheme.js downloads one season and not three — so when the pool churns,
+// a player who drops out leaves his history behind. On 2026-08-18 that was
+// brown-n, strong, mccaffrey and rush: 6 rows across 2023 and 2024, 0 in 2025.
+//
+// Those rows are inert. Usage is only ever looked up for a player the page is
+// already showing, and the page only shows the pool. Pruning them would cost
+// more than it saves: pool membership is deliberately hysteretic (STICKY_RANKS),
+// so a player who drops out this week can be back next week — and his history
+// would then be gone until somebody spent a 70MB-a-season `--all` rebuild
+// getting it back. Keeping them means a returning player's profile is whole the
+// day he returns. That is the trade, made on purpose rather than by accident.
+test('the current season of usage is keyed by players who exist in the pool', () => {
+  const current = usage.meta.seasons[usage.meta.seasons.length - 1];
+  for (const id of Object.keys(usage.seasons[current])) {
+    assert.ok(poolIds.has(id), `${current}: "${id}" is not in the pool`);
+  }
+});
+
+test('a past season carries history, never a player the pool never had', () => {
+  // The bound that replaces the old assertion: history may outlive the pool,
+  // but it may not GROW. Every historical row has to be a player with a name
+  // and a team on it, so a broken join shows up as junk rather than as churn.
   for (const season of usage.meta.seasons) {
-    for (const id of Object.keys(usage.seasons[season])) {
-      assert.ok(poolIds.has(id), `${season}: "${id}" is not in the pool`);
+    for (const [id, u] of Object.entries(usage.seasons[season])) {
+      assert.ok(u.name && u.team, `${season} "${id}": a usage row with no name or team is a bad join, not churn`);
     }
   }
 });
