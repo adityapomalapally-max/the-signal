@@ -38,6 +38,12 @@ jobs:
       - name: Fetch official injury reports
         run: node scripts/fetch-injuries.js
 
+      # PFR advanced splits: what a player DID versus what was done to him —
+      # yards before/after the catch, drops, broken tackles, pressure faced. The
+      # join is gsis_id -> pfr_id through nflverse's own crosswalk, never by name.
+      - name: Fetch PFR advanced splits
+        run: node scripts/fetch-advstats.js
+
       - name: Build aggregate return-to-play curves
         run: node scripts/build-injury-curves.js
 

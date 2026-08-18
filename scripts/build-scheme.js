@@ -67,8 +67,9 @@ function log(msg) { console.log(`[scheme] ${msg}`); }
 // nflverse calls the Rams LA; every other file on this site calls them LAR.
 // Unaliased, scheme.json is keyed differently from teams.json and the Rams'
 // whole section renders as nothing — a silent join failure, not an error.
-const TEAM_ALIAS = { LA: 'LAR', OAK: 'LV', SD: 'LAC', STL: 'LAR' };
-const teamKey = (abbr) => TEAM_ALIAS[abbr] || abbr;
+// The alias lives in lib/teams.js now — fetch-advstats.js hit the identical
+// Rams trap, and a second copy is a copy that will drift.
+const { TEAM_ALIAS, teamKey } = require('./lib/teams');
 
 // Zero defenders in the box is not a reading, it is an unrecorded value — it
 // occurs on 9,093 of 45,184 rows in 2025. Averaged in as a zero it drags every

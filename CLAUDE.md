@@ -269,3 +269,35 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - IN-SEASON, THREE PRESEASON PRODUCTS START LYING and check-season says so: ADP describes a
   market that has closed, SOS was built off last season's defences, and the projections are
   season-long medians when the useful number has become rest-of-season.
+
+## Beyond GSIS — the id crosswalk and the buckets it unlocks
+- `scripts/lib/ids.js` reads nflverse's `players` release, which carries gsis_id alongside
+  pfr_id, pff_id, espn_id and esb_id. This is the thing that was stopping seventeen of
+  nflverse's twenty-five buckets from being used: most are NOT keyed on GSIS, and without a
+  crosswalk the only way in is name matching — the exact hazard the GSIS backfill removed,
+  reintroduced once per dataset. MEASURED: 339 of 350 carry a pfr_id, 298 a pff_id.
+- Ids are STRINGS, always. They arrive from CSVs where a numeric id is parsed into a Number;
+  an espn_id is a key, not a quantity, and must never be compared as a float.
+- NEVER BLANK AN ID BECAUSE A FETCH FAILED — same rule as the GSIS backfill. `poolCrosswalk`
+  reports what it could not resolve rather than dropping it silently, because a bucket covering
+  200 of 350 and one covering 340 are different products.
+- `scripts/lib/teams.js` is the one team vocabulary. nflverse AND PFR both call the Rams `LA`;
+  everything here calls them `LAR`. fetch-advstats walked into that trap on its first run and
+  produced 34 "teams" — `LA`, plus PFR's `2TM`/`3TM` markers, which are traded players and not
+  franchises at all. The alias used to live inside build-scheme.js; a second copy would drift,
+  so both read it from the lib now. `isTeam()` is the guard, and a team count that is not 32
+  fails the run.
+- `scripts/fetch-advstats.js` — PFR advanced splits → data/advstats.json, daily. This is the
+  first layer that separates what a player DID from what was done to him: yards before the
+  catch (his quarterback) versus after it (him), broken tackles, drops, aDOT, and for QBs
+  pressure rate, pocket time and on-target rate. 288 of 350 covered.
+- THE DEFENSIVE SPLIT IS AGGREGATED BY TEAM, NOT BY PLAYER. Keyed by player it matched 22 of
+  350 and correctly so — the pool is QB/RB/WR/TE and the people charted are the defenders
+  covering them. By team it becomes the matchup layer the site never had: what a defence
+  actually allows WHEN TARGETED, rather than points conceded, which is mostly a story about how
+  often it was on the field. Rates are RECOMPUTED FROM TOTALS, never averaged across players —
+  averaging percentages weights a nickel corner's twelve targets like a No.1's season.
+- A sum check cannot see a swap. `ybc + yac = yards` holds either way round, and a mutation
+  that exchanged the two columns passed it — while saying the exact opposite of what the split
+  exists to say. The per-reception rates come from their own columns and are the asymmetric
+  witness. When a test is symmetric in the thing it is checking, it is decoration.
