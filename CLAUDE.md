@@ -165,3 +165,20 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   ever scored. That promotion is already inside the analyst's median.
 - The hand-set bands were roughly ±15-20%; the data says -25%/+25% for an established player and much
   wider below that. The old ranges conveyed more confidence than the evidence supports.
+
+## The GSIS crosswalk
+- GSIS is the join key for stats, NGS, injuries and personnel. Sleeper only carries it for about a
+  fifth of the pool, so everything downstream was falling back to NAME matching for the other four
+  fifths — the exact failure the matcher rules exist to prevent. `build-players.js` now backfills it
+  from the nflverse rosters keyed on `sleeper_id`: an ID-to-ID crosswalk, no name guessing. 69 -> 343
+  of 350, 0 conflicts with the ids already on file.
+- TWO seasons are read, because a roster only holds the players on it: last season covers the
+  veterans, this season the rookies. The ones still missing are rookies the league has not assigned an
+  id to yet, which is the honest answer rather than a guess.
+- If the crosswalk is unavailable the run keeps the ids already on file and adds none. NEVER blank an
+  id we already knew because a fetch failed.
+- A conflict between Sleeper's id and nflverse's means one feed is wrong about who somebody IS. The
+  build says so loudly; do not trust a joined stat until it is resolved.
+- Pool churn makes derived files stale: change the pool and injuries.json and sitemap.xml must be
+  rebuilt too. The daily Action does this in order; a standalone `build-players.js` run does not, and
+  the test suite will catch it.

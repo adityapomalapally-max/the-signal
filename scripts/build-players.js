@@ -137,6 +137,43 @@ function colorFor(sleeperId) {
 // starts on exactly the wording the next run would give him.
 const { formatStatus } = require('./lib/status');
 const { USER_AGENT } = require('./lib/agent');
+const { fetchCSV, parseCSV } = require('./lib/match');
+
+/**
+ * sleeper_id -> gsis_id, from the nflverse rosters.
+ *
+ * GSIS is the join key for stats, Next Gen Stats, injuries and personnel, and
+ * Sleeper only carries it for about a fifth of the pool. Everything downstream
+ * was therefore falling back to NAME matching for the other four fifths — the
+ * exact thing the rules in CLAUDE.md exist to prevent, since a wrong name match
+ * writes one player's data onto another's profile.
+ *
+ * This is an ID-to-ID crosswalk with no name guessing anywhere in it. Two
+ * seasons are read because a roster only contains the players on it: last
+ * season covers the veterans, this season covers the rookies.
+ */
+async function fetchGsisCrosswalk(seasons) {
+  const base = 'https://github.com/nflverse/nflverse-data/releases/download/rosters';
+  const map = new Map();
+  let failures = 0;
+  for (const season of seasons) {
+    try {
+      const rows = parseCSV(await fetchCSV(`${base}/roster_${season}.csv`));
+      let n = 0;
+      for (const r of rows) {
+        const sleeper = r.sleeper_id && String(r.sleeper_id).trim();
+        const gsis = r.gsis_id && String(r.gsis_id).trim();
+        if (sleeper && gsis && !map.has(sleeper)) { map.set(sleeper, gsis); n++; }
+      }
+      log(`  crosswalk ${season}: ${n} ids`);
+    } catch (e) {
+      failures++;
+      log(`  ERROR fetching ${season} roster: ${e.message}`);
+    }
+  }
+  if (failures === seasons.length) log('  CROSSWALK UNAVAILABLE — keeping the ids already on file, adding none');
+  return map;
+}
 
 // Fields update-data.js owns. Carried from the current players.json so a
 // rebuild never erases a status, its provenance, or a manual note.
@@ -218,6 +255,11 @@ async function main() {
     process.exit(1);
   }
 
+  // Last season for the veterans, this season for the rookies.
+  const nowYear = new Date().getUTCFullYear();
+  log('Fetching GSIS crosswalk...');
+  const gsisCrosswalk = await fetchGsisCrosswalk([nowYear, nowYear - 1]);
+
   const current = readJSON('players.json') || [];
   const curatedFile = readJSON('players-curated.json');
   const curated = (curatedFile && Array.isArray(curatedFile.players)) ? curatedFile.players : [];
@@ -271,6 +313,7 @@ async function main() {
 
   let added = 0, carried = 0, ranked = 0;
   const players = [];
+  let fromSleeper = 0, fromCrosswalk = 0, conflicts = 0;
 
   for (const [sleeperId, sp] of pool) {
     const existing = currentBySleeperId.get(sleeperId);
@@ -289,13 +332,33 @@ async function main() {
       college: sp.college || null,
       experience: experienceLabel(sp.years_exp),
       sleeperId,
-      gsisId: (sp.gsis_id && String(sp.gsis_id).trim()) || null,
+      // Sleeper's own value first, then the crosswalk, then whatever this
+      // player already had. The last clause matters: if nflverse is down we
+      // must never blank an id we already knew.
+      gsisId: (sp.gsis_id && String(sp.gsis_id).trim())
+        || gsisCrosswalk.get(String(sleeperId))
+        || (existing && existing.gsisId)
+        || null,
       fRank: null,
       // Status seed — overwritten below if update-data.js already owns one.
       status: 'Healthy',
       statusClass: 'status-healthy',
       statusSource: 'sleeper'
     };
+    // Provenance of the id, and a check that the two sources agree. They did
+    // on all 69 players who had one when this was added; a conflict would mean
+    // one of the two feeds is wrong about who somebody is.
+    const cross = gsisCrosswalk.get(String(sleeperId));
+    if (sp.gsis_id && String(sp.gsis_id).trim()) {
+      fromSleeper++;
+      if (cross && cross !== String(sp.gsis_id).trim()) {
+        conflicts++;
+        log(`  GSIS CONFLICT for ${name}: sleeper ${sp.gsis_id} vs nflverse ${cross}`);
+      }
+    } else if (cross) {
+      fromCrosswalk++;
+    }
+
     const seeded = sp.injury_status && formatStatus(sp.injury_status, sp.injury_body_part);
     if (seeded) {
       base.status = seeded.status;
@@ -340,7 +403,10 @@ async function main() {
   writeJSON('players.json', core);
   writeJSON('players-detail.json', detail);
   const kb = (f) => (fs.statSync(path.join(DATA_DIR, f)).size / 1024).toFixed(0);
+  const withGsis = core.filter(p => p.gsisId).length;
   log(`Wrote players.json: ${core.length} players (${carried} carried over, ${added} new, ${ranked} with fRank, ${curated.length} curated overlays)`);
+  log(`  GSIS ids: ${withGsis}/${core.length} (${fromSleeper} from Sleeper, ${fromCrosswalk} from the nflverse crosswalk, ${conflicts} conflicts)`);
+  if (conflicts) log('  A CONFLICT MEANS ONE FEED IS WRONG ABOUT WHO SOMEBODY IS — investigate before trusting any joined stat.');
   log(`  players.json        ${kb('players.json')}KB (core, on init)`);
   log(`  players-detail.json ${kb('players-detail.json')}KB (profile fields, lazy)`);
 }
