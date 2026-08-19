@@ -632,3 +632,34 @@ function yacShare(receiving) {
   if (total <= 0) return null;
   return { share: Math.min(100, 100 * yac / total), behindLine: false };
 }
+
+/**
+ * JSONL — one JSON object per line.
+ *
+ * The history series is written a line a day so that a year of it is a year of
+ * one-line git diffs rather than 365 rewrites of a growing file. That makes it
+ * cheap to keep and cheap to append, at the cost of not being parseable by
+ * JSON.parse in one go.
+ *
+ * A single bad line does not lose the file: it is skipped and counted, because
+ * a truncated write at the end of the log should not take the eleven months in
+ * front of it with it.
+ */
+async function loadJSONL(path) {
+  try {
+    const res = await fetch(path + '?v=' + Date.now());
+    if (!res.ok) throw new Error(`${res.status}`);
+    const text = await res.text();
+    const rows = [];
+    let skipped = 0;
+    for (const line of text.split('\n')) {
+      if (!line.trim()) continue;
+      try { rows.push(JSON.parse(line)); } catch (e) { skipped++; }
+    }
+    if (skipped) console.warn(`${path}: skipped ${skipped} unparseable line(s)`);
+    return rows;
+  } catch (e) {
+    console.warn('Failed to load ' + path + ':', e);
+    return null;
+  }
+}

@@ -472,3 +472,19 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - `switchProfileTab(tab, el)` takes an OPTIONAL element. Inline handlers pass `this`; anything
   moving tabs programmatically has nothing to pass, and the missing fallback made it throw on
   `el.classList` — aborting before the render and leaving the profile with no active tab.
+
+## What has changed — the movement card
+- Every other card on a profile describes a STATE. This one describes a DIRECTION, and it exists
+  only because the daily build stopped overwriting itself and started keeping a line a day.
+  Nobody else can say when a status flipped or which way a draft board has been drifting,
+  because nobody else kept the days.
+- THE DIRECTION GOES IN WORDS. A lower pick number is EARLIER, so a FALLING ADP figure means the
+  room likes him MORE. Printed as a bare delta it reads as the exact opposite of what happened,
+  which is worse than not printing it at all. The sparkline is inverted for the same reason —
+  the line rises when the reader's opinion of him should.
+- THE RECORD HAS A BEGINNING. With nothing to show, the card says the log does not go back far
+  enough rather than rendering silence, which reads as "nothing happened". The date is taken
+  from the log itself, so it stays true as the series grows.
+- `loadJSONL` in app-core.js reads the series. A single unparseable line is SKIPPED and counted,
+  not fatal — a truncated write at the end of a log must not take the eleven months in front of
+  it down with it.

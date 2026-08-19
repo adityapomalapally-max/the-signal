@@ -143,6 +143,7 @@ function renderProfileTab(tab) {
     // page about what this player's job actually is. Fills in when the data
     // lands — the tab renders immediately either way.
     html += seasonHeadlineHtml(player);
+    html += trendHtml(currentProfileId);
     html += usageHtml(currentProfileId);
     // Usage says which package he plays in; charting says whether the offence is
     // trying to get him the ball; the advanced splits say how much of the result
@@ -161,6 +162,13 @@ function renderProfileTab(tab) {
           const active = document.querySelector('.profile-tab.active');
           if (active && active.dataset.tab === 'overview') renderProfileTab('overview');
         }
+      });
+    }
+    if (!historyStatus) {
+      ensureHistory().then(() => {
+        if (currentProfileId !== player.id) return;
+        const active = document.querySelector('.profile-tab.active');
+        if (active && active.dataset.tab === 'overview') renderProfileTab('overview');
       });
     }
     if (!usageData) {
@@ -778,6 +786,143 @@ function ensureUsage() {
     ]);
   }
   return usagePromise;
+}
+
+/**
+ * WHAT HAS CHANGED — the only section here nobody else could build.
+ *
+ * Every other card on this profile describes a state: what he is today. This
+ * describes MOVEMENT, and it exists only because the daily build stopped
+ * overwriting itself and started keeping a line a day. Nobody else can tell you
+ * when a status flipped or which way a draft board has been drifting, because
+ * nobody else kept the days.
+ *
+ * THE DIRECTION HAS TO BE IN WORDS. A lower pick number is EARLIER, so a
+ * falling ADP figure means the room likes him MORE. Printed as a bare delta it
+ * reads as exactly the opposite of what happened, which is worse than not
+ * printing it.
+ *
+ * And the record has a beginning. When there is nothing to show, the honest
+ * answer is that the log does not go back far enough — not silence, which reads
+ * as "nothing happened".
+ */
+let historyPromise = null, historyAdp = null, historyRanks = null, historyStatus = null;
+function ensureHistory() {
+  if (!historyPromise) {
+    historyPromise = Promise.all([
+      loadJSONL('/data/history/adp.jsonl').then(d => (historyAdp = d || [])),
+      loadJSONL('/data/history/rankings.jsonl').then(d => (historyRanks = d || [])),
+      loadJSONL('/data/history/status.jsonl').then(d => (historyStatus = d || [])),
+    ]);
+  }
+  return historyPromise;
+}
+
+function seriesPoints(rows, playerId, pick) {
+  if (!rows) return [];
+  return rows
+    .filter(r => r.values && r.values[playerId] !== undefined)
+    .map(r => ({ date: r.date, value: pick(r.values[playerId]) }))
+    .filter(p => typeof p.value === 'number' && isFinite(p.value));
+}
+
+// A sparkline over the series. Deliberately unlabelled beyond its endpoints —
+// the numbers are stated in the sentence beside it, and a second copy of them
+// on the chart is noise.
+function trendSpark(points, invert) {
+  if (points.length < 2) return '';
+  const vals = points.map(p => p.value);
+  const lo = Math.min(...vals), hi = Math.max(...vals);
+  const span = hi - lo || 1;
+  const w = 160, h = 28;
+  const d = points.map((p, i) => {
+    const x = (i / (points.length - 1)) * w;
+    // invert: for ADP a LOWER number is better, so the line should rise when
+    // the reader's opinion of him should.
+    const norm = (p.value - lo) / span;
+    const y = (invert ? norm : 1 - norm) * (h - 4) + 2;
+    return `${i ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  const first = points[0], last = points[points.length - 1];
+  const better = invert ? last.value < first.value : last.value > first.value;
+  const colour = last.value === first.value ? 'var(--text-muted)' : (better ? 'var(--teal)' : 'var(--blue)');
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true" style="overflow:visible;">
+    <path d="${d}" fill="none" stroke="${colour}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function trendHtml(playerId) {
+  if (!historyStatus) return '';
+  const player = playersDB.find(p => p.id === playerId);
+  if (!player) return '';
+
+  const rows = [];
+
+  // --- Where the room is drafting him ------------------------------------
+  const adpPoints = seriesPoints(historyAdp, playerId, v => v);
+  if (adpPoints.length >= 2) {
+    const first = adpPoints[0], last = adpPoints[adpPoints.length - 1];
+    const move = +(last.value - first.value).toFixed(1);
+    const words = move === 0 ? 'unchanged'
+      : move < 0 ? `being drafted <strong style="color:var(--text);">${Math.abs(move)} picks earlier</strong> than he was — the room has warmed to him`
+      : `falling <strong style="color:var(--text);">${move} picks</strong> — the room is cooling on him`;
+    rows.push(`<div class="trend-row">
+      <div>
+        <div class="trend-label">Average draft position</div>
+        <div class="trend-copy">${last.value} now, from ${first.value} on ${rankEsc(first.date)} — ${words}.</div>
+      </div>
+      ${trendSpark(adpPoints, true)}
+    </div>`);
+  }
+
+  // --- Where we have him -------------------------------------------------
+  const rankPoints = seriesPoints(historyRanks, playerId, v => (Array.isArray(v) ? v[0] : null));
+  if (rankPoints.length >= 2) {
+    const first = rankPoints[0], last = rankPoints[rankPoints.length - 1];
+    const move = last.value - first.value;
+    if (move !== 0) {
+      rows.push(`<div class="trend-row">
+        <div>
+          <div class="trend-label">Our ${rankEsc(player.pos)} rank</div>
+          <div class="trend-copy">${player.pos}${last.value} now, from ${player.pos}${first.value} on ${rankEsc(first.date)} — moved <strong style="color:var(--text);">${Math.abs(move)} ${Math.abs(move) === 1 ? 'place' : 'places'} ${move < 0 ? 'up' : 'down'}</strong> our board.</div>
+        </div>
+        ${trendSpark(rankPoints, true)}
+      </div>`);
+    }
+  }
+
+  // --- Status, which is an event rather than a series ---------------------
+  const changes = (historyStatus || [])
+    .filter(s => s.id === playerId && !s.first && s.to !== '__left__')
+    .slice(-4).reverse();
+  if (changes.length) {
+    rows.push(`<div class="trend-row">
+      <div style="width:100%;">
+        <div class="trend-label">Status changes</div>
+        ${changes.map(c => `<div class="trend-copy">
+          <span class="trend-date">${rankEsc(c.date)}</span>
+          ${rankEsc(c.from || 'first recorded')} → <strong style="color:var(--text);">${rankEsc(c.to)}</strong>
+          ${c.provenance === 'override' ? '<span style="color:var(--text-muted);"> · hand-entered, sourced</span>' : ''}
+        </div>`).join('')}
+      </div>
+    </div>`);
+  }
+
+  const since = (historyStatus && historyStatus.length) ? historyStatus[0].date : null;
+  if (!rows.length) {
+    return `<div class="medical-card" style="margin-bottom:16px;">
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">What has changed</div>
+      <div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;">Nothing recorded for him${since ? ` since the daily record began on ${rankEsc(since)}` : ''}. No status change, and no movement on either board.</div>
+    </div>`;
+  }
+
+  return `<div class="medical-card" style="margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">What has changed</span>
+      <span style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);">${since ? `KEPT DAILY SINCE ${rankEsc(since)}` : ''}</span>
+    </div>
+    ${rows.join('')}
+  </div>`;
 }
 
 /**

@@ -1917,3 +1917,33 @@ a { color: inherit; text-decoration: none; }
   padding-top: 24px;
   border-top: 1px solid var(--border);
 }
+
+/* ═══ WHAT HAS CHANGED ══════════════════════════════════════════════════════
+   The movement card. Every other card on a profile describes a state; this one
+   describes a direction, which only exists because the daily build stopped
+   overwriting itself. */
+.trend-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.trend-row:last-child { border-bottom: none; }
+.trend-label {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.trend-copy { font-size: 12.5px; line-height: 1.7; color: var(--text-secondary); }
+.trend-date {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-right: 8px;
+}
