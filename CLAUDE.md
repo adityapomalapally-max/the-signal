@@ -535,3 +535,27 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   UI prints a red warning when it sees the stamp, and **tests/ros.test.js FAILS if a stamped file
   is ever committed**. The capability has to exist without being able to ship — a stamped file
   looks exactly like a real one to every page that reads it.
+
+## The body map
+- `data/injury-anatomy.json` — `scripts/build-injury-anatomy.js`, daily, AFTER build-injury-curves
+  because it reads them. A reader who wants to understand a knee injury does not want a list
+  sorted alphabetically; he wants to point at a knee.
+- THIS IS THE FEATURE MOST LIKELY TO TEMPT SOMEBODY INTO INVENTING A NUMBER. A body map wants to
+  say "MCL Grade II — four to six weeks". That sentence is available from general knowledge,
+  sounds authoritative, and has no source. So each region carries THREE SEPARATE LAYERS, each
+  labelled: FREQUENCY counted from our own injury reports, RECOVERY derived from those same
+  reports, and RESEARCH which exists for **seven injuries only**.
+- A CONDITION WITHOUT RESEARCH IS LISTED AND SAYS SO. It appears because it genuinely occurs at
+  that region, tagged NO SOURCED DETAIL, and the panel states we have no timeline rather than
+  printing a plausible one. Two tests enforce it: `hasSourcedDetail` can never be true without a
+  matching entry in injury-research.json, and an unsourced condition may not contain a duration
+  or a percentage anywhere in its record. Both mutation-tested — inventing an MCL timeline goes
+  red, and marking everything sourced goes red.
+- BODY PARTS ARE MATCHED SIDE-INSENSITIVELY. Teams write "Shoulder", "right Shoulder" and "Right
+  Shoulder", and an exact match dropped every prefixed one — thirteen shoulder episodes sat in
+  the unmapped list purely because somebody typed a side. Which side it is has never mattered to
+  a reader pointing at a body map. Anything still unmapped is RECORDED in meta, and a test fails
+  if a common part belongs to no region.
+- The figure is a plain dummy, not an anatomical drawing: regions have to be big enough to hit
+  with a thumb, and every region is a real `<button>` layered over an `aria-hidden` SVG, because
+  a drawing full of `<path onmouseover>` is unreachable by keyboard.

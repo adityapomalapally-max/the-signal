@@ -2149,3 +2149,163 @@ a { color: inherit; text-decoration: none; }
   .ros-table th:nth-child(6), .ros-table td:nth-child(6) { display: none; }
   .ros-bar { min-width: 60px; }
 }
+
+/* ═══ THE BODY MAP ══════════════════════════════════════════════════════════
+   A plain dummy figure rather than an anatomical drawing: the regions have to
+   be big enough to hit with a thumb, and a realistic body on an injury page
+   reads as clinical in a way this is not trying to be. */
+.body-wrap {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+.body-figure { position: sticky; top: 90px; }
+.body-svg { width: 100%; max-width: 240px; display: block; }
+/* Scenery, so the figure reads as a body rather than floating parts. It has to
+   sit BETWEEN the unshaded and lightly-shaded regions — at the card colour it
+   read as a hole punched through the torso. */
+.body-filler { fill: var(--gold); opacity: 0.12; }
+/* Shaded by how often the region is actually reported, so the figure carries a
+   real number rather than being decoration. */
+.body-region { fill: var(--gold); opacity: var(--w, 0.4); transition: opacity 0.2s, fill 0.2s; }
+.body-region.on { fill: var(--teal); opacity: 1; }
+.body-figure-note {
+  font-size: 10.5px;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-top: 10px;
+}
+
+.body-picks { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+.body-pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-family: var(--mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.body-pick:hover { border-color: var(--border-hover); color: var(--text); }
+.body-pick.on { background: var(--gold-muted); border-color: var(--gold); color: var(--gold); }
+.body-pick:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.body-pick-count { font-size: 10px; color: var(--text-muted); }
+.body-pick.on .body-pick-count { color: var(--gold); }
+
+.body-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.body-parts {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 1.9;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+.body-parts span { color: var(--text-secondary); }
+.body-block { margin-bottom: 24px; }
+.body-block-head {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+.body-stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(110px, 100%), 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.body-stat {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.body-stat-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+.body-curve-row { display: flex; align-items: center; gap: 10px; padding: 3px 0; }
+.body-curve-label { font-size: 11.5px; color: var(--text-secondary); min-width: 110px; }
+.body-curve-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.body-curve-fill { display: block; height: 100%; }
+.body-curve-val {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text);
+  min-width: 40px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.body-note {
+  font-size: 11.5px;
+  font-style: italic;
+  line-height: 1.7;
+  color: var(--text-muted);
+  margin-top: 10px;
+}
+.body-caveats { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+.body-example {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-style: normal;
+  color: var(--gold);
+  cursor: pointer;
+}
+.body-example:hover { text-decoration: underline; }
+
+/* A condition we have research for, and one we do not, must be visibly
+   different — that distinction is the honest part of this whole feature. */
+.cond { padding: 12px 0; border-bottom: 1px solid var(--border-subtle); }
+.cond:last-child { border-bottom: none; }
+.cond-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.cond-name { font-size: 13.5px; color: var(--text); font-weight: 600; }
+.cond-tag {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 1px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: var(--gold-muted);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+}
+.cond-tag-none { background: none; color: var(--text-muted); border-color: var(--border); }
+.cond-note { font-size: 12px; line-height: 1.7; color: var(--text-secondary); margin-top: 6px; }
+.cond-facts { font-size: 12.5px; line-height: 1.8; color: var(--text-secondary); margin-top: 8px; }
+.cond-facts strong { color: var(--text); }
+.cond-fantasy { color: var(--text-muted); font-style: italic; margin-top: 4px; }
+.cond-empty { color: var(--text-muted); font-style: italic; font-size: 11.5px; }
+
+@media (max-width: 900px) {
+  /* The figure stops being a sidebar and becomes a header — sticky positioning
+     on a one-column layout pins it over the panel it is meant to explain. */
+  .body-wrap { grid-template-columns: 1fr; gap: 20px; }
+  .body-figure { position: static; justify-self: center; max-width: 200px; }
+  .body-curve-label { min-width: 84px; font-size: 11px; }
+}

@@ -494,7 +494,8 @@
          gets a contents line rather than asking anyone to scroll and hope. -->
     <div class="med-jump" style="padding:0 48px 20px;">
       <a href="#injuryToday" onclick="medJump(event,'injuryToday')">Hurt today</a>
-      <a href="#injuryTypeGrid" onclick="medJump(event,'injuryTypeGrid')">What the injury costs</a>
+      <a href="#bodyMap" onclick="medJump(event,'bodyMap')">The body map</a>
+      <a href="#injuryTypeGrid" onclick="medJump(event,'injuryTypeGrid')">Injury research</a>
       <a href="#medicalsContent" onclick="medJump(event,'medicalsContent')">All 287 profiles</a>
     </div>
 
@@ -506,6 +507,17 @@
 
     <div class="section-divider">
       <span class="section-divider-label">What the injury costs</span>
+      <span class="section-divider-line"></span>
+    </div>
+
+    <!-- THE BODY MAP. Point at a region and see what goes wrong there, how
+         often it has actually happened to this pool, and what it has cost. -->
+    <div style="padding:24px 48px 8px;">
+      <div id="bodyMap"></div>
+    </div>
+
+    <div class="section-divider">
+      <span class="section-divider-label">Injury research</span>
       <span class="section-divider-line"></span>
     </div>
 

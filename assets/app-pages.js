@@ -626,7 +626,14 @@ function labFactFinders(season, pos) {
 }
 
 function labFactsHtml(season, pos) {
-  const all = labFactFinders(season, pos);
+  // The stats seasons and the charted seasons are not the same set. Asking for
+  // facts about a year FTN never charted returns nothing, so fall back to the
+  // most recent charted season and say which one it is.
+  const charted = (labCharting && labCharting.meta && labCharting.meta.seasons || []).map(String);
+  const use = charted.includes(String(season)) ? String(season) : charted[charted.length - 1];
+  if (!use) return '';
+  const all = labFactFinders(use, pos);
+  season = use;
   // One card per player. Tee Higgins legitimately led both first-read rate and
   // contested rate in 2025, and two cards about the same man reads as a strip
   // with one idea rather than four.
@@ -740,11 +747,14 @@ function renderLabPage() {
       : `nflverse${m.ngs ? ' · NFL Next Gen Stats' : ''}`;
     h += `<div class="rank-note">Top ${rows.length} of the ${labPos} pool. Click any player for the full profile. Source: ${rankEsc(src)} · REG season only.</div>`;
   }
-  // The findings sit UNDER the board and belong to the Charts half — they are
-  // drawn from the charting layer, and beneath a production board they would be
-  // answers to a question the page is not asking. They also follow the position,
-  // because a receiver's oddities say nothing about a quarterback's.
-  if (labMode === 'charts') h += labFactsHtml(labSeason, labPos);
+  // The findings render in BOTH halves. They were behind the Charts toggle,
+  // which defaults off — so a reader landing on /lab saw no fun stats at all,
+  // and the section might as well not have existed. They are about the POSITION
+  // and the SEASON, not about which board happens to be on screen, so the mode
+  // was never the right thing to gate them on. The charting files are fetched
+  // for them either way.
+  if (labCharting) h += labFactsHtml(labSeason, labPos);
+  else ensureChartData().then(() => { if (document.getElementById('page-lab').classList.contains('active')) renderLabPage(); });
   board.innerHTML = h;
 
   // ---- Scatter ----
@@ -1343,6 +1353,7 @@ function switchPage(page) {
   if (page === 'players') renderPlayersTable();
   if (page === 'medicals') {
     renderInjuryToday();
+    renderBodyMap();
     renderMedicals(medSearch);
     renderInjuryTypeGrid();
     renderInjuryCurves();

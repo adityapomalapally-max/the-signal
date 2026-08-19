@@ -1134,3 +1134,192 @@ function medJump(event, id) {
     window.scrollTo(0, top);
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE BODY MAP
+
+   A reader who wants to understand a knee injury does not want a list of
+   injury types sorted alphabetically. He wants to point at a knee.
+
+   The figure is a deliberately plain dummy rather than an anatomical drawing:
+   the regions have to be big enough to hit on a phone, and a realistic body on
+   an injury page reads as clinical in a way this is not trying to be.
+
+   THREE THINGS KEEP IT HONEST, and they are the whole reason this took data
+   work before it took drawing:
+     · FREQUENCY is counted from our own injury reports, not asserted.
+     · RECOVERY is derived from those same reports, with the sample stated.
+     · RESEARCH exists for SEVEN injuries. Every other condition is listed
+       because it genuinely occurs at that region, and the panel SAYS we have no
+       sourced detail rather than printing a plausible timeline.
+
+   Every region is a <button>: hover works, click pins, and the whole thing is
+   reachable by keyboard, which an SVG full of <path onmouseover> would not be.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+let anatomyPromise = null, anatomyData = null;
+let activeRegion = 'knee';   // the most-reported region, so the panel opens full
+
+function ensureAnatomy() {
+  if (!anatomyPromise) {
+    anatomyPromise = loadJSON('/data/injury-anatomy.json').then(d => (anatomyData = d));
+  }
+  return anatomyPromise;
+}
+
+// Where each region sits on the figure. Plain shapes on purpose — a hit target
+// a thumb can find beats an accurate outline nobody can tap.
+const BODY_SHAPES = {
+  head:     '<circle cx="100" cy="32" r="23"/><rect x="90" y="53" width="20" height="12" rx="4"/>',
+  shoulder: '<rect x="52" y="66" width="30" height="22" rx="10"/><rect x="118" y="66" width="30" height="22" rx="10"/>',
+  arm:      '<rect x="46" y="86" width="20" height="86" rx="10"/><rect x="134" y="86" width="20" height="86" rx="10"/>'
+            + '<rect x="46" y="172" width="18" height="26" rx="8"/><rect x="136" y="172" width="18" height="26" rx="8"/>',
+  core:     '<rect x="70" y="68" width="60" height="60" rx="12"/>',
+  back:     '',   // not on a front view — reachable from the list below
+  hip:      '<rect x="72" y="150" width="56" height="34" rx="12"/>',
+  thigh:    '<rect x="74" y="186" width="24" height="62" rx="11"/><rect x="102" y="186" width="24" height="62" rx="11"/>',
+  knee:     '<rect x="74" y="250" width="24" height="22" rx="9"/><rect x="102" y="250" width="24" height="22" rx="9"/>',
+  calf:     '<rect x="76" y="274" width="21" height="56" rx="10"/><rect x="103" y="274" width="21" height="56" rx="10"/>',
+  ankle:    '<rect x="77" y="332" width="19" height="16" rx="7"/><rect x="104" y="332" width="19" height="16" rx="7"/>',
+  foot:     '<rect x="72" y="350" width="24" height="14" rx="6"/><rect x="104" y="350" width="24" height="14" rx="6"/>',
+};
+// Drawn abdomen so the figure reads as a body rather than floating parts. It is
+// scenery: no region owns it and nothing can be clicked on it.
+const BODY_FILLER = '<rect x="74" y="128" width="52" height="24" rx="8"/>';
+
+function setBodyRegion(key) {
+  activeRegion = key;
+  renderBodyMap();
+}
+
+function renderBodyMap() {
+  const host = document.getElementById('bodyMap');
+  if (!host) return;
+  if (!anatomyData) {
+    host.innerHTML = `<div class="medical-card"><div class="medical-detail">Loading the injury map…</div></div>`;
+    ensureAnatomy().then(() => renderBodyMap());
+    return;
+  }
+  const regions = anatomyData.regions || {};
+  if (!regions[activeRegion]) activeRegion = Object.keys(regions)[0];
+
+  // The busiest region sets the scale, so the shading means something rather
+  // than being decoration.
+  const maxEpisodes = Math.max(...Object.values(regions).map(r => r.episodes || 0), 1);
+
+  let svg = `<svg viewBox="0 0 200 380" class="body-svg" role="presentation" aria-hidden="true">
+    <g class="body-filler">${BODY_FILLER}</g>`;
+  for (const [key, shape] of Object.entries(BODY_SHAPES)) {
+    if (!shape || !regions[key]) continue;
+    const r = regions[key];
+    // Opacity carries how often the region is actually reported.
+    const weight = 0.18 + 0.62 * ((r.episodes || 0) / maxEpisodes);
+    svg += `<g class="body-region${key === activeRegion ? ' on' : ''}" data-region="${rankEsc(key)}"
+      style="--w:${weight.toFixed(2)};">${shape}</g>`;
+  }
+  svg += `</svg>`;
+
+  // A real button per region, layered over the drawing. The SVG itself is
+  // aria-hidden — a screen reader gets the buttons, which are the thing that
+  // actually does something.
+  const buttons = Object.entries(regions).map(([key, r]) =>
+    `<button type="button" class="body-pick${key === activeRegion ? ' on' : ''}"
+       onclick="setBodyRegion('${rankEsc(key)}')"
+       onmouseenter="setBodyRegion('${rankEsc(key)}')"
+       aria-pressed="${key === activeRegion}">
+      <span>${rankEsc(r.label)}</span>
+      <span class="body-pick-count">${r.episodes}</span>
+    </button>`).join('');
+
+  host.innerHTML = `<div class="body-wrap">
+      <div class="body-figure">${svg}
+        <div class="body-figure-note">Shaded by how often each region is reported for this pool.</div>
+      </div>
+      <div class="body-side">
+        <div class="body-picks">${buttons}</div>
+        <div class="body-panel">${bodyPanelHtml(activeRegion)}</div>
+      </div>
+    </div>`;
+}
+
+function bodyPanelHtml(key) {
+  const r = (anatomyData.regions || {})[key];
+  if (!r) return '';
+  const meta = anatomyData.meta || {};
+
+  let h = `<div class="body-panel-head">
+      <span class="lab-title">${rankEsc(r.label)}</span>
+      <span class="lab-qual">${r.episodes} REPORTED ABSENCES · ${r.players} PLAYERS · ${r.shareOfAll}% OF ALL</span>
+    </div>`;
+
+  // What the report actually called it — the raw vocabulary, so nobody has to
+  // take the grouping on trust.
+  if (r.reportedAs && r.reportedAs.length) {
+    h += `<div class="body-parts">Reported as: ${r.reportedAs.slice(0, 6)
+      .map(p => `${rankEsc(p.part)} <span>${p.episodes}</span>`).join(' · ')}</div>`;
+  }
+
+  // Recovery, derived from our own reports.
+  if (r.recovery) {
+    const c = r.recovery;
+    h += `<div class="body-block">
+      <div class="body-block-head">What it has actually cost</div>
+      <div class="body-stat-row">
+        <div><div class="body-stat">${c.medianGamesMissed}</div><div class="body-stat-label">Median games missed</div></div>
+        <div><div class="body-stat">${c.absences}</div><div class="body-stat-label">Absences on file</div></div>
+        <div><div class="body-stat">${c.players}</div><div class="body-stat-label">Players</div></div>
+      </div>`;
+    if (Array.isArray(c.returnCurve) && c.returnCurve.length) {
+      h += `<div class="body-curve">`;
+      for (const step of c.returnCurve) {
+        const pct = Math.max(0, Math.min(160, step.pct));
+        const over = step.pct >= 100;
+        h += `<div class="body-curve-row">
+          <span class="body-curve-label">${rankEsc(step.label)}</span>
+          <span class="body-curve-track"><span class="body-curve-fill" style="width:${(pct / 160 * 100).toFixed(1)}%;background:${over ? 'var(--teal)' : 'var(--gold)'};"></span></span>
+          <span class="body-curve-val">${step.pct}%</span>
+        </div>`;
+      }
+      h += `</div><div class="body-note">Production on return, against each player's own median before the injury — so a WR1 and a committee back sit on the same axis. Above 100% is better than his own baseline.</div>`;
+    }
+    if (c.examples && c.examples.length) {
+      h += `<div class="body-note">For instance: ${c.examples.map(e =>
+        `<button type="button" class="body-example" onclick="openProfile('${jsAttr(e.id)}')">${rankEsc(e.name)}</button> missed ${e.missed} in ${e.season}`).join(', ')}.</div>`;
+    }
+    h += `</div>`;
+  } else {
+    h += `<div class="body-block"><div class="body-note">Too few absences at this region to publish a recovery curve. Nothing is shown rather than a median off a handful of cases.</div></div>`;
+  }
+
+  // The named conditions — with research only where it exists.
+  h += `<div class="body-block">
+    <div class="body-block-head">What goes wrong here</div>`;
+  for (const c of r.conditions) {
+    h += `<div class="cond${c.research ? ' cond-sourced' : ''}">
+      <div class="cond-head">
+        <span class="cond-name">${rankEsc(c.name)}</span>
+        ${c.research ? `<span class="cond-tag">RESEARCHED</span>` : `<span class="cond-tag cond-tag-none">NO SOURCED DETAIL</span>`}
+      </div>`;
+    if (c.note) h += `<div class="cond-note">${rankEsc(c.note)}</div>`;
+    if (c.research) {
+      const x = c.research;
+      h += `<div class="cond-facts">`;
+      if (x.returnRateLabel) h += `<div><strong>${x.returnRate}%</strong> — ${rankEsc(x.returnRateLabel)}</div>`;
+      if (x.avgReturn) h += `<div>Typically <strong>${rankEsc(x.avgReturn)}</strong> out.</div>`;
+      if (x.reinjuryLabel) h += `<div>${rankEsc(x.reinjuryLabel)}</div>`;
+      if (x.performanceLabel) h += `<div>${rankEsc(x.performanceLabel)}</div>`;
+      if (x.careerImpact) h += `<div>${rankEsc(x.careerImpact)}</div>`;
+      if (x.fantasyImpact) h += `<div class="cond-fantasy">${rankEsc(x.fantasyImpact)}</div>`;
+      h += `</div>`;
+    } else {
+      h += `<div class="cond-facts cond-empty">It happens here, and we have no sourced timeline for it. Rather than print a plausible one, this says nothing — the researched injuries above are the ones with published evidence behind them.</div>`;
+    }
+    h += `</div>`;
+  }
+  h += `</div>`;
+
+  if (Array.isArray(meta.caveats)) {
+    h += `<div class="body-note body-caveats">${meta.caveats.map(c => rankEsc(c)).join(' ')}</div>`;
+  }
+  return h;
+}

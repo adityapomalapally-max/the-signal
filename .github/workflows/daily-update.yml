@@ -53,6 +53,11 @@ jobs:
       - name: Build aggregate return-to-play curves
         run: node scripts/build-injury-curves.js
 
+      # Reads the injury reports and the curves the step above just built, so it
+      # has to follow them.
+      - name: Build the injury body map
+        run: node scripts/build-injury-anatomy.js
+
       - name: Fetch average draft position
         run: node scripts/fetch-adp.js
 
