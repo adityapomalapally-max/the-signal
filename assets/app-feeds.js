@@ -707,7 +707,7 @@ function toggleMobileNav() {
 // so these are real URLs that answer 200 and can be crawled, linked and shared.
 //
 // The route GRAMMAR is unchanged: what used to follow the # now follows the /.
-const ROUTE_PAGES = ['teams', 'rankings', 'lab', 'players', 'medicals', 'fantasy', 'draft', 'film'];
+const ROUTE_PAGES = ['teams', 'rankings', 'lab', 'players', 'medicals', 'fantasy', 'draft', 'film', 'ask'];
 
 function routePath(route) {
   return '/' + String(route || '').replace(/^\/+/, '');
@@ -1387,4 +1387,94 @@ function bodyPanelHtml(key) {
     h += `<div class="body-note body-caveats">${caveatHtml(meta.caveats)}</div>`;
   }
   return h;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ASK — the one page that talks to a server
+
+   Everything else here is static files. This posts to /api/ask, which holds the
+   key and does the retrieval. IT FAILS ALONE ON PURPOSE: no other page calls
+   it, and every error path ends in a sentence the reader can act on rather than
+   a spinner that never resolves.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+let askBusy = false;
+
+function askCount() {
+  const el = document.getElementById('askInput');
+  const out = document.getElementById('askCount');
+  if (el && out) out.textContent = `${el.value.length} / 500`;
+}
+
+function askExample(btn) {
+  const el = document.getElementById('askInput');
+  if (!el) return;
+  el.value = btn.textContent.trim();
+  askCount();
+  el.focus();
+}
+
+function askRender(html) {
+  const out = document.getElementById('askOut');
+  if (out) out.innerHTML = html;
+}
+
+async function submitAsk() {
+  if (askBusy) return;
+  const input = document.getElementById('askInput');
+  const send = document.getElementById('askSend');
+  const question = (input && input.value || '').trim();
+  if (!question) return;
+
+  askBusy = true;
+  if (send) { send.disabled = true; send.textContent = 'Asking…'; }
+  askRender(`<div class="ask-card ask-pending">Reading the data…</div>`);
+
+  try {
+    const res = await fetch('/api/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question }),
+    });
+    // The endpoint always answers with JSON. If it did not, something between
+    // here and it did — a rewrite, a proxy, an outage — and saying "unavailable"
+    // is more honest than parsing whatever came back.
+    const ct = res.headers.get('content-type') || '';
+    const data = ct.includes('application/json') ? await res.json().catch(() => null) : null;
+
+    if (!res.ok || !data) {
+      askRender(`<div class="ask-card ask-error">${rankEsc(
+        (data && data.error) || 'The answer engine is unavailable right now. The rest of the site is unaffected.'
+      )}</div>`);
+      return;
+    }
+
+    let h = `<div class="ask-card"><div class="ask-answer">${rankEsc(data.answer).replace(/\n{2,}/g, '</p><p>').replace(/\n/g, '<br>')}</div>`;
+    const g = data.grounding || {};
+    if (g.ambiguous && g.ambiguous.length) {
+      h += `<div class="ask-ground"><span class="ask-ground-label">Ambiguous</span> `
+        + rankEsc(g.ambiguous.map(a => `"${a.surname}" could be ${a.players.join(', ')}`).join('; ')) + `</div>`;
+    }
+    if (g.players && g.players.length) {
+      // What the answer was built from, so it can be checked against the site
+      // rather than taken on trust — the same bargain every other page makes.
+      h += `<div class="ask-ground"><span class="ask-ground-label">Built from</span> `
+        + g.players.map(p => `<a href="/player/${jsAttr(playerSlug(p.name))}" onclick="event.preventDefault();navigate('player/${jsAttr(playerSlug(p.name))}')">${rankEsc(p.name)}</a>`).join(', ')
+        + (g.topics && g.topics.length ? ` &middot; ${rankEsc(g.topics.join(', '))}` : '')
+        + `</div>`;
+    }
+    h += `</div>`;
+    askRender(h);
+  } catch (e) {
+    askRender(`<div class="ask-card ask-error">Could not reach the answer engine. The rest of the site is unaffected.</div>`);
+  } finally {
+    askBusy = false;
+    if (send) { send.disabled = false; send.textContent = 'Ask'; }
+  }
+}
+
+// The pool carries the slug already; this only has to find it.
+function playerSlug(name) {
+  const p = playersDB.find(x => x.name === name);
+  return p ? p.id : '';
 }

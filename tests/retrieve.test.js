@@ -1,0 +1,165 @@
+/**
+ * What the answer engine is allowed to see.
+ *
+ * The chatbot's only real risk is that it states a number this site does not
+ * have. Every other layer here refuses to publish an unsourced figure; prose
+ * undoes that more thoroughly than a bad chart, because it sounds certain and
+ * carries no qualifier.
+ *
+ * The model cannot be unit-tested. The CONTEXT can, and the context is the only
+ * thing standing between a question and an invented answer — so these tests are
+ * about what does and does not reach it.
+ *
+ *   node --test tests/
+ */
+
+const test = require('node:test');
+const assert = require('node:assert');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const R = require('../api/_lib/retrieve.js');
+const pool = require('../data/players.json');
+
+test('a full name pins one player and does not drag in his namesakes', () => {
+  const m = R.findPlayers('is Bijan Robinson worth the first pick?', pool);
+  assert.deepStrictEqual(m.players.map(p => p.name), ['Bijan Robinson']);
+  assert.strictEqual(m.ambiguous.length, 0, 'a first name resolves the surname — nothing is ambiguous here');
+});
+
+test('a bare surname returns every player it could mean, and says so', () => {
+  // resolvePlayer('robinson') once returned Bijan for a question about someone
+  // else, because the slugs are surnames and the first match won.
+  const m = R.findPlayers('how is robinson looking this year', pool);
+  assert.ok(m.players.length > 1, 'more than one Robinson is in the pool');
+  assert.strictEqual(m.ambiguous.length, 1);
+  assert.ok(m.ambiguous[0].players.length > 1, 'the ambiguity has to name the candidates');
+  assert.match(m.ambiguous[0].players[0], /\(\w+, \w+\)/, 'each candidate carries position and team to tell them apart');
+});
+
+test('two named players both survive', () => {
+  const m = R.findPlayers('start Puka Nacua or Malik Nabers?', pool);
+  const names = m.players.map(p => p.name);
+  assert.ok(names.includes('Puka Nacua') && names.includes('Malik Nabers'), `got ${names.join(', ')}`);
+});
+
+test('a generational suffix is not a surname', () => {
+  // "James Cook III" made "iii" look like a surname, and three players in the
+  // pool shared it — so any question containing the word matched all of them.
+  const m = R.findPlayers('is iii worth a pick', pool);
+  assert.strictEqual(m.players.length, 0, `matched ${m.players.map(p => p.name).join(', ')}`);
+  // And the real surname behind the suffix still resolves.
+  const cook = R.findPlayers('how is cook doing', pool);
+  assert.ok(cook.players.some(p => /Cook/.test(p.name)), 'the name under the suffix must still match');
+});
+
+test('a genuinely short surname still matches', () => {
+  // The first version of this excluded anything under four letters, which was
+  // safe and also made Bo Nix unanswerable.
+  const m = R.findPlayers('how is nix looking this season', pool);
+  assert.ok(m.players.some(p => p.name === 'Bo Nix'), `got ${m.players.map(p => p.name).join(', ') || 'nothing'}`);
+});
+
+test('a question naming nobody matches nobody', () => {
+  const m = R.findPlayers('what does a bye week do to my flex spot', pool);
+  assert.strictEqual(m.players.length, 0, `matched ${m.players.map(p => p.name).join(', ')}`);
+});
+
+test('a question about nobody in the pool says so, loudly', () => {
+  const ctx = R.buildContext('how good is Tom Brady these days');
+  assert.ok(!ctx.askedAbout || !ctx.askedAbout.length);
+  assert.ok(ctx.noPlayerMatched, 'the context must state that nothing matched');
+  assert.match(ctx.noPlayerMatched, /general knowledge/i,
+    'and it must tell the model not to fall back on what it already knows');
+});
+
+test('a thin cell reaches the model as a refusal, never as a number', () => {
+  // The single most dangerous value in the whole pipeline. A field-map cell
+  // under the sample floor has a play COUNT and no rate; handed the count in a
+  // rate-shaped field, the model will report it as one.
+  //
+  // The first version of this filtered for cells that already carried the
+  // refusal string — which is exactly what a regression removes, so it passed
+  // over an empty list. It now finds thin cells by their SOURCE (the raw
+  // fieldmap marks them) and checks what the context did with them.
+  const fm = require('../data/fieldmap.json');
+  const yr = Object.keys(fm.seasons).sort().pop();
+  const passers = fm.seasons[yr].passers;
+  const gsis = Object.keys(passers).find(id => Object.values(passers[id].cells).some(c => c.thin));
+  assert.ok(gsis, 'no passer has a thin cell — the fixture this test relies on has changed');
+
+  const player = pool.find(p => p.gsisId === gsis);
+  assert.ok(player, 'the thin-celled passer is not in the pool');
+  const ctx = R.buildContext(`where does ${player.name} throw on the field`);
+  const qb = (ctx.askedAbout || []).find(p => p.name === player.name);
+  assert.ok(qb && qb.fieldMap && qb.fieldMap.byZone, 'the zone grid did not reach the context');
+
+  const sourceThin = Object.entries(passers[gsis].cells).filter(([, c]) => c.thin).map(([k]) => k);
+  assert.ok(sourceThin.length, 'expected at least one thin cell');
+  for (const key of sourceThin) {
+    const cell = qb.fieldMap.byZone[key];
+    assert.ok(cell, `${key} vanished from the context entirely`);
+    assert.strictEqual(typeof cell.rate, 'string', `${key} must carry a stated refusal, got ${JSON.stringify(cell)}`);
+    assert.match(cell.rate, /not published|sample floor/i, `${key}: the refusal must say why`);
+    assert.strictEqual(cell.compPct, undefined, `${key} must not carry a completion rate`);
+    assert.strictEqual(cell.epa, undefined, `${key} must not carry an EPA`);
+  }
+});
+
+test('nulls never reach the model', () => {
+  // A null in a numeric field reads as a value. Absent reads as "not on file",
+  // which is the true statement.
+  const ctx = R.buildContext('tell me about Puka Nacua production and injuries');
+  const walk = (v, trail) => {
+    if (v === null) assert.fail(`null survived at ${trail}`);
+    if (Array.isArray(v)) v.forEach((x, i) => walk(x, `${trail}[${i}]`));
+    else if (v && typeof v === 'object') for (const [k, x] of Object.entries(v)) walk(x, `${trail}.${k}`);
+  };
+  walk(ctx, 'context');
+});
+
+test('topics decide which layers are loaded, so a question pays only for itself', () => {
+  const medical = R.buildContext('is Malik Nabers healthy');
+  const field = R.buildContext('where is Malik Nabers targeted on the field');
+  const m = medical.askedAbout[0], f = field.askedAbout[0];
+  assert.ok(m.medical, 'an injury question must carry the medical layer');
+  assert.ok(!m.fieldMap, 'and must not pay for the field map');
+  assert.ok(f.fieldMap || f.production, 'a field question must carry the field layer');
+});
+
+test('every figure travels with the season it belongs to', () => {
+  const ctx = R.buildContext('what did Puka Nacua do last season and how is he charted');
+  const p = ctx.askedAbout[0];
+  if (p.production) assert.ok(p.production.season, 'production carries no season');
+  if (p.charting) assert.ok(p.charting.season, 'charting carries no season');
+  if (p.fieldMap) assert.ok(p.fieldMap.season, 'the field map carries no season');
+});
+
+test('the context stays small enough to send', () => {
+  // It is pasted into every prompt. A context that grows unbounded is a bill.
+  const ctx = R.buildContext('compare Bijan Robinson and Jahmyr Gibbs on gaps, usage, injuries and rank');
+  const kb = Buffer.byteLength(JSON.stringify(ctx)) / 1024;
+  assert.ok(kb < 60, `context is ${kb.toFixed(0)}KB — too much to send on every question`);
+});
+
+test('the prompt forbids inventing, and says it first', () => {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'api', 'ask.js'), 'utf8');
+  const sys = src.slice(src.indexOf('const SYSTEM'), src.indexOf('async function callGemini'));
+  assert.match(sys, /NEVER state a number that is not in the context/i);
+  assert.match(sys, /sample floor/i, 'the thin-cell rule has to be in the prompt, not only in the data');
+  assert.match(sys, /ambiguousNames/, 'the model has to be told to ask rather than pick');
+  assert.match(sys, /never a prediction/i, 'a designation must not become a forecast');
+});
+
+test('the endpoint never returns the key, whatever goes wrong', () => {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'api', 'ask.js'), 'utf8');
+  // Every response path, checked for the one thing that must never be in one.
+  const responses = src.match(/res\.status\([^)]*\)\.json\(\{[\s\S]*?\}\)/g) || [];
+  assert.ok(responses.length >= 6, `only found ${responses.length} response paths`);
+  for (const r of responses) {
+    assert.ok(!/GEMINI_API_KEY|process\.env|\bkey\b/.test(r), `a response path mentions the key: ${r.slice(0, 80)}`);
+  }
+  // And the upstream error body is never forwarded verbatim, because it can
+  // echo the request.
+  assert.ok(!/json\(\{[^}]*body[^}]*\}\)/.test(src), 'an upstream error body is being returned to the caller');
+});

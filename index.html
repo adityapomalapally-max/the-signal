@@ -92,6 +92,7 @@
       <a class="nav-item" data-page="fantasy" href="/fantasy" onclick="event.preventDefault();switchPage('fantasy')">Fantasy</a>
       <a class="nav-item" data-page="draft" href="/draft" onclick="event.preventDefault();switchPage('draft')">Draft Lab</a>
       <a class="nav-item" data-page="film" href="/film" onclick="event.preventDefault();switchPage('film')">Film Room</a>
+      <a class="nav-item" data-page="ask" href="/ask" onclick="event.preventDefault();switchPage('ask')">Ask</a>
     </div>
     <div class="nav-right">
       <div class="nav-search" aria-label="Search players" onclick="switchPage('players'); setTimeout(()=>document.getElementById('playerSearchGlobal').focus(), 100)">
@@ -125,6 +126,7 @@
     <a class="mobile-nav-link" data-page="fantasy" href="/fantasy" onclick="event.preventDefault();switchPage('fantasy');toggleMobileNav();">Fantasy</a>
     <a class="mobile-nav-link" data-page="draft" href="/draft" onclick="event.preventDefault();switchPage('draft');toggleMobileNav();">Draft Lab</a>
     <a class="mobile-nav-link" data-page="film" href="/film" onclick="event.preventDefault();switchPage('film');toggleMobileNav();">Film Room</a>
+    <a class="mobile-nav-link" data-page="ask" href="/ask" onclick="event.preventDefault();switchPage('ask');toggleMobileNav();">Ask</a>
   </div>
   <div style="padding:16px 28px;border-top:1px solid var(--border);">
     <a href="https://adityapomalapally.substack.com" target="_blank" class="nav-subscribe" style="display:block;text-align:center;">Substack</a>
@@ -743,6 +745,35 @@
           <p style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;">— Adi</p>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ASK ===== -->
+<div class="page-section" id="page-ask">
+  <div style="max-width:1440px;margin:0 auto;">
+    <div class="players-header">
+      <h1>Ask The Signal</h1>
+      <p>Questions answered from this site's own data — rankings, production, charting, field maps, usage and medical histories. It answers from those rows or it says it cannot; it does not fall back on general football knowledge.</p>
+    </div>
+    <div style="padding:0 var(--page-gutter) 48px;max-width:900px;">
+      <form id="askForm" class="ask-form" onsubmit="event.preventDefault();submitAsk();">
+        <label class="ask-label" for="askInput">Your question</label>
+        <textarea id="askInput" class="ask-input" rows="2" maxlength="500"
+          placeholder="Where is Puka Nacua targeted, and how does his catch rate hold up deep?"
+          oninput="askCount()"></textarea>
+        <div class="ask-row">
+          <span class="ask-count" id="askCount">0 / 500</span>
+          <button type="submit" class="ask-send" id="askSend">Ask</button>
+        </div>
+      </form>
+      <div class="ask-examples">
+        <span class="ask-ex-label">Try</span>
+        <button type="button" class="ask-ex" onclick="askExample(this)">Where does Matthew Stafford throw best?</button>
+        <button type="button" class="ask-ex" onclick="askExample(this)">Which gaps does James Cook run well through?</button>
+        <button type="button" class="ask-ex" onclick="askExample(this)">Is Malik Nabers healthy, and what does the history say?</button>
+      </div>
+      <div id="askOut" class="ask-out" aria-live="polite"></div>
     </div>
   </div>
 </div>
