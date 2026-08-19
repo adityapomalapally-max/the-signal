@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-anatomy.js",
-    "builtAt": "2026-08-19T05:41:49.299Z",
+    "builtAt": "2026-08-19T05:51:24.656Z",
     "layers": {
       "frequency": "counted from data/injuries.json — the official NFL injury reports for this pool",
       "recovery": "from data/injury-curves.json, derived from those same reports",
@@ -135,6 +135,7 @@
         {
           "name": "Concussion",
           "note": "Return is governed by a league protocol, not by how a player feels.",
+          "noResearch": null,
           "research": {
             "key": "concussion",
             "sources": "Neurosurgery (2022), Harvard Football Players Health Study, OJSM",
@@ -151,12 +152,24 @@
         {
           "name": "Neck strain",
           "note": null,
-          "research": null,
-          "hasSourcedDetail": false
+          "noResearch": null,
+          "research": {
+            "key": "neck_strain",
+            "sources": "Spine and Axial Skeleton Injuries in the National Football League, AJSM (2012); Impact of Cervical and Lumbar Spine Surgeries on NFL Player Performance and Return-to-Play Outcomes, Cureus (2025); Return to Play Guidelines After Cervical Spine Injuries in American Football Athletes (2021)",
+            "returnRate": 47,
+            "returnRateLabel": "47% return after a CERVICAL spine procedure — materially worse than the lumbar equivalent",
+            "avgReturn": "Usually short; the surgical path is not",
+            "reinjuryLabel": "Stingers were the most common spine injury and raise the risk of a more severe re-injury",
+            "performanceLabel": "Among those who returned after surgery, no significant change in performance",
+            "careerImpact": "Cervical spine injury runs at about 0.42 per 1,000 exposures. The cervical spine is the one part of this map where the surgical outcome is genuinely worse than average.",
+            "fantasyImpact": "Ordinary neck stiffness is nothing. The reason to read carefully is that the cervical spine is where the serious version lives — fewer than half return after cervical surgery, against three in five for the lower back."
+          },
+          "hasSourcedDetail": true
         },
         {
           "name": "Stinger / burner",
           "note": "A nerve injury, usually brief, and rarely reported as such.",
+          "noResearch": null,
           "research": {
             "key": "stinger",
             "sources": "Epidemiology of Stingers in the National Football League 2015–2019 (2024); NFL Combine cervical spine injury history analysis; Brachial plexus injuries in the contact athlete: a narrative review, Annals of Joint",
@@ -264,6 +277,7 @@
         {
           "name": "AC joint sprain",
           "note": "The most common shoulder injury in the league. Graded I to VI; the low grades play through it.",
+          "noResearch": null,
           "research": {
             "key": "ac_joint",
             "sources": "Lynch et al, Acromioclavicular joint injuries in the National Football League: epidemiology and management, NFL Injury Surveillance System 2000–2011 (2013)",
@@ -278,20 +292,43 @@
           "hasSourcedDetail": true
         },
         {
-          "name": "Labrum tear",
+          "name": "Labrum tear (SLAP)",
           "note": null,
-          "research": null,
-          "hasSourcedDetail": false
+          "noResearch": null,
+          "research": {
+            "key": "labrum",
+            "sources": "Return to play following nonsurgical management of superior labrum anterior-posterior tears: a systematic review, JSES (2022); Dillon et al, Return to Play, Performance, and Career Longevity After Shoulder Labral Repair in the National Football League: A Matched Cohort Analysis, OJSM (2026)",
+            "returnRate": null,
+            "returnRateLabel": "Return rates across the literature span 20% to 94% — the widest range of any injury on this page",
+            "avgReturn": "Highly variable; months after repair",
+            "reinjuryLabel": "Not separately reported",
+            "performanceLabel": "40% to 94% good or excellent results after arthroscopic repair",
+            "careerImpact": "A concurrent rotator cuff tear carries a materially worse prognosis than the labral tear alone.",
+            "fantasyImpact": "The honest answer is that nobody can tell you. Published return rates run from one in five to nine in ten, which means the label 'labrum' by itself predicts almost nothing — what it is torn WITH matters more than that it is torn."
+          },
+          "hasSourcedDetail": true
         },
         {
-          "name": "Rotator cuff strain",
+          "name": "Rotator cuff tear",
           "note": null,
-          "research": null,
-          "hasSourcedDetail": false
+          "noResearch": null,
+          "research": {
+            "key": "rotator_cuff",
+            "sources": "Return to play after rotator cuff tear in National Football League athletes — 29 athletes, mean age 27.4, JSES International (2023)",
+            "returnRate": 79,
+            "returnRateLabel": "79.3% of NFL players return at the same professional level",
+            "avgReturn": "Varies with treatment; returning players averaged 2.8 more seasons",
+            "reinjuryLabel": "Retear rate not separately reported in the NFL cohort",
+            "performanceLabel": "Around 80% return at the same performance level regardless of how it was treated",
+            "careerImpact": "Age decides it. Players over 30 were significantly less likely to return and are counselled accordingly.",
+            "fantasyImpact": "Four in five come back at the same level — but the study's players averaged 27 at the time of injury. For anyone the wrong side of 30 this is a different, worse injury."
+          },
+          "hasSourcedDetail": true
         },
         {
           "name": "Dislocation / instability",
           "note": null,
+          "noResearch": null,
           "research": {
             "key": "shoulder_instability",
             "sources": "Return to play after shoulder instability in National Football League athletes, Journal of Shoulder and Elbow Surgery (2017)",
@@ -482,28 +519,62 @@
       },
       "conditions": [
         {
-          "name": "Hand or finger fracture",
-          "note": "Position decides everything here — a lineman plays, a receiver does not.",
-          "research": null,
-          "hasSourcedDetail": false
+          "name": "Hand or metacarpal fracture",
+          "note": null,
+          "noResearch": null,
+          "research": {
+            "key": "metacarpal",
+            "sources": "Metacarpal Fractures in the National Football League: Injury Characteristics, Management, and Return to Play — 208 occurrences in 205 players, Journal of Hand Surgery (2022)",
+            "returnRate": 100,
+            "returnRateLabel": "Nearly all return the same season",
+            "avgReturn": "Most miss under 3 weeks",
+            "reinjuryLabel": "Not separately reported",
+            "performanceLabel": "Age, time in the league, position, mechanism and joint involvement showed NO relationship to time missed",
+            "careerImpact": "Not career-altering.",
+            "fantasyImpact": "One of the few injuries where position is not the whole story — the NFL study found no relationship between position and time missed. Under three weeks is the usual answer, and a skill player often plays through it in a cast."
+          },
+          "hasSourcedDetail": true
         },
         {
           "name": "Wrist sprain",
           "note": null,
+          "noResearch": "No NFL cohort study. Wrist injuries are usually reported under 'hand' and are rarely separated out.",
           "research": null,
           "hasSourcedDetail": false
         },
         {
-          "name": "Elbow hyperextension",
+          "name": "Elbow dislocation",
           "note": null,
-          "research": null,
-          "hasSourcedDetail": false
+          "noResearch": null,
+          "research": {
+            "key": "elbow_dislocation",
+            "sources": "Gibbs D, Sahota S, Stevanovic O, et al. Elbow Dislocations in the National Football League: Epidemiology and Management. Cureus 13(11):e19241 (2021)",
+            "returnRate": 100,
+            "returnRateLabel": "Not season-ending or career-ending in the NFL cohort",
+            "avgReturn": "Mean 38.5 days; median 28",
+            "reinjuryLabel": "Not separately reported",
+            "performanceLabel": "Not separately measured",
+            "careerImpact": "The study's conclusion in its own words: not a career-ending or season-ending injury.",
+            "fantasyImpact": "Looks catastrophic on television and costs about a month. Nine in ten are managed without surgery at around 36 days; the one in sixteen that needs an operation runs closer to eleven weeks."
+          },
+          "hasSourcedDetail": true
         },
         {
-          "name": "Biceps or triceps tear",
+          "name": "Distal biceps or triceps tear",
           "note": null,
-          "research": null,
-          "hasSourcedDetail": false
+          "noResearch": null,
+          "research": {
+            "key": "biceps_triceps",
+            "sources": "Distal biceps ruptures in National Football League players: return to play and performance analysis — 35 players, JSES (2021); Characterization of distal biceps tendon and triceps tendon injuries in National Football League players from 2009 to 2022, Journal of Clinical Orthopaedics and Trauma (2025)",
+            "returnRate": 94,
+            "returnRateLabel": "33 of 35 NFL players (94%) returned after distal biceps repair",
+            "avgReturn": "~351 days after surgical repair",
+            "reinjuryLabel": "Not separately reported",
+            "performanceLabel": "Performance after surgery was similar to the same player before injury; no measured drop after either tendon",
+            "careerImpact": "Career length does not appear to be affected, though offensive linemen played fewer games per season than controls.",
+            "fantasyImpact": "Almost a full year out, and then he is himself again — one of the few severe injuries with no measured performance cost on return. Biceps skew defensive (73%) and triceps offensive (58%), so this rarely touches a fantasy roster."
+          },
+          "hasSourcedDetail": true
         }
       ]
     },
@@ -599,18 +670,21 @@
         {
           "name": "Rib fracture or contusion",
           "note": null,
+          "noResearch": "No NFL cohort study. Rib injuries are managed case by case and rarely reach the literature.",
           "research": null,
           "hasSourcedDetail": false
         },
         {
           "name": "Oblique strain",
           "note": null,
+          "noResearch": "No NFL cohort study. The published muscle-strain work covers the four big lower-body groups and stops there.",
           "research": null,
           "hasSourcedDetail": false
         },
         {
           "name": "Pectoral tear",
           "note": null,
+          "noResearch": null,
           "research": {
             "key": "pectoral",
             "sources": "Farooq et al, Surgically Treated Pectoralis Major Tears Impact the Play and Performance of NFL Athletes, Arthroscopy Sports Medicine & Rehabilitation (2022); Pectoralis Major Ruptures in the NFL: Incidence, RTP, and Performance Analysis, OJSM (2021)",
@@ -643,12 +717,24 @@
         {
           "name": "Lower back strain",
           "note": null,
-          "research": null,
-          "hasSourcedDetail": false
+          "noResearch": null,
+          "research": {
+            "key": "lumbar_strain",
+            "sources": "Spine and Axial Skeleton Injuries in the National Football League — 2,200+ injuries, 2000–2010, AJSM (2012); Impact of Cervical and Lumbar Spine Surgeries on NFL Player Performance and Return-to-Play Outcomes, Cureus (2025)",
+            "returnRate": 61,
+            "returnRateLabel": "61% return after a lumbar spine PROCEDURE — the vast majority never need one",
+            "avgReturn": "Most are short; surgery is the exception",
+            "reinjuryLabel": "Not separately reported",
+            "performanceLabel": "Among players who returned after lumbar surgery, no significant change in performance",
+            "careerImpact": "Spine injuries run to roughly 200 a season across the league, at about 0.93 per 1,000 exposures.",
+            "fantasyImpact": "A back strain on the report is usually a week-to-week nuisance. It matters when the word changes — 'strain' and 'disc' are different injuries with different outlooks, and the surgical path returns only three in five."
+          },
+          "hasSourcedDetail": true
         },
         {
           "name": "Lumbar disc herniation",
           "note": null,
+          "noResearch": null,
           "research": {
             "key": "disc",
             "sources": "Hsu et al, The Professional Athlete Spine Initiative: outcomes after lumbar disc herniation in 342 elite professional athletes, The Spine Journal (2011); Statistical performance in NFL athletes after lumbar discectomy (2010)",
@@ -741,6 +827,7 @@
         {
           "name": "Groin / adductor strain",
           "note": null,
+          "noResearch": null,
           "research": {
             "key": "adductor",
             "sources": "Herzog et al, Lower Extremity Strains in the US National Football League 2015–2019, AJSM (2023); Orchard et al, Fifteen-week window for recurrent muscle strains, BJSM (2020)",
@@ -757,12 +844,14 @@
         {
           "name": "Hip flexor strain",
           "note": null,
+          "noResearch": "No NFL cohort study. The league's strain research covers hamstring, adductor, quad and calf; the hip flexor is not broken out.",
           "research": null,
           "hasSourcedDetail": false
         },
         {
           "name": "Hip labrum tear / FAI",
           "note": null,
+          "noResearch": null,
           "research": {
             "key": "hip_labrum",
             "sources": "Femoroacetabular Impingement in Professional Football Players: Return to Play and Predictors of Career Length After Hip Arthroscopy, Arthroscopy (2017); Hip Arthroscopy for Labral Tears and FAI in Professional American Football Athletes, Current Reviews in Musculoskeletal Medicine (2024)",
@@ -855,6 +944,7 @@
         {
           "name": "Hamstring strain",
           "note": "The most re-injured muscle in football. Coming back early is how one becomes three.",
+          "noResearch": null,
           "research": {
             "key": "hamstring",
             "sources": "Hamstring injuries in the National Football League: an epidemiological study, Journal of Clinical Orthopaedics and Trauma (2022); Jenkins et al, Risk and Prognosis of Hamstring Injuries in the National Football League: A 12-Year Review, OJSM (2024); Day et al, Correlation of Player and Imaging Characteristics With Severity and Missed Time in NFL Athletes With Hamstring Strain Injury, AJSM (2024)",
@@ -871,6 +961,7 @@
         {
           "name": "Quad strain",
           "note": null,
+          "noResearch": null,
           "research": {
             "key": "quad",
             "sources": "Herzog et al, Lower Extremity Strains in the US National Football League 2015–2019, AJSM (2023); Orchard et al, BJSM (2020)",
@@ -887,6 +978,7 @@
         {
           "name": "Thigh contusion",
           "note": null,
+          "noResearch": "No NFL cohort study. A deep thigh bruise is rarely reported separately from a quad strain.",
           "research": null,
           "hasSourcedDetail": false
         }
@@ -959,6 +1051,7 @@
         {
           "name": "ACL tear",
           "note": "The one that changes a career, not just a season.",
+          "noResearch": null,
           "research": {
             "key": "acl",
             "sources": "OJSM (2021), Arthroscopy Sports Medicine & Rehabilitation (2021)",
@@ -975,6 +1068,7 @@
         {
           "name": "PCL tear",
           "note": null,
+          "noResearch": null,
           "research": {
             "key": "pcl",
             "sources": "Posterior Cruciate Ligament Injuries of the Knee at the National Football League Combine: An Imaging and Epidemiology Study — 69 of 2,285 combine players, AJSM (2018); Return to Play After Multiligament Knee Injuries in National Football League Athletes, Arthroscopy (2017); Evolving Treatment Patterns of NFL Players by Orthopaedic Team Physicians 2008–2016, OJSM (2018)",
@@ -991,6 +1085,7 @@
         {
           "name": "MCL sprain",
           "note": "Graded I to III. The low grades are weeks, not months, and are often played through.",
+          "noResearch": null,
           "research": {
             "key": "mcl",
             "sources": "Lundblad et al, UEFA Elite Club Injury Study — 130 MCL injuries of 4,364 registered, KSSTA (2019); Return to Play After Medial Collateral Ligament Injury (2016)",
@@ -1007,12 +1102,24 @@
         {
           "name": "LCL sprain",
           "note": null,
-          "research": null,
-          "hasSourcedDetail": false
+          "noResearch": null,
+          "research": {
+            "key": "lcl",
+            "sources": "Return to Play After Multiligament Knee Injuries in National Football League Athletes, Arthroscopy (2017)",
+            "returnRate": 56,
+            "returnRateLabel": "55.6% return when the LCL or PCL is torn ALONGSIDE the ACL",
+            "avgReturn": "Isolated LCL is not separately reported in the NFL literature",
+            "reinjuryLabel": "Not separately reported",
+            "performanceLabel": "Only 18.5% of ACL-plus-PCL/LCL players regained their prior level, against 43.5% for ACL-plus-MCL",
+            "careerImpact": "The lateral side is the bad side. An ACL with posterolateral corner involvement returns less often and less well than any other knee combination studied.",
+            "fantasyImpact": "Almost never occurs alone, and what it occurs WITH is the whole story. An ACL tear with lateral-side involvement is a materially worse injury than the same ACL with an MCL — fewer than one in five got back to their prior level."
+          },
+          "hasSourcedDetail": true
         },
         {
           "name": "Meniscus tear",
           "note": "A trim and a repair are different operations with very different timelines.",
+          "noResearch": null,
           "research": {
             "key": "meniscus",
             "sources": "Systematic review of operative meniscal tears in elite athletes, JISAKOS (2021); Brophy et al, Meniscectomy and Resultant Articular Cartilage Lesions Among Prospective NFL Players, AJSM (2017)",
@@ -1029,8 +1136,19 @@
         {
           "name": "Patellar dislocation",
           "note": null,
-          "research": null,
-          "hasSourcedDetail": false
+          "noResearch": null,
+          "research": {
+            "key": "patellar_dislocation",
+            "sources": "Acute Patellar Instability Injuries in the NFL: Who Gets Them, What Is the Treatment, and Outcome? An Analysis of Injuries From the NFL Database, 2000–2012 (ISAKOS); Return to Play Considerations After Patellar Instability (2022)",
+            "returnRate": 100,
+            "returnRateLabel": "81% managed without surgery and returning in under 40 days on average",
+            "avgReturn": "Mean under 40 days when managed without surgery",
+            "reinjuryLabel": "Recurrence not separately reported in the NFL cohort",
+            "performanceLabel": "Not separately measured",
+            "careerImpact": "Rare enough to be a curiosity: 54 cases in 13 NFL seasons, 0.17% of all injuries.",
+            "fantasyImpact": "Rare, and rarer still at a skill position — it happens mostly to linemen blocking on pass plays. A subluxation is three times more common than a true dislocation and comes back faster."
+          },
+          "hasSourcedDetail": true
         }
       ]
     },
@@ -1111,6 +1229,7 @@
         {
           "name": "Calf strain",
           "note": null,
+          "noResearch": null,
           "research": {
             "key": "calf",
             "sources": "Herzog et al, Lower Extremity Strains in the US National Football League 2015–2019, AJSM (2023); Orchard et al, BJSM (2020)",
@@ -1127,6 +1246,7 @@
         {
           "name": "Shin splints",
           "note": null,
+          "noResearch": "No NFL cohort study. It is a chronic overuse complaint, so it rarely produces the discrete absence these studies count.",
           "research": null,
           "hasSourcedDetail": false
         }
@@ -1199,6 +1319,7 @@
         {
           "name": "High ankle sprain",
           "note": "Different injury from a rolled ankle, and several times the absence.",
+          "noResearch": null,
           "research": {
             "key": "high_ankle",
             "sources": "Return to Play After Isolated Syndesmotic Ligamentous Injury in Athletes: A Systematic Review and Meta-analysis, OJSM (2022); Corticosteroid Injections Hasten Return to Play of NFL Players Following Stable Ankle Syndesmosis Sprains, OJSM (2015); Miller et al, comparative time-loss for syndesmotic vs lateral ankle sprains in professional football",
@@ -1215,6 +1336,7 @@
         {
           "name": "Low ankle sprain",
           "note": null,
+          "noResearch": null,
           "research": {
             "key": "low_ankle",
             "sources": "Epidemiology and Outcomes of Ankle Injuries in the National Football League, OJSM (2022); Miller et al, comparative time-loss for syndesmotic vs lateral ankle sprains in professional football",
@@ -1231,6 +1353,7 @@
         {
           "name": "Achilles tear",
           "note": "Technically the heel, but it presents and is reported at the ankle.",
+          "noResearch": null,
           "research": {
             "key": "achilles",
             "sources": "Return to Play Following Achilles Tendon Rupture in NFL Players Based on Position, Foot & Ankle International (2021); Epidemiology and outcomes of Achilles tendon ruptures in the National Football League, Orthopedics (2010); Career Outlook and Performance of Professional Athletes After Achilles Tendon Rupture: A Systematic Review, Foot & Ankle International (2021); Impact of Achilles tendon rupture on performance and career outcomes in NFL players: a matched cohort study, The Physician and Sportsmedicine (2026)",
@@ -1328,6 +1451,7 @@
         {
           "name": "Turf toe",
           "note": "Sounds minor and is not — the grade-3 version ends seasons.",
+          "noResearch": null,
           "research": {
             "key": "turf_toe",
             "sources": "The Effect of Turf Toe Injuries on Player Performance in the National Football League, Foot & Ankle International (2020); Smith & Waldrop, Operative Outcomes of Grade 3 Turf Toe Injuries in Competitive Football Players, Foot & Ankle International (2018); Return to Play Following High-Grade Turf Toe Injuries in NFL Athletes, Orthopaedic Journal at Harvard Medical School (2021)",
@@ -1344,6 +1468,7 @@
         {
           "name": "Lisfranc injury",
           "note": null,
+          "noResearch": null,
           "research": {
             "key": "lisfranc",
             "sources": "Abed et al, Return to Play, Performance, and Economic Analysis of National Football League Players After Lisfranc Injury, OJSM (2023); Performance-Based Outcomes Following Lisfranc Injury Among Professional American Football and Rugby Athletes (2018)",
@@ -1360,14 +1485,26 @@
         {
           "name": "Plantar fasciitis",
           "note": null,
+          "noResearch": "No NFL cohort study — only individual player reports. Timelines in the press range from no games missed to two months, which is why none is stated here.",
           "research": null,
           "hasSourcedDetail": false
         },
         {
-          "name": "Metatarsal fracture",
+          "name": "Metatarsal / Jones fracture",
           "note": null,
-          "research": null,
-          "hasSourcedDetail": false
+          "noResearch": null,
+          "research": {
+            "key": "metatarsal",
+            "sources": "Return to Play and Fracture Union after Surgical Management of Jones Fracture in Athletes: A Systematic Review and Meta-Analysis — 646 fractures, JCM (2022); Optimal Time to Return to Play and Performance after Jones Fracture Surgery in the National Football League, OJSM (2017); Jones Fractures Identified at the NFL Scouting Combine, OJSM (2018)",
+            "returnRate": 98,
+            "returnRateLabel": "98.4% return across 646 fractures; 98.8% with intramedullary screw fixation",
+            "avgReturn": "~9.6 weeks after screw fixation",
+            "reinjuryLabel": "Refracture runs 4–12%, and incomplete healing anywhere from 7% to 50%",
+            "performanceLabel": "NFL players returning in UNDER 10 weeks had a significantly greater fall in performance than those who waited longer",
+            "careerImpact": "Nonunion was found in 12.2% of combine cases. A refracture costs about 15 weeks.",
+            "fantasyImpact": "The rare injury where rushing back is measurably punished — players who returned inside ten weeks performed significantly worse than those who did not. If the team is being cautious with a Jones fracture, that is the evidence-based choice rather than an abundance of caution."
+          },
+          "hasSourcedDetail": true
         }
       ]
     }

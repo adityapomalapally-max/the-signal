@@ -150,7 +150,7 @@ test('every researched condition carries its citation onto the page', () => {
       checked++;
     }
   }
-  assert.ok(checked >= 18, `only ${checked} researched conditions — expected the expanded set`);
+  assert.ok(checked >= 28, `only ${checked} researched conditions — expected the expanded set`);
 });
 
 test('the research layer covers the regions people actually ask about', () => {
@@ -161,5 +161,36 @@ test('the research layer covers the regions people actually ask about', () => {
     const sourced = r.conditions.filter(c => c.hasSourcedDetail).length;
     assert.ok(sourced >= 2,
       `${key} has only ${sourced} sourced condition(s) — it is one of the regions readers arrive for`);
+  }
+});
+
+test('a gap says why it is a gap', () => {
+  // Seven conditions have no NFL cohort behind them, and that is a fact about
+  // the literature rather than about our effort. Stating the reason is what
+  // separates "we looked and there is nothing" from silence, which a reader
+  // reasonably reads as "nobody bothered".
+  const gaps = [];
+  for (const [key, r] of Object.entries(anat.regions)) {
+    for (const c of r.conditions) {
+      if (c.hasSourcedDetail) continue;
+      gaps.push(`${key}/${c.name}`);
+      assert.ok(c.noResearch, `${key}/${c.name}: unsourced with no reason given`);
+      assert.match(c.noResearch, /No NFL cohort study/i,
+        `${key}/${c.name}: the reason should say what was looked for`);
+    }
+  }
+  assert.ok(gaps.length <= 8, `${gaps.length} conditions still unsourced: ${gaps.join(', ')}`);
+});
+
+test('the stated reason never smuggles in a number', () => {
+  // A "reason" that mentions a timeline is a timeline. The plantar fascia note
+  // is the live test of this: press reports range from no games to two months,
+  // and naming that range is describing the literature, not asserting a figure.
+  for (const [key, r] of Object.entries(anat.regions)) {
+    for (const c of r.conditions) {
+      if (!c.noResearch) continue;
+      assert.ok(!/\d+\s*%/.test(c.noResearch),
+        `${key}/${c.name}: the reason states a percentage — ${c.noResearch}`);
+    }
   }
 });

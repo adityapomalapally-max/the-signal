@@ -545,7 +545,7 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   sounds authoritative, and has no source. So each region carries THREE SEPARATE LAYERS, each
   labelled: FREQUENCY counted from our own injury reports, RECOVERY derived from those same
   reports, and RESEARCH which exists for **seven injuries only**.
-- THE RESEARCH LAYER COVERS 20 OF 37 CONDITIONS, each with a NAMED STUDY. Not "orthopedic
+- THE RESEARCH LAYER COVERS 30 OF 37 CONDITIONS, each with a NAMED STUDY. Not "orthopedic
   literature" — an author, a journal and a year, rendered on the page under the number it
   belongs to, because a figure whose source lives only in a data file is one the reader has to
   take on trust. A CITATION MUST CARRY A YEAR — the first version of that test accepted any
@@ -554,6 +554,10 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   to require `(YYYY)` caught FOUR pre-existing entries — high_ankle, turf_toe, pcl and hamstring
   — every one of the originals that had been gesturing at a body of work rather than citing one.
   All 20 now name a dated paper.
+- THE SEVEN REMAINING GAPS STATE WHY THEY ARE GAPS. "No NFL cohort study" is a fact about the
+  literature, not about the effort, and silence reads as "nobody bothered". Each carries a
+  `noResearch` line naming what was looked for and not found — and a test rejects a reason that
+  smuggles a figure into itself, because a "reason" containing a timeline IS a timeline.
 - A CONDITION WITHOUT RESEARCH IS LISTED AND SAYS SO. It appears because it genuinely occurs at
   that region, tagged NO SOURCED DETAIL, and the panel states we have no timeline rather than
   printing a plausible one. Two tests enforce it: `hasSourcedDetail` can never be true without a

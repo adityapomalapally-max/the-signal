@@ -1316,7 +1316,12 @@ function bodyPanelHtml(key) {
       if (x.sources) h += `<div class="cond-source">Source: ${rankEsc(x.sources)}</div>`;
       h += `</div>`;
     } else {
-      h += `<div class="cond-facts cond-empty">It happens here, and we have no sourced timeline for it. Rather than print a plausible one, this says nothing — the researched injuries above are the ones with published evidence behind them.</div>`;
+      // Say WHY there is nothing. "We looked and there is no NFL cohort" is a
+      // different statement from silence, and the more useful one: it tells a
+      // reader the gap is in the literature rather than in the effort.
+      h += `<div class="cond-facts cond-empty">${c.noResearch
+        ? rankEsc(c.noResearch) + ' Rather than print a plausible timeline, this says nothing.'
+        : 'It happens here, and we have no sourced timeline for it. Rather than print a plausible one, this says nothing.'}</div>`;
     }
     h += `</div>`;
   }

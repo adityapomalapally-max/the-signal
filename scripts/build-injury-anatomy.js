@@ -66,7 +66,7 @@ const REGIONS = {
     curve: 'Concussion',
     conditions: [
       { name: 'Concussion', research: 'concussion', note: 'Return is governed by a league protocol, not by how a player feels.' },
-      { name: 'Neck strain', research: null },
+      { name: 'Neck strain', research: 'neck_strain' },
       { name: 'Stinger / burner', research: 'stinger', note: 'A nerve injury, usually brief, and rarely reported as such.' },
     ],
   },
@@ -76,8 +76,8 @@ const REGIONS = {
     curve: 'Shoulder',
     conditions: [
       { name: 'AC joint sprain', research: 'ac_joint', note: 'The most common shoulder injury in the league. Graded I to VI; the low grades play through it.' },
-      { name: 'Labrum tear', research: null },
-      { name: 'Rotator cuff strain', research: null },
+      { name: 'Labrum tear (SLAP)', research: 'labrum' },
+      { name: 'Rotator cuff tear', research: 'rotator_cuff' },
       { name: 'Dislocation / instability', research: 'shoulder_instability' },
     ],
   },
@@ -86,10 +86,10 @@ const REGIONS = {
     parts: ['Elbow', 'Arm', 'Forearm', 'Biceps', 'Triceps', 'Wrist', 'Hand', 'Finger', 'Thumb'],
     curve: 'Arm / Hand',
     conditions: [
-      { name: 'Hand or finger fracture', research: null, note: 'Position decides everything here — a lineman plays, a receiver does not.' },
-      { name: 'Wrist sprain', research: null },
-      { name: 'Elbow hyperextension', research: null },
-      { name: 'Biceps or triceps tear', research: null },
+      { name: 'Hand or metacarpal fracture', research: 'metacarpal' },
+      { name: 'Wrist sprain', research: null, noResearch: "No NFL cohort study. Wrist injuries are usually reported under 'hand' and are rarely separated out." },
+      { name: 'Elbow dislocation', research: 'elbow_dislocation' },
+      { name: 'Distal biceps or triceps tear', research: 'biceps_triceps' },
     ],
   },
   core: {
@@ -97,8 +97,8 @@ const REGIONS = {
     parts: ['Ribs', 'Rib', 'Chest', 'Abdomen', 'Oblique', 'Pectoral'],
     curve: 'Ribs / Core',
     conditions: [
-      { name: 'Rib fracture or contusion', research: null },
-      { name: 'Oblique strain', research: null },
+      { name: 'Rib fracture or contusion', research: null, noResearch: "No NFL cohort study. Rib injuries are managed case by case and rarely reach the literature." },
+      { name: 'Oblique strain', research: null, noResearch: "No NFL cohort study. The published muscle-strain work covers the four big lower-body groups and stops there." },
       { name: 'Pectoral tear', research: 'pectoral' },
     ],
   },
@@ -107,7 +107,7 @@ const REGIONS = {
     parts: ['Back', 'Spine'],
     curve: 'Back / Neck',
     conditions: [
-      { name: 'Lower back strain', research: null },
+      { name: 'Lower back strain', research: 'lumbar_strain' },
       { name: 'Lumbar disc herniation', research: 'disc' },
     ],
   },
@@ -117,7 +117,7 @@ const REGIONS = {
     curve: 'Hip / Groin',
     conditions: [
       { name: 'Groin / adductor strain', research: 'adductor' },
-      { name: 'Hip flexor strain', research: null },
+      { name: 'Hip flexor strain', research: null, noResearch: "No NFL cohort study. The league's strain research covers hamstring, adductor, quad and calf; the hip flexor is not broken out." },
       { name: 'Hip labrum tear / FAI', research: 'hip_labrum' },
     ],
   },
@@ -128,7 +128,7 @@ const REGIONS = {
     conditions: [
       { name: 'Hamstring strain', research: 'hamstring', note: 'The most re-injured muscle in football. Coming back early is how one becomes three.' },
       { name: 'Quad strain', research: 'quad' },
-      { name: 'Thigh contusion', research: null },
+      { name: 'Thigh contusion', research: null, noResearch: "No NFL cohort study. A deep thigh bruise is rarely reported separately from a quad strain." },
     ],
   },
   knee: {
@@ -139,9 +139,9 @@ const REGIONS = {
       { name: 'ACL tear', research: 'acl', note: 'The one that changes a career, not just a season.' },
       { name: 'PCL tear', research: 'pcl' },
       { name: 'MCL sprain', research: 'mcl', note: 'Graded I to III. The low grades are weeks, not months, and are often played through.' },
-      { name: 'LCL sprain', research: null },
+      { name: 'LCL sprain', research: 'lcl' },
       { name: 'Meniscus tear', research: 'meniscus', note: 'A trim and a repair are different operations with very different timelines.' },
-      { name: 'Patellar dislocation', research: null },
+      { name: 'Patellar dislocation', research: 'patellar_dislocation' },
     ],
   },
   calf: {
@@ -150,7 +150,7 @@ const REGIONS = {
     curve: 'Calf / Quad',
     conditions: [
       { name: 'Calf strain', research: 'calf' },
-      { name: 'Shin splints', research: null },
+      { name: 'Shin splints', research: null, noResearch: "No NFL cohort study. It is a chronic overuse complaint, so it rarely produces the discrete absence these studies count." },
     ],
   },
   ankle: {
@@ -170,8 +170,8 @@ const REGIONS = {
     conditions: [
       { name: 'Turf toe', research: 'turf_toe', note: 'Sounds minor and is not — the grade-3 version ends seasons.' },
       { name: 'Lisfranc injury', research: 'lisfranc' },
-      { name: 'Plantar fasciitis', research: null },
-      { name: 'Metatarsal fracture', research: null },
+      { name: 'Plantar fasciitis', research: null, noResearch: "No NFL cohort study — only individual player reports. Timelines in the press range from no games missed to two months, which is why none is stated here." },
+      { name: 'Metatarsal / Jones fracture', research: 'metatarsal' },
     ],
   },
 };
@@ -287,6 +287,9 @@ function main() {
         return {
           name: c.name,
           note: c.note || null,
+          // Why there is nothing, where we went looking and found nothing.
+          // Silence would read as "we never checked".
+          noResearch: c.noResearch || null,
           research: r ? {
             key: c.research,
             // The citation travels with the numbers. A figure whose source
