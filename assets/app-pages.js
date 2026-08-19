@@ -432,123 +432,201 @@ function chartRows(m) {
       rather than take it.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-function labFactFinders(season) {
+function labFactFinders(season, pos) {
   const box = labCharting && labCharting.seasons && labCharting.seasons[season];
   if (!box) return [];
   const pool = {};
   playersDB.forEach(p => { pool[p.id] = p; });
-  const rows = Object.entries(box.players)
-    .map(([id, c]) => ({ id, c, p: pool[id] }))
-    .filter(x => x.p);
-
-  const adv = (id) => {
+  const advOf = (id) => {
     const r = labAdvstats && labAdvstats.players && labAdvstats.players[id];
     return (r && r.seasons && r.seasons[season]) || null;
   };
+  // Everyone at THIS position, carrying both layers.
+  const rows = Object.entries(box.players)
+    .map(([id, c]) => ({ id, c, p: pool[id], a: advOf(id) }))
+    .filter(x => x.p && x.p.pos === pos);
+  // A back may be charted without ever being handed an advanced split, and a
+  // quarterback the other way round, so the finders each state what they need.
+  const advRows = playersDB.filter(x => x.pos === pos)
+    .map(x => ({ id: x.id, p: x, a: advOf(x.id), c: box.players[x.id] }))
+    .filter(x => x.a);
+
   const facts = [];
   const say = (f) => { if (f) facts.push(f); };
-  const best = (list, key, dir = -1) =>
-    list.slice().sort((a, b) => dir * (key(a) - key(b)))[0];
+  const top = (list, key, dir = -1) => {
+    const ranked = list.filter(x => typeof key(x) === 'number' && isFinite(key(x)))
+      .sort((a, b) => dir * (key(a) - key(b)));
+    return ranked[0];
+  };
+  const board = (metric) => `lab/charts/${pos.toLowerCase()}/${season}/${metric}`;
 
-  // --- The offence is built around him -----------------------------------
-  const receivers = rows.filter(x => x.p.pos !== 'RB' && x.c.chartedTargets >= 60);
-  const topRead = best(receivers, x => x.c.firstReadRate);
-  if (topRead && topRead.c.firstReadRate >= 80) {
-    say({
-      id: topRead.id, tag: 'The plan',
-      headline: `${topRead.p.name} was the first read on ${topRead.c.firstReadRate}% of his targets`,
-      detail: `The highest of any qualified receiver in ${season}. On ${topRead.c.chartedTargets} charted targets, four out of five throws were the one the play was designed to produce.`,
-      board: `lab/charts/${topRead.p.pos.toLowerCase()}/${season}/firstRead`,
+  if (pos === 'WR' || pos === 'TE') {
+    const charted = rows.filter(x => x.c.chartedTargets >= 60);
+
+    const plan = top(charted, x => x.c.firstReadRate);
+    if (plan && plan.c.firstReadRate >= 78) say({
+      id: plan.id, tag: 'The plan',
+      headline: `${plan.p.name} was the first read on ${plan.c.firstReadRate}% of his targets`,
+      detail: `The highest of any qualified ${pos} in ${season}. On ${plan.c.chartedTargets} charted targets, the throw was the one the play was designed to produce.`,
+      board: board('firstRead'),
     });
-  }
 
-  // --- Volume without design ---------------------------------------------
-  // The gap fact, and the one that exists nowhere else: plenty of targets, but
-  // rarely the throw the play was drawn up to make.
-  const hogs = receivers.filter(x => x.c.chartedTargets >= 90);
-  const notThePlan = best(hogs, x => x.c.firstReadRate, 1);
-  if (notThePlan && notThePlan.c.firstReadRate <= 55) {
-    say({
-      id: notThePlan.id, tag: 'Volume, not design',
-      headline: `${notThePlan.p.name} saw ${notThePlan.c.chartedTargets} targets, and only ${notThePlan.c.firstReadRate}% were the first read`,
-      detail: `He gets the ball as often as anyone, but usually because the play went somewhere else first. Target share and role are not the same thing.`,
-      board: `lab/charts/${notThePlan.p.pos.toLowerCase()}/${season}/firstRead`,
+    const hogs = charted.filter(x => x.c.chartedTargets >= 85);
+    const notPlan = top(hogs, x => x.c.firstReadRate, 1);
+    if (notPlan && notPlan.c.firstReadRate <= 58) say({
+      id: notPlan.id, tag: 'Volume, not design',
+      headline: `${notPlan.p.name} saw ${notPlan.c.chartedTargets} targets, and only ${notPlan.c.firstReadRate}% were the first read`,
+      detail: 'He gets the ball as often as anyone, but usually because the play went somewhere else first. Target share and role are not the same thing.',
+      board: board('firstRead'),
     });
-  }
 
-  // --- A quarterback story wearing a receiver's name ----------------------
-  const worstBall = best(receivers, x => x.c.catchableRate, 1);
-  if (worstBall && worstBall.c.catchableRate <= 62) {
-    say({
+    const worstBall = top(charted, x => x.c.catchableRate, 1);
+    if (worstBall && worstBall.c.catchableRate <= 64) say({
       id: worstBall.id, tag: 'Not his hands',
       headline: `Only ${worstBall.c.catchableRate}% of the balls thrown at ${worstBall.p.name} were catchable`,
-      detail: `The lowest rate of any qualified receiver in ${season}. A catch rate read without this is a receiver being blamed for his quarterback.`,
-      board: `lab/charts/${worstBall.p.pos.toLowerCase()}/${season}/catchable`,
+      detail: `The lowest rate of any qualified ${pos} in ${season}. A catch rate read without this is a receiver being blamed for his quarterback.`,
+      board: board('catchable'),
     });
-  }
 
-  // --- Contested ----------------------------------------------------------
-  const contested = best(receivers, x => x.c.contestedRate);
-  if (contested && contested.c.contestedRate >= 28) {
-    say({
+    const contested = top(charted, x => x.c.contestedRate);
+    if (contested && contested.c.contestedRate >= 26) say({
       id: contested.id, tag: 'Never open',
       headline: `${contested.c.contestedRate}% of ${contested.p.name}'s targets were contested`,
-      detail: `More than a quarter of the balls thrown his way arrived with a defender on him. Volume earned the hard way.`,
-      board: `lab/charts/${contested.p.pos.toLowerCase()}/${season}/contested`,
+      detail: 'More than a quarter of the balls thrown his way arrived with a defender on him. Volume earned the hard way.',
+      board: board('contested'),
     });
-  }
 
-  // --- Everything after the catch ----------------------------------------
-  const yacRows = rows
-    .map(x => ({ ...x, a: adv(x.id) }))
-    .filter(x => x.a && x.a.receiving && x.a.receiving.rec >= 30)
-    .map(x => ({ ...x, ys: yacShare(x.a.receiving) }))
-    .filter(x => x.ys)
-    .map(x => ({ ...x, share: x.ys.share, behindLine: x.ys.behindLine }));
-  const creator = best(yacRows, x => x.share);
-  if (creator && creator.share >= 70) {
-    say({
+    const yacRows = advRows.filter(x => x.a.receiving && x.a.receiving.rec >= 30)
+      .map(x => ({ ...x, ys: yacShare(x.a.receiving) })).filter(x => x.ys);
+    const creator = top(yacRows, x => x.ys.share);
+    if (creator && creator.ys.share >= 68) say({
       id: creator.id, tag: 'His own yards',
-      headline: creator.behindLine
+      headline: creator.ys.behindLine
         ? `${creator.p.name} caught the ball behind the line of scrimmage on average`
-        : `${Math.round(creator.share)}% of ${creator.p.name}'s receiving yards came after the catch`,
-      detail: creator.behindLine
-        ? `His average reception was made at or behind the line, so every receiving yard on his line was one he made himself after catching it.`
-        : `He is not being thrown open downfield — he is being handed the ball near the line and making the yards himself.`,
-      board: `lab/charts/${creator.p.pos.toLowerCase()}/${season}/${creator.p.pos === 'RB' ? 'yacRec' : 'yacShare'}`,
+        : `${Math.round(creator.ys.share)}% of ${creator.p.name}'s receiving yards came after the catch`,
+      detail: 'He is not being thrown open downfield — he is handed the ball near the line and makes the yards himself.',
+      board: board('yacShare'),
+    });
+
+    const hands = top(advRows.filter(x => x.a.receiving && x.a.receiving.rec >= 40 && x.a.receiving.dropPct != null),
+      x => x.a.receiving.dropPct);
+    if (hands && hands.a.receiving.dropPct * 100 >= 6) say({
+      id: hands.id, tag: 'Stone hands',
+      headline: `${hands.p.name} dropped ${(hands.a.receiving.dropPct * 100).toFixed(1)}% of the balls thrown at him`,
+      detail: `${hands.a.receiving.drops} drops on ${hands.a.receiving.targets} targets — the highest rate among qualified ${pos}s. Charted by a human, and the standard moves between seasons.`,
+      board: board('dropPct'),
     });
   }
 
-  // --- A team that does one thing far more than anyone else ---------------
+  if (pos === 'RB') {
+    const charted = rows.filter(x => x.c.chartedTargets >= 30);
+
+    const valve = top(charted, x => x.c.checkdownRate);
+    if (valve && valve.c.checkdownRate >= 45) say({
+      id: valve.id, tag: 'The safety valve',
+      headline: `${valve.c.checkdownRate}% of ${valve.p.name}'s targets were checkdowns`,
+      detail: 'Nearly half the balls thrown to him arrived because the play broke down. Receiving volume built this way is harder to rely on week to week.',
+      board: board('checkdown'),
+    });
+
+    const realReceiver = top(charted, x => x.c.firstReadRate);
+    if (realReceiver && realReceiver.c.firstReadRate >= 30) say({
+      id: realReceiver.id, tag: 'A receiver who plays back',
+      headline: `${realReceiver.c.firstReadRate}% of ${realReceiver.p.name}'s targets were the quarterback's first read`,
+      detail: 'Rare for a back. Most are checked down to; this offence draws plays up to throw him the ball.',
+      board: board('firstRead'),
+    });
+
+    const ran = advRows.filter(x => x.a.rushing && x.a.rushing.attempts >= 100);
+    const allHim = top(ran, x => x.a.rushing.yacPerAttempt);
+    if (allHim && allHim.a.rushing.yacPerAttempt >= 2.6) say({
+      id: allHim.id, tag: 'All him',
+      headline: `${allHim.p.name} made ${allHim.a.rushing.yacPerAttempt} yards a carry AFTER contact`,
+      detail: `On ${allHim.a.rushing.attempts} carries. Yards after contact are the back's own — the part of a rushing line the offensive line cannot claim.`,
+      board: board('yacPerAtt'),
+    });
+
+    const noHelp = top(ran, x => x.a.rushing.ybcPerAttempt, 1);
+    if (noHelp && noHelp.a.rushing.ybcPerAttempt <= 2.2) say({
+      id: noHelp.id, tag: 'No help',
+      headline: `${noHelp.p.name} got only ${noHelp.a.rushing.ybcPerAttempt} yards a carry before contact`,
+      detail: 'The least of any qualified back. Yards before contact are mostly blocking, so this is a line problem showing up on a runner\'s stat line.',
+      board: board('ybcPerAtt'),
+    });
+
+    const broke = top(ran.filter(x => x.a.rushing.brokenTackles != null), x => x.a.rushing.brokenTackles);
+    if (broke && broke.a.rushing.brokenTackles >= 15) say({
+      id: broke.id, tag: 'Hard to bring down',
+      headline: `${broke.p.name} broke ${broke.a.rushing.brokenTackles} tackles as a runner`,
+      detail: 'The most of any qualified back — a tackle broken is a yard that existed only because he made it.',
+      board: board('brokenTackles'),
+    });
+  }
+
+  if (pos === 'QB') {
+    const passers = advRows.filter(x => x.a.passing && x.a.passing.attempts >= 200);
+
+    const siege = top(passers, x => x.a.passing.pressurePct);
+    if (siege && siege.a.passing.pressurePct >= 25) say({
+      id: siege.id, tag: 'Under siege',
+      headline: `${siege.p.name} was pressured on ${siege.a.passing.pressurePct}% of his dropbacks`,
+      detail: 'The most of any qualified quarterback. Pressure is as much line and scheme as it is the man taking the snap, and it shapes everything downstream of him.',
+      board: board('pressurePct'),
+    });
+
+    const letDown = top(passers.filter(x => x.a.passing.dropPctByReceivers != null), x => x.a.passing.dropPctByReceivers);
+    if (letDown && letDown.a.passing.dropPctByReceivers >= 6) say({
+      id: letDown.id, tag: 'Not his fault',
+      headline: `${letDown.a.passing.dropPctByReceivers}% of ${letDown.p.name}'s throws were dropped by his own receivers`,
+      detail: 'The part of a completion percentage that was never his. Read his accuracy without this and you are grading somebody else\'s hands.',
+      board: board('receiverDrops'),
+    });
+
+    const held = top(passers.filter(x => x.a.passing.pocketTime != null), x => x.a.passing.pocketTime);
+    if (held && held.a.passing.pocketTime >= 2.6) say({
+      id: held.id, tag: 'Holds it',
+      headline: `${held.p.name} held the ball ${held.a.passing.pocketTime} seconds a dropback`,
+      detail: 'The longest of any qualified quarterback. Time in the pocket buys deeper throws and costs sacks — it is a style, not a grade.',
+      board: board('pocketTime'),
+    });
+
+    const accurate = top(passers.filter(x => x.a.passing.onTargetPct != null), x => x.a.passing.onTargetPct);
+    if (accurate && accurate.a.passing.onTargetPct >= 78) say({
+      id: accurate.id, tag: 'On the money',
+      headline: `${accurate.a.passing.onTargetPct}% of ${accurate.p.name}'s throws were on target`,
+      detail: 'Accuracy with his receivers\' hands taken out of it — a drop still counts as an on-target throw.',
+      board: board('onTarget'),
+    });
+  }
+
+  // One team fact, chosen for how much it shapes THIS position's job.
   const teams = Object.entries(box.teams).filter(([, v]) => v.dropbacks);
   if (teams.length >= 20) {
     const mean = (k) => teams.reduce((s, [, v]) => s + (v[k] || 0), 0) / teams.length;
-    const candidates = [
-      { key: 'playActionRate', label: 'play-action', noun: 'dropbacks' },
-      { key: 'motionRate', label: 'pre-snap motion', noun: 'dropbacks' },
-      { key: 'rpoRate', label: 'run-pass options', noun: 'dropbacks' },
-      { key: 'screenRate', label: 'screens', noun: 'dropbacks' },
-    ].map(c => {
+    const wanted = pos === 'QB'
+      ? [{ key: 'blitzFacedRate', label: 'blitzed', verb: 'faced a blitz on' }, { key: 'playActionRate', label: 'play-action', verb: 'used play-action on' }]
+      : pos === 'RB'
+        ? [{ key: 'playActionRate', label: 'play-action', verb: 'used play-action on' }, { key: 'rpoRate', label: 'run-pass options', verb: 'used run-pass options on' }]
+        : [{ key: 'motionRate', label: 'pre-snap motion', verb: 'used pre-snap motion on' }, { key: 'screenRate', label: 'screens', verb: 'used screens on' }];
+    const picks = wanted.map(c => {
       const avg = mean(c.key);
-      const top = teams.slice().sort((a, b) => b[1][c.key] - a[1][c.key])[0];
-      return { ...c, avg, team: top[0], value: top[1][c.key], edge: top[1][c.key] - avg };
+      const t = teams.slice().sort((a, b) => b[1][c.key] - a[1][c.key])[0];
+      return { ...c, avg, team: t[0], value: t[1][c.key], edge: t[1][c.key] - avg };
     }).sort((a, b) => b.edge - a.edge);
-    const pick = candidates[0];
-    if (pick && pick.edge >= 6) {
-      say({
-        team: pick.team, tag: 'Scheme outlier',
-        headline: `${pick.team} used ${pick.label} on ${pick.value}% of their ${pick.noun}`,
-        detail: `The league averaged ${pick.avg.toFixed(1)}%. Nobody leaned on it harder, and it shapes what every skill player on that roster is asked to do.`,
-        board: `teams/${pick.team.toLowerCase()}`,
-      });
-    }
+    const pick = picks[0];
+    if (pick && pick.edge >= 5) say({
+      team: pick.team, tag: 'Scheme outlier',
+      headline: `${pick.team} ${pick.verb} ${pick.value}% of their dropbacks`,
+      detail: `The league averaged ${pick.avg.toFixed(1)}%. Nobody leaned on it harder, and it shapes what every ${pos} on that roster is asked to do.`,
+      board: `teams/${pick.team.toLowerCase()}`,
+    });
   }
 
   return facts;
 }
 
-function labFactsHtml(season) {
-  const all = labFactFinders(season);
+function labFactsHtml(season, pos) {
+  const all = labFactFinders(season, pos);
   // One card per player. Tee Higgins legitimately led both first-read rate and
   // contested rate in 2025, and two cards about the same man reads as a strip
   // with one idea rather than four.
@@ -572,11 +650,16 @@ function labFactsHtml(season) {
       <div class="fact-detail">${rankEsc(f.detail)}</div>
     </div>`;
   }).join('');
-  return `<div class="fact-strip-head">
-      <span class="lab-title">Worth knowing — ${rankEsc(String(season))}</span>
-      <span class="lab-qual">FOUND IN THE DATA, NOT WRITTEN · REFRESHES AS THE SEASON MOVES</span>
+  // Its own section, below the board, with a rule above it. Sitting loose at the
+  // top of the page it read as a banner — something to scroll past on the way to
+  // the real thing — rather than as a part of the page with its own subject.
+  return `<div class="fun-stats">
+    <div class="fact-strip-head">
+      <span class="lab-title">Fun stats — ${rankEsc(pos)}, ${rankEsc(String(season))}</span>
+      <span class="lab-qual">FOUND IN THE DATA, NOT WRITTEN · CHANGES WITH THE POSITION AND THE SEASON</span>
     </div>
-    <div class="fact-strip">${cards}</div>`;
+    <div class="fact-strip">${cards}</div>
+  </div>`;
 }
 
 function renderLabPage() {
@@ -643,12 +726,7 @@ function renderLabPage() {
     rows: rows.map((r, i) => ({ rank: i + 1, name: r.name, team: r.team, value: r.value }))
   } : null;
 
-  let h = '';
-  // The strip belongs to the Charts half: the facts are drawn from the charting
-  // layer, and under a production board they would be answers to a question the
-  // page is not asking.
-  if (labMode === 'charts') h += labFactsHtml(labSeason);
-  h += `<div class="lab-head"><span class="lab-title">${rankEsc(boardTitle)}</span>`
+  let h = `<div class="lab-head"><span class="lab-title">${rankEsc(boardTitle)}</span>`
     + `<span class="lab-qual">${rankEsc(labMode === 'charts' ? chartQualText(m) : labQualText(m))}${m.lower ? ' · LOWER RANKS FIRST' : ''}`
     + (rows.length ? ` <button class="export-btn" onclick="runExport(() => exportRowChart(labExportBoard), labExportBoard.title, this)">Export PNG</button>` : '')
     + `</span></div>`;
@@ -662,6 +740,11 @@ function renderLabPage() {
       : `nflverse${m.ngs ? ' · NFL Next Gen Stats' : ''}`;
     h += `<div class="rank-note">Top ${rows.length} of the ${labPos} pool. Click any player for the full profile. Source: ${rankEsc(src)} · REG season only.</div>`;
   }
+  // The findings sit UNDER the board and belong to the Charts half — they are
+  // drawn from the charting layer, and beneath a production board they would be
+  // answers to a question the page is not asking. They also follow the position,
+  // because a receiver's oddities say nothing about a quarterback's.
+  if (labMode === 'charts') h += labFactsHtml(labSeason, labPos);
   board.innerHTML = h;
 
   // ---- Scatter ----

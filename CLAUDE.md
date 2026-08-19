@@ -436,8 +436,13 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   card. The shells test caught the orphaned card. Retired URLs get a 308 rather than quietly
   rendering the home page.
 
-## Worth knowing — the findings strip
-- The strip above the Charts boards is DERIVED, never written. Each finder is a rule over the
+## Fun stats — the findings section
+- IT FOLLOWS THE POSITION AND SITS UNDER THE BOARD. Pinned at the top of the page it read as a
+  banner to scroll past on the way to the real thing, and a receiver's oddities say nothing about
+  a quarterback's — each position has its own finders (checkdown share and yards after contact
+  for backs, pressure faced and receiver drops for quarterbacks, first reads and contested rate
+  for pass catchers).
+- It is DERIVED, never written. Each finder is a rule over the
   qualified pool, so it re-reads itself whenever the data moves — weekly once the season starts,
   with nobody editing copy. Proof it is real: each season produces different facts (2023 Drake
   London, 2024 A.J. Brown, 2025 Tee Higgins on first-read rate).
