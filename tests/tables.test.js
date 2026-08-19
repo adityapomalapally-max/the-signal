@@ -213,3 +213,54 @@ test('the real pool sorts the way the page promises', () => {
   assert.strictEqual(byStatus[byStatus.length - 1].statusClass, 'status-healthy',
     'and end with somebody who is not');
 });
+
+test('a share of receiving yards can never exceed 100%', () => {
+  // This shipped wrong: "146% of Isiah Pacheco's receiving yards came after the
+  // catch" rendered on the live page. A back who catches the ball BEHIND the
+  // line has negative yards before the catch, and a negative in the denominator
+  // runs the share past 100 — which is impossible on its face and discredits
+  // every honest number sitting beside it.
+  //
+  // It is not an edge case either: 145 of 555 receiving seasons on file are
+  // negative, essentially every pass-catching back in the league.
+  const cases = [
+    { ybcPerRec: 6.2, yacPerRec: 5.1 },     // an ordinary receiver
+    { ybcPerRec: 0, yacPerRec: 8 },         // caught at the line
+    { ybcPerRec: -0.8, yacPerRec: 8.5 },    // Breece Hall 2023 — the real row
+    { ybcPerRec: -0.5, yacPerRec: 6.7 },    // Kamara 2023
+  ];
+  for (const r of cases) {
+    const s = core.yacShare(r);
+    assert.ok(s, `${JSON.stringify(r)} should produce a reading`);
+    assert.ok(s.share >= 0 && s.share <= 100, `${JSON.stringify(r)} gave ${s.share}%`);
+  }
+  assert.strictEqual(core.yacShare({ ybcPerRec: -0.8, yacPerRec: 8.5 }).behindLine, true,
+    'a negative ybc has to be flagged so the page can say something true instead of a percentage');
+  assert.strictEqual(core.yacShare({ ybcPerRec: 6.2, yacPerRec: 5.1 }).behindLine, false);
+});
+
+test('no share is claimed where none exists', () => {
+  // Empty beats wrong: a missing part means no reading, never a zero.
+  assert.strictEqual(core.yacShare(null), null);
+  assert.strictEqual(core.yacShare({}), null);
+  assert.strictEqual(core.yacShare({ ybcPerRec: 5 }), null, 'half the pair is not a share');
+  assert.strictEqual(core.yacShare({ ybcPerRec: 5, yacPerRec: 0 }), null, 'no yards after the catch is not a share of them');
+});
+
+test('the real advanced splits never produce an impossible share', () => {
+  // The whole file, not a sample — this is cheap and the bug was live.
+  const adv = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/advstats.json'), 'utf8'));
+  let checked = 0, behindLine = 0;
+  for (const row of Object.values(adv.players)) {
+    for (const season of Object.values(row.seasons || {})) {
+      const s = core.yacShare(season.receiving);
+      if (!s) continue;
+      checked++;
+      if (s.behindLine) behindLine++;
+      assert.ok(s.share >= 0 && s.share <= 100,
+        `${row.name}: ${s.share}% after the catch, from ybc ${season.receiving.ybcPerRec} / yac ${season.receiving.yacPerRec}`);
+    }
+  }
+  assert.ok(checked > 200, `expected to check plenty of seasons, did ${checked}`);
+  assert.ok(behindLine > 50, `expected the behind-the-line case to be common, saw ${behindLine} of ${checked}`);
+});

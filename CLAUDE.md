@@ -435,3 +435,35 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   render hook, a switchPage branch, a sitemap entry, a page shell, a vercel rewrite and a social
   card. The shells test caught the orphaned card. Retired URLs get a 308 rather than quietly
   rendering the home page.
+
+## Worth knowing — the findings strip
+- The strip above the Charts boards is DERIVED, never written. Each finder is a rule over the
+  qualified pool, so it re-reads itself whenever the data moves — weekly once the season starts,
+  with nobody editing copy. Proof it is real: each season produces different facts (2023 Drake
+  London, 2024 A.J. Brown, 2025 Tee Higgins on first-read rate).
+- A FACT HAS TO CLEAR A BAR TO BE STATED, and if nothing clears it nothing is shown. "The
+  highest drop rate was 4.1%" is not a finding, and padding the strip is how a page starts lying
+  quietly.
+- THE INTERESTING FACTS ARE GAPS, NOT EXTREMES. "Most targets" is available anywhere; "100
+  targets of which only 44% were the first read" is a fact about a role and exists nowhere else.
+- One card per player — Tee Higgins legitimately led both first-read and contested rate in 2025,
+  and two cards about one man reads as a strip with one idea.
+- A SHARE OF RECEIVING YARDS CANNOT EXCEED 100%, and it did: "146% of Isiah Pacheco's receiving
+  yards came after the catch" rendered live. A back who catches BEHIND the line has NEGATIVE
+  yards before the catch, and a negative denominator runs the share past 100. It is not an edge
+  case — **145 of 555 receiving seasons are negative**, essentially every pass-catching back.
+  `yacShare()` in app-core.js is now the single reader: it returns a share only where one exists,
+  and flags `behindLine` so the page says something true instead of an impossible number.
+
+## The profile overview
+- IT LEADS WITH PRODUCTION. A reader could open a player and see no production at all, because
+  the season totals sat behind a tab on a profile that opened somewhere else. The headline of his
+  last season is first now, with only the numbers that define his position — a row of twenty
+  stats is the same as no row.
+- The game log stays in the Stats tab. It is one player's, and Stats & Charts ranks players
+  against each other, so moving it there would bury it somewhere nobody would look either. The
+  fix for "people miss it" is the headline plus two ways out: deeper into him, or across to
+  where he RANKS, which is the one thing a profile cannot show.
+- `switchProfileTab(tab, el)` takes an OPTIONAL element. Inline handlers pass `this`; anything
+  moving tabs programmatically has nothing to pass, and the missing fallback made it throw on
+  `el.classList` — aborting before the render and leaving the profile with no active tab.

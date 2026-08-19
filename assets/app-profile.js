@@ -87,9 +87,15 @@ function closeProfile() {
   applyRouteMeta();
 }
 
+// `el` is OPTIONAL. The markup's inline handlers pass `this`, but anything that
+// moves tabs programmatically — the "full game log" jump in the overview — has
+// no element to hand over. Without the fallback the function threw on
+// `el.classList`, which aborted before renderProfileTab and left the profile
+// with no active tab at all.
 function switchProfileTab(tab, el) {
+  const target = el || document.querySelector(`.profile-tab[data-tab="${tab}"]`);
   document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
+  if (target) target.classList.add('active');
   renderProfileTab(tab);
 }
 
@@ -136,6 +142,7 @@ function renderProfileTab(tab) {
     // Personnel usage leads the overview: it is the most concrete thing on the
     // page about what this player's job actually is. Fills in when the data
     // lands — the tab renders immediately either way.
+    html += seasonHeadlineHtml(player);
     html += usageHtml(currentProfileId);
     // Usage says which package he plays in; charting says whether the offence is
     // trying to get him the ball; the advanced splits say how much of the result
@@ -147,6 +154,15 @@ function renderProfileTab(tab) {
     // unconditionally re-enters this branch, calls ensureUsage again, and the
     // cached promise resolves immediately — an infinite render loop that hangs
     // the tab. The guard is what makes it fire exactly once.
+    if (!statsReady) {
+      ensureStats().then(() => {
+        statsReady = true;
+        if (currentProfileId === player.id) {
+          const active = document.querySelector('.profile-tab.active');
+          if (active && active.dataset.tab === 'overview') renderProfileTab('overview');
+        }
+      });
+    }
     if (!usageData) {
       ensureUsage().then(() => {
         if (currentProfileId !== player.id) return;
@@ -765,6 +781,81 @@ function ensureUsage() {
 }
 
 /**
+ * THE SEASON, AT THE TOP.
+ *
+ * The Stats tab holds season totals, tracking data, weekly consistency and a
+ * full game log — and it was reached by clicking a tab most readers never
+ * clicked, on a profile that opened somewhere else entirely. The depth belongs
+ * where it is: a game log is one player's, and a leaderboard page ranks players
+ * against each other, so moving it there would put it somewhere nobody would
+ * look for it either.
+ *
+ * What was actually wrong is that a reader could open a profile and see no
+ * production at all. So the headline of his last season leads the overview, and
+ * the tab keeps everything behind it — plus a way through to where he RANKS,
+ * which is the one thing a profile genuinely cannot show.
+ */
+function seasonHeadlineHtml(player) {
+  const ps = playerStats[player.id];
+  if (!ps || !ps.seasons) return '';
+  const years = Object.keys(ps.seasons).sort();
+  if (!years.length) return '';
+  const season = years[years.length - 1];
+  const s = ps.seasons[season];
+  if (!s || !s.games) return '';
+
+  // Only the numbers that define the position. A row of twenty stats is the
+  // same as no row: the reader has to pick out which ones matter.
+  const pos = player.pos;
+  let cells;
+  if (pos === 'QB') {
+    cells = [
+      ['Pass yds', s.passYds != null ? s.passYds.toLocaleString() : null],
+      ['TD', s.passTD], ['INT', s.int],
+      ['Rush yds', s.rushYds],
+      ['Fantasy /g', s.fantasyPPG],
+    ];
+  } else if (pos === 'RB') {
+    cells = [
+      ['Carries', s.carries], ['Rush yds', s.rushYds],
+      ['Rec', s.rec], ['Total TD', (s.rushTD || 0) + (s.recTD || 0)],
+      ['Fantasy /g', s.fantasyPPG],
+    ];
+  } else {
+    cells = [
+      ['Targets', s.targets], ['Rec', s.rec],
+      ['Yards', s.recYds != null ? s.recYds.toLocaleString() : null],
+      ['TD', s.recTD],
+      ['Target share', s.tgtShare != null ? s.tgtShare + '%' : null],
+      ['Fantasy /g', s.fantasyPPG],
+    ];
+  }
+  cells = cells.filter(([, v]) => v !== null && v !== undefined);
+  if (!cells.length) return '';
+
+  // The board this player would appear on, so "how does that compare" is one
+  // click rather than a hunt.
+  const board = `lab/stats/${pos.toLowerCase()}/${season}/ppg`;
+
+  return `<div class="medical-card season-headline" style="margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">${season} season</span>
+      <span style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);">${s.games} GAMES${s.team ? ` · ${rankEsc(s.team)}` : ''}</span>
+    </div>
+    <div class="season-headline-grid">
+      ${cells.map(([label, v]) => `<div>
+        <div class="season-headline-value">${rankEsc(String(v))}</div>
+        <div class="season-headline-label">${rankEsc(label)}</div>
+      </div>`).join('')}
+    </div>
+    <div style="margin-top:12px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;">
+      <button type="button" class="profile-jump" onclick="switchProfileTab('stats')">Full game log and season totals →</button>
+      <button type="button" class="profile-jump" onclick="closeProfile(); navigate('${jsAttr(board)}')">See where he ranks →</button>
+    </div>
+  </div>`;
+}
+
+/**
  * WAS HE THE READ?
  *
  * Usage says which package he is on the field for. This says whether the
@@ -864,16 +955,18 @@ function advancedHtml(playerId) {
   if (shows.receiving) {
     const r = s.receiving;
     rows += head('Receiving');
-    if (r.ybcPerRec != null && r.yacPerRec != null) {
-      const total = r.ybcPerRec + r.yacPerRec;
-      const share = total ? Math.round(100 * r.yacPerRec / total) : 0;
+    const ys = yacShare(r);
+    if (ys) {
+      const share = Math.round(ys.share);
       rows += stat('Yards before the catch', `${r.ybcPerRec} / rec`, 'the quarterback');
       rows += stat('Yards after the catch', `${r.yacPerRec} / rec`, 'him');
       rows += `<div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin:6px 0 10px;">
         <div style="height:100%;width:${100 - share}%;background:var(--teal);float:left;"></div>
         <div style="height:100%;width:${share}%;background:var(--gold);float:left;"></div>
       </div>
-      <div style="font-size:11.5px;color:var(--text-muted);margin-top:-6px;margin-bottom:8px;">${share}% of his receiving yards came after the catch.</div>`;
+      <div style="font-size:11.5px;color:var(--text-muted);margin-top:-6px;margin-bottom:8px;">${ys.behindLine
+        ? 'He caught the ball behind the line of scrimmage on average, so every receiving yard was made after the catch.'
+        : `${share}% of his receiving yards came after the catch.`}</div>`;
     }
     if (r.aDOT != null) rows += stat('Average depth of target', r.aDOT, 'how far downfield he is used');
     if (r.brokenTackles != null) rows += stat('Broken tackles', r.brokenTackles);

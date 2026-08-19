@@ -300,8 +300,7 @@ const RECEIVER_CHARTS = [
     note: 'Share of targets thrown into coverage tight enough to be charted as contested.' },
   { key: 'catchable', label: 'Catchable Rate', chart: c => c.catchableRate, unit: '%', minTargets: 50,
     note: 'Share of his targets a charter judged catchable. Low is usually a story about the quarterback, not the receiver.' },
-  { key: 'yacShare', label: 'YAC Share', adv: a => a.receiving && a.receiving.ybcPerRec != null && a.receiving.yacPerRec != null
-      ? 100 * a.receiving.yacPerRec / (a.receiving.ybcPerRec + a.receiving.yacPerRec) : null, unit: '%', minRec: 25,
+  { key: 'yacShare', label: 'YAC Share', adv: a => { const s = yacShare(a.receiving); return s ? s.share : null; }, unit: '%', minRec: 25,
     note: 'What share of his receiving yards he made AFTER the catch. High is a creator; low is a player his quarterback throws open.' },
   { key: 'yacPerRec', label: 'Yards After Catch', adv: a => a.receiving && a.receiving.yacPerRec, unit: ' /rec', minRec: 25,
     note: 'Yards after the catch per reception — his own contribution, separated from the throw.' },
@@ -409,6 +408,177 @@ function chartRows(m) {
   return rows;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   WORTH KNOWING — the facts nobody goes looking for
+
+   A leaderboard answers a question you already had. This answers the ones you
+   did not, which is the only way the charting layer reaches anybody who was not
+   already curious about first-read rate.
+
+   THE RULES THAT KEEP IT HONEST, because a "did you know" strip is exactly
+   where a site starts inventing things:
+
+   1. EVERY FACT IS DERIVED, never written. Each finder is a rule over the
+      qualified pool, so the strip re-reads itself the moment the data moves —
+      which during the season means weekly, with no one editing copy.
+   2. A FACT HAS TO CLEAR A BAR TO BE STATED. Each finder carries a threshold,
+      and if nothing clears it nothing is shown. "The highest drop rate was
+      4.1%" is not a finding, and filling the strip anyway is how a page starts
+      lying quietly.
+   3. THE INTERESTING ONES ARE GAPS, not extremes. "Most targets" is a fact
+      anybody can get. "A hundred targets of which only 44% were the first read"
+      is a fact about a role, and it exists nowhere else.
+   4. EVERY CARD LINKS TO THE BOARD IT CAME FROM, so a reader can check it
+      rather than take it.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+function labFactFinders(season) {
+  const box = labCharting && labCharting.seasons && labCharting.seasons[season];
+  if (!box) return [];
+  const pool = {};
+  playersDB.forEach(p => { pool[p.id] = p; });
+  const rows = Object.entries(box.players)
+    .map(([id, c]) => ({ id, c, p: pool[id] }))
+    .filter(x => x.p);
+
+  const adv = (id) => {
+    const r = labAdvstats && labAdvstats.players && labAdvstats.players[id];
+    return (r && r.seasons && r.seasons[season]) || null;
+  };
+  const facts = [];
+  const say = (f) => { if (f) facts.push(f); };
+  const best = (list, key, dir = -1) =>
+    list.slice().sort((a, b) => dir * (key(a) - key(b)))[0];
+
+  // --- The offence is built around him -----------------------------------
+  const receivers = rows.filter(x => x.p.pos !== 'RB' && x.c.chartedTargets >= 60);
+  const topRead = best(receivers, x => x.c.firstReadRate);
+  if (topRead && topRead.c.firstReadRate >= 80) {
+    say({
+      id: topRead.id, tag: 'The plan',
+      headline: `${topRead.p.name} was the first read on ${topRead.c.firstReadRate}% of his targets`,
+      detail: `The highest of any qualified receiver in ${season}. On ${topRead.c.chartedTargets} charted targets, four out of five throws were the one the play was designed to produce.`,
+      board: `lab/charts/${topRead.p.pos.toLowerCase()}/${season}/firstRead`,
+    });
+  }
+
+  // --- Volume without design ---------------------------------------------
+  // The gap fact, and the one that exists nowhere else: plenty of targets, but
+  // rarely the throw the play was drawn up to make.
+  const hogs = receivers.filter(x => x.c.chartedTargets >= 90);
+  const notThePlan = best(hogs, x => x.c.firstReadRate, 1);
+  if (notThePlan && notThePlan.c.firstReadRate <= 55) {
+    say({
+      id: notThePlan.id, tag: 'Volume, not design',
+      headline: `${notThePlan.p.name} saw ${notThePlan.c.chartedTargets} targets, and only ${notThePlan.c.firstReadRate}% were the first read`,
+      detail: `He gets the ball as often as anyone, but usually because the play went somewhere else first. Target share and role are not the same thing.`,
+      board: `lab/charts/${notThePlan.p.pos.toLowerCase()}/${season}/firstRead`,
+    });
+  }
+
+  // --- A quarterback story wearing a receiver's name ----------------------
+  const worstBall = best(receivers, x => x.c.catchableRate, 1);
+  if (worstBall && worstBall.c.catchableRate <= 62) {
+    say({
+      id: worstBall.id, tag: 'Not his hands',
+      headline: `Only ${worstBall.c.catchableRate}% of the balls thrown at ${worstBall.p.name} were catchable`,
+      detail: `The lowest rate of any qualified receiver in ${season}. A catch rate read without this is a receiver being blamed for his quarterback.`,
+      board: `lab/charts/${worstBall.p.pos.toLowerCase()}/${season}/catchable`,
+    });
+  }
+
+  // --- Contested ----------------------------------------------------------
+  const contested = best(receivers, x => x.c.contestedRate);
+  if (contested && contested.c.contestedRate >= 28) {
+    say({
+      id: contested.id, tag: 'Never open',
+      headline: `${contested.c.contestedRate}% of ${contested.p.name}'s targets were contested`,
+      detail: `More than a quarter of the balls thrown his way arrived with a defender on him. Volume earned the hard way.`,
+      board: `lab/charts/${contested.p.pos.toLowerCase()}/${season}/contested`,
+    });
+  }
+
+  // --- Everything after the catch ----------------------------------------
+  const yacRows = rows
+    .map(x => ({ ...x, a: adv(x.id) }))
+    .filter(x => x.a && x.a.receiving && x.a.receiving.rec >= 30)
+    .map(x => ({ ...x, ys: yacShare(x.a.receiving) }))
+    .filter(x => x.ys)
+    .map(x => ({ ...x, share: x.ys.share, behindLine: x.ys.behindLine }));
+  const creator = best(yacRows, x => x.share);
+  if (creator && creator.share >= 70) {
+    say({
+      id: creator.id, tag: 'His own yards',
+      headline: creator.behindLine
+        ? `${creator.p.name} caught the ball behind the line of scrimmage on average`
+        : `${Math.round(creator.share)}% of ${creator.p.name}'s receiving yards came after the catch`,
+      detail: creator.behindLine
+        ? `His average reception was made at or behind the line, so every receiving yard on his line was one he made himself after catching it.`
+        : `He is not being thrown open downfield — he is being handed the ball near the line and making the yards himself.`,
+      board: `lab/charts/${creator.p.pos.toLowerCase()}/${season}/${creator.p.pos === 'RB' ? 'yacRec' : 'yacShare'}`,
+    });
+  }
+
+  // --- A team that does one thing far more than anyone else ---------------
+  const teams = Object.entries(box.teams).filter(([, v]) => v.dropbacks);
+  if (teams.length >= 20) {
+    const mean = (k) => teams.reduce((s, [, v]) => s + (v[k] || 0), 0) / teams.length;
+    const candidates = [
+      { key: 'playActionRate', label: 'play-action', noun: 'dropbacks' },
+      { key: 'motionRate', label: 'pre-snap motion', noun: 'dropbacks' },
+      { key: 'rpoRate', label: 'run-pass options', noun: 'dropbacks' },
+      { key: 'screenRate', label: 'screens', noun: 'dropbacks' },
+    ].map(c => {
+      const avg = mean(c.key);
+      const top = teams.slice().sort((a, b) => b[1][c.key] - a[1][c.key])[0];
+      return { ...c, avg, team: top[0], value: top[1][c.key], edge: top[1][c.key] - avg };
+    }).sort((a, b) => b.edge - a.edge);
+    const pick = candidates[0];
+    if (pick && pick.edge >= 6) {
+      say({
+        team: pick.team, tag: 'Scheme outlier',
+        headline: `${pick.team} used ${pick.label} on ${pick.value}% of their ${pick.noun}`,
+        detail: `The league averaged ${pick.avg.toFixed(1)}%. Nobody leaned on it harder, and it shapes what every skill player on that roster is asked to do.`,
+        board: `teams/${pick.team.toLowerCase()}`,
+      });
+    }
+  }
+
+  return facts;
+}
+
+function labFactsHtml(season) {
+  const all = labFactFinders(season);
+  // One card per player. Tee Higgins legitimately led both first-read rate and
+  // contested rate in 2025, and two cards about the same man reads as a strip
+  // with one idea rather than four.
+  const seen = new Set();
+  const facts = [];
+  for (const f of all) {
+    const who = f.id || f.team;
+    if (who && seen.has(who)) continue;
+    if (who) seen.add(who);
+    facts.push(f);
+  }
+  // Nothing clears the bar means nothing is shown. A strip padded out with
+  // unremarkable numbers is worse than no strip.
+  if (!facts.length) return '';
+  const cards = facts.slice(0, 4).map(f => {
+    const go = f.id ? `openProfile('${jsAttr(f.id)}')` : `navigate('${jsAttr(f.board)}')`;
+    return `<div class="fact-card" onclick="${go}" tabindex="0" role="button"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${go};}">
+      <div class="fact-tag">${rankEsc(f.tag)}</div>
+      <div class="fact-headline">${rankEsc(f.headline)}</div>
+      <div class="fact-detail">${rankEsc(f.detail)}</div>
+    </div>`;
+  }).join('');
+  return `<div class="fact-strip-head">
+      <span class="lab-title">Worth knowing — ${rankEsc(String(season))}</span>
+      <span class="lab-qual">FOUND IN THE DATA, NOT WRITTEN · REFRESHES AS THE SEASON MOVES</span>
+    </div>
+    <div class="fact-strip">${cards}</div>`;
+}
+
 function renderLabPage() {
   const board = document.getElementById('labBoard');
   if (!board || !playersDB.length) return;
@@ -473,7 +643,12 @@ function renderLabPage() {
     rows: rows.map((r, i) => ({ rank: i + 1, name: r.name, team: r.team, value: r.value }))
   } : null;
 
-  let h = `<div class="lab-head"><span class="lab-title">${rankEsc(boardTitle)}</span>`
+  let h = '';
+  // The strip belongs to the Charts half: the facts are drawn from the charting
+  // layer, and under a production board they would be answers to a question the
+  // page is not asking.
+  if (labMode === 'charts') h += labFactsHtml(labSeason);
+  h += `<div class="lab-head"><span class="lab-title">${rankEsc(boardTitle)}</span>`
     + `<span class="lab-qual">${rankEsc(labMode === 'charts' ? chartQualText(m) : labQualText(m))}${m.lower ? ' · LOWER RANKS FIRST' : ''}`
     + (rows.length ? ` <button class="export-btn" onclick="runExport(() => exportRowChart(labExportBoard), labExportBoard.title, this)">Export PNG</button>` : '')
     + `</span></div>`;

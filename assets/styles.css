@@ -1810,3 +1810,101 @@ a { color: inherit; text-decoration: none; }
   .lab-control-mode { padding-right: 0; border-right: none; }
   .lab-control-view { margin-left: 0; }
 }
+
+/* ═══ WORTH KNOWING ═════════════════════════════════════════════════════════
+   The findings strip above the charting boards. Cards are clickable through to
+   the player or the board the fact came from, because a fact a reader cannot
+   check is a claim. */
+.fact-strip-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.fact-strip {
+  display: grid;
+  /* min() so a 320px track cannot overflow a 375px phone — the same rule the
+     rest of the site's grids answer to. */
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.fact-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--gold);
+  border-radius: 8px;
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.fact-card:hover { background: var(--bg-card-hover); border-color: var(--border-hover); border-left-color: var(--gold); }
+.fact-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.fact-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.fact-headline {
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.fact-detail {
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+/* ═══ SEASON HEADLINE ═══════════════════════════════════════════════════════
+   The production line at the top of a profile. A reader used to be able to open
+   a player and see no production at all, because the season totals lived behind
+   a tab on a profile that opened somewhere else entirely. */
+.season-headline-grid {
+  display: grid;
+  /* min() so a narrow track cannot push the modal sideways on a phone. */
+  grid-template-columns: repeat(auto-fit, minmax(min(88px, 45%), 1fr));
+  gap: 14px 18px;
+}
+.season-headline-value {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.season-headline-label {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 5px;
+}
+/* The two ways out of the headline: deeper into this player, or across to where
+   he sits against everyone else. */
+.profile-jump {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: var(--gold);
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+.profile-jump:hover { border-bottom-color: var(--gold); }
+.profile-jump:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+@media (max-width: 768px) {
+  .season-headline-value { font-size: 20px; }
+}

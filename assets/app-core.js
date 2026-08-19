@@ -598,3 +598,37 @@ function fRankPos(fRank) {
   const m = /^([A-Za-z]+)/.exec(String(fRank || ''));
   return m ? m[1].toUpperCase() : '';
 }
+
+/**
+ * The share of a receiver's yards that came AFTER the catch.
+ *
+ * Not as simple as yac / (ybc + yac), which is what this was, and which produced
+ * "146% of his receiving yards came after the catch" on the live page.
+ *
+ * A back who catches the ball BEHIND the line of scrimmage has NEGATIVE yards
+ * before the catch. That is not a data error, it is the job: 145 of 555
+ * receiving seasons on file are negative, which is a quarter of the pool and
+ * essentially every pass-catching back in the league. Put a negative in the
+ * denominator and the share runs past 100%, which is impossible on its face and
+ * discredits every other number beside it.
+ *
+ * So a share is only computed where a share EXISTS — both parts non-negative.
+ * When the ball is caught behind the line the honest statement is a different
+ * one, and it is a better fact anyway: he was not thrown open downfield at all.
+ */
+function yacShare(receiving) {
+  if (!receiving) return null;
+  const ybc = receiving.ybcPerRec, yac = receiving.yacPerRec;
+  if (typeof ybc !== 'number' || typeof yac !== 'number') return null;
+  if (yac <= 0) return null;
+  if (ybc < 0) {
+    return {
+      share: 100,
+      behindLine: true,
+      note: 'caught behind the line of scrimmage on average — every receiving yard was made after the catch',
+    };
+  }
+  const total = ybc + yac;
+  if (total <= 0) return null;
+  return { share: Math.min(100, 100 * yac / total), behindLine: false };
+}
