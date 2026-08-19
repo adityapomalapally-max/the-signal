@@ -25,8 +25,9 @@
  *               median games missed, and how players performed on return
  *               against their own pre-injury baseline.
  *   RESEARCH    from data/injury-research.json, the hand-written sourced
- *               layer — return rates, reinjury risk, career impact. It covers
- *               SEVEN injuries. Everything else gets nothing, and says so.
+ *               layer — return rates, reinjury risk, career impact. TWENTY
+ *               injuries, each carrying a named study. Everything else gets
+ *               nothing, and says so.
  *
  * NAMED SUB-INJURIES ARE SCAFFOLDED, NOT FILLED. Each region lists the
  * conditions that genuinely occur there, and a `research` key that is either a
@@ -66,7 +67,7 @@ const REGIONS = {
     conditions: [
       { name: 'Concussion', research: 'concussion', note: 'Return is governed by a league protocol, not by how a player feels.' },
       { name: 'Neck strain', research: null },
-      { name: 'Stinger / burner', research: null, note: 'A nerve injury, usually brief, and rarely reported as such.' },
+      { name: 'Stinger / burner', research: 'stinger', note: 'A nerve injury, usually brief, and rarely reported as such.' },
     ],
   },
   shoulder: {
@@ -74,10 +75,10 @@ const REGIONS = {
     parts: ['Shoulder', 'Clavicle', 'Collarbone', 'AC joint'],
     curve: 'Shoulder',
     conditions: [
-      { name: 'AC joint sprain', research: null, note: 'The common one. Graded I to VI; the low grades play through it.' },
+      { name: 'AC joint sprain', research: 'ac_joint', note: 'The most common shoulder injury in the league. Graded I to VI; the low grades play through it.' },
       { name: 'Labrum tear', research: null },
       { name: 'Rotator cuff strain', research: null },
-      { name: 'Dislocation', research: null },
+      { name: 'Dislocation / instability', research: 'shoulder_instability' },
     ],
   },
   arm: {
@@ -98,7 +99,7 @@ const REGIONS = {
     conditions: [
       { name: 'Rib fracture or contusion', research: null },
       { name: 'Oblique strain', research: null },
-      { name: 'Pectoral tear', research: null },
+      { name: 'Pectoral tear', research: 'pectoral' },
     ],
   },
   back: {
@@ -107,7 +108,7 @@ const REGIONS = {
     curve: 'Back / Neck',
     conditions: [
       { name: 'Lower back strain', research: null },
-      { name: 'Disc injury', research: null },
+      { name: 'Lumbar disc herniation', research: 'disc' },
     ],
   },
   hip: {
@@ -115,9 +116,9 @@ const REGIONS = {
     parts: ['Hip', 'Groin', 'Abductor', 'Adductor', 'Glute'],
     curve: 'Hip / Groin',
     conditions: [
-      { name: 'Groin / adductor strain', research: null },
+      { name: 'Groin / adductor strain', research: 'adductor' },
       { name: 'Hip flexor strain', research: null },
-      { name: 'Hip labrum tear', research: null },
+      { name: 'Hip labrum tear / FAI', research: 'hip_labrum' },
     ],
   },
   thigh: {
@@ -126,7 +127,7 @@ const REGIONS = {
     curve: 'Hamstring',
     conditions: [
       { name: 'Hamstring strain', research: 'hamstring', note: 'The most re-injured muscle in football. Coming back early is how one becomes three.' },
-      { name: 'Quad strain', research: null },
+      { name: 'Quad strain', research: 'quad' },
       { name: 'Thigh contusion', research: null },
     ],
   },
@@ -137,9 +138,9 @@ const REGIONS = {
     conditions: [
       { name: 'ACL tear', research: 'acl', note: 'The one that changes a career, not just a season.' },
       { name: 'PCL tear', research: 'pcl' },
-      { name: 'MCL sprain', research: null, note: 'Graded I to III. The low grades are weeks, not months, and are often played through.' },
+      { name: 'MCL sprain', research: 'mcl', note: 'Graded I to III. The low grades are weeks, not months, and are often played through.' },
       { name: 'LCL sprain', research: null },
-      { name: 'Meniscus tear', research: null, note: 'A trim and a repair are different operations with very different timelines.' },
+      { name: 'Meniscus tear', research: 'meniscus', note: 'A trim and a repair are different operations with very different timelines.' },
       { name: 'Patellar dislocation', research: null },
     ],
   },
@@ -148,7 +149,7 @@ const REGIONS = {
     parts: ['Calf', 'Shin', 'Fibula', 'Tibia'],
     curve: 'Calf / Quad',
     conditions: [
-      { name: 'Calf strain', research: null },
+      { name: 'Calf strain', research: 'calf' },
       { name: 'Shin splints', research: null },
     ],
   },
@@ -158,7 +159,7 @@ const REGIONS = {
     curve: 'Ankle',
     conditions: [
       { name: 'High ankle sprain', research: 'high_ankle', note: 'Different injury from a rolled ankle, and several times the absence.' },
-      { name: 'Low ankle sprain', research: null },
+      { name: 'Low ankle sprain', research: 'low_ankle' },
       { name: 'Achilles tear', research: 'achilles', note: 'Technically the heel, but it presents and is reported at the ankle.' },
     ],
   },
@@ -168,7 +169,7 @@ const REGIONS = {
     curve: 'Foot / Toe',
     conditions: [
       { name: 'Turf toe', research: 'turf_toe', note: 'Sounds minor and is not — the grade-3 version ends seasons.' },
-      { name: 'Lisfranc injury', research: null },
+      { name: 'Lisfranc injury', research: 'lisfranc' },
       { name: 'Plantar fasciitis', research: null },
       { name: 'Metatarsal fracture', research: null },
     ],
@@ -208,7 +209,7 @@ function main() {
       layers: {
         frequency: 'counted from data/injuries.json — the official NFL injury reports for this pool',
         recovery: 'from data/injury-curves.json, derived from those same reports',
-        research: 'from data/injury-research.json, the hand-written sourced layer — SEVEN injuries only',
+        research: 'from data/injury-research.json, the hand-written sourced layer — TWENTY injuries, each with a named study behind it. Everything else says it has none.',
       },
       caveats: [
         'A body part on an injury report is what a team chose to declare. Teams are '
@@ -288,6 +289,9 @@ function main() {
           note: c.note || null,
           research: r ? {
             key: c.research,
+            // The citation travels with the numbers. A figure whose source
+            // lives in another file is a figure the page cannot defend.
+            sources: r.sources,
             returnRate: r.returnRate,
             returnRateLabel: r.returnRateLabel,
             avgReturn: r.avgReturn,

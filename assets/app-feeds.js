@@ -1310,6 +1310,10 @@ function bodyPanelHtml(key) {
       if (x.performanceLabel) h += `<div>${rankEsc(x.performanceLabel)}</div>`;
       if (x.careerImpact) h += `<div>${rankEsc(x.careerImpact)}</div>`;
       if (x.fantasyImpact) h += `<div class="cond-fantasy">${rankEsc(x.fantasyImpact)}</div>`;
+      // The citation, on the page, under the number it belongs to. A figure
+      // whose source lives only in a data file is a figure a reader has to take
+      // on trust, which is the thing this site is built not to ask for.
+      if (x.sources) h += `<div class="cond-source">Source: ${rankEsc(x.sources)}</div>`;
       h += `</div>`;
     } else {
       h += `<div class="cond-facts cond-empty">It happens here, and we have no sourced timeline for it. Rather than print a plausible one, this says nothing — the researched injuries above are the ones with published evidence behind them.</div>`;

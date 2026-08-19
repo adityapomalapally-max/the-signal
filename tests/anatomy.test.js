@@ -115,9 +115,45 @@ test('the map states what it could not place', () => {
 
 test('every layer says where it came from', () => {
   assert.ok(anat.meta.layers.frequency && anat.meta.layers.recovery && anat.meta.layers.research);
-  assert.match(anat.meta.layers.research, /SEVEN|seven/,
-    'the research layer has to state how narrow it is');
+  // The layer has to state its own reach, whatever that reach currently is —
+  // it went from seven injuries to twenty and the claim moved with it.
+  assert.match(anat.meta.layers.research, /\b(SEVEN|TWENTY|THIRTY|\d+)\b/i,
+    'the research layer has to state how far it reaches');
+  assert.match(anat.meta.layers.research, /says it has none|Everything else/i,
+    'and it has to say what happens beyond that reach');
   assert.ok(anat.meta.caveats.length >= 3);
   assert.match(anat.meta.caveats.join(' '), /IR drops off the report|understate/i,
     'the IR blind spot has to travel with the counts');
+});
+
+test('every researched condition carries its citation onto the page', () => {
+  // The research layer grew from 7 injuries to 20. Its whole value is that a
+  // reader can check the number, so the citation has to travel WITH it — a
+  // figure whose source lives only in another file is one the page cannot
+  // defend at the point it is read.
+  let checked = 0;
+  for (const [key, r] of Object.entries(anat.regions)) {
+    for (const c of r.conditions) {
+      if (!c.research) continue;
+      assert.ok(c.research.sources, `${key}/${c.name}: research with no citation attached`);
+      assert.ok(c.research.sources.length > 20,
+        `${key}/${c.name}: citation is too thin to check — "${c.research.sources}"`);
+      // A citation has to name something: a journal, a study or a year.
+      assert.match(c.research.sources, /\(\d{4}\)|[A-Z][a-z]+ et al|Journal|AJSM|OJSM|BJSM|KSSTA/,
+        `${key}/${c.name}: "${c.research.sources}" does not name a study`);
+      checked++;
+    }
+  }
+  assert.ok(checked >= 18, `only ${checked} researched conditions — expected the expanded set`);
+});
+
+test('the research layer covers the regions people actually ask about', () => {
+  // Knee, ankle and thigh are the three most-reported regions on this pool.
+  // If those are unsourced the map is decoration, whatever the total says.
+  for (const key of ['knee', 'ankle', 'thigh', 'shoulder', 'hip']) {
+    const r = anat.regions[key];
+    const sourced = r.conditions.filter(c => c.hasSourcedDetail).length;
+    assert.ok(sourced >= 2,
+      `${key} has only ${sourced} sourced condition(s) — it is one of the regions readers arrive for`);
+  }
 });
