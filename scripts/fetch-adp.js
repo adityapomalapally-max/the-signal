@@ -22,6 +22,7 @@ const path = require('path');
 const https = require('https');
 const { USER_AGENT } = require('./lib/agent');
 const seasonLib = require('./lib/season');
+const { writeJSONIfChanged } = require('./lib/write');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA_DIR, 'adp.json');
@@ -69,7 +70,7 @@ async function main() {
       existing.meta.closedAt = existing.meta.closedAt || new Date().toISOString();
       existing.meta.closedNote = `Drafts are over. This board is the last preseason snapshot and `
         + `is kept as history, not as a live market. Season ${st.season} began before this run.`;
-      fs.writeFileSync(OUT, JSON.stringify(existing, null, 2) + '\n');
+      writeJSONIfChanged(OUT, existing);
       log('season has started — froze the board and marked it historical. Not refetching.');
     } else {
       log('season has started and there is no board on file; nothing to freeze.');
@@ -124,7 +125,7 @@ async function main() {
     players
   };
 
-  fs.writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n');
+  writeJSONIfChanged(OUT, out);
   log(`Wrote data/adp.json: ${players.length} players from ${out.meta.totalDrafts || '?'} drafts ` +
       `since ${out.meta.windowStart || '?'}`);
 }

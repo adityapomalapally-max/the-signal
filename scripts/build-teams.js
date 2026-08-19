@@ -25,6 +25,7 @@
 const fs = require('fs');
 const path = require('path');
 const { fetchCSV, parseCSV } = require('./lib/match');
+const { writeJSONIfChanged } = require('./lib/write');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA_DIR, 'teams.json');
@@ -165,10 +166,10 @@ async function main() {
     process.exit(1);
   }
 
-  fs.writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n');
+  const wrote = writeJSONIfChanged(OUT, out);
   const kb = (fs.statSync(OUT).size / 1024).toFixed(0);
   const moved = Object.values(out.teams).reduce((a, t) => a + t.roster.filter(p => p.producedFor).length, 0);
-  log(`Wrote data/teams.json: ${n} teams, ${kb}KB, current week ${currentWeek}, ${moved} players carrying another team's numbers`);
+  log(`${wrote ? 'Wrote' : 'Unchanged —'} data/teams.json: ${n} teams, ${kb}KB, current week ${currentWeek}, ${moved} players carrying another team's numbers`);
   log('=== Teams Complete ===');
 }
 

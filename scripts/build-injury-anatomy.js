@@ -42,6 +42,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { writeJSONIfChanged } = require('./lib/write');
 
 const DATA = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA, 'injury-anatomy.json');
@@ -337,8 +338,9 @@ function main() {
   }
 
   if (dry) { console.log('[anatomy] dry run — nothing written'); return; }
-  fs.writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n');
-  console.log(`[anatomy] wrote data/injury-anatomy.json (${Math.round(fs.statSync(OUT).size / 1024)}KB)`);
+  const wrote = writeJSONIfChanged(OUT, out);
+  if (!wrote) console.log('[anatomy] unchanged — not rewritten');
+  else console.log(`[anatomy] wrote data/injury-anatomy.json (${Math.round(fs.statSync(OUT).size / 1024)}KB)`);
 }
 
 try { main(); } catch (e) { console.error('[anatomy] FAILED:', e.message); process.exit(1); }

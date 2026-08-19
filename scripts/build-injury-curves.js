@@ -30,6 +30,7 @@
 const fs = require('fs');
 const path = require('path');
 const { fetchCSV, parseCSV } = require('./lib/match');
+const { writeJSONIfChanged } = require('./lib/write');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA_DIR, 'injury-curves.json');
@@ -261,9 +262,11 @@ async function main() {
     };
   }
 
-  fs.writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n');
+  const wrote = writeJSONIfChanged(OUT, out);
   const kinds = Object.keys(out.types);
-  log(`Wrote data/injury-curves.json: ${kinds.length} injury types — ${kinds.join(', ')}`);
+  log(wrote
+    ? `Wrote data/injury-curves.json: ${kinds.length} injury types — ${kinds.join(', ')}`
+    : `data/injury-curves.json unchanged — ${kinds.length} injury types, not rewritten`);
   log('=== Injury Curves Complete ===');
 }
 

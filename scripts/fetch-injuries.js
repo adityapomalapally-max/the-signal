@@ -25,6 +25,7 @@ const fs = require('fs');
 const path = require('path');
 const { fetchCSV, parseCSV, buildMatchIndex, matchRow } = require('./lib/match');
 const seasonLib = require('./lib/season');
+const { writeJSONIfChanged } = require('./lib/write');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 // Derived, never typed. These used to be a hand-written [2023, 2024, 2025] in each of
@@ -161,7 +162,8 @@ async function main() {
     process.exit(1);
   }
 
-  fs.writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n');
+  const wrote = writeJSONIfChanged(OUT, out);
+  if (!wrote) console.log('[injuries] unchanged — not rewritten');
   const kb = (fs.statSync(OUT).size / 1024).toFixed(0);
   log(`Wrote data/injuries.json: ${players_with} players, ${kb}KB`);
   log('=== Injury Report Pipeline Complete ===');

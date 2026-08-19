@@ -20,6 +20,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { writeJSONIfChanged } = require('./lib/write');
 
 const DATA = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA, 'playcallers.json');
@@ -65,7 +66,8 @@ function main() {
     },
     entries,
   };
-  fs.writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n');
+  const wrote = writeJSONIfChanged(OUT, out);
+  if (!wrote) console.log('[playcallers] unchanged — not rewritten');
 
   const total = Object.keys(entries).length;
   const filled = Object.values(entries).filter(e => e.playCaller).length;

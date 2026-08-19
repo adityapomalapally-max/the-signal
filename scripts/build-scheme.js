@@ -74,6 +74,7 @@ function log(msg) { console.log(`[scheme] ${msg}`); }
 // The alias lives in lib/teams.js now — fetch-advstats.js hit the identical
 // Rams trap, and a second copy is a copy that will drift.
 const { TEAM_ALIAS, teamKey } = require('./lib/teams');
+const { writeJSONIfChanged } = require('./lib/write');
 
 // Zero defenders in the box is not a reading, it is an unrecorded value — it
 // occurs on 9,093 of 45,184 rows in 2025. Averaged in as a zero it drags every
@@ -672,7 +673,8 @@ async function main() {
     seasons,
   };
 
-  fs.writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n');
+  const wrote_scheme = writeJSONIfChanged(OUT, out);
+  if (!wrote_scheme) log(`scheme.json unchanged — not rewritten`);
   const kb = Math.round(fs.statSync(OUT).size / 1024);
   log(`wrote scheme.json: ${years.join(', ')} — ${kb}KB`);
 
@@ -686,7 +688,8 @@ async function main() {
     },
     seasons: usageSeasons,
   };
-  fs.writeFileSync(OUT_USAGE, JSON.stringify(usageOut, null, 2) + '\n');
+  const wrote_player_usage = writeJSONIfChanged(OUT_USAGE, usageOut);
+  if (!wrote_player_usage) log(`player-usage.json unchanged — not rewritten`);
   const latestUsage = usageSeasons[years[years.length - 1]] || {};
   log(`wrote player-usage.json: ${Object.keys(latestUsage).length} players in ${years[years.length - 1]} — ${Math.round(fs.statSync(OUT_USAGE).size / 1024)}KB`);
 
@@ -717,7 +720,8 @@ async function main() {
       },
       seasons: chartingSeasons,
     };
-    fs.writeFileSync(OUT_CHARTING, JSON.stringify(chartingOut, null, 2) + '\n');
+    const wrote_charting = writeJSONIfChanged(OUT_CHARTING, chartingOut);
+  if (!wrote_charting) log(`charting.json unchanged — not rewritten`);
     const latestChart = chartingSeasons[chartYears[chartYears.length - 1]] || { players: {} };
     log(`wrote charting.json: ${Object.keys(latestChart.players).length} players in ${chartYears[chartYears.length - 1]} — ${Math.round(fs.statSync(OUT_CHARTING).size / 1024)}KB`);
   }
@@ -757,7 +761,8 @@ async function main() {
       },
       seasons: fieldmapSeasons,
     };
-    fs.writeFileSync(OUT_FIELDMAP, JSON.stringify(fieldmapOut, null, 2) + '\n');
+    const wrote_fieldmap = writeJSONIfChanged(OUT_FIELDMAP, fieldmapOut);
+  if (!wrote_fieldmap) log(`fieldmap.json unchanged — not rewritten`);
     const latestFm = fieldmapSeasons[fmYears[fmYears.length - 1]] || {};
     log(`wrote fieldmap.json: ${Object.keys(latestFm.passers || {}).length} passers, `
       + `${Object.keys(latestFm.receivers || {}).length} receivers, ${Object.keys(latestFm.rushers || {}).length} rushers `

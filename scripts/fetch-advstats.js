@@ -40,6 +40,7 @@ const { fetchCSV, parseCSV } = require('./lib/match');
 const { poolCrosswalk } = require('./lib/ids');
 const seasonLib = require('./lib/season');
 const { teamKey, isTeam } = require('./lib/teams');
+const { writeJSONIfChanged } = require('./lib/write');
 
 const DATA = path.join(__dirname, '..', 'data');
 const BASE = 'https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats';
@@ -233,7 +234,8 @@ async function main() {
   console.log(`[advstats] ${covered}/${pool.length} players have at least one advanced split`);
 
   if (dry) { console.log('[advstats] dry run — nothing written'); return; }
-  fs.writeFileSync(path.join(DATA, 'advstats.json'), JSON.stringify(out, null, 2));
+  const wrote = writeJSONIfChanged(path.join(DATA, 'advstats.json'), out);
+  if (!wrote) console.log('[advstats] unchanged — not rewritten');
   const kb = (fs.statSync(path.join(DATA, 'advstats.json')).size / 1024).toFixed(0);
   console.log(`[advstats] wrote data/advstats.json (${kb}KB)`);
 }

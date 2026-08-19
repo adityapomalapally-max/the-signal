@@ -710,13 +710,19 @@ function labFieldTable(rows, m) {
 
   // The group header row: the columns come in two runs that mean different
   // things, and without it "Mid" reads as ambiguous between a gap and a depth.
-  let groupRow = '<tr class="field-group-row"><th colspan="3"></th>';
+  //
+  // The three leading columns get one empty header EACH rather than a single
+  // colspan="3". A colspan cannot be taken apart by CSS, and the phone layout
+  // needs to drop the Team column — with a colspan the group labels would
+  // shift a column left and sit over the wrong run of data.
+  let groupRow = '<tr class="field-group-row">'
+    + '<th class="field-lead"></th><th class="field-lead field-team"></th><th class="field-lead"></th>';
   for (const g of shape.groups) groupRow += `<th colspan="${g.keys.length}" class="field-group">${rankEsc(g.label)}</th>`;
   groupRow += '</tr>';
 
-  let head = '<tr>' + sortTh(tid, 'name', 'Player')
-    + sortTh(tid, 'team', 'Team')
-    + sortTh(tid, 'total', shape.totalLabel, { title: `${shape.totalLabel}, season total` });
+  let head = '<tr>' + sortTh(tid, 'name', 'Player', { cls: 'field-name-col' })
+    + sortTh(tid, 'team', 'Team', { cls: 'field-team' })
+    + sortTh(tid, 'total', shape.totalLabel, { cls: 'field-total', title: `${shape.totalLabel}, season total` });
   for (const c of cols) head += sortTh(tid, c.key, c.label, { cls: 'field-col', title: `${c.label} — ${m.label}` });
   head += '</tr>';
 
@@ -726,7 +732,8 @@ function labFieldTable(rows, m) {
     // table is a way into. Everyone else has no grid, so the row goes where
     // every other board on this page goes.
     body += `<tr class="${labFieldPlayer === r.id ? 'field-open' : ''}" onclick="${shape.grid ? `openFieldGrid('${jsAttr(r.id)}')` : labRowAction(r)}">`
-      + `<td class="field-name">${rankEsc(r.name)}</td><td>${rankEsc(r.team || '')}</td><td>${r.total}</td>`;
+      + `<td class="field-name">${rankEsc(r.name)}</td>`
+      + `<td class="field-team">${rankEsc(r.team || '')}</td><td class="field-total">${r.total}</td>`;
     for (const c of cols) {
       const v = r.vals[c.key];
       const n = r.vals[c.key + '.n'];

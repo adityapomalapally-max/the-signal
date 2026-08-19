@@ -28,6 +28,7 @@ const fs = require('fs');
 const path = require('path');
 const { fetchCSV, parseCSV } = require('./lib/match');
 const seasonLib = require('./lib/season');
+const { writeJSONIfChanged } = require('./lib/write');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA_DIR, 'sos.json');
@@ -155,8 +156,9 @@ async function main() {
     teams
   };
 
-  fs.writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n');
-  log(`Wrote data/sos.json (${(fs.statSync(OUT).size / 1024).toFixed(0)}KB)`);
+  const wrote = writeJSONIfChanged(OUT, out);
+  if (!wrote) log('unchanged — not rewritten');
+  else log(`Wrote data/sos.json (${(fs.statSync(OUT).size / 1024).toFixed(0)}KB)`);
   for (const pos of POSITIONS) {
     const easiest = Object.entries(teams).filter(([, v]) => v[pos].seasonEaseRank === 1)[0];
     const hardest = Object.entries(teams).sort((a, b) => b[1][pos].seasonEaseRank - a[1][pos].seasonEaseRank)[0];

@@ -458,6 +458,29 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   half of the site am I looking at" looked exactly like "which year". They are grouped, labelled
   and the mode switch is set apart — it changes what every other control on the page means.
 
+## Generated files are written only when they changed
+- `scripts/lib/write.js` — `writeJSONIfChanged(file, obj)`. Every build stamps `meta.generated` with
+  the moment it ran, so a file whose data is identical to yesterday's still landed as a fresh commit
+  every morning. THE RULE ALREADY EXISTED HERE: build-history.js is idempotent because a doubled day
+  skews every average computed over the series later. This is that rule applied to the files that are
+  rewritten whole.
+- THE TIMESTAMP IS NOT DISCARDED, IT IS DEFERRED. When the data moves, the file carries the moment it
+  moved; what it never carries is a moment when only the clock moved. `generated` now means "when
+  this data last changed", which is the reading people already assume it has.
+- THE DANGEROUS DIRECTION IS THE QUIET ONE. A comparison that is too eager reads a real change as
+  "unchanged", freezes a file forever, and every build still reports success — the same shape as
+  nflverse moving the stats file. So the tests lean on that side: eleven separate one-field changes
+  must each still write, and the VOLATILE exemption list is asserted to stay short and to contain
+  only things that look like clocks.
+- KEY ORDER IS NOT A CHANGE, ARRAY ORDER IS. Object key order is not meaningful in JSON and a build
+  that enumerates a map differently must not read as a change; but rankings are ordered, so two files
+  with the same rows in a different order are different files.
+- A LOG THAT CLAIMS A WRITE IT DID NOT MAKE IS WORSE THAN A NOISY ONE. Every converted build reports
+  "unchanged — not rewritten" rather than printing "wrote" unconditionally.
+- There is a test that walks daily-update.yml, opens every script it runs, and fails if one still
+  calls `fs.writeFileSync(..., JSON.stringify(...))` directly. It found two on its first run —
+  fetch-injuries and build-playcallers — that the manual pass had missed.
+
 ## The field map — where a player works
 - `data/fieldmap.json` is the FOURTH OUTPUT of the one pbp download, built by `scripts/lib/fieldmap.js`
   and called from build-scheme. Field position is pure pbp and needs no participation join, but it
@@ -498,6 +521,15 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   a scale shared across the table would paint the whole deep column blue and say nothing about who
   is good at it. The spatial grid scales against that ONE quarterback's own cells instead, because
   it answers "where is he best" rather than "who is best here".
+- ON A PHONE IT SHOWED TWO COLUMNS. Measured at 375px: the table is 1,275px wide and the player
+  column alone took 207px, so a reader saw the name and one number. Three changes took it to six
+  columns — the name column STICKS (without it, scrolling right makes every number unattributable on
+  a board of 46 backs), the team column is dropped as the Players table and Value Board already do,
+  and the data columns are CAPPED. min-width alone did nothing: a floor does not stop growth, and
+  the long headers pushed the columns to 93px anyway.
+- THE GROUP HEADER USES THREE SEPARATE LEAD CELLS, NOT `colspan="3"`. A colspan cannot be taken apart
+  by CSS, so hiding the team column would have slid "By gap" and "By situation" one column left and
+  sat every group label over the wrong run of data — silently, and only on phones. There is a test.
 - THE SORT STATE IS PER POSITION (`labField.${pos}`). The column sets differ — sorting backs by
   "Mid" and switching to receivers left the shared sorter holding `gaps.middle`, which no receiver
   column has, and sortTableRows correctly returns rows UNSORTED when the key is missing. The board

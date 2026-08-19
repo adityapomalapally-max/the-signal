@@ -35,6 +35,7 @@
 const fs = require('fs');
 const path = require('path');
 const seasonLib = require('./lib/season');
+const { writeJSONIfChanged } = require('./lib/write');
 
 const DATA = path.join(__dirname, '..', 'data');
 const WEEKLY = path.join(DATA, 'weekly');
@@ -196,8 +197,9 @@ async function main() {
     console.log(simArg ? '[ros] simulation — nothing written (pass --write to build a file for UI work)' : '[ros] dry run — nothing written');
     return;
   }
-  fs.writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n');
-  console.log(`[ros] wrote data/ros.json`);
+  const wrote = writeJSONIfChanged(OUT, out);
+  if (!wrote) console.log('[ros] unchanged — not rewritten');
+  else console.log(`[ros] wrote data/ros.json`);
 }
 
 main().catch(e => { console.error('[ros] FAILED:', e.message); process.exit(1); });

@@ -32,6 +32,7 @@ const { fetchCSV, parseCSV } = require('./lib/match');
 const { poolCrosswalk } = require('./lib/ids');
 const { teamKey } = require('./lib/teams');
 const seasonLib = require('./lib/season');
+const { writeJSONIfChanged } = require('./lib/write');
 
 const DATA = path.join(__dirname, '..', 'data');
 const BASE = 'https://github.com/nflverse/nflverse-data/releases/download';
@@ -171,8 +172,9 @@ async function main() {
   out.meta.coverage = { depthChart: Object.keys(out.depthChart).length, combine: tested, of: pool.length };
 
   if (dry) { console.log('[context] dry run — nothing written'); return; }
-  fs.writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n');
-  console.log(`[context] wrote data/context.json (${Math.round(fs.statSync(OUT).size / 1024)}KB)`);
+  const wrote = writeJSONIfChanged(OUT, out);
+  if (!wrote) console.log('[context] unchanged — not rewritten');
+  else console.log(`[context] wrote data/context.json (${Math.round(fs.statSync(OUT).size / 1024)}KB)`);
 }
 
 main().catch(e => { console.error('[context] FAILED:', e.message); process.exit(1); });
