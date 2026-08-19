@@ -1214,6 +1214,14 @@ function renderLabPage() {
   const posGroup = document.getElementById('labPosFilter');
   const posWrap = posGroup && posGroup.closest('.lab-control');
   if (posWrap) posWrap.style.display = labMode === 'defense' ? 'none' : '';
+  // The Field Map is a matrix and has no second rendering — there is no bar
+  // chart to switch to and no plainer table underneath, because the table IS
+  // the chart. Left on screen the Chart/Table pair invites a click that changes
+  // nothing, which is the same mistake the Teams division picker and the
+  // Defence position picker each made once.
+  const viewGroup = document.getElementById('labViewToggle');
+  const viewWrap = viewGroup && viewGroup.closest('.lab-control');
+  if (viewWrap) viewWrap.style.display = labMode === 'field' ? 'none' : '';
 
   const metrics = (LAB_TABLES[labMode] || LAB_TABLES.stats)()[labPos] || [];
   if (!labMetricKey || !metrics.some(m => m.key === labMetricKey)) labMetricKey = metrics[0] && metrics[0].key;
