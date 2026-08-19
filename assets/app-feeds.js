@@ -666,14 +666,28 @@ function handleRoute() {
     return;
   }
 
-  // #lab/wr/2025/sep — position, season, then the board's metric key
+  // /lab/stats/wr/2025/sep — mode, position, season, then the board's metric.
+  //
+  // The mode segment is new, and links shared before it existed are /lab/wr/…
+  // with no mode at all. Rather than break them, a first segment that parses as
+  // a POSITION is read as the old shape and defaults to stats, which is what
+  // those links always meant.
   if (parts[0] === 'lab') {
-    if (parts[1] && LAB_METRICS[parts[1].toUpperCase()]) labPos = parts[1].toUpperCase();
-    if (parts[2] && LAB_SEASONS.includes(parts[2])) labSeason = parts[2];
-    // Metric is validated against the position that actually applies, so a
-    // stale link to a metric another position does not have falls back to
-    // that position's first board instead of rendering nothing.
-    labMetricKey = (parts[3] && (LAB_METRICS[labPos] || []).some(m => m.key === parts[3])) ? parts[3] : null;
+    let i = 1;
+    if (parts[1] === 'stats' || parts[1] === 'charts') { labMode = parts[1]; i = 2; }
+    else if (parts[1] && LAB_METRICS[parts[1].toUpperCase()]) labMode = 'stats';
+    const table = labMode === 'charts' ? CHART_METRICS : LAB_METRICS;
+    if (parts[i] && table[parts[i].toUpperCase()]) labPos = parts[i].toUpperCase();
+    // The charted seasons are a subset of the stats seasons, so the year is
+    // validated against whichever half is actually being addressed.
+    const seasons = labMode === 'charts' ? null : LAB_SEASONS;
+    if (parts[i + 1] && /^\d{4}$/.test(parts[i + 1]) && (!seasons || seasons.includes(parts[i + 1]))) {
+      labSeason = parts[i + 1];
+    }
+    // Metric is validated against the position AND the mode that actually
+    // apply, so a stale link to a board that no longer exists falls back to the
+    // first one rather than rendering nothing.
+    labMetricKey = (parts[i + 2] && (table[labPos] || []).some(m => m.key === parts[i + 2])) ? parts[i + 2] : null;
     switchPage('lab');
     return;
   }
@@ -831,11 +845,19 @@ function metaForRoute(route) {
     };
   }
 
-  if (parts[0] === 'lab' && POS[parts[1]]) {
-    return {
-      title: `${POS[parts[1]]} Leaders${parts[2] ? ' — ' + parts[2] : ''} | The Signal`,
-      description: `${POS[parts[1]]} leaderboards from nflverse and Next Gen Stats. Every board states its qualifier and excludes anyone under it.`,
-    };
+  if (parts[0] === 'lab') {
+    const mode = (parts[1] === 'stats' || parts[1] === 'charts') ? parts[1] : 'stats';
+    const posPart = (parts[1] === 'stats' || parts[1] === 'charts') ? parts[2] : parts[1];
+    const seasonPart = (parts[1] === 'stats' || parts[1] === 'charts') ? parts[3] : parts[2];
+    if (POS[posPart]) {
+      return mode === 'charts' ? {
+        title: `${POS[posPart]} Charts${seasonPart ? ' — ' + seasonPart : ''} | The Signal`,
+        description: `${POS[posPart]} boards from play-by-play charting and advanced splits — first reads against checkdowns, and the yards a player made himself.`,
+      } : {
+        title: `${POS[posPart]} Stats${seasonPart ? ' — ' + seasonPart : ''} | The Signal`,
+        description: `${POS[posPart]} leaderboards from nflverse and Next Gen Stats. Every board states its qualifier and excludes anyone under it.`,
+      };
+    }
   }
 
   return base;

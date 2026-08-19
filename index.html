@@ -393,21 +393,37 @@
 <div class="page-section" id="page-lab">
   <div style="max-width:1160px;margin:0 auto;">
     <div class="players-header">
-      <h1>Leaders</h1>
-      <p>Leaderboards across the top-200 pool — box score, efficiency, and NFL Next Gen tracking data. Every board states its qualifier; players below it are excluded rather than ranked on noise.</p>
-      <div class="players-search-bar" style="justify-content:space-between;flex-wrap:wrap;gap:12px;">
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <h1>Stats &amp; Charts</h1>
+      <p><strong>Stats</strong> is production — what happened, from the box score and NFL Next Gen tracking. <strong>Charts</strong> is how it happened, from play-by-play charting and advanced splits: whether a target was the quarterback's first read or a checkdown, and whether a yard belonged to the thrower or the runner. Every board states its qualifier; players below it are excluded rather than ranked on noise.</p>
+      <!-- Four controls that do four different jobs used to sit in one
+           undifferentiated row of identical pills, so the most important of them
+           — which half of the site you are looking at — was indistinguishable
+           from the year picker. They are grouped and labelled now, and the mode
+           switch is set apart because it changes what every other control means. -->
+      <div class="lab-controls">
+        <div class="lab-control lab-control-mode">
+          <span class="filter-label">Show</span>
+          <div class="position-filter" id="labModeToggle"></div>
+        </div>
+        <div class="lab-control">
+          <span class="filter-label">Position</span>
           <div class="position-filter" id="labPosFilter">
             <button class="pos-btn" onclick="setLabPos('QB', this)">QB</button>
             <button class="pos-btn" onclick="setLabPos('RB', this)">RB</button>
             <button class="pos-btn active" onclick="setLabPos('WR', this)">WR</button>
             <button class="pos-btn" onclick="setLabPos('TE', this)">TE</button>
           </div>
+        </div>
+        <div class="lab-control">
+          <span class="filter-label">Season</span>
           <div class="position-filter" id="labSeasonFilter"></div>
         </div>
-        <div class="position-filter" id="labViewToggle">
-          <button class="pos-btn active" onclick="setLabView('chart', this)">Chart</button>
-          <button class="pos-btn" onclick="setLabView('table', this)">Table</button>
+        <div class="lab-control lab-control-view">
+          <span class="filter-label">View</span>
+          <div class="position-filter" id="labViewToggle">
+            <button class="pos-btn active" onclick="setLabView('chart', this)">Chart</button>
+            <button class="pos-btn" onclick="setLabView('table', this)">Table</button>
+          </div>
         </div>
       </div>
     </div>

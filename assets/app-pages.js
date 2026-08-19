@@ -15,6 +15,7 @@
 // wearing a number's clothes, so players under the bar are excluded from
 // the board rather than ranked — same principle as the volatility panels.
 let labExportBoard = null, labExportScatter = null, rankExportSpec = null;
+let labMode = 'stats';   // 'stats' = production, 'charts' = how it happened
 let labPos = 'WR';
 let labSeason = null;      // set from the data on first render
 let labMetricKey = null;
@@ -117,6 +118,16 @@ function labRows(valueOf, m) {
 }
 
 let labNgs = {};
+
+function setLabMode(mode) {
+  if (labMode === mode) return;
+  labMode = mode;
+  // The metric and the season both belong to the half that was showing, and
+  // neither is guaranteed to exist in the other one.
+  labMetricKey = null;
+  labSeason = null;
+  renderLabPage();
+}
 
 function setLabPos(pos, btn) {
   labPos = pos;
@@ -262,22 +273,177 @@ function labScatterChart(pts, spec) {
   return svg;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   CHARTS — the boards you cannot build from a box score
+
+   The Stats half of this page is production: targets, yards, EPA, snap share.
+   All of it answers what happened. The Charts half answers how, out of the two
+   layers that were added to the moat rather than derived from it — FTN's
+   play-by-play charting and Pro Football Reference's advanced splits.
+
+   The distinction that makes this worth a section of its own: a target count
+   cannot tell a first read from a checkdown, and a receiving line cannot tell
+   the yards a quarterback earned a man from the yards he made himself. These
+   boards can, and nothing else on the site does.
+
+   Every board still states its qualifier and excludes anyone under it — the
+   same rule as the Stats half, and it matters more here, because a 100% first
+   read rate on four charted targets is not a finding.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+const RECEIVER_CHARTS = [
+  { key: 'firstRead', label: 'First-Read Rate', chart: c => c.firstReadRate, unit: '%', minTargets: 50,
+    note: 'Share of his charted targets that were the quarterback\'s FIRST read — the throw the play was designed to produce. The clearest single measure of whether an offence is built around a player.' },
+  { key: 'checkdown', label: 'Checkdown Rate', chart: c => c.checkdownRate, unit: '%', minTargets: 50,
+    note: 'Share of targets that arrived because the play broke down rather than because it was meant to. High here means volume that is harder to rely on week to week.' },
+  { key: 'contested', label: 'Contested Rate', chart: c => c.contestedRate, unit: '%', minTargets: 50,
+    note: 'Share of targets thrown into coverage tight enough to be charted as contested.' },
+  { key: 'catchable', label: 'Catchable Rate', chart: c => c.catchableRate, unit: '%', minTargets: 50,
+    note: 'Share of his targets a charter judged catchable. Low is usually a story about the quarterback, not the receiver.' },
+  { key: 'yacShare', label: 'YAC Share', adv: a => a.receiving && a.receiving.ybcPerRec != null && a.receiving.yacPerRec != null
+      ? 100 * a.receiving.yacPerRec / (a.receiving.ybcPerRec + a.receiving.yacPerRec) : null, unit: '%', minRec: 25,
+    note: 'What share of his receiving yards he made AFTER the catch. High is a creator; low is a player his quarterback throws open.' },
+  { key: 'yacPerRec', label: 'Yards After Catch', adv: a => a.receiving && a.receiving.yacPerRec, unit: ' /rec', minRec: 25,
+    note: 'Yards after the catch per reception — his own contribution, separated from the throw.' },
+  { key: 'brokenTackles', label: 'Broken Tackles', adv: a => a.receiving && a.receiving.brokenTackles, unit: '', minRec: 25,
+    note: 'Tackles broken as a receiver.' },
+  { key: 'dropPct', label: 'Drop Rate', adv: a => a.receiving && a.receiving.dropPct != null ? a.receiving.dropPct * 100 : null,
+    unit: '%', lower: true, minRec: 25,
+    note: 'Drops per target. Lower is better. Charted by a human, and the standard is not identical across seasons.' },
+];
+
+const CHART_METRICS = {
+  WR: RECEIVER_CHARTS,
+  TE: RECEIVER_CHARTS,
+  RB: [
+    { key: 'checkdown', label: 'Checkdown Rate', chart: c => c.checkdownRate, unit: '%', minTargets: 30,
+      note: 'Share of his targets that arrived because the play broke down. Backs live here, and the ones who do not are being used as real receivers.' },
+    { key: 'firstRead', label: 'First-Read Rate', chart: c => c.firstReadRate, unit: '%', minTargets: 30,
+      note: 'Share of targets that were the quarterback\'s first read. Rare for a back, and a real signal about how an offence sees him.' },
+    { key: 'yacPerAtt', label: 'Yards After Contact', adv: a => a.rushing && a.rushing.yacPerAttempt, unit: ' /att', minAtt: 100,
+      note: 'Yards after contact per carry — the back\'s own work, separated from the blocking.' },
+    { key: 'ybcPerAtt', label: 'Yards Before Contact', adv: a => a.rushing && a.rushing.ybcPerAttempt, unit: ' /att', minAtt: 100,
+      note: 'Yards before contact per carry — mostly the offensive line, and the fairest thing we have to a blocking grade.' },
+    { key: 'brokenTackles', label: 'Broken Tackles', adv: a => a.rushing && a.rushing.brokenTackles, unit: '', minAtt: 100,
+      note: 'Tackles broken as a runner.' },
+    { key: 'yacRec', label: 'Yards After Catch', adv: a => a.receiving && a.receiving.yacPerRec, unit: ' /rec', minRec: 20,
+      note: 'Yards after the catch per reception — the receiving half of his job.' },
+  ],
+  QB: [
+    { key: 'pressurePct', label: 'Pressure Rate Faced', adv: a => a.passing && a.passing.pressurePct, unit: '%', lower: true, minAttempts: 200,
+      note: 'Share of dropbacks under pressure. As much line and scheme as quarterback, which is the point of showing it beside the rest.' },
+    { key: 'pocketTime', label: 'Time in the Pocket', adv: a => a.passing && a.passing.pocketTime, unit: 's', minAttempts: 200,
+      note: 'Average seconds before the throw, sack or scramble.' },
+    { key: 'onTarget', label: 'On-Target Rate', adv: a => a.passing && a.passing.onTargetPct, unit: '%', minAttempts: 200,
+      note: 'Share of throws charted on target — accuracy with his receivers\' hands taken out of it.' },
+    { key: 'badThrow', label: 'Bad Throw Rate', adv: a => a.passing && a.passing.badThrowPct, unit: '%', lower: true, minAttempts: 200,
+      note: 'Share of throws charted as bad. Lower is better.' },
+    { key: 'receiverDrops', label: 'Dropped By Receivers', adv: a => a.passing && a.passing.dropPctByReceivers, unit: '%', lower: true, minAttempts: 200,
+      note: 'Share of his throws his own receivers dropped — the part of a completion percentage that was never his fault.' },
+  ],
+};
+
+let labCharting = null, labAdvstats = null;
+let chartsPromise = null;
+function ensureChartData() {
+  if (!chartsPromise) {
+    chartsPromise = Promise.all([
+      loadJSON('/data/charting.json').then(d => (labCharting = d)),
+      loadJSON('/data/advstats.json').then(d => (labAdvstats = d)),
+    ]);
+  }
+  return chartsPromise;
+}
+
+// The charted seasons are not the same set as the stats seasons — FTN does not
+// go as far back — so the season buttons follow whichever half is showing
+// rather than claiming a year the data cannot fill.
+function labSeasons() {
+  if (labMode !== 'charts') return LAB_SEASONS;
+  if (!labCharting || !labCharting.meta) return LAB_SEASONS;
+  return (labCharting.meta.seasons || []).map(String);
+}
+
+function chartRowFor(id, season) {
+  const box = labCharting && labCharting.seasons && labCharting.seasons[season];
+  return (box && box.players[id]) || null;
+}
+function advRowFor(id, season) {
+  const row = labAdvstats && labAdvstats.players && labAdvstats.players[id];
+  return (row && row.seasons && row.seasons[season]) || null;
+}
+
+/**
+ * The qualifier for a charting board. Same principle as the stats half — a rate
+ * off a handful of snaps is noise wearing a number's clothes — but the counts
+ * live in different files, so it cannot reuse labQualifies.
+ */
+function chartQualifies(m, c, a) {
+  if (m.minTargets && (!c || (c.chartedTargets || 0) < m.minTargets)) return false;
+  if (m.minRec && (!a || !a.receiving || (a.receiving.rec || 0) < m.minRec)) return false;
+  if (m.minAtt && (!a || !a.rushing || (a.rushing.attempts || 0) < m.minAtt)) return false;
+  if (m.minAttempts && (!a || !a.passing || (a.passing.attempts || 0) < m.minAttempts)) return false;
+  return true;
+}
+
+function chartQualText(m) {
+  const parts = [];
+  if (m.minTargets) parts.push(`${m.minTargets}+ charted targets`);
+  if (m.minRec) parts.push(`${m.minRec}+ receptions`);
+  if (m.minAtt) parts.push(`${m.minAtt}+ carries`);
+  if (m.minAttempts) parts.push(`${m.minAttempts}+ pass attempts`);
+  return parts.length ? `QUALIFIER: ${parts.join(' · ')}` : '';
+}
+
+function chartRows(m) {
+  const rows = [];
+  for (const p of playersDB) {
+    if (p.pos !== labPos) continue;
+    const c = chartRowFor(p.id, labSeason);
+    const a = advRowFor(p.id, labSeason);
+    if (!chartQualifies(m, c, a)) continue;
+    const v = m.chart ? (c ? m.chart(c) : null) : (a ? m.adv(a) : null);
+    if (typeof v !== 'number' || isNaN(v)) continue;
+    rows.push({ id: p.id, name: p.name, team: p.team, value: +v.toFixed(1) });
+  }
+  return rows;
+}
+
 function renderLabPage() {
   const board = document.getElementById('labBoard');
   if (!board || !playersDB.length) return;
 
-  // Season buttons, built from what the stats actually contain.
+  // The charting files are only needed by the Charts half, so a reader who
+  // never leaves the production boards never pays for them.
+  if (labMode === 'charts' && !labCharting) {
+    board.innerHTML = `<div class="medical-card"><div class="medical-detail">Loading the charting…</div></div>`;
+    ensureChartData().then(() => { if (labMode === 'charts') renderLabPage(); });
+    return;
+  }
+
+  // The mode switch. Stats is production — what happened. Charts is how it
+  // happened, out of the two layers a box score cannot produce.
+  const modeRow = document.getElementById('labModeToggle');
+  if (modeRow) {
+    modeRow.innerHTML = [['stats', 'Stats'], ['charts', 'Charts']].map(([k, label]) =>
+      `<button class="pos-btn${labMode === k ? ' active' : ''}" onclick="setLabMode('${k}')">${label}</button>`).join('');
+  }
+
+  // Season buttons follow whichever half is showing: FTN does not chart as far
+  // back as the box scores go, and offering a year the data cannot fill is a
+  // board that renders empty for no stated reason.
+  const seasons = labSeasons();
   const seasonRow = document.getElementById('labSeasonFilter');
-  if (!labSeason) labSeason = LAB_SEASONS[LAB_SEASONS.length - 1];
-  if (seasonRow && !seasonRow.children.length) {
-    seasonRow.innerHTML = LAB_SEASONS.map(y =>
+  if (!labSeason || !seasons.includes(labSeason)) labSeason = seasons[seasons.length - 1];
+  if (seasonRow) {
+    seasonRow.innerHTML = seasons.map(y =>
       `<button class="pos-btn${y === labSeason ? ' active' : ''}" onclick="setLabSeason('${y}', this)">${y}</button>`).join('');
   }
 
-  const metrics = LAB_METRICS[labPos] || [];
+  const metrics = (labMode === 'charts' ? CHART_METRICS : LAB_METRICS)[labPos] || [];
   if (!labMetricKey || !metrics.some(m => m.key === labMetricKey)) labMetricKey = metrics[0] && metrics[0].key;
   // Keep the address bar pointing at exactly this board, so it can be shared.
-  setRoute(`lab/${labPos.toLowerCase()}/${labSeason}/${labMetricKey}`);
+  setRoute(`lab/${labMode}/${labPos.toLowerCase()}/${labSeason}/${labMetricKey}`);
   // A deep link sets the state directly, so the filter buttons have to be
   // told what is active — they only track their own clicks otherwise.
   document.querySelectorAll('#labPosFilter .pos-btn').forEach(b =>
@@ -290,13 +456,16 @@ function renderLabPage() {
   if (!m) { board.innerHTML = ''; return; }
 
   const valueOf = m.ngs ? ((s, n) => m.ngs(n)) : ((s) => m.stat(s));
-  const rows = labRows(valueOf, m).sort((a, b) => m.lower ? a.value - b.value : b.value - a.value).slice(0, 20);
+  const rows = (labMode === 'charts' ? chartRows(m) : labRows(valueOf, m))
+    .sort((a, b) => m.lower ? a.value - b.value : b.value - a.value).slice(0, 20);
 
   const boardTitle = `${m.label} — ${labPos}, ${labSeason}`;
   labExportBoard = rows.length ? {
     title: boardTitle,
     subtitle: m.note,
-    source: `${labQualText(m)} · nflverse${m.ngs ? ' · NFL Next Gen Stats' : ''}`,
+    source: labMode === 'charts'
+      ? `${chartQualText(m)} · ${m.chart ? 'FTN charting' : 'Pro Football Reference'}`
+      : `${labQualText(m)} · nflverse${m.ngs ? ' · NFL Next Gen Stats' : ''}`,
     unit: m.unit,
     mode: rows.length && Math.min(...rows.map(r => r.value)) >= 0
       && (Math.max(...rows.map(r => r.value)) - Math.min(...rows.map(r => r.value))) / Math.max(...rows.map(r => r.value)) < 0.35
@@ -305,7 +474,7 @@ function renderLabPage() {
   } : null;
 
   let h = `<div class="lab-head"><span class="lab-title">${rankEsc(boardTitle)}</span>`
-    + `<span class="lab-qual">${rankEsc(labQualText(m))}${m.lower ? ' · LOWER RANKS FIRST' : ''}`
+    + `<span class="lab-qual">${rankEsc(labMode === 'charts' ? chartQualText(m) : labQualText(m))}${m.lower ? ' · LOWER RANKS FIRST' : ''}`
     + (rows.length ? ` <button class="export-btn" onclick="runExport(() => exportRowChart(labExportBoard), labExportBoard.title, this)">Export PNG</button>` : '')
     + `</span></div>`;
   h += `<div class="lab-sub">${rankEsc(m.note)}</div>`;
@@ -313,12 +482,18 @@ function renderLabPage() {
     h += `<div class="medical-card"><div class="medical-detail">No player in the pool clears this board's qualifier for ${labSeason}. Nothing is shown rather than ranking on partial seasons.</div></div>`;
   } else {
     h += labView === 'chart' ? labBarBoard(rows, m) : labTable(rows, m);
-    h += `<div class="rank-note">Top ${rows.length} of the ${labPos} pool. Click any player for the full profile. Source: nflverse${m.ngs ? ' · NFL Next Gen Stats' : ''} · REG season only.</div>`;
+    const src = labMode === 'charts'
+      ? (m.chart ? 'FTN play-by-play charting' : 'Pro Football Reference advanced splits')
+      : `nflverse${m.ngs ? ' · NFL Next Gen Stats' : ''}`;
+    h += `<div class="rank-note">Top ${rows.length} of the ${labPos} pool. Click any player for the full profile. Source: ${rankEsc(src)} · REG season only.</div>`;
   }
   board.innerHTML = h;
 
   // ---- Scatter ----
-  const spec = LAB_SCATTER[labPos];
+  // Built from production stats, so it belongs to the Stats half only. Leaving
+  // it under a charting board would sit an unrelated chart beneath the table
+  // and imply the two are about the same thing.
+  const spec = labMode === 'charts' ? null : LAB_SCATTER[labPos];
   const scatterEl = document.getElementById('labScatter');
   if (!spec) { scatterEl.innerHTML = ''; return; }
   const pts = [];
