@@ -98,3 +98,21 @@ test('the blend always sits between the two things it blends', () => {
     assert.ok(blended >= Math.min(a, p) - 1e-9 && blended <= Math.max(a, p) + 1e-9);
   }
 });
+
+test('the week between the season flipping and Week 1 kicking off is a no-op, not a failure', () => {
+  // Sleeper flips season_type to "regular" several days before anyone plays.
+  // Throwing in that window would have reddened the daily Action every morning
+  // for about a week, every year, over a completely normal condition.
+  const out = execFileSync('node', ['scripts/build-ros.js', '--simulate', '2026:1'], { cwd: ROOT }).toString();
+  assert.match(out, /no games are on file yet/i);
+  assert.match(out, /normal/i, 'and it has to say the condition is expected, not alarming');
+  assert.ok(!fs.existsSync(path.join(ROOT, 'data', 'ros.json')));
+});
+
+test('games on file with nothing projected IS still a failure', () => {
+  // The two cases must stay distinguishable. No games is normal; games that
+  // produce no projection means the join broke, and that has to be loud.
+  const src = fs.readFileSync(path.join(ROOT, 'scripts', 'build-ros.js'), 'utf8');
+  assert.match(src, /if \(!gamesOnFile\)/, 'the no-op branch must key on games actually seen');
+  assert.match(src, /the join has broken/, 'and the other branch must still throw');
+});

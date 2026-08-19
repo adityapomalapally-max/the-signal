@@ -99,6 +99,10 @@ async function main() {
 
   const players = {};
   let projected = 0, noLog = 0, noPrior = 0;
+  // Counted explicitly rather than inferred from the miss counters — inferring it
+  // from `noLog < prior.size` was wrong the moment one ranked player was absent
+  // from the pool, which is the normal state of affairs.
+  let gamesOnFile = 0;
 
   for (const [name, pre] of prior) {
     const player = byName.get(name);
@@ -107,6 +111,7 @@ async function main() {
     if (!fs.existsSync(logPath)) { noLog++; continue; }
     const log = JSON.parse(fs.readFileSync(logPath, 'utf8'));
     const games = (log[season] || []).filter(g => g.week <= week);
+    gamesOnFile += games.length;
     if (!games.length) { noLog++; continue; }
 
     const actualPpg = games.reduce((s, g) => s + (g.fpts || 0), 0) / games.length;
@@ -135,7 +140,21 @@ async function main() {
   }
 
   if (!projected) {
-    throw new Error('no player could be projected — the game logs for this season may not exist yet');
+    // THE WINDOW NOBODY THINKS ABOUT. Sleeper flips season_type to "regular"
+    // several days before Week 1 actually kicks off, so there is a stretch where
+    // the season is "on" and not one game has been played. Throwing here would
+    // have reddened the daily Action every morning for about a week, every year,
+    // for a condition that is completely normal.
+    //
+    // No game logs at all is not a failure. Some game logs and nothing
+    // projected IS one, because that means the join broke — so the two are
+    // told apart rather than lumped together.
+    if (!gamesOnFile) {
+      console.log(`[ros] season ${season} is under way but no games are on file yet — nothing to project. `
+        + 'This is normal in the days between the season flipping over and Week 1 kicking off.');
+      return;
+    }
+    throw new Error('game logs exist for this season but no player could be projected — the join has broken');
   }
 
   const out = {

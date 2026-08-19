@@ -83,9 +83,15 @@ async function main() {
         notes.push(`ADP is frozen and labelled historical (closed ${String(adp.meta.closedAt).slice(0, 10)}) — correct for a season in progress`);
       }
     }
-    if (!has('ros.json')) {
+    // Only once games have actually been played. The season flips over days
+    // before Week 1 kicks off, and demanding a rest-of-season projection with no
+    // games on file would raise an alarm about a completely normal week.
+    const week = st.week || 0;
+    if (week > 1 && !has('ros.json')) {
       problems.push('no ros.json — the season is under way and nothing is producing rest-of-season '
         + 'projections, so the only forecast on the site is the one built in August.');
+    } else if (!has('ros.json')) {
+      notes.push('no ros.json yet, which is correct this early — the season has flipped over but Week 1 may not have been played');
     }
     if (has('sos.json')) {
       const sos = read('sos.json');

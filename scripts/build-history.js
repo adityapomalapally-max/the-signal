@@ -95,8 +95,16 @@ function main() {
     throw new Error(`ADP join collapsed: ${adpMatched}/${adp.players.length} matched (${(adpRate * 100).toFixed(0)}%). `
       + 'A silently empty series is worse than a failed run.');
   }
-  const adpCount = upsertDay('adp.jsonl', date, { date, source: adp.meta.source, values: adpValues }, dry);
-  report.push(`adp        ${adpMatched}/${adp.players.length} players → ${adpCount} days on file`);
+  // Once fetch-adp freezes the board at kickoff, the same values would be
+  // recorded every morning for the rest of the season — four months of
+  // identical rows implying a market that is moving when it has closed. The
+  // series stops where the market stopped.
+  if (adp.meta && adp.meta.historical) {
+    report.push(`adp        frozen ${String(adp.meta.closedAt).slice(0, 10)} — the market closed, so the series does too`);
+  } else {
+    const adpCount = upsertDay('adp.jsonl', date, { date, source: adp.meta.source, values: adpValues }, dry);
+    report.push(`adp        ${adpMatched}/${adp.players.length} players → ${adpCount} days on file`);
+  }
 
   // ---- Ranks and projections ---------------------------------------------
   // [rank, median, floor, ceiling] — an array, not an object, because the key
