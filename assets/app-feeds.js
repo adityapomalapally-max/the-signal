@@ -683,6 +683,15 @@ function openArticle(slug) {
 
 // ===== MOBILE NAV =====
 function toggleMobileNav() {
+  // The control has to say what state it is in, or a screen reader announces
+  // the same thing whether the drawer is open or shut.
+  const burger = document.getElementById('hamburger');
+  const drawer = document.getElementById('mobileNavDrawer');
+  if (burger && drawer) {
+    const opening = !drawer.classList.contains('open');
+    burger.setAttribute('aria-expanded', String(opening));
+    burger.setAttribute('aria-label', opening ? 'Close navigation' : 'Open navigation');
+  }
   document.getElementById('hamburger').classList.toggle('open');
   document.getElementById('mobileNavOverlay').classList.toggle('open');
   document.getElementById('mobileNavDrawer').classList.toggle('open');
@@ -1108,6 +1117,11 @@ function makeClickablesAccessible(root) {
     el.setAttribute('data-a11y', '1');
     const tag = el.tagName.toLowerCase();
     if (tag === 'button' || tag === 'a') return; // already focusable
+    // A dismiss backdrop is not a control. Promoting it put a focusable element
+    // with no accessible name into the tab order — a silent stop that reads as
+    // "button" and does nothing a keyboard user can perceive. The click stays;
+    // only the promotion is skipped.
+    if (el.getAttribute('aria-hidden') === 'true') return;
     el.setAttribute('role', 'button');
     el.setAttribute('tabindex', '0');
     el.addEventListener('keydown', e => {

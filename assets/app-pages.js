@@ -1185,6 +1185,31 @@ function labFooterText(m, n) {
   return `Top ${n} of the ${labPos} pool. Click any player for the full profile. Source: ${src} · REG season only.`;
 }
 
+// The Film Room advertised itself in the nav and then said "coming soon" —
+// while a film breakdown sat on the home page the whole time, tagged for this
+// section. The articles carry a `tag`, so the page can simply ask for its own
+// rather than being a dead end in a nine-item nav.
+function renderFilmPage() {
+  const host = document.getElementById('filmList');
+  if (!host) return;
+  const mine = Object.values(articlesDB)
+    .filter(a => a.tag === 'Film Room' && a.status !== 'draft')
+    .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+  if (!mine.length) {
+    // An honest empty state names what would appear here, rather than promising
+    // a date nobody has committed to.
+    host.innerHTML = `<div class="medical-card"><div class="medical-detail">`
+      + `No film breakdowns are published yet. They appear here as they are written, and on the home page alongside the rest of the writing.`
+      + `</div></div>`;
+    return;
+  }
+  host.innerHTML = mine.map(a => `<a class="film-card" href="/article/${jsAttr(a.slug)}" onclick="event.preventDefault();navigate('article/${jsAttr(a.slug)}')">`
+    + `<div class="film-card-tag">${rankEsc(a.tag)}</div>`
+    + `<h3 class="film-card-title">${rankEsc(a.title)}</h3>`
+    + `<div class="film-card-meta">${rankEsc(a.author || '')}${a.readTime ? ` &middot; ${rankEsc(a.readTime)}` : ''}${a.date ? ` &middot; ${rankEsc(a.date)}` : ''}</div>`
+    + `</a>`).join('');
+}
+
 function renderLabPage() {
   const board = document.getElementById('labBoard');
   if (!board || !playersDB.length) return;
@@ -1950,6 +1975,7 @@ function switchPage(page) {
     });
   }
   if (page === 'draft') renderDraftOutcomes();
+  if (page === 'film') renderFilmPage();
   if (page === 'teams') {
     const redrawTeams = () => { if (document.getElementById('page-teams').classList.contains('active')) renderTeamPage(); };
     renderTeamPage();

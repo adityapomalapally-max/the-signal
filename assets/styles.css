@@ -1,6 +1,13 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
+  /* THE PAGE GUTTER IS A TOKEN BECAUSE THE MARKUP SETS IT INLINE. Fourteen
+     section wrappers carry `padding: 0 48px 48px` as an inline style, and an
+     inline style cannot be reached by a media query — so on a 375px phone
+     96px of the screen, better than a quarter of it, was gutter that no
+     breakpoint could claw back. Pointing those inline rules at a variable
+     makes them responsive without unpicking the markup. */
+  --page-gutter: 48px;
   --bg: #0c0f14;
   --bg-elevated: #12151c;
   --bg-card: #161a23;
@@ -715,6 +722,10 @@ a { color: inherit; text-decoration: none; }
 .rank-table td, .rank-table th { font-variant-numeric: tabular-nums; }
 #vizTooltip { position: fixed; z-index: 2000; display: none; max-width: 320px; background: var(--bg-elevated); border: 1px solid var(--border-hover); border-radius: 6px; padding: 8px 10px; font-family: var(--mono); font-size: 11px; line-height: 1.5; color: var(--text); pointer-events: none; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
 @media (max-width: 768px) {
+  :root { --page-gutter: 20px; }
+}
+
+@media (max-width: 768px) {
   .rank-chart { --gutL: 112px; --gutR: 40px; }
   .rank-team { display: none; }
   /* Five tick labels collide in the ~150px of plot left on a phone, printing
@@ -990,7 +1001,10 @@ a { color: inherit; text-decoration: none; }
 .tool-item:hover { background: var(--bg-card); }
 .tool-item:hover::after { transform: scaleX(1); }
 
-.tool-icon { font-size: 24px; margin-bottom: 14px; }
+/* The tool cards used to lead with an emoji each. They were the last emoji on
+   the site after the Medicals page dropped its own, and a stethoscope over a
+   list of somebody's injuries is the wrong register for the page it links to.
+   The heading carries the card now. */
 
 .tool-item h4 {
   font-family: var(--serif);
@@ -2382,3 +2396,61 @@ a { color: inherit; text-decoration: none; }
   .field-grid-band, .field-grid-side { font-size: 9.5px; letter-spacing: .4px; }
   .field-cell { font-size: 11px; padding: 5px 2px; }
 }
+
+/* ── Film Room ─────────────────────────────────────────────────────────── */
+.film-card {
+  display: block; padding: 22px 24px; margin-bottom: 12px;
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  text-decoration: none; transition: border-color .15s, background .15s;
+}
+.film-card:hover { border-color: var(--border-hover); background: var(--bg-card-hover); }
+.film-card-tag {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1.4px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 8px;
+}
+.film-card-title { font-family: var(--serif); font-size: 20px; line-height: 1.35; color: var(--text); margin: 0 0 8px; }
+.film-card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--text-muted); }
+@media (max-width: 768px) {
+  .film-card { padding: 18px 16px; }
+  .film-card-title { font-size: 17px; }
+}
+
+/* ── Header at medium widths ────────────────────────────────────────────────
+   The bar carries a logo, nine sections, a search affordance and a subscribe
+   button. Adding the ninth section pushed the search below its content width,
+   and because it is a flex item it shrank rather than pushing back — so
+   "Search players..." wrapped to two lines and the box grew to 54px, colliding
+   with the button beside it. Flex shrinking a fixed-content control is the bug;
+   these three rules are the ladder down. */
+.nav-search { flex-shrink: 0; }
+.nav-search span { white-space: nowrap; }
+
+@media (max-width: 1400px) {
+  /* Buy room from the padding before taking anything away. */
+  .nav-item { padding-left: 10px; padding-right: 10px; }
+}
+@media (max-width: 1180px) {
+  /* Then drop the search label, keeping the shortcut as the affordance. */
+  .nav-search span { display: none; }
+  .nav-search { padding: 7px 10px; }
+}
+@media (max-width: 1040px) {
+  /* Then the search itself. The sections are the navigation; the search is a
+     shortcut to a page that has its own search box at the top. */
+  .nav-search { display: none; }
+}
+
+/* ── Rankings methodology ──────────────────────────────────────────────────
+   Four notes that used to be concatenated into one 280-word paragraph. */
+.rank-caveat-p { margin: 0 0 10px; line-height: 1.75; }
+.rank-caveat-p:last-child { margin-bottom: 0; }
+.rank-method { margin-top: 12px; }
+.rank-method > summary {
+  cursor: pointer; font-family: var(--mono); font-size: 11px; letter-spacing: 1.2px;
+  text-transform: uppercase; color: var(--text-muted); padding: 6px 0; list-style: none;
+}
+.rank-method > summary::-webkit-details-marker { display: none; }
+.rank-method > summary::before { content: '+ '; color: var(--gold); }
+.rank-method[open] > summary::before { content: '– '; }
+.rank-method > summary:hover { color: var(--text-secondary); }
+.rank-method > .rank-caveat-p { margin-top: 10px; }

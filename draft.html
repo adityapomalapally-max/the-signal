@@ -84,22 +84,23 @@
       <span class="logo-signal">Sign<em>al</em></span>
     </a>
     <div class="nav-center">
-      <a class="nav-item active" data-page="home" onclick="switchPage('home')">Home</a>
-      <a class="nav-item" data-page="teams" onclick="switchPage('teams')">Teams</a>
-      <a class="nav-item" data-page="rankings" onclick="switchPage('rankings')">Rankings</a>
-      <a class="nav-item" data-page="lab" onclick="switchPage('lab')">Stats &amp; Charts</a>
-      <a class="nav-item" data-page="players" onclick="switchPage('players')">Players</a>
-      <a class="nav-item" data-page="medicals" onclick="switchPage('medicals')">Medicals</a>
-      <a class="nav-item" data-page="fantasy" onclick="switchPage('fantasy')">Fantasy</a>
-      <a class="nav-item" data-page="draft" onclick="switchPage('draft')">Draft Lab</a>
+      <a class="nav-item active" data-page="home" href="/" onclick="event.preventDefault();switchPage('home')">Home</a>
+      <a class="nav-item" data-page="teams" href="/teams" onclick="event.preventDefault();switchPage('teams')">Teams</a>
+      <a class="nav-item" data-page="rankings" href="/rankings" onclick="event.preventDefault();switchPage('rankings')">Rankings</a>
+      <a class="nav-item" data-page="lab" href="/lab" onclick="event.preventDefault();switchPage('lab')">Stats &amp; Charts</a>
+      <a class="nav-item" data-page="players" href="/players" onclick="event.preventDefault();switchPage('players')">Players</a>
+      <a class="nav-item" data-page="medicals" href="/medicals" onclick="event.preventDefault();switchPage('medicals')">Medicals</a>
+      <a class="nav-item" data-page="fantasy" href="/fantasy" onclick="event.preventDefault();switchPage('fantasy')">Fantasy</a>
+      <a class="nav-item" data-page="draft" href="/draft" onclick="event.preventDefault();switchPage('draft')">Draft Lab</a>
+      <a class="nav-item" data-page="film" href="/film" onclick="event.preventDefault();switchPage('film')">Film Room</a>
     </div>
     <div class="nav-right">
-      <div class="nav-search" onclick="switchPage('players'); setTimeout(()=>document.getElementById('playerSearchGlobal').focus(), 100)">
+      <div class="nav-search" aria-label="Search players" onclick="switchPage('players'); setTimeout(()=>document.getElementById('playerSearchGlobal').focus(), 100)">
         <span>Search players...</span>
         <kbd>⌘K</kbd>
       </div>
       <a class="nav-subscribe" href="https://adityapomalapally.substack.com" target="_blank">Substack</a>
-      <div class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+      <div class="hamburger" id="hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="mobileNavDrawer" onclick="toggleMobileNav()">
         <span></span><span></span><span></span>
       </div>
     </div>
@@ -107,7 +108,7 @@
 </nav>
 
 <!-- MOBILE NAV DRAWER -->
-<div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileNav()"></div>
+<div class="mobile-nav-overlay" id="mobileNavOverlay" aria-hidden="true" onclick="toggleMobileNav()"></div>
 <div class="mobile-nav-drawer" id="mobileNavDrawer">
   <div style="padding:24px 28px 16px;border-bottom:1px solid var(--border);">
     <a class="nav-logo" onclick="switchPage('home');toggleMobileNav();" style="cursor:pointer;">
@@ -116,15 +117,15 @@
     </a>
   </div>
   <div style="padding:12px 0;">
-    <a class="mobile-nav-link" onclick="switchPage('home');toggleMobileNav();">Home</a>
-    <a class="mobile-nav-link" onclick="switchPage('teams');toggleMobileNav();">Teams</a>
-    <a class="mobile-nav-link" onclick="switchPage('rankings');toggleMobileNav();">Rankings</a>
-    <a class="mobile-nav-link" onclick="switchPage('lab');toggleMobileNav();">Leaders</a>
-    <a class="mobile-nav-link" onclick="switchPage('players');toggleMobileNav();">Players</a>
-    <a class="mobile-nav-link" onclick="switchPage('medicals');toggleMobileNav();">Medicals</a>
-    <a class="mobile-nav-link" onclick="switchPage('fantasy');toggleMobileNav();">Fantasy</a>
-    <a class="mobile-nav-link" onclick="switchPage('draft');toggleMobileNav();">Draft Lab</a>
-    <a class="mobile-nav-link" onclick="switchPage('film');toggleMobileNav();">Film</a>
+    <a class="mobile-nav-link" data-page="home" href="/" onclick="event.preventDefault();switchPage('home');toggleMobileNav();">Home</a>
+    <a class="mobile-nav-link" data-page="teams" href="/teams" onclick="event.preventDefault();switchPage('teams');toggleMobileNav();">Teams</a>
+    <a class="mobile-nav-link" data-page="rankings" href="/rankings" onclick="event.preventDefault();switchPage('rankings');toggleMobileNav();">Rankings</a>
+    <a class="mobile-nav-link" data-page="lab" href="/lab" onclick="event.preventDefault();switchPage('lab');toggleMobileNav();">Stats &amp; Charts</a>
+    <a class="mobile-nav-link" data-page="players" href="/players" onclick="event.preventDefault();switchPage('players');toggleMobileNav();">Players</a>
+    <a class="mobile-nav-link" data-page="medicals" href="/medicals" onclick="event.preventDefault();switchPage('medicals');toggleMobileNav();">Medicals</a>
+    <a class="mobile-nav-link" data-page="fantasy" href="/fantasy" onclick="event.preventDefault();switchPage('fantasy');toggleMobileNav();">Fantasy</a>
+    <a class="mobile-nav-link" data-page="draft" href="/draft" onclick="event.preventDefault();switchPage('draft');toggleMobileNav();">Draft Lab</a>
+    <a class="mobile-nav-link" data-page="film" href="/film" onclick="event.preventDefault();switchPage('film');toggleMobileNav();">Film Room</a>
   </div>
   <div style="padding:16px 28px;border-top:1px solid var(--border);">
     <a href="https://adityapomalapally.substack.com" target="_blank" class="nav-subscribe" style="display:block;text-align:center;">Substack</a>
@@ -151,7 +152,7 @@
           <span class="hero-tag-date" id="heroDate">May 26, 2026</span>
         </div>
         <h1 class="hero-headline" id="heroTitle">Why <em>Production Over Expected</em> Changes Everything About Draft Evaluation</h1>
-        <p class="hero-excerpt" id="heroExcerpt">Traditional college stats lie. Context-adjusted production reveals the prospects that actually translate to the NFL — and it says so with the model's misses on the record next to its hits.</p>
+        <p class="hero-excerpt" id="heroExcerpt">Raw college production is not comparable across conferences, offensive lines or quarterback play. Adjusting for that context changes which prospects look like they translate — and the model's misses are on the record next to its hits.</p>
         <div class="hero-byline">
           <span class="byline-author">Adi</span>
           <span class="byline-sep">·</span>
@@ -306,28 +307,24 @@
 
   <div class="tools-strip fade-in">
     <a href="https://sleeper-analytics.vercel.app" class="tool-item" target="_blank">
-      <div class="tool-icon">⚡</div>
       <h4>Sleeper Analytics</h4>
       <p>Power rankings, AI trade advice, what-if scenarios, optimal lineups.</p>
       <span class="tool-badge badge-live">● Live</span>
     </a>
     <div class="tool-item" onclick="switchPage('players')">
-      <div class="tool-icon">👤</div>
       <h4>Player Profiles</h4>
       <p>Searchable database with medical histories and performance metrics.</p>
       <span class="tool-badge badge-live">● Live</span>
     </div>
     <div class="tool-item" onclick="switchPage('medicals')">
-      <div class="tool-icon">🩺</div>
       <h4>Medical Database</h4>
-      <p>Player injury profiles sourced from verified sports physicians.</p>
+      <p>Injury histories with a source on every entry, and published return-rate research beside them.</p>
       <span class="tool-badge badge-new">Beta</span>
     </div>
     <div class="tool-item" onclick="switchPage('draft')">
-      <div class="tool-icon">📊</div>
       <h4>Draft Model</h4>
-      <p>POE-based prospect evaluation system, tiered and sourced.</p>
-      <span class="tool-badge badge-soon">Coming Soon</span>
+      <p>POE-based prospect evaluation, tiered and sourced.</p>
+      <span class="tool-badge badge-new">Beta</span>
     </div>
   </div>
 </div>
@@ -363,7 +360,7 @@
         </div>
       </div>
     </div>
-    <div style="padding:0 48px 48px;">
+    <div style="padding:0 var(--page-gutter) 48px;">
       <div id="rankingsBody"></div>
       <div id="rankingsCaveat" class="rank-note"></div>
     </div>
@@ -379,13 +376,13 @@
       <h1>Teams</h1>
       <p id="teamsIntro">Who actually gets the ball in each offense — target share, air yards, and the backfield split — plus how the team lines up, what that draws from the defense, and the season schedule.</p>
     </div>
-    <div style="padding:0 48px 20px;">
+    <div style="padding:0 var(--page-gutter) 20px;">
       <!-- The view switch is the higher-level control, so it sits above the
            team picker, which only applies to the by-team view. -->
       <div id="teamsTabs"></div>
       <div id="teamPicker" class="team-picker"></div>
     </div>
-    <div style="padding:0 48px 48px;">
+    <div style="padding:0 var(--page-gutter) 48px;">
       <div id="teamBody"></div>
     </div>
   </div>
@@ -431,7 +428,7 @@
         </div>
       </div>
     </div>
-    <div style="padding:0 48px 48px;">
+    <div style="padding:0 var(--page-gutter) 48px;">
       <div class="lab-metric-row" id="labMetricRow"></div>
       <div id="labBoard"></div>
       <div id="labScatter"></div>
@@ -446,7 +443,7 @@
   <div style="max-width:1440px;margin:0 auto;">
     <div class="players-header">
       <h1>Player Database</h1>
-      <p>Comprehensive profiles with medical histories, performance metrics, and sourced analysis. Click any player to view their full profile.</p>
+      <p>Every player in the pool, with medical history, performance metrics and sourced analysis. Select a player for the full profile.</p>
       <div class="players-search-bar">
         <input type="text" class="players-search-input" id="playerSearchGlobal" placeholder="Search by name, team, or position..." oninput="filterPlayers(this.value)">
         <div class="position-filter">
@@ -492,7 +489,7 @@
     <!-- The page is 23,000 pixels tall and holds three different things. Leading
          with the live answer pushed the 287 profiles further down still, so it
          gets a contents line rather than asking anyone to scroll and hope. -->
-    <div class="med-jump" style="padding:0 48px 20px;">
+    <div class="med-jump" style="padding:0 var(--page-gutter) 20px;">
       <a href="#injuryToday" onclick="medJump(event,'injuryToday')">Hurt today</a>
       <a href="#bodyMap" onclick="medJump(event,'bodyMap')">The body map</a>
       <a href="#injuryTypeGrid" onclick="medJump(event,'injuryTypeGrid')">Injury research</a>
@@ -501,7 +498,7 @@
 
     <!-- WHO IS HURT TODAY. The live, actionable answer, which used to sit 2,280
          pixels below a research tool nobody arrived looking for. -->
-    <div style="padding:0 48px 8px;">
+    <div style="padding:0 var(--page-gutter) 8px;">
       <div id="injuryToday"></div>
     </div>
 
@@ -512,7 +509,7 @@
 
     <!-- THE BODY MAP. Point at a region and see what goes wrong there, how
          often it has actually happened to this pool, and what it has cost. -->
-    <div style="padding:24px 48px 8px;">
+    <div style="padding:24px var(--page-gutter) 8px;">
       <div id="bodyMap"></div>
     </div>
 
@@ -522,7 +519,7 @@
     </div>
 
     <!-- INJURY IMPACT TOOL -->
-    <div style="padding:24px 48px 32px;">
+    <div style="padding:24px var(--page-gutter) 32px;">
       <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;">
         <button class="pos-btn active" onclick="switchInjuryMode('injury',this)">By Injury Type</button>
         <button class="pos-btn" onclick="switchInjuryMode('player',this)">By Player</button>
@@ -549,10 +546,10 @@
     </div>
 
     <!-- SEARCH & BROWSE -->
-    <div style="padding:24px 48px 0;">
+    <div style="padding:24px var(--page-gutter) 0;">
       <input type="text" class="players-search-input" id="medicalSearchInput" placeholder="Search player name..." oninput="filterMedicals(this.value)" autocomplete="off">
     </div>
-    <div id="medicalsContent" style="padding:16px 48px 48px;"></div>
+    <div id="medicalsContent" style="padding:16px var(--page-gutter) 48px;"></div>
   </div>
 </div>
 
@@ -564,24 +561,22 @@
   <div style="max-width:1440px;margin:0 auto;">
     <div class="players-header">
       <h1>Fantasy Football</h1>
-      <p>Data-driven tools and analysis built for serious fantasy competitors. Powered by your deployed analytics platform and original research.</p>
+      <p>Draft and in-season tools built on the same data as the rest of the site. The Value Board compares these rankings against consensus ADP; Sleeper Analytics is a separate application for league management.</p>
     </div>
     <div class="tools-strip" style="border-top:1px solid var(--border);">
       <a href="https://sleeper-analytics.vercel.app" class="tool-item" target="_blank">
-        <div class="tool-icon">⚡</div>
         <h4>Sleeper Analytics</h4>
-        <p>Full-featured analytics platform — power rankings, AI trade advice, what-if scenarios, optimal lineups.</p>
+        <p>League power rankings, trade evaluation, what-if scenarios and lineup optimisation. Opens in a new tab.</p>
         <span class="tool-badge badge-live">● Live — Open Tool</span>
       </a>
       <div class="tool-item" onclick="document.getElementById('valueBoardTop').scrollIntoView({behavior:'smooth'})">
-        <div class="tool-icon">📋</div>
         <h4>Value Board</h4>
         <p>Where these ranks disagree with what the room is actually doing, by consensus ADP.</p>
         <span class="tool-badge badge-live">● Live — Below</span>
       </div>
     </div>
 
-    <div id="valueBoardTop" style="padding:36px 48px 48px;">
+    <div id="valueBoardTop" style="padding:36px var(--page-gutter) 48px;">
       <div class="lab-head" style="margin-bottom:6px;">
         <span class="lab-title">Value Board — The Signal vs the room</span>
         <span class="lab-qual" id="valueBoardMeta"></span>
@@ -639,7 +634,7 @@
       </div>
     </div>
 
-    <div style="padding:0 48px 8px;font-size:12px;color:var(--text-muted);font-style:italic;line-height:1.7;max-width:900px;">
+    <div style="padding:0 var(--page-gutter) 8px;font-size:12px;color:var(--text-muted);font-style:italic;line-height:1.7;max-width:900px;">
       The four figures above are the model's own reported results on its blind validation set. That set is not
       published on this site, so take them as a stated claim rather than something you can check here. What follows
       is checkable: the bar any draft evaluation has to clear.
@@ -649,11 +644,11 @@
 
     <div class="draft-split">
       <!-- Main content -->
-      <div style="border-right:1px solid var(--border);padding:40px 48px;">
+      <div style="border-right:1px solid var(--border);padding:40px var(--page-gutter);">
         <h2 style="font-family:var(--serif);font-size:24px;font-weight:700;margin-bottom:20px;">The Production Over Expected (POE) Framework</h2>
-        <p style="font-size:15px;line-height:1.8;color:var(--text-secondary);margin-bottom:20px;">Traditional college stats lie. A receiver catching 80 balls in the SEC isn't the same as 80 balls in the MAC. A running back rushing for 1,200 yards behind an elite offensive line isn't the same as doing it behind a bottom-tier unit.</p>
+        <p style="font-size:15px;line-height:1.8;color:var(--text-secondary);margin-bottom:20px;">Raw college production is not comparable across situations. Eighty receptions in the SEC is not eighty receptions in the MAC, and 1,200 yards behind a top offensive line is not 1,200 yards behind a bottom-tier one.</p>
         <p style="font-size:15px;line-height:1.8;color:var(--text-secondary);margin-bottom:20px;">POE adjusts raw college production for contextual factors — conference strength, offensive line quality, QB talent, surrounding competition — to isolate what the prospect actually did vs. what anyone in their position would have done.</p>
-        <p style="font-size:15px;line-height:1.8;color:var(--text-secondary);margin-bottom:32px;">This became the highest-weighted variable in the WR model (over 50% of total weight), fundamentally proving that context-adjusted production is far more predictive than raw stats.</p>
+        <p style="font-size:15px;line-height:1.8;color:var(--text-secondary);margin-bottom:32px;">It carries the highest weight in the WR model — over 50% of the total. That is a statement about how the model was fit, not about how often it is right: the out-of-sample validation noted above is still outstanding.</p>
 
         <h3 style="font-family:var(--serif);font-size:20px;font-weight:600;margin-bottom:16px;color:var(--gold);">What POE Adjusts For</h3>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px;">
@@ -758,9 +753,9 @@
   <div style="max-width:1440px;margin:0 auto;">
     <div class="players-header">
       <h1>Film Room</h1>
-      <p>Breakdowns grounded in actual game film. No box score narratives — just what the tape shows.</p>
+      <p>Breakdowns from game film rather than from the box score.</p>
     </div>
-    <div style="padding:48px;text-align:center;color:var(--text-muted);font-family:var(--mono);font-size:13px;">Film breakdowns coming soon. Current analysis available on the home page.</div>
+    <div id="filmList" style="padding:0 var(--page-gutter) 48px;"></div>
   </div>
 </div>
 

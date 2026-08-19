@@ -532,13 +532,27 @@ function renderRankingsPage() {
     body.innerHTML = rankTable(list, showPos);
   }
 
+  // THESE ARE FOUR SEPARATE NOTES AND THEY WERE JOINED WITH A SPACE. The result
+  // was a single 280-word paragraph covering bands, health, availability and the
+  // missed-time case in one unbroken block — the longest piece of prose on the
+  // site, sitting above the thing people came to read. The data already keeps
+  // them apart; only the rendering flattened them.
+  //
+  // The band and health notes stay visible, because they are the qualifier on
+  // the numbers directly below and this site does not hide qualifiers. The
+  // availability method is 136 words of derivation, which is reference material
+  // rather than a caveat, so it goes behind a disclosure that says what is in it.
   const caveat = document.getElementById('rankingsCaveat');
-  caveat.textContent = [
-    meta.bandCaveat,
-    meta.healthNote,
-    rankShowAvail ? meta.availabilityMethod : null,
-    rankShowAvail ? meta.availabilityCaveat : null
-  ].filter(Boolean).join(' ');
+  const para = t => `<p class="rank-caveat-p">${rankEsc(t)}</p>`;
+  let ch = [meta.bandCaveat, meta.healthNote].filter(Boolean).map(para).join('');
+  if (rankShowAvail) {
+    const deeper = [meta.availabilityMethod, meta.availabilityCaveat].filter(Boolean);
+    if (deeper.length) {
+      ch += `<details class="rank-method"><summary>How availability is priced</summary>`
+        + deeper.map(para).join('') + `</details>`;
+    }
+  }
+  caveat.innerHTML = ch;
 }
 
 // Shared tooltip: hover or keyboard focus, same content either way. The
