@@ -458,6 +458,51 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   half of the site am I looking at" looked exactly like "which year". They are grouped, labelled
   and the mode switch is set apart — it changes what every other control on the page means.
 
+## The field map — where a player works
+- `data/fieldmap.json` is the FOURTH OUTPUT of the one pbp download, built by `scripts/lib/fieldmap.js`
+  and called from build-scheme. Field position is pure pbp and needs no participation join, but it
+  needs the RAW csv rather than the lean map, because leanPbp keeps six columns and this wants
+  `pass_location`, `air_yards`, `run_location` and `run_gap`.
+- THE GRID SIZE WAS MEASURED, NOT CHOSEN, and the two positions came out different. A quarterback at
+  200+ attempts FILLS a 3x4 map — median 8 to 84 throws a cell. A receiver at 50+ targets does NOT:
+  **the deep-middle cell has a median of ONE target and 116 of 132 qualified receivers sit under
+  five**. Even at 90+ targets the median is 2. So passers get a real spatial grid and receivers get
+  two one-dimensional strips, depth and side. A 3x4 receiver map would be mostly single throws
+  wearing a percentage.
+- A SHARE AND A RATE HAVE DIFFERENT SAMPLE RULES, which is why the file carries two floors. A share
+  ("14% of his targets were deep") is read against the well-sampled season total and is sound at any
+  cell size; a rate inside the cell ("he completes 31% of them") is built on that cell alone. So the
+  count and the share always publish and the RATE goes null under the floor, marked `thin`. The cell
+  renders a dash — the count is real, the rate would not be.
+- RUN BLOCKING SCHEME IS NOT AVAILABLE AND IS NOT IN THE FILE. Wide zone against inside zone is the
+  split everyone asks for; `run_gap` records WHERE THE BALL WENT, which is a different question — a
+  wide-zone run can hit any gap. No free feed carries the concept, and naming a gap chart "zone vs
+  gap" would be inventing the one column nobody has. The caveat travels IN the file and a test
+  asserts it is still there.
+- Reception Perception is a paid manual-charting product and is not ingestible. What stands in for it
+  is already here: NGS separation and cushion, FTN contested/drop/first-read, and this target map.
+- About 7% of pass attempts carry no location — throwaways, batted balls, spikes. They are EXCLUDED
+  rather than assigned to a zone, so every share is of LOCATED attempts, and the run fails under 80%.
+- THE COLOUR RAMP WAS VALIDATED, NOT PICKED, which on a heatmap matters more than anywhere else on
+  the site because the shade IS the finding. Two arms, blue below the position average and red above
+  it, three intensities each, near-surface neutral between them. What decides the ramp's brightness
+  is the ink: the figure sits INSIDE the cell, so every step must clear 4.5:1 against `#f0efec`.
+  **Gold was tried first and cannot support three steps** — it is intrinsically light, so the band
+  between "clears the card at 2:1" and "still takes light ink at 4.5:1" is too narrow. Blue against
+  red is also the pair the dataviz reference recommends, warm against cool.
+- Running the CATEGORICAL validator on a ramp fails by design and is not a real failure — the skill
+  says so. A ramp is judged by `validateOrdinal`: lightness monotone, adjacent dL >= 0.06, single
+  hue. `tests/field-palette.test.js` pins the steps and re-derives the contrast maths locally, so a
+  swapped colour goes red without the skill being a dependency.
+- EACH COLUMN IS SCALED ON ITS OWN. Every passer completes far more short throws than deep ones, so
+  a scale shared across the table would paint the whole deep column blue and say nothing about who
+  is good at it. The spatial grid scales against that ONE quarterback's own cells instead, because
+  it answers "where is he best" rather than "who is best here".
+- THE SORT STATE IS PER POSITION (`labField.${pos}`). The column sets differ — sorting backs by
+  "Mid" and switching to receivers left the shared sorter holding `gaps.middle`, which no receiver
+  column has, and sortTableRows correctly returns rows UNSORTED when the key is missing. The board
+  silently lost its order. A table id per position makes the mismatch impossible rather than handled.
+
 ## The player profile
 - IT OPENS ON OVERVIEW, NOT MEDICAL. A profile that leads with a man's injury history leads with
   the narrowest thing the site knows about him, and it buried the usage, charting and advanced

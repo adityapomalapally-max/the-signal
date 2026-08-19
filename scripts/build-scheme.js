@@ -30,11 +30,14 @@
 const fs = require('fs');
 const path = require('path');
 const { fetchCSV, parseCSV, parseCSVLine } = require('./lib/match');
+const { buildFieldMap, finishFieldMap, DEPTH_BANDS, GAPS,
+        MIN_ATTEMPTS, MIN_TARGETS, MIN_CARRIES, MIN_CELL, MIN_CELL_STRIP } = require('./lib/fieldmap');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA_DIR, 'scheme.json');
 const OUT_USAGE = path.join(DATA_DIR, 'player-usage.json');
 const OUT_CHARTING = path.join(DATA_DIR, 'charting.json');
+const OUT_FIELDMAP = path.join(DATA_DIR, 'fieldmap.json');
 
 // The seasons participation data covers well. 2016-2022 exists but the schema
 // and the league both moved; three seasons is enough to read a trend and short
@@ -511,7 +514,21 @@ async function buildSeason(season) {
   // Rides along on the pbp map already in memory — see the FTN block above.
   const charting = await buildCharting(season, plays, gsisIndex);
 
-  return { teams, league, usage, defenses, charting };
+  // THE FOURTH OUTPUT OF THE ONE pbp DOWNLOAD. Field position is pure pbp — it
+  // needs no participation join — but it needs the RAW csv rather than the lean
+  // map, because leanPbp keeps six columns and this wants pass_location,
+  // air_yards, run_location and run_gap. Re-fetching 93MB to read four more
+  // columns off a file already in memory is the cost this repo keeps refusing.
+  const fmRaw = buildFieldMap(pbpCsv);
+  const fieldmap = finishFieldMap(fmRaw, new Set(gsisIndex.keys()));
+  log(`  fieldmap: ${fmRaw.coverage.locatedPct}% of attempts located, `
+    + `${Object.keys(fieldmap.passers).length} passers / ${Object.keys(fieldmap.receivers).length} receivers / `
+    + `${Object.keys(fieldmap.rushers).length} rushers qualified`);
+  if (fmRaw.coverage.locatedPct !== null && fmRaw.coverage.locatedPct < 80) {
+    throw new Error(`only ${fmRaw.coverage.locatedPct}% of pass attempts carry a location — pbp changed`);
+  }
+
+  return { teams, league, usage, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage };
 }
 
 function shapeDefense(d) {
@@ -570,11 +587,14 @@ async function main() {
   const league = { ...(existing.league || {}) };
   const usageSeasons = { ...(existingUsage.seasons || {}) };
   const chartingSeasons = { ...(existingCharting.seasons || {}) };
+  const existingFieldmap = fs.existsSync(OUT_FIELDMAP) ? JSON.parse(fs.readFileSync(OUT_FIELDMAP, 'utf8')) : { seasons: {} };
+  const fieldmapSeasons = { ...(existingFieldmap.seasons || {}) };
+  let fmCoverageLatest = (existingFieldmap.meta || {}).coverage || null;
   const failures = [];
 
   for (const season of wanted) {
     try {
-      const { teams, league: lg, usage, defenses, charting } = await buildSeason(season);
+      const { teams, league: lg, usage, defenses, charting, fieldmap, fmCoverage } = await buildSeason(season);
       if (!Object.keys(teams).length) throw new Error('no team rows produced');
       const shaped = {};
       for (const [team, raw] of Object.entries(teams)) shaped[team] = shapeTeam(raw);
@@ -592,6 +612,7 @@ async function main() {
       }
       seasons[season] = shaped;
       if (charting) chartingSeasons[season] = charting;
+      if (fieldmap) { fieldmapSeasons[season] = fieldmap; fmCoverageLatest = fmCoverage; }
       league[season] = shapeTeam(lg);
       league[season].defense = shapeDefense(leagueDef);
       // Share of his own snaps, per grouping. A raw count says how much he
@@ -699,6 +720,48 @@ async function main() {
     fs.writeFileSync(OUT_CHARTING, JSON.stringify(chartingOut, null, 2) + '\n');
     const latestChart = chartingSeasons[chartYears[chartYears.length - 1]] || { players: {} };
     log(`wrote charting.json: ${Object.keys(latestChart.players).length} players in ${chartYears[chartYears.length - 1]} — ${Math.round(fs.statSync(OUT_CHARTING).size / 1024)}KB`);
+  }
+
+  // The fourth output. Same bargain as charting: only written when a season
+  // actually produced one, because an empty file would read as "nobody threw
+  // anywhere" rather than "this has not been built yet".
+  const fmYears = Object.keys(fieldmapSeasons).map(Number).sort();
+  if (fmYears.length) {
+    const fieldmapOut = {
+      meta: {
+        generated: new Date().toISOString(),
+        seasons: fmYears,
+        source: 'nflverse pbp — pass_location x air_yards for throws, run_location x run_gap for carries',
+        coverage: fmCoverageLatest,
+        bands: DEPTH_BANDS.map(b => ({ key: b.key, label: b.label })),
+        gaps: GAPS.map(g => ({ key: g.key, label: g.label })),
+        qualifiers: {
+          passers: `${MIN_ATTEMPTS}+ located attempts in the season`,
+          receivers: `${MIN_TARGETS}+ located targets`,
+          rushers: `${MIN_CARRIES}+ carries with a location`,
+          cell: `a RATE is published only on ${MIN_CELL}+ plays in the cell (${MIN_CELL_STRIP}+ on the one-dimensional strips). The COUNT and SHARE are always published: they are read against the season total, not against the cell.`,
+        },
+        caveats: [
+          'Quarterbacks get a full 3x4 grid and receivers do not. Measured on 2025, a receiver at '
+          + 'the 50-target qualifier has a MEDIAN OF ONE target in the deep-middle cell and 116 of '
+          + '132 sit under five — so receivers carry two one-dimensional strips, depth and side, '
+          + 'rather than a grid mostly built on single throws.',
+          'RUN BLOCKING SCHEME IS NOT IN THIS FILE AND IS NOT AVAILABLE. Wide zone against inside '
+          + 'zone is a blocking call; run_gap records WHERE THE BALL WENT, which is a different '
+          + 'question — a wide-zone run can hit any gap. No free feed carries the concept.',
+          'About 7% of pass attempts carry no location — throwaways, batted balls and spikes. They '
+          + 'are excluded rather than assigned to a cell, so the shares are of LOCATED attempts.',
+          'Air yards are where the ball crossed the line, not where the catch was made. A short '
+          + 'throw taken 40 yards is a short throw here, which is the point of splitting it from YAC.',
+        ],
+      },
+      seasons: fieldmapSeasons,
+    };
+    fs.writeFileSync(OUT_FIELDMAP, JSON.stringify(fieldmapOut, null, 2) + '\n');
+    const latestFm = fieldmapSeasons[fmYears[fmYears.length - 1]] || {};
+    log(`wrote fieldmap.json: ${Object.keys(latestFm.passers || {}).length} passers, `
+      + `${Object.keys(latestFm.receivers || {}).length} receivers, ${Object.keys(latestFm.rushers || {}).length} rushers `
+      + `in ${fmYears[fmYears.length - 1]} — ${Math.round(fs.statSync(OUT_FIELDMAP).size / 1024)}KB`);
   }
 }
 

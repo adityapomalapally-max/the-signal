@@ -381,6 +381,7 @@ function ensureChartData() {
       loadJSON('/data/charting.json').then(d => (labCharting = d)),
       loadJSON('/data/advstats.json').then(d => (labAdvstats = d)),
       loadJSON('/data/context.json').then(d => (labContext = d)),
+      loadJSON('/data/fieldmap.json').then(d => (labFieldmap = d)),
     ]);
   }
   return chartsPromise;
@@ -393,6 +394,12 @@ function labSeasons() {
   // Combine testing is not a season. A man's forty does not change in
   // September, and offering a year picker over it would imply it might.
   if (labMode === 'athletic') return [];
+  // The field map only goes back as far as it has been built, and it states
+  // its own seasons — offering a year it cannot fill is an empty board with no
+  // reason given, the same rule the charting half follows.
+  if (labMode === 'field') {
+    return labFieldmap && labFieldmap.meta ? (labFieldmap.meta.seasons || []).map(String) : LAB_SEASONS;
+  }
   if (labMode === 'defense') {
     const any = labAdvstats && labAdvstats.defenseByTeam && Object.values(labAdvstats.defenseByTeam)[0];
     return any ? Object.keys(any).sort() : LAB_SEASONS;
@@ -408,6 +415,7 @@ const LAB_TABLES = {
   athletic: () => ({ QB: ATHLETIC_METRICS, RB: ATHLETIC_METRICS, WR: ATHLETIC_METRICS, TE: ATHLETIC_METRICS }),
   // Team-scoped, so every position resolves to the same board.
   defense: () => ({ QB: DEFENSE_METRICS, RB: DEFENSE_METRICS, WR: DEFENSE_METRICS, TE: DEFENSE_METRICS }),
+  field: () => FIELD_METRICS,
 };
 
 function chartRowFor(id, season) {
@@ -454,6 +462,336 @@ function chartRows(m) {
   }
   return rows;
 }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FIELD MAP — where a player works, and how well he does it there
+
+   Every other board here ranks players on ONE number. This one is a matrix:
+   a row per player, a column per zone of the field, coloured by whichever
+   metric is selected. That is the only shape that answers "where does he win",
+   which a single-column leaderboard cannot.
+
+   THE GRID IS NOT THE SAME SHAPE FOR EVERY POSITION, AND THAT IS MEASURED.
+   Quarterbacks carry a real 3x4 spatial map because they fill it: at the
+   200-attempt qualifier the median cell holds 8 to 84 throws. Receivers do NOT
+   — the deep-middle cell has a MEDIAN OF ONE target and 116 of 132 qualified
+   receivers sit under five — so they get two one-dimensional strips, depth and
+   side, instead of a grid that would be mostly single throws wearing a
+   percentage. See data/fieldmap.json meta.caveats.
+
+   THE COLOUR RAMP WAS VALIDATED, NOT PICKED. Two arms, blue for below the
+   position average and red for above it, each a single hue at three
+   intensities, with a near-surface neutral at the middle. Checked with the
+   dataviz skill's validator against this card surface (#161a23):
+   lightness monotone, adjacent dL >= 0.06, single hue (1 degree spread), every
+   step >= 2:1 against the card, and the cell ink (#f0efec) >= 4.5:1 on EVERY
+   step — which is what caps how bright the ramp may go. Gold was tried first
+   and cannot support three steps: it is intrinsically light, so the band
+   between "clears the card" and "still takes light ink" is too narrow. Blue
+   against red is also the pair the reference recommends, warm against cool.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+const FIELD_COOL = ['#1a4c87', '#205ca5', '#266dc3'];   // below the average
+const FIELD_WARM = ['#882c2b', '#a53534', '#c23e3e'];   // above it
+const FIELD_NEUTRAL = '#20242e';
+
+let labFieldmap = null;
+let labFieldPlayer = null;   // the row whose spatial grid is open, if any
+
+// The zones each position is read on. Passers carry `cells` as well, which is
+// what the spatial grid draws; nobody else does.
+const FIELD_SHAPES = {
+  QB: {
+    source: 'passers', total: 'attempts', totalLabel: 'Att',
+    groups: [
+      { label: 'By depth', keys: ['behind', 'short', 'inter', 'deep'], bag: 'depth',
+        labels: { behind: 'Behind LOS', short: 'Short 0-9', inter: 'Inter 10-19', deep: 'Deep 20+' } },
+      { label: 'By side', keys: ['left', 'middle', 'right'], bag: 'side',
+        labels: { left: 'Left', middle: 'Middle', right: 'Right' } },
+    ],
+    grid: true,
+  },
+  RB: {
+    source: 'rushers', total: 'carries', totalLabel: 'Att',
+    groups: [
+      { label: 'By gap', keys: ['left-end', 'left-tackle', 'left-guard', 'middle', 'right-guard', 'right-tackle', 'right-end'], bag: 'gaps',
+        labels: { 'left-end': 'LT End', 'left-tackle': 'LT', 'left-guard': 'LG', middle: 'Mid', 'right-guard': 'RG', 'right-tackle': 'RT', 'right-end': 'RT End' } },
+      { label: 'By situation', keys: ['goalline', 'shortYardage', 'openField'], bag: 'situations',
+        labels: { goalline: 'Goal line', shortYardage: '3rd/4th & short', openField: 'Open field' } },
+    ],
+    grid: false,
+  },
+};
+FIELD_SHAPES.WR = {
+  source: 'receivers', total: 'targets', totalLabel: 'Tgt',
+  groups: FIELD_SHAPES.QB.groups,
+  grid: false,   // measured: a 3x4 receiver map is mostly cells built on one throw
+};
+FIELD_SHAPES.TE = FIELD_SHAPES.WR;
+
+// What the colour means. A metric names the field it reads and whether a
+// bigger number is a better one — the ramp is about magnitude, but the legend
+// has to be able to say which end is good.
+const FIELD_PASS_METRICS = [
+  { key: 'share', label: 'Share of Throws', field: 'share', unit: '%', always: true,
+    note: 'How his attempts are distributed across the field. Always shown: a share is read against the season total, not against the cell.' },
+  { key: 'compPct', label: 'Completion %', field: 'compPct', unit: '%', good: 'high',
+    note: 'Completion rate in each zone. Deep zones run far lower everywhere — read a quarterback against the column, not against his own short numbers.' },
+  { key: 'epa', label: 'EPA per Attempt', field: 'epa', unit: '', good: 'high',
+    note: 'Expected points added per throw. This is where deep throws earn their keep: they complete far less often and are worth much more when they land.' },
+  { key: 'cpoe', label: 'Completion % Over Expected', field: 'cpoe', unit: '%', good: 'high',
+    note: "Completion rate against what the tracking model expected of the throw — accuracy with the difficulty of the attempt taken out." },
+  { key: 'ypa', label: 'Yards per Attempt', field: 'ypa', unit: '', good: 'high', note: 'Yards gained per attempt in the zone, catch and run included.' },
+  { key: 'success', label: 'Success Rate', field: 'success', unit: '%', good: 'high', note: 'Share of throws that gained enough for the down and distance.' },
+];
+const FIELD_REC_METRICS = [
+  { key: 'share', label: 'Share of Targets', field: 'share', unit: '%', always: true,
+    note: 'How his targets are distributed. Always shown — a share is read against his season total rather than the cell.' },
+  { key: 'compPct', label: 'Catch Rate', field: 'compPct', unit: '%', good: 'high',
+    note: 'Receptions per target in the zone. It falls with depth for everyone, so the column is the comparison.' },
+  { key: 'epa', label: 'EPA per Target', field: 'epa', unit: '', good: 'high', note: 'Expected points added per target in the zone.' },
+  { key: 'ypa', label: 'Yards per Target', field: 'ypa', unit: '', good: 'high', note: 'Yards per target, catch and run included.' },
+  { key: 'success', label: 'Success Rate', field: 'success', unit: '%', good: 'high', note: 'Share of targets that gained enough for the down and distance.' },
+];
+const FIELD_RUSH_METRICS = [
+  { key: 'share', label: 'Share of Carries', field: 'share', unit: '%', always: true,
+    note: 'Where his carries go. Always shown — a share is read against his season total.' },
+  { key: 'ypc', label: 'Yards per Carry', field: 'ypc', unit: '', good: 'high', note: 'Yards per carry through each gap.' },
+  { key: 'success', label: 'Success Rate', field: 'success', unit: '%', good: 'high', note: 'Share of carries that gained enough for the down and distance — the number a yards-per-carry average hides.' },
+  { key: 'stuffPct', label: 'Stuffed %', field: 'stuffPct', unit: '%', good: 'low', note: 'Carries stopped at or behind the line. LOWER IS BETTER, so the warm end of this board is the bad end.' },
+  { key: 'tenPct', label: '10+ Yard Rate', field: 'tenPct', unit: '%', good: 'high', note: 'Share of carries that broke ten yards.' },
+  { key: 'epa', label: 'EPA per Carry', field: 'epa', unit: '', good: 'high', note: 'Expected points added per carry.' },
+];
+const FIELD_METRICS = {
+  QB: FIELD_PASS_METRICS, WR: FIELD_REC_METRICS, TE: FIELD_REC_METRICS, RB: FIELD_RUSH_METRICS,
+};
+
+function fieldQualifier() {
+  const q = labFieldmap && labFieldmap.meta && labFieldmap.meta.qualifiers;
+  if (!q) return '';
+  const key = labPos === 'QB' ? 'passers' : labPos === 'RB' ? 'rushers' : 'receivers';
+  return `QUALIFIER: ${q[key]}`;
+}
+
+function fieldFooter(n) {
+  const cov = labFieldmap && labFieldmap.meta && labFieldmap.meta.coverage;
+  return `${n} qualified ${labPos}${n === 1 ? '' : 's'}. `
+    + (labPos === 'QB' ? 'Click any row for his field map. ' : 'Click any row for the full profile. ')
+    + 'A cell under the sample floor shows a dash: the count is real, the rate would not be. '
+    + (cov && cov.locatedPct ? `${cov.locatedPct}% of pass attempts carry a location — throwaways and batted balls are excluded rather than assigned to a zone. ` : '')
+    + 'Source: nflverse play-by-play, REG season only.';
+}
+
+function fieldSeasonData() {
+  if (!labFieldmap || !labFieldmap.seasons) return null;
+  return labFieldmap.seasons[labSeason] || null;
+}
+
+// Every column the current position is read on, flattened with its group.
+function fieldColumns() {
+  const shape = FIELD_SHAPES[labPos];
+  if (!shape) return [];
+  const out = [];
+  for (const g of shape.groups) {
+    for (const k of g.keys) out.push({ key: `${g.bag}.${k}`, bag: g.bag, cell: k, label: g.labels[k], group: g.label });
+  }
+  return out;
+}
+
+function fieldRows(m) {
+  const shape = FIELD_SHAPES[labPos];
+  const season = fieldSeasonData();
+  if (!shape || !season) return [];
+  const bank = season[shape.source] || {};
+  const cols = fieldColumns();
+  const rows = [];
+  for (const p of playersDB) {
+    if (p.pos !== labPos) continue;
+    const rec = p.gsisId && bank[p.gsisId];
+    if (!rec) continue;
+    const vals = {};
+    for (const c of cols) {
+      const cell = (rec[c.bag] || {})[c.cell];
+      // A thin cell has a count but no rate. It renders as a dash rather than
+      // as a number nobody should act on, and it is NOT treated as a zero —
+      // sorting a missing rate to the bottom is the shared sorter's job.
+      vals[c.key] = cell ? (cell[m.field] === undefined ? null : cell[m.field]) : null;
+      vals[c.key + '.n'] = cell ? cell.n : null;
+    }
+    rows.push({ id: p.id, name: p.name, team: p.team, total: rec[shape.total], vals, rec });
+  }
+  return rows;
+}
+
+// The diverging scale is per COLUMN, because the columns are not comparable:
+// every quarterback completes far more short throws than deep ones, so a scale
+// shared across the table would paint the entire deep column blue and say
+// nothing about who is good at it.
+function fieldScale(rows, colKey) {
+  const vals = rows.map(r => r.vals[colKey]).filter(v => typeof v === 'number' && isFinite(v));
+  if (vals.length < 4) return null;
+  const sorted = [...vals].sort((a, b) => a - b);
+  const mid = sorted.length % 2 ? sorted[(sorted.length - 1) / 2]
+    : (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2;
+  // A robust spread: the 90th percentile of absolute deviation. Using the max
+  // lets one outlier compress everybody else into the neutral band.
+  const devs = vals.map(v => Math.abs(v - mid)).sort((a, b) => a - b);
+  const spread = devs[Math.floor(devs.length * 0.9)] || devs[devs.length - 1] || 1;
+  return { mid, spread };
+}
+
+function fieldColour(v, scale) {
+  if (scale === null || typeof v !== 'number' || !isFinite(v)) return FIELD_NEUTRAL;
+  const z = (v - scale.mid) / (scale.spread || 1);
+  const step = Math.min(3, Math.round(Math.abs(z) * 2.2));
+  if (step === 0) return FIELD_NEUTRAL;
+  return (z > 0 ? FIELD_WARM : FIELD_COOL)[step - 1];
+}
+
+function fieldFmt(v, m) {
+  if (typeof v !== 'number' || !isFinite(v)) return '—';
+  const p = m.field === 'epa' ? 2 : m.unit === '%' ? 1 : 2;
+  return v.toFixed(p) + (m.unit || '');
+}
+
+// The matrix is a real table with real sortable headers, so it inherits the
+// shared sorter's rules for free: a missing rate sorts LAST in both directions
+// (which is what a thin cell must do — it is unknown, not zero), and ties break
+// on a stable key so a re-render cannot reshuffle the rows.
+// THE SORT STATE IS PER POSITION, because the column sets are not the same.
+// Sorting backs by "Mid" and then switching to receivers left the sorter
+// holding `gaps.middle`, which does not exist among a receiver's columns — and
+// sortTableRows correctly returns the rows UNSORTED when it cannot find the
+// key, so the board silently lost its order instead of falling back to a
+// sensible one. A table id per position keeps each one's sort where the reader
+// left it and makes the mismatch impossible rather than handled.
+function fieldTableId() { return `labField.${labPos}`; }
+
+function fieldDefineTable(cols, m) {
+  const defCols = {
+    name: { get: r => r.name, type: 'text' },
+    team: { get: r => r.team, type: 'text' },
+    total: { get: r => r.total, type: 'num', dir: 'desc' },
+  };
+  for (const c of cols) defCols[c.key] = { get: r => r.vals[c.key], type: 'num', dir: m.good === 'low' ? 'asc' : 'desc' };
+  defineTable(fieldTableId(), {
+    cols: defCols,
+    tie: { get: r => r.name, type: 'text' },
+    initial: { key: 'total', dir: 'desc' },
+    render: () => renderLabPage(),
+  });
+}
+
+function labFieldTable(rows, m) {
+  const cols = fieldColumns();
+  const shape = FIELD_SHAPES[labPos];
+  fieldDefineTable(cols, m);
+  const tid = fieldTableId();
+  const sorted = sortTableRows(fieldTableId(), rows);
+  const scales = {};
+  for (const c of cols) scales[c.key] = fieldScale(rows, c.key);
+
+  // The group header row: the columns come in two runs that mean different
+  // things, and without it "Mid" reads as ambiguous between a gap and a depth.
+  let groupRow = '<tr class="field-group-row"><th colspan="3"></th>';
+  for (const g of shape.groups) groupRow += `<th colspan="${g.keys.length}" class="field-group">${rankEsc(g.label)}</th>`;
+  groupRow += '</tr>';
+
+  let head = '<tr>' + sortTh(tid, 'name', 'Player')
+    + sortTh(tid, 'team', 'Team')
+    + sortTh(tid, 'total', shape.totalLabel, { title: `${shape.totalLabel}, season total` });
+  for (const c of cols) head += sortTh(tid, c.key, c.label, { cls: 'field-col', title: `${c.label} — ${m.label}` });
+  head += '</tr>';
+
+  let body = '';
+  for (const r of sorted) {
+    // A quarterback row opens his field map, because that is the thing the
+    // table is a way into. Everyone else has no grid, so the row goes where
+    // every other board on this page goes.
+    body += `<tr class="${labFieldPlayer === r.id ? 'field-open' : ''}" onclick="${shape.grid ? `openFieldGrid('${jsAttr(r.id)}')` : labRowAction(r)}">`
+      + `<td class="field-name">${rankEsc(r.name)}</td><td>${rankEsc(r.team || '')}</td><td>${r.total}</td>`;
+    for (const c of cols) {
+      const v = r.vals[c.key];
+      const n = r.vals[c.key + '.n'];
+      const bg = fieldColour(v, scales[c.key]);
+      const tip = `${r.name} — ${c.label}: ${fieldFmt(v, m)} on ${n === null ? 'no' : n} ${shape.source === 'rushers' ? 'carries' : shape.source === 'passers' ? 'attempts' : 'targets'}`
+        + (v === null && n ? ' (under the sample floor, so no rate is published)' : '');
+      body += `<td class="field-cell" style="background:${bg};" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}">${fieldFmt(v, m)}</td>`;
+    }
+    body += '</tr>';
+  }
+  return `<div class="table-scroll"><table class="players-table rank-table field-table"><thead>${groupRow}${head}</thead><tbody>${body}</tbody></table></div>`;
+}
+
+// The legend has to say what the colour means, because the ramp encodes
+// MAGNITUDE and whether a big number is a good one depends on the metric —
+// "stuffed %" is the board where the warm end is the bad end.
+function fieldLegend(m) {
+  const swatch = (c) => `<span class="field-key" style="background:${c};"></span>`;
+  const dir = m.always ? 'more of his work'
+    : m.good === 'low' ? 'a HIGHER figure, which on this board is the worse one'
+    : 'a higher figure';
+  return `<div class="field-legend">`
+    + `<span class="field-legend-label">Below the ${labPos} average</span>`
+    + FIELD_COOL.slice().reverse().map(swatch).join('') + swatch(FIELD_NEUTRAL) + FIELD_WARM.map(swatch).join('')
+    + `<span class="field-legend-label">Above it</span>`
+    + `<span class="field-legend-note">Warm is ${rankEsc(dir)}. Each column is scaled on its own — every passer completes more short throws than deep ones, so a shared scale would paint the deep column blue and say nothing about who is good at it.</span>`
+    + `</div>`;
+}
+
+// The spatial grid: quarterbacks only, and only because they fill it. Drawn for
+// the player whose row is open, so the table stays the way in.
+function labFieldGrid(row, m) {
+  if (!row || !row.rec || !row.rec.cells) return '';
+  const cells = row.rec.cells;
+  const bands = [
+    { key: 'deep', label: 'Deep 20+' },
+    { key: 'inter', label: 'Intermediate 10-19' },
+    { key: 'short', label: 'Short 0-9' },
+    { key: 'behind', label: 'Behind the line' },
+  ];
+  const sides = [['left', 'Left'], ['middle', 'Middle'], ['right', 'Right']];
+  // The grid is scaled against THIS quarterback's own cells: it answers "where
+  // on the field is he best", which is a different question from the table's
+  // "who is best in this zone".
+  const own = [];
+  for (const b of bands) for (const [s] of sides) {
+    const c = cells[`${s}-${b.key}`];
+    if (c && typeof c[m.field] === 'number') own.push(c[m.field]);
+  }
+  const scale = own.length >= 4 ? (() => {
+    const st = [...own].sort((a, b) => a - b);
+    const mid = st.length % 2 ? st[(st.length - 1) / 2] : (st[st.length / 2 - 1] + st[st.length / 2]) / 2;
+    const devs = own.map(v => Math.abs(v - mid)).sort((a, b) => a - b);
+    return { mid, spread: devs[Math.floor(devs.length * 0.9)] || 1 };
+  })() : null;
+
+  let h = `<div class="field-grid-wrap"><div class="field-grid-head">${rankEsc(row.name)} — ${rankEsc(m.label)} by field zone, ${labSeason}`
+    + `<button class="field-close" onclick="closeFieldGrid()" aria-label="Close the field map">Close</button></div>`;
+  h += `<div class="field-grid" role="img" aria-label="Field map for ${rankEsc(row.name)}">`;
+  h += `<div class="field-grid-corner"></div>` + sides.map(([, l]) => `<div class="field-grid-side">${l}</div>`).join('');
+  for (const b of bands) {
+    h += `<div class="field-grid-band">${b.label}</div>`;
+    for (const [s] of sides) {
+      const c = cells[`${s}-${b.key}`];
+      const v = c && typeof c[m.field] === 'number' ? c[m.field] : null;
+      const n = c ? c.n : 0;
+      const tip = `${b.label}, ${s} — ${fieldFmt(v, m)} on ${n} attempt${n === 1 ? '' : 's'}`
+        + (v === null && n ? ' (under the sample floor)' : '');
+      h += `<div class="field-grid-cell" style="background:${fieldColour(v, scale)};" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}">`
+        + `<span class="field-grid-v">${fieldFmt(v, m)}</span><span class="field-grid-n">${n}</span></div>`;
+    }
+  }
+  h += `</div><div class="field-grid-note">The line of scrimmage is at the bottom. Each cell carries the attempt count under the figure; a cell under the sample floor shows a dash rather than a rate built on a handful of throws.</div></div>`;
+  return h;
+}
+
+function openFieldGrid(id) {
+  labFieldPlayer = labFieldPlayer === id ? null : id;
+  renderLabPage();
+}
+function closeFieldGrid() { labFieldPlayer = null; renderLabPage(); }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    WORTH KNOWING — the facts nobody goes looking for
@@ -837,7 +1175,7 @@ function renderLabPage() {
 
   // The charting files are only needed by the Charts half, so a reader who
   // never leaves the production boards never pays for them.
-  if ((labMode === 'charts' || labMode === 'athletic' || labMode === 'defense') && !labCharting) {
+  if ((labMode === 'charts' || labMode === 'athletic' || labMode === 'defense' || labMode === 'field') && !labCharting) {
     board.innerHTML = `<div class="medical-card"><div class="medical-detail">Loading the charting…</div></div>`;
     // Same guard, same reason: loadJSON SWALLOWS a failed fetch and resolves
     // with null, so re-rendering on anything other than "the data arrived"
@@ -854,7 +1192,7 @@ function renderLabPage() {
   // happened, out of the two layers a box score cannot produce.
   const modeRow = document.getElementById('labModeToggle');
   if (modeRow) {
-    modeRow.innerHTML = [['stats', 'Stats'], ['charts', 'Charts'], ['athletic', 'Athletic'], ['defense', 'Defense']].map(([k, label]) =>
+    modeRow.innerHTML = [['stats', 'Stats'], ['charts', 'Charts'], ['field', 'Field Map'], ['athletic', 'Athletic'], ['defense', 'Defense']].map(([k, label]) =>
       `<button class="pos-btn${labMode === k ? ' active' : ''}" onclick="setLabMode('${k}')">${label}</button>`).join('');
   }
 
@@ -899,6 +1237,33 @@ function renderLabPage() {
   document.getElementById('labMetricRow').innerHTML = metrics.map(x =>
     `<button class="lab-metric${x.key === labMetricKey ? ' active' : ''}" onclick="setLabMetric('${x.key}')">${rankEsc(x.label)}</button>`).join('');
   if (!m) { board.innerHTML = ''; return; }
+
+  // THE FIELD MAP IS A MATRIX, NOT A LEADERBOARD, so it leaves before the row
+  // machinery below. Every other board reduces a player to one number and ranks
+  // on it; this one is a row per player and a column per zone, and there is no
+  // single value to sort, export as a bar chart, or scatter.
+  if (labMode === 'field') {
+    const frows = fieldRows(m);
+    let fh = `<div class="lab-head"><span class="lab-title">${rankEsc(`${m.label} by field zone — ${labPos}, ${labSeason}`)}</span>`
+      + `<span class="lab-qual">${rankEsc(fieldQualifier())}</span></div>`;
+    fh += `<div class="lab-sub">${rankEsc(m.note)}</div>`;
+    if (!frows.length) {
+      fh += `<div class="medical-card"><div class="medical-detail">No ${labPos} in the pool clears the field-map qualifier for ${labSeason}. `
+        + `Nothing is shown rather than a map built on part of a season.</div></div>`;
+    } else {
+      fh += fieldLegend(m);
+      const open = labFieldPlayer && frows.find(r => r.id === labFieldPlayer);
+      if (open) fh += labFieldGrid(open, m);
+      fh += labFieldTable(frows, m);
+      fh += `<div class="rank-note">${rankEsc(fieldFooter(frows.length))}</div>`;
+    }
+    board.innerHTML = fh;
+    // The scatter belongs to the Stats half. Leaving the previous board's chart
+    // under a matrix would sit an unrelated plot beneath it.
+    const sc = document.getElementById('labScatter');
+    if (sc) sc.innerHTML = '';
+    return;
+  }
 
   const valueOf = m.ngs ? ((s, n) => m.ngs(n)) : ((s) => m.stat(s));
   const rowsFor = { charts: () => chartRows(m), athletic: () => athleticRows(m), defense: () => defenseRows(m) };

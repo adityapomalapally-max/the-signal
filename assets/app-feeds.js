@@ -756,7 +756,7 @@ function handleRoute() {
   // those links always meant.
   if (parts[0] === 'lab') {
     let i = 1;
-    const MODES = ['stats', 'charts', 'athletic', 'defense'];
+    const MODES = ['stats', 'charts', 'field', 'athletic', 'defense'];
     if (MODES.includes(parts[1])) { labMode = parts[1]; i = 2; }
     else if (parts[1] && LAB_METRICS[parts[1].toUpperCase()]) labMode = 'stats';
     const table = (LAB_TABLES[labMode] || LAB_TABLES.stats)();
@@ -940,7 +940,7 @@ function metaForRoute(route) {
   }
 
   if (parts[0] === 'lab') {
-    const known = ['stats', 'charts', 'athletic', 'defense'];
+    const known = ['stats', 'charts', 'field', 'athletic', 'defense'];
     const hasMode = known.includes(parts[1]);
     const mode = hasMode ? parts[1] : 'stats';
     const posPart = hasMode ? parts[2] : parts[1];
@@ -964,6 +964,14 @@ function metaForRoute(route) {
         stats: {
           title: `${POS[posPart]} Stats${seasonPart ? ' — ' + seasonPart : ''} | The Signal`,
           description: `${POS[posPart]} leaderboards from nflverse and Next Gen Stats. Every board states its qualifier and excludes anyone under it.`,
+        },
+        field: {
+          title: `${POS[posPart]} Field Map${seasonPart ? ' — ' + seasonPart : ''} | The Signal`,
+          description: posPart === 'qb'
+            ? 'Where each quarterback throws and how he does there — completion rate, EPA and accuracy over expected across twelve zones of the field.'
+            : posPart === 'rb'
+            ? 'Where each back runs and how he does there — yards, success rate and stuffed rate through all seven gaps, plus goal line and short yardage.'
+            : `Where each ${POS[posPart].toLowerCase()} is targeted and how he does there — catch rate and yards by depth and by side of the field.`,
         },
       };
       return meta[mode] || meta.stats;
