@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/fetch-advstats.js",
-    "builtAt": "2026-08-19T02:56:48.811Z",
+    "builtAt": "2026-08-19T11:31:44.902Z",
     "seasons": [
       2023,
       2024,
@@ -16,7 +16,7 @@
     ],
     "defenseNote": "aggregated across every charted defender on the team; rates recomputed from totals rather than averaged across players, so a nickel corner's 12 targets do not weigh the same as a No.1 corner's season",
     "coverage": {
-      "players": 288,
+      "players": 287,
       "of": 350
     }
   },
@@ -283,6 +283,118 @@
             "drops": 6,
             "dropPct": 0.054,
             "passerRatingWhenTargeted": 93.8
+          }
+        }
+      }
+    },
+    "allen-keenan": {
+      "name": "Keenan Allen",
+      "pos": "WR",
+      "seasons": {
+        "2023": {
+          "receiving": {
+            "targets": 150,
+            "rec": 108,
+            "yards": 1243,
+            "td": 7,
+            "firstDowns": 57,
+            "yardsBeforeCatch": 847,
+            "ybcPerRec": 7.8,
+            "yardsAfterCatch": 396,
+            "yacPerRec": 3.7,
+            "aDOT": 9.6,
+            "brokenTackles": 5,
+            "recPerBrokenTackle": 21.6,
+            "drops": 5,
+            "dropPct": 0.033,
+            "passerRatingWhenTargeted": 106.6
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 6,
+            "td": 0,
+            "firstDowns": 1,
+            "yardsBeforeContact": 6,
+            "ybcPerAttempt": 3,
+            "yardsAfterContact": 0,
+            "yacPerAttempt": 0,
+            "brokenTackles": 0
+          },
+          "passing": {
+            "attempts": 2,
+            "throwaways": 0,
+            "spikes": 0,
+            "dropsByReceivers": 0,
+            "dropPctByReceivers": 0,
+            "badThrows": 1,
+            "badThrowPct": 50,
+            "pocketTime": 3.3,
+            "timesBlitzed": 2,
+            "timesHurried": 0,
+            "timesHit": 0,
+            "timesPressured": 0,
+            "pressurePct": 0,
+            "onTargetThrows": 1,
+            "onTargetPct": 50,
+            "rpoPlays": 0,
+            "rpoYards": 0,
+            "playActionAtt": 0,
+            "playActionYards": 0
+          }
+        },
+        "2024": {
+          "receiving": {
+            "targets": 121,
+            "rec": 70,
+            "yards": 744,
+            "firstDowns": 43,
+            "yardsBeforeCatch": 504,
+            "ybcPerRec": 7.2,
+            "yardsAfterCatch": 240,
+            "yacPerRec": 3.4,
+            "aDOT": 9,
+            "brokenTackles": 1,
+            "recPerBrokenTackle": 70,
+            "drops": 6,
+            "dropPct": 0.05,
+            "passerRatingWhenTargeted": 95.2
+          },
+          "passing": {
+            "attempts": 1,
+            "throwaways": 0,
+            "spikes": 0,
+            "dropsByReceivers": 0,
+            "dropPctByReceivers": 0,
+            "badThrows": 1,
+            "badThrowPct": 100,
+            "pocketTime": 5.4,
+            "timesBlitzed": 0,
+            "timesHurried": 0,
+            "timesHit": 0,
+            "timesPressured": 0,
+            "pressurePct": 0,
+            "onTargetThrows": 0,
+            "onTargetPct": 0,
+            "rpoPlays": 0,
+            "rpoYards": 0
+          }
+        },
+        "2025": {
+          "receiving": {
+            "targets": 122,
+            "rec": 81,
+            "yards": 777,
+            "firstDowns": 49,
+            "yardsBeforeCatch": 546,
+            "ybcPerRec": 6.7,
+            "yardsAfterCatch": 231,
+            "yacPerRec": 2.9,
+            "aDOT": 8.4,
+            "brokenTackles": 3,
+            "recPerBrokenTackle": 27,
+            "drops": 6,
+            "dropPct": 0.049,
+            "passerRatingWhenTargeted": 88
           }
         }
       }
@@ -7003,47 +7115,6 @@
         }
       }
     },
-    "beckham": {
-      "name": "Odell Beckham",
-      "pos": "WR",
-      "seasons": {
-        "2023": {
-          "receiving": {
-            "targets": 64,
-            "rec": 35,
-            "yards": 565,
-            "td": 3,
-            "firstDowns": 27,
-            "yardsBeforeCatch": 410,
-            "ybcPerRec": 11.7,
-            "yardsAfterCatch": 155,
-            "yacPerRec": 4.4,
-            "aDOT": 13.9,
-            "brokenTackles": 0,
-            "drops": 3,
-            "dropPct": 0.047,
-            "passerRatingWhenTargeted": 93.6
-          }
-        },
-        "2024": {
-          "receiving": {
-            "targets": 18,
-            "rec": 9,
-            "yards": 55,
-            "firstDowns": 3,
-            "yardsBeforeCatch": 41,
-            "ybcPerRec": 4.6,
-            "yardsAfterCatch": 14,
-            "yacPerRec": 1.6,
-            "aDOT": 7.6,
-            "brokenTackles": 0,
-            "drops": 1,
-            "dropPct": 0.056,
-            "passerRatingWhenTargeted": 33.3
-          }
-        }
-      }
-    },
     "johnson-r": {
       "name": "Roschon Johnson",
       "pos": "RB",
@@ -7281,67 +7352,6 @@
             "drops": 3,
             "dropPct": 0.079,
             "passerRatingWhenTargeted": 74.9
-          }
-        }
-      }
-    },
-    "fant": {
-      "name": "Noah Fant",
-      "pos": "TE",
-      "seasons": {
-        "2023": {
-          "receiving": {
-            "targets": 43,
-            "rec": 32,
-            "yards": 414,
-            "td": 0,
-            "firstDowns": 16,
-            "yardsBeforeCatch": 237,
-            "ybcPerRec": 7.4,
-            "yardsAfterCatch": 177,
-            "yacPerRec": 5.5,
-            "aDOT": 6.9,
-            "brokenTackles": 1,
-            "recPerBrokenTackle": 32,
-            "drops": 1,
-            "dropPct": 0.023,
-            "passerRatingWhenTargeted": 94.5
-          }
-        },
-        "2024": {
-          "receiving": {
-            "targets": 64,
-            "rec": 48,
-            "yards": 500,
-            "firstDowns": 25,
-            "yardsBeforeCatch": 223,
-            "ybcPerRec": 4.6,
-            "yardsAfterCatch": 277,
-            "yacPerRec": 5.8,
-            "aDOT": 5.4,
-            "brokenTackles": 2,
-            "recPerBrokenTackle": 24,
-            "drops": 1,
-            "dropPct": 0.016,
-            "passerRatingWhenTargeted": 82.8
-          }
-        },
-        "2025": {
-          "receiving": {
-            "targets": 41,
-            "rec": 34,
-            "yards": 288,
-            "firstDowns": 13,
-            "yardsBeforeCatch": 114,
-            "ybcPerRec": 3.4,
-            "yardsAfterCatch": 174,
-            "yacPerRec": 5.1,
-            "aDOT": 3.5,
-            "brokenTackles": 1,
-            "recPerBrokenTackle": 34,
-            "drops": 1,
-            "dropPct": 0.024,
-            "passerRatingWhenTargeted": 120.3
           }
         }
       }
@@ -8060,62 +8070,96 @@
         }
       }
     },
-    "smith-schuster": {
-      "name": "JuJu Smith-Schuster",
-      "pos": "WR",
+    "harris-n": {
+      "name": "Najee Harris",
+      "pos": "RB",
       "seasons": {
         "2023": {
           "receiving": {
-            "targets": 47,
+            "targets": 38,
             "rec": 29,
-            "yards": 260,
-            "td": 1,
-            "firstDowns": 13,
-            "yardsBeforeCatch": 166,
-            "ybcPerRec": 5.7,
-            "yardsAfterCatch": 94,
-            "yacPerRec": 3.2,
-            "aDOT": 7,
-            "brokenTackles": 0,
+            "yards": 170,
+            "td": 0,
+            "firstDowns": 9,
+            "yardsBeforeCatch": -5,
+            "ybcPerRec": -0.2,
+            "yardsAfterCatch": 175,
+            "yacPerRec": 6,
+            "aDOT": 0.2,
+            "brokenTackles": 6,
+            "recPerBrokenTackle": 4.8,
             "drops": 2,
-            "dropPct": 0.043,
-            "passerRatingWhenTargeted": 48.2
+            "dropPct": 0.053,
+            "passerRatingWhenTargeted": 84.3
+          },
+          "rushing": {
+            "attempts": 255,
+            "yards": 1035,
+            "td": 8,
+            "firstDowns": 51,
+            "yardsBeforeContact": 417,
+            "ybcPerAttempt": 1.6,
+            "yardsAfterContact": 618,
+            "yacPerAttempt": 2.4,
+            "brokenTackles": 30,
+            "attPerBrokenTackle": 8.5
           }
         },
         "2024": {
           "receiving": {
-            "targets": 26,
-            "rec": 18,
-            "yards": 231,
-            "firstDowns": 11,
-            "yardsBeforeCatch": 76,
-            "ybcPerRec": 4.2,
-            "yardsAfterCatch": 155,
-            "yacPerRec": 8.6,
-            "aDOT": 5.6,
-            "brokenTackles": 4,
-            "recPerBrokenTackle": 4.5,
-            "drops": 2,
-            "dropPct": 0.077,
-            "passerRatingWhenTargeted": 106.4
+            "targets": 48,
+            "rec": 36,
+            "yards": 283,
+            "firstDowns": 13,
+            "yardsBeforeCatch": -46,
+            "ybcPerRec": -1.3,
+            "yardsAfterCatch": 329,
+            "yacPerRec": 9.1,
+            "aDOT": -1.5,
+            "brokenTackles": 7,
+            "recPerBrokenTackle": 5.1,
+            "drops": 4,
+            "dropPct": 0.083,
+            "passerRatingWhenTargeted": 89.1
+          },
+          "rushing": {
+            "attempts": 263,
+            "yards": 1043,
+            "firstDowns": 50,
+            "yardsBeforeContact": 502,
+            "ybcPerAttempt": 1.9,
+            "yardsAfterContact": 541,
+            "yacPerAttempt": 2.1,
+            "brokenTackles": 22,
+            "attPerBrokenTackle": 12
           }
         },
         "2025": {
           "receiving": {
-            "targets": 45,
-            "rec": 33,
-            "yards": 345,
-            "firstDowns": 19,
-            "yardsBeforeCatch": 154,
-            "ybcPerRec": 4.7,
-            "yardsAfterCatch": 191,
-            "yacPerRec": 5.8,
-            "aDOT": 5.6,
-            "brokenTackles": 3,
-            "recPerBrokenTackle": 11,
-            "drops": 2,
-            "dropPct": 0.044,
-            "passerRatingWhenTargeted": 84
+            "targets": 3,
+            "rec": 3,
+            "yards": 25,
+            "firstDowns": 1,
+            "yardsBeforeCatch": 10,
+            "ybcPerRec": 3.3,
+            "yardsAfterCatch": 15,
+            "yacPerRec": 5,
+            "aDOT": 3.3,
+            "brokenTackles": 1,
+            "recPerBrokenTackle": 3,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 101.4
+          },
+          "rushing": {
+            "attempts": 15,
+            "yards": 61,
+            "firstDowns": 3,
+            "yardsBeforeContact": 30,
+            "ybcPerAttempt": 2,
+            "yardsAfterContact": 31,
+            "yacPerAttempt": 2.1,
+            "brokenTackles": 0
           }
         }
       }
@@ -9157,141 +9201,83 @@
         }
       }
     },
-    "moore-s": {
-      "name": "Skyy Moore",
+    "tillman": {
+      "name": "Cedric Tillman",
       "pos": "WR",
       "seasons": {
         "2023": {
           "receiving": {
-            "targets": 38,
+            "targets": 44,
             "rec": 21,
-            "yards": 244,
-            "td": 1,
+            "yards": 224,
+            "td": 0,
+            "firstDowns": 12,
+            "yardsBeforeCatch": 136,
+            "ybcPerRec": 6.5,
+            "yardsAfterCatch": 88,
+            "yacPerRec": 4.2,
+            "aDOT": 10.6,
+            "brokenTackles": 2,
+            "recPerBrokenTackle": 10.5,
+            "drops": 1,
+            "dropPct": 0.023,
+            "passerRatingWhenTargeted": 23.5
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 8,
+            "td": 0,
+            "firstDowns": 0,
+            "yardsBeforeContact": 8,
+            "ybcPerAttempt": 8,
+            "yardsAfterContact": 0,
+            "yacPerAttempt": 0,
+            "brokenTackles": 0
+          }
+        },
+        "2024": {
+          "receiving": {
+            "targets": 49,
+            "rec": 29,
+            "yards": 339,
+            "firstDowns": 15,
+            "yardsBeforeCatch": 235,
+            "ybcPerRec": 8.1,
+            "yardsAfterCatch": 104,
+            "yacPerRec": 3.6,
+            "aDOT": 11.1,
+            "brokenTackles": 4,
+            "recPerBrokenTackle": 7.3,
+            "drops": 3,
+            "dropPct": 0.061,
+            "passerRatingWhenTargeted": 83.6
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": -5,
+            "firstDowns": 0,
+            "yardsBeforeContact": -5,
+            "ybcPerAttempt": -5,
+            "yardsAfterContact": 0,
+            "yacPerAttempt": 0,
+            "brokenTackles": 0
+          }
+        },
+        "2025": {
+          "receiving": {
+            "targets": 39,
+            "rec": 21,
+            "yards": 270,
             "firstDowns": 13,
-            "yardsBeforeCatch": 135,
-            "ybcPerRec": 6.4,
-            "yardsAfterCatch": 109,
-            "yacPerRec": 5.2,
-            "aDOT": 8.9,
+            "yardsBeforeCatch": 208,
+            "ybcPerRec": 9.9,
+            "yardsAfterCatch": 62,
+            "yacPerRec": 3,
+            "aDOT": 11.6,
             "brokenTackles": 0,
             "drops": 1,
             "dropPct": 0.026,
-            "passerRatingWhenTargeted": 50.8
-          },
-          "rushing": {
-            "attempts": 3,
-            "yards": 23,
-            "td": 0,
-            "firstDowns": 1,
-            "yardsBeforeContact": 18,
-            "ybcPerAttempt": 6,
-            "yardsAfterContact": 5,
-            "yacPerAttempt": 1.7,
-            "brokenTackles": 0
-          }
-        },
-        "2024": {
-          "receiving": {
-            "targets": 3,
-            "rec": 0,
-            "yards": 0,
-            "firstDowns": 0,
-            "yardsBeforeCatch": 0,
-            "yardsAfterCatch": 0,
-            "aDOT": 6,
-            "brokenTackles": 0,
-            "drops": 2,
-            "dropPct": 0.667,
-            "passerRatingWhenTargeted": 39.6
-          }
-        },
-        "2025": {
-          "receiving": {
-            "targets": 7,
-            "rec": 5,
-            "yards": 87,
-            "firstDowns": 5,
-            "yardsBeforeCatch": 58,
-            "ybcPerRec": 11.6,
-            "yardsAfterCatch": 29,
-            "yacPerRec": 5.8,
-            "aDOT": 15.7,
-            "brokenTackles": 2,
-            "recPerBrokenTackle": 2.5,
-            "drops": 0,
-            "dropPct": 0,
-            "passerRatingWhenTargeted": 113.4
-          },
-          "rushing": {
-            "attempts": 2,
-            "yards": 11,
-            "firstDowns": 1,
-            "yardsBeforeContact": 9,
-            "ybcPerAttempt": 4.5,
-            "yardsAfterContact": 2,
-            "yacPerAttempt": 1,
-            "brokenTackles": 0
-          }
-        }
-      }
-    },
-    "moreau": {
-      "name": "Foster Moreau",
-      "pos": "TE",
-      "seasons": {
-        "2023": {
-          "receiving": {
-            "targets": 25,
-            "rec": 21,
-            "yards": 193,
-            "td": 1,
-            "firstDowns": 9,
-            "yardsBeforeCatch": 97,
-            "ybcPerRec": 4.6,
-            "yardsAfterCatch": 96,
-            "yacPerRec": 4.6,
-            "aDOT": 4.9,
-            "brokenTackles": 1,
-            "recPerBrokenTackle": 21,
-            "drops": 1,
-            "dropPct": 0.04,
-            "passerRatingWhenTargeted": 112.2
-          }
-        },
-        "2024": {
-          "receiving": {
-            "targets": 43,
-            "rec": 32,
-            "yards": 413,
-            "firstDowns": 21,
-            "yardsBeforeCatch": 255,
-            "ybcPerRec": 8,
-            "yardsAfterCatch": 158,
-            "yacPerRec": 4.9,
-            "aDOT": 9.2,
-            "brokenTackles": 2,
-            "recPerBrokenTackle": 16,
-            "drops": 0,
-            "dropPct": 0,
-            "passerRatingWhenTargeted": 133.2
-          }
-        },
-        "2025": {
-          "receiving": {
-            "targets": 10,
-            "rec": 7,
-            "yards": 59,
-            "firstDowns": 2,
-            "yardsBeforeCatch": 15,
-            "ybcPerRec": 2.1,
-            "yardsAfterCatch": 44,
-            "yacPerRec": 6.3,
-            "aDOT": 1,
-            "brokenTackles": 1,
-            "recPerBrokenTackle": 7,
-            "drops": 2,
-            "dropPct": 0.2,
-            "passerRatingWhenTargeted": 45.4
+            "passerRatingWhenTargeted": 71.5
           }
         }
       }
@@ -9735,6 +9721,65 @@
         }
       }
     },
+    "mallory": {
+      "name": "Will Mallory",
+      "pos": "TE",
+      "seasons": {
+        "2023": {
+          "receiving": {
+            "targets": 26,
+            "rec": 18,
+            "yards": 207,
+            "td": 0,
+            "firstDowns": 11,
+            "yardsBeforeCatch": 118,
+            "ybcPerRec": 6.6,
+            "yardsAfterCatch": 89,
+            "yacPerRec": 4.9,
+            "aDOT": 7.8,
+            "brokenTackles": 0,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 92.9
+          }
+        },
+        "2024": {
+          "receiving": {
+            "targets": 8,
+            "rec": 4,
+            "yards": 29,
+            "firstDowns": 1,
+            "yardsBeforeCatch": 25,
+            "ybcPerRec": 6.3,
+            "yardsAfterCatch": 4,
+            "yacPerRec": 1,
+            "aDOT": 8.6,
+            "brokenTackles": 1,
+            "recPerBrokenTackle": 4,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 19.3
+          }
+        },
+        "2025": {
+          "receiving": {
+            "targets": 1,
+            "rec": 1,
+            "yards": 16,
+            "firstDowns": 1,
+            "yardsBeforeCatch": 16,
+            "ybcPerRec": 16,
+            "yardsAfterCatch": 0,
+            "yacPerRec": 0,
+            "aDOT": 16,
+            "brokenTackles": 0,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 118.7
+          }
+        }
+      }
+    },
     "dowdle": {
       "name": "Rico Dowdle",
       "pos": "RB",
@@ -9826,89 +9871,6 @@
             "yacPerAttempt": 2,
             "brokenTackles": 14,
             "attPerBrokenTackle": 16.9
-          }
-        }
-      }
-    },
-    "burks": {
-      "name": "Treylon Burks",
-      "pos": "WR",
-      "seasons": {
-        "2023": {
-          "receiving": {
-            "targets": 30,
-            "rec": 16,
-            "yards": 221,
-            "td": 0,
-            "firstDowns": 8,
-            "yardsBeforeCatch": 150,
-            "ybcPerRec": 9.4,
-            "yardsAfterCatch": 71,
-            "yacPerRec": 4.4,
-            "aDOT": 18.2,
-            "brokenTackles": 1,
-            "recPerBrokenTackle": 16,
-            "drops": 3,
-            "dropPct": 0.1,
-            "passerRatingWhenTargeted": 77.2
-          },
-          "rushing": {
-            "attempts": 5,
-            "yards": 18,
-            "td": 0,
-            "firstDowns": 0,
-            "yardsBeforeContact": 7,
-            "ybcPerAttempt": 1.4,
-            "yardsAfterContact": 11,
-            "yacPerAttempt": 2.2,
-            "brokenTackles": 0
-          }
-        },
-        "2024": {
-          "receiving": {
-            "targets": 8,
-            "rec": 4,
-            "yards": 34,
-            "firstDowns": 3,
-            "yardsBeforeCatch": 29,
-            "ybcPerRec": 7.3,
-            "yardsAfterCatch": 5,
-            "yacPerRec": 1.3,
-            "aDOT": 16.9,
-            "brokenTackles": 1,
-            "recPerBrokenTackle": 4,
-            "drops": 2,
-            "dropPct": 0.25,
-            "passerRatingWhenTargeted": 21.9
-          },
-          "rushing": {
-            "attempts": 2,
-            "yards": 1,
-            "firstDowns": 0,
-            "yardsBeforeContact": -5,
-            "ybcPerAttempt": -2.5,
-            "yardsAfterContact": 6,
-            "yacPerAttempt": 3,
-            "brokenTackles": 1,
-            "attPerBrokenTackle": 2
-          }
-        },
-        "2025": {
-          "receiving": {
-            "targets": 22,
-            "rec": 10,
-            "yards": 130,
-            "firstDowns": 7,
-            "yardsBeforeCatch": 96,
-            "ybcPerRec": 9.6,
-            "yardsAfterCatch": 34,
-            "yacPerRec": 3.4,
-            "aDOT": 13.5,
-            "brokenTackles": 1,
-            "recPerBrokenTackle": 10,
-            "drops": 0,
-            "dropPct": 0,
-            "passerRatingWhenTargeted": 41.9
           }
         }
       }
@@ -10195,99 +10157,6 @@
         }
       }
     },
-    "white-z": {
-      "name": "Zamir White",
-      "pos": "RB",
-      "seasons": {
-        "2023": {
-          "receiving": {
-            "targets": 19,
-            "rec": 15,
-            "yards": 98,
-            "td": 0,
-            "firstDowns": 4,
-            "yardsBeforeCatch": 4,
-            "ybcPerRec": 0.3,
-            "yardsAfterCatch": 94,
-            "yacPerRec": 6.3,
-            "aDOT": 0.2,
-            "brokenTackles": 2,
-            "recPerBrokenTackle": 7.5,
-            "drops": 0,
-            "dropPct": 0,
-            "passerRatingWhenTargeted": 88.2
-          },
-          "rushing": {
-            "attempts": 104,
-            "yards": 451,
-            "td": 1,
-            "firstDowns": 19,
-            "yardsBeforeContact": 206,
-            "ybcPerAttempt": 2,
-            "yardsAfterContact": 245,
-            "yacPerAttempt": 2.4,
-            "brokenTackles": 8,
-            "attPerBrokenTackle": 13
-          }
-        },
-        "2024": {
-          "receiving": {
-            "targets": 8,
-            "rec": 6,
-            "yards": 30,
-            "firstDowns": 2,
-            "yardsBeforeCatch": -20,
-            "ybcPerRec": -3.3,
-            "yardsAfterCatch": 50,
-            "yacPerRec": 8.3,
-            "aDOT": -3.1,
-            "brokenTackles": 2,
-            "recPerBrokenTackle": 3,
-            "drops": 1,
-            "dropPct": 0.125,
-            "passerRatingWhenTargeted": 80.2
-          },
-          "rushing": {
-            "attempts": 65,
-            "yards": 183,
-            "firstDowns": 4,
-            "yardsBeforeContact": 93,
-            "ybcPerAttempt": 1.4,
-            "yardsAfterContact": 90,
-            "yacPerAttempt": 1.4,
-            "brokenTackles": 4,
-            "attPerBrokenTackle": 16.3
-          }
-        },
-        "2025": {
-          "receiving": {
-            "targets": 6,
-            "rec": 4,
-            "yards": 24,
-            "firstDowns": 0,
-            "yardsBeforeCatch": 0,
-            "ybcPerRec": 0,
-            "yardsAfterCatch": 24,
-            "yacPerRec": 6,
-            "aDOT": -0.5,
-            "brokenTackles": 0,
-            "drops": 0,
-            "dropPct": 0,
-            "passerRatingWhenTargeted": 74.3
-          },
-          "rushing": {
-            "attempts": 12,
-            "yards": 32,
-            "firstDowns": 1,
-            "yardsBeforeContact": 19,
-            "ybcPerAttempt": 1.6,
-            "yardsAfterContact": 13,
-            "yacPerAttempt": 1.1,
-            "brokenTackles": 0
-          }
-        }
-      }
-    },
     "brown": {
       "name": "Chase Brown",
       "pos": "RB",
@@ -10379,65 +10248,6 @@
             "yacPerAttempt": 2.1,
             "brokenTackles": 16,
             "attPerBrokenTackle": 14.5
-          }
-        }
-      }
-    },
-    "humphrey": {
-      "name": "Lil'Jordan Humphrey",
-      "pos": "WR",
-      "seasons": {
-        "2023": {
-          "receiving": {
-            "targets": 19,
-            "rec": 13,
-            "yards": 162,
-            "td": 3,
-            "firstDowns": 9,
-            "yardsBeforeCatch": 63,
-            "ybcPerRec": 4.8,
-            "yardsAfterCatch": 99,
-            "yacPerRec": 7.6,
-            "aDOT": 9.8,
-            "brokenTackles": 0,
-            "drops": 1,
-            "dropPct": 0.053,
-            "passerRatingWhenTargeted": 134.2
-          }
-        },
-        "2024": {
-          "receiving": {
-            "targets": 45,
-            "rec": 31,
-            "yards": 293,
-            "firstDowns": 12,
-            "yardsBeforeCatch": 101,
-            "ybcPerRec": 3.3,
-            "yardsAfterCatch": 192,
-            "yacPerRec": 6.2,
-            "aDOT": 6.5,
-            "brokenTackles": 3,
-            "recPerBrokenTackle": 10.3,
-            "drops": 3,
-            "dropPct": 0.067,
-            "passerRatingWhenTargeted": 75.5
-          }
-        },
-        "2025": {
-          "receiving": {
-            "targets": 15,
-            "rec": 9,
-            "yards": 101,
-            "firstDowns": 7,
-            "yardsBeforeCatch": 74,
-            "ybcPerRec": 8.2,
-            "yardsAfterCatch": 27,
-            "yacPerRec": 3,
-            "aDOT": 8.8,
-            "brokenTackles": 0,
-            "drops": 1,
-            "dropPct": 0.067,
-            "passerRatingWhenTargeted": 74.6
           }
         }
       }
@@ -10670,6 +10480,65 @@
             "yardsAfterContact": 0,
             "yacPerAttempt": 0,
             "brokenTackles": 0
+          }
+        }
+      }
+    },
+    "allen-d": {
+      "name": "Davis Allen",
+      "pos": "TE",
+      "seasons": {
+        "2023": {
+          "receiving": {
+            "targets": 11,
+            "rec": 10,
+            "yards": 95,
+            "td": 1,
+            "firstDowns": 7,
+            "yardsBeforeCatch": 21,
+            "ybcPerRec": 2.1,
+            "yardsAfterCatch": 74,
+            "yacPerRec": 7.4,
+            "aDOT": 2.2,
+            "brokenTackles": 0,
+            "drops": 1,
+            "dropPct": 0.091,
+            "passerRatingWhenTargeted": 133
+          }
+        },
+        "2024": {
+          "receiving": {
+            "targets": 13,
+            "rec": 6,
+            "yards": 39,
+            "firstDowns": 2,
+            "yardsBeforeCatch": 18,
+            "ybcPerRec": 3,
+            "yardsAfterCatch": 21,
+            "yacPerRec": 3.5,
+            "aDOT": 3.8,
+            "brokenTackles": 0,
+            "drops": 2,
+            "dropPct": 0.154,
+            "passerRatingWhenTargeted": 53
+          }
+        },
+        "2025": {
+          "receiving": {
+            "targets": 33,
+            "rec": 24,
+            "yards": 208,
+            "firstDowns": 12,
+            "yardsBeforeCatch": 71,
+            "ybcPerRec": 3,
+            "yardsAfterCatch": 137,
+            "yacPerRec": 5.7,
+            "aDOT": 3.9,
+            "brokenTackles": 2,
+            "recPerBrokenTackle": 12,
+            "drops": 3,
+            "dropPct": 0.091,
+            "passerRatingWhenTargeted": 119.3
           }
         }
       }
@@ -10920,6 +10789,154 @@
         }
       }
     },
+    "hutchinson": {
+      "name": "Xavier Hutchinson",
+      "pos": "WR",
+      "seasons": {
+        "2023": {
+          "receiving": {
+            "targets": 19,
+            "rec": 8,
+            "yards": 90,
+            "td": 0,
+            "firstDowns": 3,
+            "yardsBeforeCatch": 70,
+            "ybcPerRec": 8.8,
+            "yardsAfterCatch": 20,
+            "yacPerRec": 2.5,
+            "aDOT": 11.4,
+            "brokenTackles": 0,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 56.9
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 49,
+            "td": 0,
+            "firstDowns": 3,
+            "yardsBeforeContact": 40,
+            "ybcPerAttempt": 8,
+            "yardsAfterContact": 9,
+            "yacPerAttempt": 1.8,
+            "brokenTackles": 1,
+            "attPerBrokenTackle": 5
+          }
+        },
+        "2024": {
+          "receiving": {
+            "targets": 26,
+            "rec": 12,
+            "yards": 117,
+            "firstDowns": 6,
+            "yardsBeforeCatch": 80,
+            "ybcPerRec": 6.7,
+            "yardsAfterCatch": 37,
+            "yacPerRec": 3.1,
+            "aDOT": 9.7,
+            "brokenTackles": 0,
+            "drops": 2,
+            "dropPct": 0.077,
+            "passerRatingWhenTargeted": 43.3
+          }
+        },
+        "2025": {
+          "receiving": {
+            "targets": 57,
+            "rec": 35,
+            "yards": 428,
+            "firstDowns": 19,
+            "yardsBeforeCatch": 282,
+            "ybcPerRec": 8.1,
+            "yardsAfterCatch": 146,
+            "yacPerRec": 4.2,
+            "aDOT": 10.2,
+            "brokenTackles": 3,
+            "recPerBrokenTackle": 11.7,
+            "drops": 2,
+            "dropPct": 0.035,
+            "passerRatingWhenTargeted": 94.8
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 22,
+            "firstDowns": 2,
+            "yardsBeforeContact": 0,
+            "ybcPerAttempt": 0,
+            "yardsAfterContact": 22,
+            "yacPerAttempt": 7.3,
+            "brokenTackles": 0
+          }
+        }
+      }
+    },
+    "jones-c": {
+      "name": "Charlie Jones",
+      "pos": "WR",
+      "seasons": {
+        "2023": {
+          "receiving": {
+            "targets": 9,
+            "rec": 7,
+            "yards": 64,
+            "td": 0,
+            "firstDowns": 3,
+            "yardsBeforeCatch": 26,
+            "ybcPerRec": 3.7,
+            "yardsAfterCatch": 38,
+            "yacPerRec": 5.4,
+            "aDOT": 8.8,
+            "brokenTackles": 0,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 96.3
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 13,
+            "td": 0,
+            "firstDowns": 1,
+            "yardsBeforeContact": 9,
+            "ybcPerAttempt": 4.5,
+            "yardsAfterContact": 4,
+            "yacPerAttempt": 2,
+            "brokenTackles": 0
+          }
+        },
+        "2024": {
+          "receiving": {
+            "targets": 1,
+            "rec": 1,
+            "yards": 5,
+            "firstDowns": 0,
+            "yardsBeforeCatch": 5,
+            "ybcPerRec": 5,
+            "yardsAfterCatch": 0,
+            "yacPerRec": 0,
+            "aDOT": 5,
+            "brokenTackles": 0,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 87.5
+          }
+        },
+        "2025": {
+          "receiving": {
+            "targets": 1,
+            "rec": 0,
+            "yards": 0,
+            "firstDowns": 0,
+            "yardsBeforeCatch": 0,
+            "yardsAfterCatch": 0,
+            "aDOT": 42,
+            "brokenTackles": 0,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 39.6
+          }
+        }
+      }
+    },
     "reagor": {
       "name": "Jalen Reagor",
       "pos": "WR",
@@ -10977,6 +10994,187 @@
             "ybcPerAttempt": -1.3,
             "yardsAfterContact": 1,
             "yacPerAttempt": 0.3,
+            "brokenTackles": 0
+          }
+        }
+      }
+    },
+    "bell-r": {
+      "name": "Ronnie Bell",
+      "pos": "WR",
+      "seasons": {
+        "2023": {
+          "receiving": {
+            "targets": 13,
+            "rec": 6,
+            "yards": 68,
+            "td": 3,
+            "firstDowns": 5,
+            "yardsBeforeCatch": 58,
+            "ybcPerRec": 9.7,
+            "yardsAfterCatch": 10,
+            "yacPerRec": 1.7,
+            "aDOT": 12.3,
+            "brokenTackles": 0,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 101.9
+          }
+        },
+        "2024": {
+          "receiving": {
+            "targets": 6,
+            "rec": 2,
+            "yards": 22,
+            "firstDowns": 2,
+            "yardsBeforeCatch": 20,
+            "ybcPerRec": 10,
+            "yardsAfterCatch": 2,
+            "yacPerRec": 1,
+            "aDOT": 10.8,
+            "brokenTackles": 0,
+            "drops": 2,
+            "dropPct": 0.333,
+            "passerRatingWhenTargeted": 5.6
+          }
+        },
+        "2025": {
+          "receiving": {
+            "targets": 4,
+            "rec": 2,
+            "yards": 23,
+            "firstDowns": 1,
+            "yardsBeforeCatch": 22,
+            "ybcPerRec": 11,
+            "yardsAfterCatch": 1,
+            "yacPerRec": 0.5,
+            "aDOT": 19.3,
+            "brokenTackles": 0,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 107.3
+          }
+        }
+      }
+    },
+    "brooks-j": {
+      "name": "Jalen Brooks",
+      "pos": "WR",
+      "seasons": {
+        "2023": {
+          "receiving": {
+            "targets": 6,
+            "rec": 6,
+            "yards": 64,
+            "td": 0,
+            "firstDowns": 4,
+            "yardsBeforeCatch": 36,
+            "ybcPerRec": 6,
+            "yardsAfterCatch": 28,
+            "yacPerRec": 4.7,
+            "aDOT": 6,
+            "brokenTackles": 0,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 111.1
+          }
+        },
+        "2024": {
+          "receiving": {
+            "targets": 30,
+            "rec": 12,
+            "yards": 177,
+            "firstDowns": 8,
+            "yardsBeforeCatch": 140,
+            "ybcPerRec": 11.7,
+            "yardsAfterCatch": 37,
+            "yacPerRec": 3.1,
+            "aDOT": 13.5,
+            "brokenTackles": 1,
+            "recPerBrokenTackle": 12,
+            "drops": 1,
+            "dropPct": 0.033,
+            "passerRatingWhenTargeted": 43.3
+          }
+        },
+        "2025": {
+          "receiving": {
+            "targets": 6,
+            "rec": 3,
+            "yards": 51,
+            "firstDowns": 3,
+            "yardsBeforeCatch": 32,
+            "ybcPerRec": 10.7,
+            "yardsAfterCatch": 19,
+            "yacPerRec": 6.3,
+            "aDOT": 11.2,
+            "brokenTackles": 0,
+            "drops": 1,
+            "dropPct": 0.167,
+            "passerRatingWhenTargeted": 79.2
+          }
+        }
+      }
+    },
+    "gray": {
+      "name": "Eric Gray",
+      "pos": "RB",
+      "seasons": {
+        "2023": {
+          "receiving": {
+            "targets": 7,
+            "rec": 6,
+            "yards": 22,
+            "td": 0,
+            "firstDowns": 0,
+            "yardsBeforeCatch": -18,
+            "ybcPerRec": -3,
+            "yardsAfterCatch": 40,
+            "yacPerRec": 6.7,
+            "aDOT": -1.1,
+            "brokenTackles": 0,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 79.8
+          },
+          "rushing": {
+            "attempts": 17,
+            "yards": 48,
+            "td": 0,
+            "firstDowns": 2,
+            "yardsBeforeContact": 26,
+            "ybcPerAttempt": 1.5,
+            "yardsAfterContact": 22,
+            "yacPerAttempt": 1.3,
+            "brokenTackles": 1,
+            "attPerBrokenTackle": 17
+          }
+        },
+        "2024": {
+          "receiving": {
+            "targets": 11,
+            "rec": 10,
+            "yards": 82,
+            "firstDowns": 3,
+            "yardsBeforeCatch": -21,
+            "ybcPerRec": -2.1,
+            "yardsAfterCatch": 103,
+            "yacPerRec": 10.3,
+            "aDOT": -2,
+            "brokenTackles": 1,
+            "recPerBrokenTackle": 10,
+            "drops": 1,
+            "dropPct": 0.091,
+            "passerRatingWhenTargeted": 97.7
+          },
+          "rushing": {
+            "attempts": 14,
+            "yards": 31,
+            "firstDowns": 1,
+            "yardsBeforeContact": 17,
+            "ybcPerAttempt": 1.2,
+            "yardsAfterContact": 14,
+            "yacPerAttempt": 1,
             "brokenTackles": 0
           }
         }
@@ -11545,30 +11743,6 @@
             "yacPerAttempt": 2.4,
             "brokenTackles": 13,
             "attPerBrokenTackle": 12.2
-          }
-        }
-      }
-    },
-    "montgomery-d": {
-      "name": "D.J. Montgomery",
-      "pos": "WR",
-      "seasons": {
-        "2023": {
-          "receiving": {
-            "targets": 8,
-            "rec": 3,
-            "yards": 56,
-            "td": 1,
-            "firstDowns": 3,
-            "yardsBeforeCatch": 28,
-            "ybcPerRec": 9.3,
-            "yardsAfterCatch": 28,
-            "yacPerRec": 9.3,
-            "aDOT": 12.1,
-            "brokenTackles": 0,
-            "drops": 1,
-            "dropPct": 0.125,
-            "passerRatingWhenTargeted": 102.1
           }
         }
       }
@@ -14331,76 +14505,6 @@
             "yacPerAttempt": 2.5,
             "brokenTackles": 6,
             "attPerBrokenTackle": 11.7
-          }
-        }
-      }
-    },
-    "williams-i": {
-      "name": "Isaiah Williams",
-      "pos": "WR",
-      "seasons": {
-        "2024": {
-          "receiving": {
-            "targets": 3,
-            "rec": 2,
-            "yards": 6,
-            "firstDowns": 0,
-            "yardsBeforeCatch": -1,
-            "ybcPerRec": -0.5,
-            "yardsAfterCatch": 7,
-            "yacPerRec": 3.5,
-            "aDOT": 5,
-            "brokenTackles": 2,
-            "recPerBrokenTackle": 1,
-            "drops": 0,
-            "dropPct": 0,
-            "passerRatingWhenTargeted": 70.1
-          }
-        },
-        "2025": {
-          "receiving": {
-            "targets": 36,
-            "rec": 26,
-            "yards": 193,
-            "firstDowns": 10,
-            "yardsBeforeCatch": 74,
-            "ybcPerRec": 2.8,
-            "yardsAfterCatch": 119,
-            "yacPerRec": 4.6,
-            "aDOT": 3.4,
-            "brokenTackles": 0,
-            "drops": 3,
-            "dropPct": 0.083,
-            "passerRatingWhenTargeted": 84.6
-          },
-          "rushing": {
-            "attempts": 3,
-            "yards": 34,
-            "firstDowns": 1,
-            "yardsBeforeContact": 27,
-            "ybcPerAttempt": 9,
-            "yardsAfterContact": 7,
-            "yacPerAttempt": 2.3,
-            "brokenTackles": 0
-          },
-          "passing": {
-            "attempts": 1,
-            "throwaways": 0,
-            "spikes": 0,
-            "dropsByReceivers": 0,
-            "dropPctByReceivers": 0,
-            "badThrows": 0,
-            "badThrowPct": 0,
-            "pocketTime": 3.1,
-            "timesBlitzed": 1,
-            "timesHurried": 0,
-            "timesHit": 0,
-            "timesPressured": 0,
-            "pressurePct": 0,
-            "onTargetThrows": 1,
-            "onTargetPct": 100,
-            "rpoPlays": 1,
-            "rpoYards": 0
           }
         }
       }
@@ -17220,124 +17324,6 @@
         }
       }
     },
-    "winston": {
-      "name": "Jameis Winston",
-      "pos": "QB",
-      "seasons": {
-        "2023": {
-          "rushing": {
-            "attempts": 5,
-            "yards": -6,
-            "td": 0,
-            "firstDowns": 0,
-            "yardsBeforeContact": -6,
-            "ybcPerAttempt": -1.2,
-            "yardsAfterContact": 0,
-            "yacPerAttempt": 0,
-            "brokenTackles": 0
-          },
-          "passing": {
-            "attempts": 47,
-            "throwaways": 1,
-            "spikes": 0,
-            "dropsByReceivers": 3,
-            "dropPctByReceivers": 6.5,
-            "badThrows": 10,
-            "badThrowPct": 21.7,
-            "pocketTime": 2.1,
-            "timesBlitzed": 19,
-            "timesHurried": 3,
-            "timesHit": 2,
-            "timesPressured": 7,
-            "pressurePct": 14.3,
-            "onTargetThrows": 35,
-            "onTargetPct": 76.1,
-            "rpoPlays": 1,
-            "rpoYards": 11,
-            "playActionAtt": 1,
-            "playActionYards": 11
-          }
-        },
-        "2024": {
-          "rushing": {
-            "attempts": 25,
-            "yards": 83,
-            "firstDowns": 17,
-            "yardsBeforeContact": 72,
-            "ybcPerAttempt": 2.9,
-            "yardsAfterContact": 11,
-            "yacPerAttempt": 0.4,
-            "brokenTackles": 0
-          },
-          "passing": {
-            "attempts": 296,
-            "throwaways": 4,
-            "spikes": 1,
-            "dropsByReceivers": 13,
-            "dropPctByReceivers": 4.5,
-            "badThrows": 52,
-            "badThrowPct": 17.9,
-            "pocketTime": 2.4,
-            "timesBlitzed": 61,
-            "timesHurried": 23,
-            "timesHit": 24,
-            "timesPressured": 71,
-            "pressurePct": 21.6,
-            "onTargetThrows": 205,
-            "onTargetPct": 70.4,
-            "rpoPlays": 25,
-            "rpoYards": 193
-          }
-        },
-        "2025": {
-          "receiving": {
-            "targets": 1,
-            "rec": 1,
-            "yards": 33,
-            "firstDowns": 1,
-            "yardsBeforeCatch": 13,
-            "ybcPerRec": 13,
-            "yardsAfterCatch": 20,
-            "yacPerRec": 20,
-            "aDOT": 13,
-            "brokenTackles": 1,
-            "recPerBrokenTackle": 1,
-            "drops": 0,
-            "dropPct": 0,
-            "passerRatingWhenTargeted": 158.3
-          },
-          "rushing": {
-            "attempts": 7,
-            "yards": 23,
-            "firstDowns": 3,
-            "yardsBeforeContact": 11,
-            "ybcPerAttempt": 1.6,
-            "yardsAfterContact": 12,
-            "yacPerAttempt": 1.7,
-            "brokenTackles": 0
-          },
-          "passing": {
-            "attempts": 66,
-            "throwaways": 4,
-            "spikes": 0,
-            "dropsByReceivers": 1,
-            "dropPctByReceivers": 1.6,
-            "badThrows": 16,
-            "badThrowPct": 25.8,
-            "pocketTime": 2.5,
-            "timesBlitzed": 18,
-            "timesHurried": 10,
-            "timesHit": 9,
-            "timesPressured": 22,
-            "pressurePct": 31.4,
-            "onTargetThrows": 41,
-            "onTargetPct": 66.1,
-            "rpoPlays": 8,
-            "rpoYards": 50
-          }
-        }
-      }
-    },
     "fields-j": {
       "name": "Justin Fields",
       "pos": "QB",
@@ -18528,78 +18514,6 @@
             "onTargetPct": 73,
             "rpoPlays": 7,
             "rpoYards": 62
-          }
-        }
-      }
-    },
-    "devito": {
-      "name": "Tommy DeVito",
-      "pos": "QB",
-      "seasons": {
-        "2023": {
-          "rushing": {
-            "attempts": 36,
-            "yards": 195,
-            "td": 1,
-            "firstDowns": 7,
-            "yardsBeforeContact": 167,
-            "ybcPerAttempt": 4.6,
-            "yardsAfterContact": 28,
-            "yacPerAttempt": 0.8,
-            "brokenTackles": 1,
-            "attPerBrokenTackle": 36
-          },
-          "passing": {
-            "attempts": 178,
-            "throwaways": 10,
-            "spikes": 0,
-            "dropsByReceivers": 8,
-            "dropPctByReceivers": 4.8,
-            "badThrows": 21,
-            "badThrowPct": 12.5,
-            "pocketTime": 2.6,
-            "timesBlitzed": 68,
-            "timesHurried": 16,
-            "timesHit": 9,
-            "timesPressured": 62,
-            "pressurePct": 26.1,
-            "onTargetThrows": 129,
-            "onTargetPct": 76.8,
-            "rpoPlays": 16,
-            "rpoYards": 131,
-            "playActionAtt": 19,
-            "playActionYards": 138
-          }
-        },
-        "2024": {
-          "rushing": {
-            "attempts": 8,
-            "yards": 32,
-            "firstDowns": 1,
-            "yardsBeforeContact": 28,
-            "ybcPerAttempt": 3.5,
-            "yardsAfterContact": 4,
-            "yacPerAttempt": 0.5,
-            "brokenTackles": 0
-          },
-          "passing": {
-            "attempts": 44,
-            "throwaways": 3,
-            "spikes": 0,
-            "dropsByReceivers": 1,
-            "dropPctByReceivers": 2.4,
-            "badThrows": 6,
-            "badThrowPct": 14.6,
-            "pocketTime": 2.3,
-            "timesBlitzed": 11,
-            "timesHurried": 2,
-            "timesHit": 4,
-            "timesPressured": 12,
-            "pressurePct": 22.2,
-            "onTargetThrows": 35,
-            "onTargetPct": 85.4,
-            "rpoPlays": 8,
-            "rpoYards": 34
           }
         }
       }
@@ -20295,6 +20209,37 @@
         }
       }
     },
+    "brooks-b": {
+      "name": "British Brooks",
+      "pos": "RB",
+      "seasons": {
+        "2024": {
+          "rushing": {
+            "attempts": 1,
+            "yards": 2,
+            "firstDowns": 0,
+            "yardsBeforeContact": 1,
+            "ybcPerAttempt": 1,
+            "yardsAfterContact": 1,
+            "yacPerAttempt": 1,
+            "brokenTackles": 0
+          }
+        },
+        "2025": {
+          "rushing": {
+            "attempts": 17,
+            "yards": 78,
+            "firstDowns": 5,
+            "yardsBeforeContact": 22,
+            "ybcPerAttempt": 1.3,
+            "yardsAfterContact": 56,
+            "yacPerAttempt": 3.3,
+            "brokenTackles": 2,
+            "attPerBrokenTackle": 8.5
+          }
+        }
+      }
+    },
     "dart": {
       "name": "Jaxson Dart",
       "pos": "QB",
@@ -20521,39 +20466,20 @@
         }
       }
     },
-    "brosmer": {
-      "name": "Max Brosmer",
-      "pos": "QB",
+    "cunningham": {
+      "name": "Malik Cunningham",
+      "pos": "WR",
       "seasons": {
         "2025": {
           "rushing": {
-            "attempts": 7,
-            "yards": 11,
-            "firstDowns": 1,
-            "yardsBeforeContact": 11,
-            "ybcPerAttempt": 1.6,
-            "yardsAfterContact": 0,
-            "yacPerAttempt": 0,
+            "attempts": 1,
+            "yards": 1,
+            "firstDowns": 0,
+            "yardsBeforeContact": 0,
+            "ybcPerAttempt": 0,
+            "yardsAfterContact": 1,
+            "yacPerAttempt": 1,
             "brokenTackles": 0
-          },
-          "passing": {
-            "attempts": 71,
-            "throwaways": 3,
-            "spikes": 0,
-            "dropsByReceivers": 5,
-            "dropPctByReceivers": 7.4,
-            "badThrows": 8,
-            "badThrowPct": 11.8,
-            "pocketTime": 2.5,
-            "timesBlitzed": 20,
-            "timesHurried": 4,
-            "timesHit": 6,
-            "timesPressured": 24,
-            "pressurePct": 27.6,
-            "onTargetThrows": 56,
-            "onTargetPct": 82.4,
-            "rpoPlays": 7,
-            "rpoYards": 20
           }
         }
       }
