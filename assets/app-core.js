@@ -320,11 +320,28 @@ function rankTable(rows, showPos) {
 let rosPromise = null, rosData = null, rosChecked = false;
 function ensureRos() {
   if (!rosPromise) {
-    rosPromise = loadJSON('/data/ros.json').then(d => {
-      rosData = d;            // null out of season, which is the correct answer
-      rosChecked = true;
-      return d;
-    });
+    // NOT loadJSON. This file is ABSENT for half the year, and an absent file
+    // here does not 404 — vercel.json rewrites anything unmatched to
+    // index.html, so the fetch comes back 200 with a page of HTML. loadJSON
+    // would try to parse it, fail, and warn on the console for every visitor to
+    // the rankings all summer, with "not in season yet" and "the file is
+    // corrupt" looking identical.
+    //
+    // The content type is the honest signal, and Vercel sends nosniff, so it
+    // can be trusted: application/json is a real file, text/html is the
+    // catch-all answering for something that is not there.
+    rosPromise = fetch('/data/ros.json?v=' + Date.now())
+      .then(res => {
+        const type = res.headers.get('content-type') || '';
+        if (!res.ok || !type.includes('json')) return null;   // not in season
+        return res.json();
+      })
+      .catch(() => null)
+      .then(d => {
+        rosData = d;
+        rosChecked = true;
+        return d;
+      });
   }
   return rosPromise;
 }

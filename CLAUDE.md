@@ -523,6 +523,13 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - IT IS NOT A RE-RANKING. rankings.json is untouched and the medians stay the analyst's. This
   answers a different question, which is why it may order players differently AND why it lives
   behind a toggle rather than quietly replacing what he wrote.
+- AN ABSENT DATA FILE DOES NOT 404 HERE. vercel.json rewrites anything unmatched to index.html,
+  so fetching a file that is not there returns **200 with a page of HTML**. `loadJSON` would try
+  to parse it, fail, and warn on the console for every visitor all summer — with "not in season
+  yet" and "the file is corrupt" looking identical. `ensureRos` checks the CONTENT TYPE instead:
+  `application/json` is a real file, `text/html` is the catch-all answering for something that
+  is not there. Vercel sends `nosniff`, so the header can be trusted. Any future
+  sometimes-absent data file needs the same treatment.
 - `build-ros.js --simulate 2025:8 --write` produces a REAL FILE from simulated data, which is the
   only way to build the pages that read it before September. It is stamped `meta.simulated`, the
   UI prints a red warning when it sees the stamp, and **tests/ros.test.js FAILS if a stamped file
