@@ -181,6 +181,10 @@ function rankOf(player, rankings) {
     const hit = list.find(r => r.name === player.name);
     if (hit && board === 'overall') {
       return compact({
+        // EVERY FIGURE CARRIES ITS SEASON. This one did not, and the model
+        // reasonably read the projection as belonging to the season beside it
+        // in the context — reporting a 2026 forecast as a 2025 result.
+        projectionForSeason: (rankings.meta && rankings.meta.season) || null,
         overallRank: hit.rank, projectedPoints: hit.median, projectedPPG: hit.ppg,
         floor: hit.floor, ceiling: hit.ceiling,
         availabilityPct: hit.availability && hit.availability.pct,
@@ -327,7 +331,10 @@ function buildContext(question, opts) {
     dataAsOf: meta.lastUpdated || meta.generated || null,
     scoringFormat: 'Half-PPR, 1QB, 12-team redraft',
     noPlayerMatched: people.length ? null
-      : 'No player in the 350-man pool matched this question. Say so rather than answering from general knowledge.',
+      : 'No player in the 350-man pool matched this question. This engine answers from player and team '
+        + 'rows on file — production, charting, field position, usage, rankings and medical history. It does '
+        + 'not forecast games, rank teams against each other, or speculate. Say which of those this is, and '
+        + 'do not answer from general knowledge.',
   });
 }
 

@@ -174,6 +174,16 @@ test('every figure travels with the season it belongs to', () => {
   if (p.production) assert.ok(p.production.season, 'production carries no season');
   if (p.charting) assert.ok(p.charting.season, 'charting carries no season');
   if (p.fieldMap) assert.ok(p.fieldMap.season, 'the field map carries no season');
+  // The projection was the one that did not, and the model read it as belonging
+  // to the season sitting beside it — reporting a 2026 forecast as 2025 fact.
+  if (p.ranking) {
+    assert.ok(p.ranking.projectionForSeason, 'the projection carries no season');
+    const production = p.production && Number(p.production.season);
+    if (production) {
+      assert.notStrictEqual(Number(p.ranking.projectionForSeason), production,
+        'the projection season equals the production season — one of them is mislabelled');
+    }
+  }
 });
 
 test('the context stays small enough to send', () => {
