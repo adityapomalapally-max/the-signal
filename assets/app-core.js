@@ -185,6 +185,30 @@ let currentRankView = 'chart';
 let rankShowAvail = true;
 const RANK_CHART_CAP = 40;
 
+// Caveats are a LIST and they render as one. Every data file here keeps its
+// caveats as separate entries — each one is a different thing the reader has to
+// know — and three separate render sites were joining them back together with a
+// space, producing 100-to-150-word blocks that nobody finishes. The Rankings
+// page had the worst of it at 280 words.
+//
+// Takes an array or a single string, so a file that has not been migrated to an
+// array yet still renders sensibly; a string is split on sentence boundaries
+// rather than dumped whole.
+function caveatHtml(caveats, cls) {
+  if (!caveats) return '';
+  let parts = Array.isArray(caveats) ? caveats.slice() : [String(caveats)];
+  if (parts.length === 1 && parts[0].split(/\s+/).length > 60) {
+    // One long string: break it at sentence ends, then regroup into chunks of
+    // roughly two sentences so the result is paragraphs rather than a list.
+    const sentences = parts[0].match(/[^.!?]+[.!?]+(\s|$)/g) || [parts[0]];
+    parts = [];
+    for (let i = 0; i < sentences.length; i += 2) {
+      parts.push(sentences.slice(i, i + 2).join('').trim());
+    }
+  }
+  return parts.filter(Boolean).map(c => `<p class="caveat-p">${rankEsc(c)}</p>`).join('');
+}
+
 function rankEsc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');

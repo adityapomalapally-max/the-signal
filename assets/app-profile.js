@@ -92,12 +92,49 @@ function closeProfile() {
 // no element to hand over. Without the fallback the function threw on
 // `el.classList`, which aborted before renderProfileTab and left the profile
 // with no active tab at all.
+// A TAB SET IS NOT FOUR BUTTONS. They were four clickable divs: reachable,
+// because the a11y promoter gives every clickable a button role and a tab stop,
+// but a screen reader heard four unrelated buttons with no way to know which
+// was selected or how many there were. They are real tabs now, which means the
+// selected state has to be kept in aria-selected as well as in the class, and
+// the arrow keys have to work — a tablist that only responds to Tab is the
+// wrong half of the pattern.
 function switchProfileTab(tab, el) {
   const target = el || document.querySelector(`.profile-tab[data-tab="${tab}"]`);
-  document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
-  if (target) target.classList.add('active');
+  document.querySelectorAll('.profile-tab').forEach(t => {
+    t.classList.remove('active');
+    t.setAttribute('aria-selected', 'false');
+    // Roving tabindex: one stop for the whole set, then arrows move within it.
+    // Four separate stops makes a reader tab through every tab to leave.
+    t.setAttribute('tabindex', '-1');
+  });
+  if (target) {
+    target.classList.add('active');
+    target.setAttribute('aria-selected', 'true');
+    target.setAttribute('tabindex', '0');
+    const panel = document.getElementById('profileContent');
+    if (panel && target.id) panel.setAttribute('aria-labelledby', target.id);
+  }
   renderProfileTab(tab);
 }
+
+// Left/Right move between tabs, Home/End jump to the ends — the behaviour a
+// screen-reader user expects the moment role="tablist" is announced.
+document.addEventListener('keydown', e => {
+  const cur = e.target && e.target.classList && e.target.classList.contains('profile-tab') ? e.target : null;
+  if (!cur) return;
+  const tabs = [...document.querySelectorAll('.profile-tab')];
+  const i = tabs.indexOf(cur);
+  let next = null;
+  if (e.key === 'ArrowRight') next = tabs[(i + 1) % tabs.length];
+  else if (e.key === 'ArrowLeft') next = tabs[(i - 1 + tabs.length) % tabs.length];
+  else if (e.key === 'Home') next = tabs[0];
+  else if (e.key === 'End') next = tabs[tabs.length - 1];
+  if (!next) return;
+  e.preventDefault();
+  switchProfileTab(next.dataset.tab, next);
+  next.focus();
+});
 
 function renderProfileTab(tab) {
   const player = playersDB.find(p => p.id === currentProfileId);

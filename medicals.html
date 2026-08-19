@@ -791,13 +791,13 @@
       </div>
       <button class="profile-close" onclick="closeProfile()" aria-label="Close player profile">✕</button>
     </div>
-    <div class="profile-tabs">
-      <div class="profile-tab active" data-tab="overview" onclick="switchProfileTab('overview', this)">Overview</div>
-      <div class="profile-tab" data-tab="stats" onclick="switchProfileTab('stats', this)">Stats</div>
-      <div class="profile-tab" data-tab="fantasy" onclick="switchProfileTab('fantasy', this)">Fantasy</div>
-      <div class="profile-tab" data-tab="medical" onclick="switchProfileTab('medical', this)">Medical</div>
+    <div class="profile-tabs" role="tablist" aria-label="Player profile sections">
+      <button type="button" class="profile-tab active" role="tab" id="ptab-overview" aria-selected="true" aria-controls="profileContent" tabindex="0" data-tab="overview" onclick="switchProfileTab('overview', this)">Overview</button>
+      <button type="button" class="profile-tab" role="tab" id="ptab-stats" aria-selected="false" aria-controls="profileContent" tabindex="-1" data-tab="stats" onclick="switchProfileTab('stats', this)">Stats</button>
+      <button type="button" class="profile-tab" role="tab" id="ptab-fantasy" aria-selected="false" aria-controls="profileContent" tabindex="-1" data-tab="fantasy" onclick="switchProfileTab('fantasy', this)">Fantasy</button>
+      <button type="button" class="profile-tab" role="tab" id="ptab-medical" aria-selected="false" aria-controls="profileContent" tabindex="-1" data-tab="medical" onclick="switchProfileTab('medical', this)">Medical</button>
     </div>
-    <div class="profile-content" id="profileContent"></div>
+    <div class="profile-content" id="profileContent" role="tabpanel" aria-labelledby="ptab-overview" tabindex="0"></div>
   </div>
 </div>
 

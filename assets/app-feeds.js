@@ -72,8 +72,7 @@ async function renderInjuryCurves() {
 
   h += `<div style="font-size:11.5px;color:var(--text-muted);font-style:italic;line-height:1.7;margin-top:18px;max-width:900px;">
     ${rankEsc(data.meta.method)}</div>`;
-  h += `<div style="font-size:11.5px;color:var(--text-muted);font-style:italic;line-height:1.7;margin-top:10px;max-width:900px;">
-    ${rankEsc(data.meta.caveats)}</div>`;
+  h += `<div class="caveat-block">${caveatHtml(data.meta.caveats)}</div>`;
   el.innerHTML = h;
 }
 
@@ -1385,7 +1384,7 @@ function bodyPanelHtml(key) {
   h += `</div>`;
 
   if (Array.isArray(meta.caveats)) {
-    h += `<div class="body-note body-caveats">${meta.caveats.map(c => rankEsc(c)).join(' ')}</div>`;
+    h += `<div class="body-note body-caveats">${caveatHtml(meta.caveats)}</div>`;
   }
   return h;
 }

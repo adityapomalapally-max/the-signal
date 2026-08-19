@@ -226,14 +226,21 @@ async function main() {
       'dropped rather than guessed, which is what keeps suspensions and healthy scratches out. Each return ' +
       'game is indexed to that player\'s own median week before the injury, so players of different quality ' +
       'sit on one axis; the line is the median across players at each game back.',
-    caveats: 'Descriptive, not causal — role, age, scheme and the reason for the absence all move alongside ' +
-      'the injury. The pool is the top 200 fantasy players over three seasons, so these are the injuries ' +
-      'that happened to good players recently, not the league at large. Two biases both push the later ' +
-      'numbers up and neither is corrected here. A player who never came back contributes nothing, so the ' +
-      'worst outcomes are missing by construction, and the sample thins across the buckets as the players ' +
-      'who got hurt again drop out. And the games just before an absence often include games he was already ' +
-      'playing hurt, which lowers the baseline every return is measured against. Read the games-missed ' +
-      'figure as the solid one and the production line as a shape, not a forecast.',
+    // AN ARRAY, like every other file here. As one string it rendered as a
+    // 132-word block on the Medicals page, and these are four separate things a
+    // reader has to know rather than one long thought.
+    caveats: [
+      'Descriptive, not causal — role, age, scheme and the reason for the absence all move alongside '
+      + 'the injury.',
+      'The pool is the top 200 fantasy players over three seasons, so these are the injuries that '
+      + 'happened to good players recently, not the league at large.',
+      'Two biases both push the later numbers up and neither is corrected here. A player who never '
+      + 'came back contributes nothing, so the worst outcomes are missing by construction, and the '
+      + 'sample thins across the buckets as the players who got hurt again drop out.',
+      'The games just before an absence often include games he was already playing hurt, which lowers '
+      + 'the baseline every return is measured against.',
+      'Read the games-missed figure as the solid one and the production line as a shape, not a forecast.',
+    ],
     thresholds: { minMissedGames: MIN_MISSED, minBaselineGames: MIN_BASELINE_GAMES,
       minPlayersPerBucket: MIN_PLAYERS_PER_BUCKET, minAbsencesPerType: MIN_ABSENCES_PER_TYPE }
   }, types: {} };

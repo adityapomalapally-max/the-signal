@@ -1304,14 +1304,28 @@ a { color: inherit; text-decoration: none; }
   border-bottom: 1px solid var(--border);
 }
 
+/* These became real <button>s so they could carry role="tab". A button brings
+   its own background, border, font and alignment, none of which the tab strip
+   wants — the reset keeps them looking exactly as they did as divs. */
 .profile-tab {
   padding: 14px 24px;
   font-size: 13px;
   font-weight: 500;
+  font-family: inherit;
   color: var(--text-muted);
   cursor: pointer;
+  background: none;
+  border: 0;
   border-bottom: 2px solid transparent;
-  transition: all 0.2s;
+  border-radius: 0;
+  transition: color 0.2s, border-color 0.2s;
+}
+/* A keyboard user needs to see which tab they are on, and the active underline
+   is not that — it marks the OPEN tab, which is a different thing from the
+   focused one while the arrows are moving. */
+.profile-tab:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: -2px;
 }
 
 .profile-tab:hover { color: var(--text-secondary); }
@@ -2498,4 +2512,40 @@ a { color: inherit; text-decoration: none; }
   .field-table .field-cell { font-size: 11px; padding: 5px 2px; border-width: 1px; }
   .field-table th, .field-table td { padding-left: 4px; padding-right: 4px; }
   .field-group { font-size: 9px; letter-spacing: .8px; }
+}
+
+/* ── Caveat lists ──────────────────────────────────────────────────────────
+   Every data file keeps its caveats as separate entries because each is a
+   different thing the reader has to know. Three render sites were joining them
+   back into one block. */
+.caveat-p { margin: 0 0 9px; line-height: 1.75; }
+.caveat-p:last-child { margin-bottom: 0; }
+.caveat-block {
+  font-size: 11.5px; color: var(--text-muted); font-style: italic;
+  line-height: 1.7; margin-top: 10px; max-width: 900px;
+}
+.body-caveats .caveat-p { margin-bottom: 8px; }
+
+/* ── Touch targets ─────────────────────────────────────────────────────────
+   Measured: .team-chip computes to about 29px tall and .lab-metric to about
+   32px. There are thirty-two team chips in a row and they are the primary way
+   into a team page — the hardest thing on the site to hit with a thumb.
+
+   Enlarged for TOUCH, not for everyone. These are dense data controls and a
+   mouse hits a 29px chip without difficulty; padding them out on a desktop
+   would cost a row of chips for no gain. `pointer: coarse` is the real
+   condition, and the width query catches a narrow window on a touch laptop
+   where the coarse pointer is not reported.
+
+   min-height with flex centring rather than more padding, because padding has
+   to be recomputed every time a font size changes and this does not. */
+@media (pointer: coarse), (max-width: 768px) {
+  .team-chip, .lab-metric, .pos-btn, .lab-view-btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .team-chip { min-width: 46px; font-size: 11px; }
+  .lab-metric { font-size: 10.5px; }
 }

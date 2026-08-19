@@ -1889,16 +1889,30 @@ function renderValueBoard() {
   h += `</div>`;
   body.innerHTML = h;
 
-  noteEl.textContent =
-    `Showing ${shown.length} of ${total} ranked players with an ADP. Both sides are positional ranks — his rank here `
-    + `against his rank among players at his position by ADP — because that is the same scale on both sides and it is how `
-    + `a drafter argues. Comparing an overall rank to a pick number does not work: these ranks cover ${total} players and `
-    + `the ADP board covers ${vbAdp.players.length}, so anyone deep in the shorter list looks like a bargain automatically. `
-    + `Pick is the average draft slot, for knowing when he actually goes. ADP is ${m.source}'s consensus over `
-    + `${m.totalDrafts ? m.totalDrafts.toLocaleString() : 'thousands of'} ${m.format} ${m.teams}-team mock drafts since `
-    + `${m.windowStart || 'recently'} — one site's rooms, not the whole market, and mock drafters are not your league. `
-    + `A player needs ${m.minDrafts}+ drafts to appear. The edge is a disagreement, not a projection: it says where we `
-    + `differ from the room, never who is right.`;
+  // 147 words in one paragraph, covering what is shown, why the comparison is
+  // built the way it is, where the ADP comes from, and how to read the edge.
+  // Four things, so four blocks — and the two that are derivation rather than
+  // instruction sit behind a disclosure, the same treatment the Rankings
+  // methodology gets.
+  const upfront = [
+    `Showing ${shown.length} of ${total} ranked players with an ADP.`,
+    `The edge is a disagreement, not a projection: it says where these ranks differ from the room, `
+    + `never who is right. Pick is the average draft slot, for knowing when he actually goes.`,
+  ];
+  const deeper = [
+    `Both sides are positional ranks — his rank here against his rank among players at his position `
+    + `by ADP — because that is the same scale on both sides and it is how a drafter argues. `
+    + `Comparing an overall rank to a pick number does not work: these ranks cover ${total} players `
+    + `and the ADP board covers ${vbAdp.players.length}, so anyone deep in the shorter list looks `
+    + `like a bargain automatically.`,
+    `ADP is ${m.source}'s consensus over `
+    + `${m.totalDrafts ? m.totalDrafts.toLocaleString() : 'thousands of'} ${m.format} ${m.teams}-team `
+    + `mock drafts since ${m.windowStart || 'recently'} — one site's rooms, not the whole market, and `
+    + `mock drafters are not your league. A player needs ${m.minDrafts}+ drafts to appear.`,
+  ];
+  noteEl.innerHTML = caveatHtml(upfront)
+    + `<details class="rank-method"><summary>How the comparison is built</summary>`
+    + caveatHtml(deeper) + `</details>`;
 }
 
 // ===== HOME MINI-CHARTS =====
