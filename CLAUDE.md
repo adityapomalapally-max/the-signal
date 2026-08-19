@@ -548,9 +548,12 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - THE RESEARCH LAYER COVERS 20 OF 37 CONDITIONS, each with a NAMED STUDY. Not "orthopedic
   literature" — an author, a journal and a year, rendered on the page under the number it
   belongs to, because a figure whose source lives only in a data file is one the reader has to
-  take on trust. A test rejects any citation that does not name a study; it caught two
-  pre-existing entries (`high_ankle`, `turf_toe`) whose sources gestured at the literature
-  rather than citing it.
+  take on trust. A CITATION MUST CARRY A YEAR — the first version of that test accepted any
+  string containing "AJSM", which let "AJSM, orthopedic sports medicine literature" through, and
+  a journal name with no paper attached is as unfalsifiable as no citation at all. Tightening it
+  to require `(YYYY)` caught FOUR pre-existing entries — high_ankle, turf_toe, pcl and hamstring
+  — every one of the originals that had been gesturing at a body of work rather than citing one.
+  All 20 now name a dated paper.
 - A CONDITION WITHOUT RESEARCH IS LISTED AND SAYS SO. It appears because it genuinely occurs at
   that region, tagged NO SOURCED DETAIL, and the panel states we have no timeline rather than
   printing a plausible one. Two tests enforce it: `hasSourcedDetail` can never be true without a

@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-anatomy.js",
-    "builtAt": "2026-08-19T05:38:40.462Z",
+    "builtAt": "2026-08-19T05:41:49.299Z",
     "layers": {
       "frequency": "counted from data/injuries.json — the official NFL injury reports for this pool",
       "recovery": "from data/injury-curves.json, derived from those same reports",
@@ -857,14 +857,14 @@
           "note": "The most re-injured muscle in football. Coming back early is how one becomes three.",
           "research": {
             "key": "hamstring",
-            "sources": "BJSM hamstring meta-analyses, NFL injury data",
+            "sources": "Hamstring injuries in the National Football League: an epidemiological study, Journal of Clinical Orthopaedics and Trauma (2022); Jenkins et al, Risk and Prognosis of Hamstring Injuries in the National Football League: A 12-Year Review, OJSM (2024); Day et al, Correlation of Player and Imaging Characteristics With Severity and Missed Time in NFL Athletes With Hamstring Strain Injury, AJSM (2024)",
             "returnRate": 95,
             "returnRateLabel": "~95% return same season",
             "avgReturn": "2–6 weeks",
-            "reinjuryLabel": "12–33% recurrence rate within first year (highest of any soft tissue injury)",
+            "reinjuryLabel": "38.4% recurrence rate in the NFL, and a 13.4% higher reinjury risk when a player returns inside two weeks — 23% of in-season recurrences land in the very first week back",
             "performanceLabel": "Minimal production impact once fully healed. Main risk is the re-aggravation cycle.",
             "careerImpact": "Not career-threatening on its own. Becomes a pattern concern when recurring — can lead to chronic management situations.",
-            "fantasyImpact": "Short-term: miss 1-4 games. Long-term dynasty concern only if recurrence pattern develops. Speed-dependent WRs (4.4 or faster) are higher recurrence risk."
+            "fantasyImpact": "The most common soft-tissue injury that decides fantasy weeks: a third of NFL hamstring strains cost no games at all, and the mean for a non-recurrent one is 1.4. The trap is the quick return — coming back inside two weeks measurably raises the odds of doing it again, and a recurrence usually lands in the first week back."
           },
           "hasSourcedDetail": true
         },
@@ -977,13 +977,13 @@
           "note": null,
           "research": {
             "key": "pcl",
-            "sources": "AJSM, orthopedic sports medicine literature",
+            "sources": "Posterior Cruciate Ligament Injuries of the Knee at the National Football League Combine: An Imaging and Epidemiology Study — 69 of 2,285 combine players, AJSM (2018); Return to Play After Multiligament Knee Injuries in National Football League Athletes, Arthroscopy (2017); Evolving Treatment Patterns of NFL Players by Orthopaedic Team Physicians 2008–2016, OJSM (2018)",
             "returnRate": 75,
             "returnRateLabel": "~75% return to prior level",
             "avgReturn": "3–9 months",
             "reinjuryLabel": "Lower re-tear risk than ACL, but affects deceleration long-term",
             "performanceLabel": "Affects deceleration and cutting. Less devastating than ACL but still impactful for skill players.",
-            "careerImpact": "Better prognosis than ACL. Many players return to full production. Main concern is combined ligament damage.",
+            "careerImpact": "Isolated PCL is survivable; combined is not the same injury. NFL players with ACL plus PCL or LCL involvement returned at 55.6%, and only 18.5% reached their prior level.",
             "fantasyImpact": "Dynasty discount of 20-30%. Most players return to near-prior production within one season. The key variable is whether other structures were also damaged."
           },
           "hasSourcedDetail": true
@@ -1233,14 +1233,14 @@
           "note": "Technically the heel, but it presents and is reported at the ankle.",
           "research": {
             "key": "achilles",
-            "sources": "American Journal of Sports Medicine, British Journal of Sports Medicine",
+            "sources": "Return to Play Following Achilles Tendon Rupture in NFL Players Based on Position, Foot & Ankle International (2021); Epidemiology and outcomes of Achilles tendon ruptures in the National Football League, Orthopedics (2010); Career Outlook and Performance of Professional Athletes After Achilles Tendon Rupture: A Systematic Review, Foot & Ankle International (2021); Impact of Achilles tendon rupture on performance and career outcomes in NFL players: a matched cohort study, The Physician and Sportsmedicine (2026)",
             "returnRate": 38,
             "returnRateLabel": "Only 38% of WRs return (lowest of all positions)",
             "avgReturn": "~11 months",
             "reinjuryLabel": "~12% re-rupture risk within 2 years",
-            "performanceLabel": "88% reduction in power ratings over 3 years post-injury for WRs",
-            "careerImpact": "Most career-threatening injury for skill players. Average of 1 additional NFL season if they return.",
-            "fantasyImpact": "Dynasty value craters 70-80%. Most WRs never return to fantasy relevance. TEs have slightly better outcomes (~55% return rate)."
+            "performanceLabel": "Power rating down 22% and approximate value down 23% across the three years after return — a decline beyond ordinary aging",
+            "careerImpact": "26% never play in the NFL again. Return rate varies sharply by position: tight ends 71%, receivers 38%. Returning is not the same as recovering.",
+            "fantasyImpact": "The most brutal injury on this page for a skill player. Even the ones who come back are measurably worse for three years, and running backs have shown the steepest fall of any position. Treat a return-to-play headline as the start of the story rather than the end of it."
           },
           "hasSourcedDetail": true
         }

@@ -138,9 +138,15 @@ test('every researched condition carries its citation onto the page', () => {
       assert.ok(c.research.sources, `${key}/${c.name}: research with no citation attached`);
       assert.ok(c.research.sources.length > 20,
         `${key}/${c.name}: citation is too thin to check — "${c.research.sources}"`);
-      // A citation has to name something: a journal, a study or a year.
-      assert.match(c.research.sources, /\(\d{4}\)|[A-Z][a-z]+ et al|Journal|AJSM|OJSM|BJSM|KSSTA/,
-        `${key}/${c.name}: "${c.research.sources}" does not name a study`);
+      // A YEAR, not just a journal name. The first version of this check accepted
+      // any citation containing "AJSM", which let "AJSM, orthopedic sports
+      // medicine literature" through — a journal with no study attached is as
+      // unfalsifiable as no citation at all. A year means a specific paper.
+      assert.match(c.research.sources, /\(\d{4}\)/,
+        `${key}/${c.name}: "${c.research.sources}" names no dated study`);
+      assert.ok(!/\bliterature\b|\breports\b(?!,)/i.test(c.research.sources)
+        || /\(\d{4}\)/.test(c.research.sources),
+        `${key}/${c.name}: gestures at a body of work instead of citing one`);
       checked++;
     }
   }
