@@ -93,3 +93,54 @@ test('a nav href matches the page it switches to', () => {
     }
   }
 });
+
+test('the bar collapses before it stops fitting', () => {
+  // This has broken twice, both times by adding a section: the ninth item
+  // squeezed the search until its label wrapped into the subscribe button, and
+  // the tenth pushed the whole bar past the viewport so the DOCUMENT scrolled
+  // sideways between 768px and about 990px.
+  //
+  // The width is estimable from the labels, because the nav is one row of text
+  // at a known size. Calibrated against the browser: ten items measured 731px
+  // and this estimate puts them at 755 — deliberately over, so the guard trips
+  // early rather than late.
+  const CSS = fs.readFileSync(path.join(__dirname, '..', 'assets', 'styles.css'), 'utf8');
+  const items = nav('nav-item');
+  const PER_ITEM_PADDING = 20, PER_CHAR = 7.5;
+  const LOGO = 107, SUBSCRIBE = 98, CHROME = 68;
+
+  const label = t => t.replace(/&amp;/g, '&');
+  const navWidth = items.reduce((sum, i) => sum + PER_ITEM_PADDING + label(i.label).length * PER_CHAR, 0);
+  const needed = Math.ceil(LOGO + navWidth + SUBSCRIBE + CHROME);
+
+  // The breakpoint at which .nav-center stops being displayed.
+  const blocks = [...CSS.matchAll(/@media\s*\(max-width:\s*(\d+)px\)\s*\{([\s\S]*?)\n\}/g)];
+  const collapses = blocks
+    .filter(([, , body]) => /\.nav-center\s*\{[^}]*display:\s*none/.test(body))
+    .map(([, px]) => Number(px));
+  assert.ok(collapses.length, 'nothing hides .nav-center — the bar never collapses to the drawer');
+
+  const widest = Math.max(...collapses);
+  assert.ok(widest >= needed,
+    `the bar needs about ${needed}px for ${items.length} sections but only collapses at ${widest}px — `
+    + `between those two widths it overflows and scrolls the whole page sideways`);
+});
+
+test('each step of the header ladder sits above what the step below needs', () => {
+  // The search is hidden in stages. If a stage fires too late the bar is
+  // already too wide by the time it helps.
+  const CSS = fs.readFileSync(path.join(__dirname, '..', 'assets', 'styles.css'), 'utf8');
+  const at = (re) => {
+    const blocks = [...CSS.matchAll(/@media\s*\(max-width:\s*(\d+)px\)\s*\{([\s\S]*?)\n\}/g)];
+    const hit = blocks.filter(([, , body]) => re.test(body)).map(([, px]) => Number(px));
+    return hit.length ? Math.max(...hit) : null;
+  };
+  const collapse = at(/\.nav-center\s*\{[^}]*display:\s*none/);
+  const hideSearch = at(/\.nav-search\s*\{[^}]*display:\s*none/);
+  const dropLabel = at(/\.nav-search span\s*\{[^}]*display:\s*none/);
+  assert.ok(collapse && hideSearch && dropLabel, 'the ladder is missing a step');
+  assert.ok(hideSearch > collapse,
+    `the search is hidden at ${hideSearch}px but the sections survive to ${collapse}px — the search should go first`);
+  assert.ok(dropLabel > hideSearch,
+    `the search label drops at ${dropLabel}px, at or below where the whole search goes (${hideSearch}px)`);
+});

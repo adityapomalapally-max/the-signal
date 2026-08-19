@@ -2443,12 +2443,12 @@ a { color: inherit; text-decoration: none; }
   /* Buy room from the padding before taking anything away. */
   .nav-item { padding-left: 10px; padding-right: 10px; }
 }
-@media (max-width: 1180px) {
+@media (max-width: 1240px) {
   /* Then drop the search label, keeping the shortcut as the affordance. */
   .nav-search span { display: none; }
   .nav-search { padding: 7px 10px; }
 }
-@media (max-width: 1040px) {
+@media (max-width: 1100px) {
   /* Then the search itself. The sections are the navigation; the search is a
      shortcut to a page that has its own search box at the top. */
   .nav-search { display: none; }
@@ -2599,4 +2599,27 @@ a { color: inherit; text-decoration: none; }
   .ask-card { padding: 18px 16px; }
   .ask-answer { font-size: 14.5px; }
   .ask-ex { font-size: 12px; }
+}
+
+/* ── Header: when the bar stops fitting ────────────────────────────────────
+   The desktop nav collapsed to the hamburger at 768px, which was right when it
+   held eight sections. It now holds ten, and measured at 796px the bar needed
+   936px — so between 768 and roughly 990 the nav overflowed and dragged the
+   whole document sideways. That is the failure this repo has a standing rule
+   about, arrived at from the other direction: a grid track wider than its
+   container scrolls the page, and so does a nav.
+
+   The breakpoint belongs to the CONTENT, not to a round number. Measured: the
+   ten items are 731px, the logo 107, the subscribe button 98, and the chrome
+   around them 68 — so the bar needs 1,004px before the search is even
+   considered. Each step of the ladder sits above what the step below it needs:
+   1040 to keep the sections, 1100 to keep an icon-sized search, 1240 to keep
+   its label. The test estimates the width conservatively from the labels, so
+   it trips early rather than late — which is why this is 1040 and not 1004. The rules mirror the 768px block rather than replacing it,
+   because that block also carries the phone layout for everything else. */
+@media (max-width: 1040px) {
+  .nav-center { display: none; }
+  .nav-search { display: none; }
+  .hamburger { display: flex; }
+  .nav-main { padding: 0 20px; }
 }
