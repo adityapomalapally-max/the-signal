@@ -321,6 +321,47 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - A charted pass with no `receiver_player_id` counts for the TEAM and for nobody in particular.
   That is the honest split: the play happened, the attribution did not.
 
+## One global scope, five files
+- The asset scripts are CLASSIC SCRIPTS SHARING ONE GLOBAL SCOPE, which is deliberate — the markup
+  carries ~108 inline onclick handlers and an inline handler can only see globals. The cost is that a
+  duplicated top-level `let` or `const` is a SyntaxError, and it fails in the worst possible way.
+- FUNCTION DECLARATIONS STILL HOIST. The dead file's functions all appear on window, so the site looks
+  loaded. Its `let` bindings never initialise, so the first read throws ReferenceError from somewhere
+  unrelated — `let usagePromise` in app-pages.js collided with app-profile.js, app-profile.js died,
+  the router threw on `currentProfileId`, and EVERY DEEP LINK ON THE SITE fell back to the home page.
+  Nothing appeared in the console, because the error is at parse time on a file the page still lists.
+- `tests/globals.test.js` reads the load order out of index.html and fails on any top-level name
+  declared twice. THE FIRST VERSION OF THAT CHECK ONLY READ THE FIRST NAME in `let a = null, b = null`
+  — which is exactly the shape that got through — so the multi-declarator parse is asserted on its own.
+- Diagnosing this from the browser needs a `<script src>` and `window.addEventListener('error')`. A
+  parse error does not surface in a try/catch, does not appear in the console listing, and `typeof`
+  on the missing binding just says "undefined". What identifies it is that the file's FUNCTIONS exist
+  while its LETS do not.
+
+## Weekly usage — what a player was given
+- `data/weekly-usage.json`, the fifth output of the one pbp download, joined to `snap_counts` on PFR
+  id via lib/ids.js rather than by name. Snap counts ship per game; `offense_pct` is a FRACTION (1 =
+  every snap), and published unconverted a full-time starter reads as 1% and the board ranks the
+  league upside down.
+- SHARES NEED A TEAM DENOMINATOR AND THE POOL CANNOT PROVIDE ONE. The 350-player pool is the
+  fantasy-relevant players, not every player, so team totals from it are short by whatever the
+  unrostered receivers caught — every share comes out too high, by a different amount for every team,
+  which is invisible in aggregate and changes who ranks where. Denominators come from pbp.
+- WOPR TAKES DECIMALS, NOT PERCENTAGES. `1.5 x target share + 0.7 x air-yards share` with shares as
+  decimals. Fed percentages it produces a number a hundred times too large THAT RANKS EVERYONE IN THE
+  SAME ORDER, so nothing about the board looks wrong — it is just not WOPR any more, quoted against a
+  published scale where 0.6 is a WR1.
+- THE COMPARISON IS A PLAYER AGAINST HIMSELF, over his own previous four weeks. A 60% snap share means
+  one thing for a committee back and another for a starter; the only reading that travels is direction.
+- WEEK 18 IS NOT A NORMAL WEEK and the board says so when showing one. Teams with seeding settled rest
+  starters, so the biggest movers are rest days shaped exactly like demotions.
+- ROUTES RUN IS NOT AVAILABLE. Yards per route run is the other metric this layer wants; route
+  participation is charted by PFF and FTN, not recorded in play-by-play. Snap share is the closest free
+  substitute and is a different thing — a receiver on the field for a run play ran no route.
+- External check: 83% of qualified receivers land within three points of the season target share in
+  stats.json, built independently. The residual is the real difference between averaging weekly shares
+  and aggregating a season.
+
 ## In Season — the matchup board
 - `data/matchups.json`, built by `scripts/build-matchups.js` from `data/weekly` — no new download, the
   weekly shards already carry `opp` and `fpts` for 8,524 player-games across three seasons. In the
