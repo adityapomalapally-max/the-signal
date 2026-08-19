@@ -567,6 +567,22 @@ const FIELD_METRICS = {
   QB: FIELD_PASS_METRICS, WR: FIELD_REC_METRICS, TE: FIELD_REC_METRICS, RB: FIELD_RUSH_METRICS,
 };
 
+// Why each column carries its own scale, said in terms of the position being
+// read. The QB sentence was hardcoded and ran under the running-back board,
+// explaining deep throws over a table of gaps.
+function fieldScaleReason() {
+  if (labPos === 'RB') {
+    return 'a goal-line carry gains a fraction of an open-field one for everybody, so a shared scale '
+      + 'would rank the situations instead of the backs.';
+  }
+  if (labPos === 'QB') {
+    return 'every passer completes far more short throws than deep ones, so a shared scale would '
+      + 'paint the deep column blue and say nothing about who is good at it.';
+  }
+  return 'catch rate falls with depth for everybody, so a shared scale would rank the zones instead '
+    + 'of the players in them.';
+}
+
 function fieldQualifier() {
   const q = labFieldmap && labFieldmap.meta && labFieldmap.meta.qualifiers;
   if (!q) return '';
@@ -736,7 +752,7 @@ function fieldLegend(m) {
     + `<span class="field-legend-label">Below the ${labPos} average</span>`
     + FIELD_COOL.slice().reverse().map(swatch).join('') + swatch(FIELD_NEUTRAL) + FIELD_WARM.map(swatch).join('')
     + `<span class="field-legend-label">Above it</span>`
-    + `<span class="field-legend-note">Warm is ${rankEsc(dir)}. Each column is scaled on its own — every passer completes more short throws than deep ones, so a shared scale would paint the deep column blue and say nothing about who is good at it.</span>`
+    + `<span class="field-legend-note">Warm is ${rankEsc(dir)}. Each column is scaled on its own, because the columns are not comparable — ${rankEsc(fieldScaleReason())}</span>`
     + `</div>`;
 }
 
