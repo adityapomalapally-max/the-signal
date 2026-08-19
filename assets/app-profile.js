@@ -126,6 +126,11 @@ function renderProfileTab(tab) {
     // page about what this player's job actually is. Fills in when the data
     // lands — the tab renders immediately either way.
     html += usageHtml(currentProfileId);
+    // Usage says which package he plays in; charting says whether the offence is
+    // trying to get him the ball; the advanced splits say how much of the result
+    // was his. They read as one argument in that order.
+    html += chartingHtml(currentProfileId);
+    html += advancedHtml(currentProfileId);
     // Only schedule a redraw while the data is still missing. Re-rendering
     // unconditionally re-enters this branch, calls ensureUsage again, and the
     // cached promise resolves immediately — an infinite render loop that hangs
@@ -729,14 +734,164 @@ async function loadNgsSection(playerId, pos) {
 // Games actually missed live in the availability figure on Rankings.
 // Personnel usage, fetched only when a profile is opened.
 let usagePromise = null, usageData = null, usageScheme = null;
+let chartingData = null, advstatsData = null, contextData = null;
+// One promise for everything the overview needs, so there is ONE guard against
+// the re-render loop rather than four. Gzipped these cost about 97KB between
+// them — charting 15, advstats 63, context 19 — which is the same order as the
+// usage and scheme files already fetched here.
 function ensureUsage() {
   if (!usagePromise) {
     usagePromise = Promise.all([
       loadJSON('/data/player-usage.json').then(d => (usageData = d)),
       loadJSON('/data/scheme.json').then(d => (usageScheme = d)),
+      loadJSON('/data/charting.json').then(d => (chartingData = d)),
+      loadJSON('/data/advstats.json').then(d => (advstatsData = d)),
+      loadJSON('/data/context.json').then(d => (contextData = d)),
     ]);
   }
   return usagePromise;
+}
+
+/**
+ * WAS HE THE READ?
+ *
+ * Usage says which package he is on the field for. This says whether the
+ * offence is actually trying to get him the ball, which volume cannot reach:
+ * ninety targets of which sixty are first reads is the centre of an offence,
+ * and ninety of which forty-five are checkdowns is a safety valve who happens
+ * to be out there when a play breaks down.
+ */
+function chartingHtml(playerId) {
+  if (!chartingData || !chartingData.seasons) return '';
+  const years = (chartingData.meta.seasons || []).slice().sort();
+  const season = years[years.length - 1];
+  const box = chartingData.seasons[season];
+  const c = box && box.players[playerId];
+  if (!c || !c.chartedTargets) return '';
+
+  const player = playersDB.find(x => x.id === playerId);
+  const team = player && box.teams[player.team];
+  const depth = contextData && contextData.depthChart && contextData.depthChart[playerId];
+
+  const bar = (label, pct, colour, note) => `<div style="margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:3px;">
+        <span>${rankEsc(label)}</span>
+        <span style="font-family:var(--mono);font-size:11.5px;">${pct.toFixed(1)}%${note ? ` <span style="color:var(--text-muted);">${rankEsc(note)}</span>` : ''}</span>
+      </div>
+      <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
+        <div style="height:100%;width:${Math.max(2, Math.min(100, pct))}%;background:${colour};"></div>
+      </div>
+    </div>`;
+
+  let h = `<div class="medical-card" style="margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px;">
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">Was he the read?</span>
+      <span style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);">${season} · ${c.chartedTargets} CHARTED TARGETS</span>
+    </div>
+    <div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;margin-bottom:10px;">Which read the quarterback threw to. Volume says how often he got the ball; this says whether the play was designed to give it to him.</div>`;
+
+  h += bar('First read', c.firstReadRate, 'var(--gold)', 'the throw the play was built for');
+  h += bar('Checkdown', c.checkdownRate, 'var(--blue)', 'the play broke down');
+  h += bar('Catchable', c.catchableRate, 'var(--teal)');
+  if (c.contestedRate) h += bar('Contested', c.contestedRate, 'var(--teal)');
+
+  // The sentence only appears when the split is decisive enough to carry one.
+  if (c.firstReadRate >= 60) {
+    h += `<div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;margin-top:10px;">Two thirds or more of his targets were the quarterback's <strong style="color:var(--text);">first read</strong>. This offence is built to throw to him, not to find him when nothing else is open.</div>`;
+  } else if (c.checkdownRate >= 30) {
+    h += `<div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;margin-top:10px;">Nearly a third of his targets were <strong style="color:var(--text);">checkdowns</strong> — the ball arriving because the play broke down rather than because it was meant to. Volume built this way is harder to rely on week to week.</div>`;
+  }
+
+  const bits = [];
+  if (team) bits.push(`his offence ran play-action on ${team.playActionRate}% of dropbacks and screens on ${team.screenRate}%`);
+  if (depth) bits.push(`he is listed ${depth.positionRank === 1 ? 'first' : depth.positionRank} at ${rankEsc(depth.position)} on ${rankEsc(depth.team)}'s published depth chart`);
+  if (bits.length) {
+    h += `<div style="font-size:12px;color:var(--text-muted);line-height:1.7;margin-top:10px;">For context, ${bits.join('; and ')}. A depth chart is what a team publishes, not what it does.</div>`;
+  }
+
+  h += `<div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.6;margin-top:10px;">Rates are a share of his own charted targets. ${rankEsc(chartingData.meta.caveats[1])}</div>`;
+  h += `</div>`;
+  return h;
+}
+
+/**
+ * What he did, against what was done to him. Yards before the catch belong to
+ * the quarterback and the play call; yards after it belong to the player.
+ */
+function advancedHtml(playerId) {
+  if (!advstatsData || !advstatsData.players) return '';
+  const row = advstatsData.players[playerId];
+  if (!row || !row.seasons) return '';
+  const years = Object.keys(row.seasons).sort();
+  const season = years[years.length - 1];
+  const s = row.seasons[season];
+  if (!s) return '';
+
+  const stat = (label, value, note) => `<div style="display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:12.5px;">
+      <span style="color:var(--text-secondary);">${rankEsc(label)}${note ? `<span style="color:var(--text-muted);font-size:11px;"> ${rankEsc(note)}</span>` : ''}</span>
+      <span style="font-family:var(--mono);font-size:11.5px;white-space:nowrap;">${rankEsc(String(value))}</span>
+    </div>`;
+
+  // Every leaderboard on this site states its qualifier and excludes what falls
+  // under it, and these splits need the same discipline. A receiver with four
+  // carries renders a rushing block whose "1.3 yards after contact" is one jet
+  // sweep wearing a rate's clothes — and it collided with the receiving block
+  // for the same player, printing "Broken tackles" twice with different numbers.
+  const QUALIFY = { receiving: 10, rushing: 25, passing: 50 };
+  const shows = {
+    receiving: s.receiving && (s.receiving.rec || 0) >= QUALIFY.receiving,
+    rushing: s.rushing && (s.rushing.attempts || 0) >= QUALIFY.rushing,
+    passing: s.passing && (s.passing.attempts || 0) >= QUALIFY.passing,
+  };
+  const multiple = Object.values(shows).filter(Boolean).length > 1;
+  const head = (label) => multiple
+    ? `<div style="font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin:10px 0 4px;">${label}</div>`
+    : '';
+
+  let rows = '';
+  if (shows.receiving) {
+    const r = s.receiving;
+    rows += head('Receiving');
+    if (r.ybcPerRec != null && r.yacPerRec != null) {
+      const total = r.ybcPerRec + r.yacPerRec;
+      const share = total ? Math.round(100 * r.yacPerRec / total) : 0;
+      rows += stat('Yards before the catch', `${r.ybcPerRec} / rec`, 'the quarterback');
+      rows += stat('Yards after the catch', `${r.yacPerRec} / rec`, 'him');
+      rows += `<div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin:6px 0 10px;">
+        <div style="height:100%;width:${100 - share}%;background:var(--teal);float:left;"></div>
+        <div style="height:100%;width:${share}%;background:var(--gold);float:left;"></div>
+      </div>
+      <div style="font-size:11.5px;color:var(--text-muted);margin-top:-6px;margin-bottom:8px;">${share}% of his receiving yards came after the catch.</div>`;
+    }
+    if (r.aDOT != null) rows += stat('Average depth of target', r.aDOT, 'how far downfield he is used');
+    if (r.brokenTackles != null) rows += stat('Broken tackles', r.brokenTackles);
+    if (r.drops != null) rows += stat('Drops', `${r.drops}${r.dropPct != null ? ` (${(r.dropPct * 100).toFixed(1)}%)` : ''}`);
+  }
+  if (shows.rushing) {
+    const r = s.rushing;
+    rows += head('Rushing');
+    if (r.ybcPerAttempt != null) rows += stat('Yards before contact', `${r.ybcPerAttempt} / att`, 'the blocking');
+    if (r.yacPerAttempt != null) rows += stat('Yards after contact', `${r.yacPerAttempt} / att`, 'him');
+    if (r.brokenTackles != null) rows += stat('Broken tackles', r.brokenTackles);
+  }
+  if (shows.passing) {
+    const r = s.passing;
+    rows += head('Passing');
+    if (r.pressurePct != null) rows += stat('Pressured on', `${r.pressurePct}%`, 'of dropbacks');
+    if (r.pocketTime != null) rows += stat('Time in the pocket', `${r.pocketTime}s`);
+    if (r.onTargetPct != null) rows += stat('On-target throws', `${r.onTargetPct}%`, 'accuracy, minus his receivers\' hands');
+    if (r.dropPctByReceivers != null) rows += stat('Dropped by receivers', `${r.dropPctByReceivers}%`);
+  }
+  if (!rows) return '';
+
+  return `<div class="medical-card" style="margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px;">
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">What he did, and what was done to him</span>
+      <span style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);">${season}</span>
+    </div>
+    ${rows}
+    <div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.6;margin-top:10px;">${rankEsc(advstatsData.meta.caveats[0])}</div>
+  </div>`;
 }
 
 /**

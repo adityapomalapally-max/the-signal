@@ -367,7 +367,7 @@ let teamsData = null, currentTeam = null, sosData = null, sosPos = 'WR';
 let teamsPromise = null;
 // Scheme is 216KB and only the Teams page reads it, so it is fetched when that
 // page opens and never on first paint.
-let schemePromise = null, schemeData = null, callerData = null;
+let schemePromise = null, schemeData = null, callerData = null, schemeCharting = null;
 function ensureScheme() {
   if (!schemePromise) {
     schemePromise = Promise.all([
@@ -375,6 +375,9 @@ function ensureScheme() {
       // Small, hand-kept, and allowed to be absent or half-filled. An unknown
       // play-caller shows the head coach alone rather than a guess.
       loadJSON('/data/playcallers.json').then(d => (callerData = d)).catch(() => null),
+      // How the offence throws, beside what personnel it lines up in. Same page,
+      // same question, so it rides on the same fetch.
+      loadJSON('/data/charting.json').then(d => (schemeCharting = d)).catch(() => null),
     ]);
   }
   return schemePromise;
@@ -1588,6 +1591,52 @@ function schemeLeagueHtml() {
 // The other half of a team's identity. Coverage only exists on a dropback, so
 // every rate here is a share of PASS snaps — dividing by all snaps would halve
 // each number and make an aggressive defence read as a passive one.
+/**
+ * HOW THEY THROW, as opposed to what they line up in.
+ *
+ * Personnel is intent about the shape of the field. This is intent about the
+ * dropback itself — whether an offence leans on play-action, lives on screens,
+ * or asks its quarterback to win from a static pocket. Every rate is a share of
+ * DROPBACKS, because dividing by all snaps halves them and makes a play-action
+ * offence read as a conventional one.
+ */
+function schemePassingHtml(team, season) {
+  if (!schemeCharting || !schemeCharting.seasons) return '';
+  const box = schemeCharting.seasons[season];
+  const c = box && box.teams[team];
+  if (!c || !c.dropbacks) return '';
+
+  // A league baseline, or the number means nothing on its own.
+  const all = Object.values(box.teams).filter(x => x.dropbacks);
+  const avg = (k) => all.reduce((s, x) => s + (x[k] || 0), 0) / all.length;
+
+  const row = (label, value, leagueAvg, note) => {
+    const d = +(value - leagueAvg).toFixed(1);
+    const cmp = Math.abs(d) < 1
+      ? '<span style="color:var(--text-muted);"> = league</span>'
+      : `<span style="color:${d > 0 ? 'var(--gold)' : 'var(--text-muted)'};"> ${d > 0 ? '+' : ''}${d} vs league</span>`;
+    return `<div style="display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:12.5px;">
+      <span style="color:var(--text-secondary);">${rankEsc(label)}${note ? `<span style="color:var(--text-muted);font-size:11px;"> ${rankEsc(note)}</span>` : ''}</span>
+      <span style="font-family:var(--mono);font-size:11.5px;white-space:nowrap;">${value}%${cmp}</span>
+    </div>`;
+  };
+
+  let h = `<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+      <span style="font-family:var(--mono);font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">How they throw</span>
+      <span style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);">${season} · ${c.dropbacks} DROPBACKS</span>
+    </div>`;
+  h += row('Play-action', c.playActionRate, avg('playActionRate'));
+  h += row('Screens', c.screenRate, avg('screenRate'));
+  h += row('RPO', c.rpoRate, avg('rpoRate'));
+  h += row('Motion', c.motionRate, avg('motionRate'));
+  h += row('No huddle', c.noHuddleRate, avg('noHuddleRate'));
+  h += row('Blitzed', c.blitzFacedRate, avg('blitzFacedRate'), 'by opponents');
+  h += `<div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.6;margin-top:8px;">Share of dropbacks, not of all snaps. Charted by FTN; the standard is not identical across seasons.</div>`;
+  h += `</div>`;
+  return h;
+}
+
 function schemeDefenseHtml(def, leagueDef, season) {
   if (!def || !def.passSnaps) return '';
   const cmp = (v, l) => {
@@ -1741,6 +1790,7 @@ function schemeHtml(team) {
     h += `</div>`;
   }
 
+  h += schemePassingHtml(team, latest);
   h += schemeDefenseHtml(cur.defense, lg && lg.defense, latest);
 
   h += `<div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.7;margin-top:14px;">`
