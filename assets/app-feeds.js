@@ -77,16 +77,98 @@ async function renderInjuryCurves() {
   el.innerHTML = h;
 }
 
+/**
+ * The injury-type cards.
+ *
+ * TWO THINGS WERE WRONG HERE.
+ *
+ * The cards led with an EMOJI — a leg, a foot, a brain — which was the only
+ * place on the site using emoji as a visual language, on the one page where
+ * tone matters most. A torn Achilles is somebody's career and it was being
+ * illustrated like a chat message.
+ *
+ * And every card carried the bare figure "Return: 65%" with nothing saying what
+ * returns. The meaning was in the data the whole time — injury-research.json
+ * holds `returnRateLabel: "60–69% of WRs return"` — and the card dropped it.
+ * A number this consequential without its unit is not a fact, it is a
+ * Rorschach test: a reader can as easily take it for a chance of full recovery,
+ * or of playing again at all.
+ *
+ * `inj.icon` is left in the data — it is hand-written research and not worth a
+ * migration — but nothing renders it.
+ */
 function renderInjuryTypeGrid() {
   const grid = document.getElementById('injuryTypeGrid');
   if (!grid) return;
-  grid.innerHTML = Object.entries(injuryResearch).map(([key, inj]) => `
-    <div class="medical-card" style="cursor:pointer;padding:16px;text-align:center;transition:all 0.2s;" onclick="showInjuryDetail('${key}')" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
-      <div style="font-size:28px;margin-bottom:8px;">${inj.icon}</div>
-      <div style="font-weight:600;font-size:14px;margin-bottom:4px;">${inj.name}</div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);">Return: ${inj.returnRate}%</div>
-    </div>
-  `).join('');
+  grid.innerHTML = Object.entries(injuryResearch).map(([key, inj]) => {
+    const rate = typeof inj.returnRate === 'number' ? inj.returnRate : null;
+    // The bar is the figure. A number read against a drawn scale is harder to
+    // misread than a number sitting on its own.
+    const bar = rate === null ? '' : `<div class="inj-bar"><div class="inj-bar-fill" style="width:${Math.max(2, Math.min(100, rate))}%;"></div></div>`;
+    return `<button type="button" class="inj-card" onclick="showInjuryDetail('${rankEsc(key)}')">
+      <div class="inj-name">${rankEsc(inj.name)}</div>
+      ${rate === null ? '' : `<div class="inj-figure">${rate}<span class="inj-figure-unit">%</span></div>`}
+      ${bar}
+      <div class="inj-caption">${rankEsc(inj.returnRateLabel || 'return rate')}</div>
+      ${inj.avgReturn ? `<div class="inj-sub">${rankEsc(inj.avgReturn)} out</div>` : ''}
+    </button>`;
+  }).join('');
+}
+
+/**
+ * WHO IS HURT TODAY.
+ *
+ * The page opened on a research tool, and the 287 medical profiles — the
+ * substance — began 2,280 pixels down. But the question a reader actually
+ * arrives with is not "how do ACLs heal in general", it is "is anyone on my
+ * team hurt right now". That is a live answer the site already had and never
+ * led with.
+ *
+ * Counted from the same live status the rest of the site uses, so it can never
+ * disagree with a player's own badge.
+ */
+function renderInjuryToday() {
+  const el = document.getElementById('injuryToday');
+  if (!el || !playersDB.length) return;
+
+  const hurt = playersDB.filter(p => p.statusClass && p.statusClass !== 'status-healthy');
+  const out = hurt.filter(p => p.statusClass === 'status-out');
+  const quest = hurt.filter(p => p.statusClass === 'status-quest');
+
+  // Ranked players first — a reader cares about the ones he might actually
+  // start. Everyone else is still counted, just not listed.
+  const notable = out.concat(quest)
+    .filter(p => p.fRank)
+    .sort((a, b) => (fRankValue(a.fRank) ?? 999) - (fRankValue(b.fRank) ?? 999))
+    .slice(0, 12);
+
+  let h = `<div class="today-head">
+      <span class="lab-title">Hurt today</span>
+      <span class="lab-qual">LIVE FROM THE INJURY FEED · ${hurt.length} OF ${playersDB.length} CARRYING A DESIGNATION</span>
+    </div>`;
+  h += `<div class="today-counts">
+      <div><div class="today-count">${out.length}</div><div class="today-count-label">Out, PUP, IR or doubtful</div></div>
+      <div><div class="today-count">${quest.length}</div><div class="today-count-label">Questionable</div></div>
+      <div><div class="today-count">${playersDB.length - hurt.length}</div><div class="today-count-label">No designation</div></div>
+    </div>`;
+
+  if (notable.length) {
+    // A label, because the list below flows in columns of the same width as the
+    // three counts above it — without one, a reader reasonably takes the first
+    // column to be the players making up the first count, and the first name
+    // under "10 out" is usually somebody who is merely questionable.
+    h += `<div class="today-list-label">The most valuable players carrying one, whichever kind</div>`;
+    h += `<div class="today-list">` + notable.map(p => `
+      <button type="button" class="today-row" onclick="openProfile('${jsAttr(p.id)}')">
+        <span class="today-name">${rankEsc(p.name)}</span>
+        <span class="today-meta">${rankEsc(p.fRank)} · ${rankEsc(p.team || '')}</span>
+        <span class="player-quick-status ${rankEsc(p.statusClass)}">${rankEsc(p.status)}</span>
+      </button>`).join('') + `</div>`;
+    h += `<div class="today-note">Ranked players only, most valuable first. A designation is what a team has declared, not a prediction — and a player on IR drops off the report entirely, so this undercounts the season-ending cases rather than capturing them.</div>`;
+  } else {
+    h += `<div class="today-note">Nobody in the ranked pool is carrying a designation right now.</div>`;
+  }
+  el.innerHTML = h;
 }
 
 function showInjuryDetail(key) {
@@ -1020,3 +1102,35 @@ initData().then(() => {
   if (currentRoute()) handleRoute();
   else applyRouteMeta();
 });
+
+/**
+ * In-page jumps on the medicals page.
+ *
+ * A plain #hash would work, except the site's address bar IS the router — a
+ * fragment left in it is a URL that means nothing to the router on reload, and
+ * the whole point of the routing work was that every address renders the page
+ * it names. So the jump scrolls and leaves the address alone.
+ */
+function medJump(event, id) {
+  if (event) event.preventDefault();
+  const el = document.getElementById(id);
+  if (!el) return;
+  // NOT scrollIntoView. Two reasons: it cannot be offset, so the target lands
+  // UNDER the sticky nav and the reader sees the wrong thing at the top of the
+  // screen; and its smooth behaviour is a silent no-op in some environments,
+  // which is a jump link that does nothing at all. Computing the position and
+  // calling scrollTo works either way, and falls back to an instant jump if
+  // smooth scrolling is unavailable.
+  const nav = document.querySelector('.nav-main') || document.querySelector('nav');
+  const offset = (nav ? nav.getBoundingClientRect().height : 0) + 16;
+  const top = el.getBoundingClientRect().top + window.scrollY - offset;
+  // No "did it work" retry on the next frame. A smooth scroll has barely begun
+  // one frame in, so a retry that checks whether it arrived fires every time and
+  // turns every smooth scroll into an instant jump — defensive code breaking the
+  // normal path to guard an abnormal one.
+  try {
+    window.scrollTo({ top, behavior: 'smooth' });
+  } catch (e) {
+    window.scrollTo(0, top);
+  }
+}

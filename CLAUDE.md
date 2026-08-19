@@ -488,3 +488,26 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - `loadJSONL` in app-core.js reads the series. A single unparseable line is SKIPPED and counted,
   not fatal — a truncated write at the end of a log must not take the eleven months in front of
   it down with it.
+
+## Medical Intelligence
+- THE PAGE LEADS WITH WHO IS HURT TODAY. It used to open on a research tool, with the 287
+  profiles beginning 2,280px down — but nobody arrives asking how ACLs heal in general, they
+  arrive asking whether anyone on their team is hurt right now. The counts come from the same
+  live status the rest of the site uses, so they can never disagree with a player's own badge.
+- NO EMOJI. The injury-type cards led with a leg, a foot and a brain — the only place on the
+  site using emoji as a visual language, on the page where tone matters most. A torn Achilles is
+  somebody's career. `inj.icon` stays in injury-research.json (hand-written research, not worth
+  a migration) and nothing renders it.
+- EVERY RETURN RATE CARRIES WHAT IT MEASURES. The cards showed a bare "Return: 65%" while the
+  data held `returnRateLabel: "60–69% of WRs return"` all along. A number that consequential
+  without its unit is a Rorschach test — a reader can as easily take it for a chance of full
+  recovery, or of ever playing again.
+- A 23,000px page gets a contents line. `medJump` scrolls WITHOUT touching the address, because
+  the address bar is the router here and a stray fragment is a URL that means nothing on reload.
+- IT DOES NOT USE scrollIntoView. That cannot be offset, so a target lands under the sticky nav
+  and the reader sees the wrong thing at the top of the screen. The position is computed against
+  the nav's real height instead.
+- NOTE FOR ANYONE VERIFYING THIS: programmatic scrolling is a NO-OP in the automated browser —
+  even a raw `window.scrollTo(0,500)` leaves scrollY at 0 — so the jump cannot be exercised
+  there. What is checkable is that every anchor resolves, the computed target clears the nav,
+  and the address stays clean. Do not "fix" a jump on the strength of an automated scroll test.

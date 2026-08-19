@@ -1342,6 +1342,7 @@ function switchPage(page) {
   applyRouteMeta();
   if (page === 'players') renderPlayersTable();
   if (page === 'medicals') {
+    renderInjuryToday();
     renderMedicals(medSearch);
     renderInjuryTypeGrid();
     renderInjuryCurves();
