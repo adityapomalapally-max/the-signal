@@ -776,6 +776,13 @@
 
     <div class="lab-controls" style="padding:0 var(--page-gutter) 8px;">
       <div class="lab-control">
+        <span class="lab-control-label">Show</span>
+        <div class="position-filter" id="seasonViewToggle">
+          <button class="pos-btn active" onclick="setSeasonView('matchups', this)">Matchups</button>
+          <button class="pos-btn" onclick="setSeasonView('usage', this)">Weekly Usage</button>
+        </div>
+      </div>
+      <div class="lab-control">
         <span class="lab-control-label">Position</span>
         <div class="position-filter" id="muPosFilter">
           <button class="pos-btn" onclick="setMuPos('QB', this)">QB</button>

@@ -2650,3 +2650,14 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 768px) {
   .season-state { flex-direction: column; gap: 6px; font-size: 12.5px; }
 }
+
+/* Weekly usage movers */
+.u-table td.u-name { font-weight: 600; white-space: nowrap; }
+.u-table td { font-variant-numeric: tabular-nums; }
+.u-up { color: #7fbf7f; font-family: var(--mono); font-size: 11.5px; }
+.u-down { color: #e08a80; font-family: var(--mono); font-size: 11.5px; }
+.u-flat { color: var(--text-muted); font-family: var(--mono); font-size: 11.5px; }
+@media (max-width: 768px) {
+  .u-table th, .u-table td { padding-left: 6px; padding-right: 6px; font-size: 11.5px; }
+  .u-table td.u-name { max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
+}

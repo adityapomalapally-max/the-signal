@@ -818,6 +818,12 @@ function handleRoute() {
   }
   // /draft/film is the film tab. It is a deeper route on a page rather than a
   // section of its own, because one article does not earn a nav slot.
+  if (parts[0] === 'season') {
+    switchPage('season');
+    setSeasonView(parts[1] === 'usage' ? 'usage' : 'matchups',
+      document.querySelector(`#seasonViewToggle .pos-btn:nth-child(${parts[1] === 'usage' ? 2 : 1})`));
+    return;
+  }
   if (parts[0] === 'draft') {
     switchPage('draft');
     setDraftView(parts[1] === 'film' ? 'film' : 'model',
@@ -868,6 +874,10 @@ const ROUTE_META = {
   season: {
     title: 'In Season — The Signal',
     description: 'Which defences actually cost you points, measured against each player\'s own average rather than against whoever they happened to face.',
+  },
+  'season/usage': {
+    title: 'Weekly Usage — The Signal',
+    description: 'Snap share, target share and WOPR week by week, each measured against that player\'s own recent weeks rather than against the league.',
   },
   'draft/film': {
     title: 'Film Room — The Signal',
@@ -1045,6 +1055,7 @@ function isKnownRoute(route) {
   if (head === 'article') return !!articlesDB[parts[1]];
   if (head === 'rankings') return !parts[1] || ['overall', 'qb', 'rb', 'wr', 'te'].includes(parts[1]);
   if (head === 'draft') return !parts[1] || parts[1] === 'film';
+  if (head === 'season') return !parts[1] || parts[1] === 'usage';
   return ROUTE_PAGES.includes(head);
 }
 

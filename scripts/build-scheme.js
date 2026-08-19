@@ -30,6 +30,8 @@
 const fs = require('fs');
 const path = require('path');
 const { fetchCSV, parseCSV, parseCSVLine } = require('./lib/match');
+const { buildWeeklyUsage } = require('./lib/weekly');
+const { poolCrosswalk } = require('./lib/ids');
 const { buildFieldMap, finishFieldMap, DEPTH_BANDS, GAPS,
         MIN_ATTEMPTS, MIN_TARGETS, MIN_CARRIES, MIN_CELL, MIN_CELL_STRIP } = require('./lib/fieldmap');
 
@@ -38,6 +40,7 @@ const OUT = path.join(DATA_DIR, 'scheme.json');
 const OUT_USAGE = path.join(DATA_DIR, 'player-usage.json');
 const OUT_CHARTING = path.join(DATA_DIR, 'charting.json');
 const OUT_FIELDMAP = path.join(DATA_DIR, 'fieldmap.json');
+const OUT_WEEKLY = path.join(DATA_DIR, 'weekly-usage.json');
 
 // The seasons participation data covers well. 2016-2022 exists but the schema
 // and the league both moved; three seasons is enough to read a trend and short
@@ -529,7 +532,26 @@ async function buildSeason(season) {
     throw new Error(`only ${fmRaw.coverage.locatedPct}% of pass attempts carry a location — pbp changed`);
   }
 
-  return { teams, league, usage, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage };
+  // THE FIFTH OUTPUT OF THE ONE pbp DOWNLOAD. Weekly shares need TEAM totals as
+  // denominators, and the pool cannot supply them — it holds the fantasy-relevant
+  // players, not every player, so every share would come out too high by a
+  // different amount for every team. snap_counts is a separate 1MB file and is
+  // joined on PFR id rather than by name, which is what lib/ids.js exists for.
+  let weekly = null;
+  try {
+    const snapCsv = await fetchCSV(`${base}/snap_counts/snap_counts_${season}.csv`);
+    const { toForeign, missing } = await poolCrosswalk(pool, 'pfr');
+    const wk = buildWeeklyUsage(pbpCsv, snapCsv, pool, toForeign);
+    weekly = wk.players;
+    log(`  weekly usage: ${Object.keys(weekly).length} players, ${wk.coverage.rows} player-weeks, `
+      + `${wk.coverage.snapPct}% carry snap counts (${missing.length} of the pool have no PFR id)`);
+  } catch (e) {
+    // A missing snap file for a season that has not started is not a failure;
+    // one for a season that has is, and the caller decides which this is.
+    log(`  weekly usage unavailable for ${season}: ${e.message}`);
+  }
+
+  return { teams, league, usage, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage, weekly };
 }
 
 function shapeDefense(d) {
@@ -591,11 +613,13 @@ async function main() {
   const existingFieldmap = fs.existsSync(OUT_FIELDMAP) ? JSON.parse(fs.readFileSync(OUT_FIELDMAP, 'utf8')) : { seasons: {} };
   const fieldmapSeasons = { ...(existingFieldmap.seasons || {}) };
   let fmCoverageLatest = (existingFieldmap.meta || {}).coverage || null;
+  const existingWeekly = fs.existsSync(OUT_WEEKLY) ? JSON.parse(fs.readFileSync(OUT_WEEKLY, 'utf8')) : { seasons: {} };
+  const weeklySeasons = { ...(existingWeekly.seasons || {}) };
   const failures = [];
 
   for (const season of wanted) {
     try {
-      const { teams, league: lg, usage, defenses, charting, fieldmap, fmCoverage } = await buildSeason(season);
+      const { teams, league: lg, usage, defenses, charting, fieldmap, fmCoverage, weekly } = await buildSeason(season);
       if (!Object.keys(teams).length) throw new Error('no team rows produced');
       const shaped = {};
       for (const [team, raw] of Object.entries(teams)) shaped[team] = shapeTeam(raw);
@@ -614,6 +638,7 @@ async function main() {
       seasons[season] = shaped;
       if (charting) chartingSeasons[season] = charting;
       if (fieldmap) { fieldmapSeasons[season] = fieldmap; fmCoverageLatest = fmCoverage; }
+      if (weekly && Object.keys(weekly).length) weeklySeasons[season] = weekly;
       league[season] = shapeTeam(lg);
       league[season].defense = shapeDefense(leagueDef);
       // Share of his own snaps, per grouping. A raw count says how much he
@@ -674,9 +699,8 @@ async function main() {
   };
 
   const wrote_scheme = writeJSONIfChanged(OUT, out);
-  if (!wrote_scheme) log(`scheme.json unchanged — not rewritten`);
   const kb = Math.round(fs.statSync(OUT).size / 1024);
-  log(`wrote scheme.json: ${years.join(', ')} — ${kb}KB`);
+  log(`${wrote_scheme ? 'wrote' : 'unchanged —'} scheme.json: ${years.join(', ')} — ${kb}KB`);
 
   const usageOut = {
     meta: {
@@ -689,9 +713,8 @@ async function main() {
     seasons: usageSeasons,
   };
   const wrote_player_usage = writeJSONIfChanged(OUT_USAGE, usageOut);
-  if (!wrote_player_usage) log(`player-usage.json unchanged — not rewritten`);
   const latestUsage = usageSeasons[years[years.length - 1]] || {};
-  log(`wrote player-usage.json: ${Object.keys(latestUsage).length} players in ${years[years.length - 1]} — ${Math.round(fs.statSync(OUT_USAGE).size / 1024)}KB`);
+  log(`${wrote_player_usage ? 'wrote' : 'unchanged —'} player-usage.json: ${Object.keys(latestUsage).length} players in ${years[years.length - 1]} — ${Math.round(fs.statSync(OUT_USAGE).size / 1024)}KB`);
 
   // The third output of the one pbp download. Only written when a season
   // actually produced charting — FTN does not cover every year, and an empty
@@ -721,9 +744,8 @@ async function main() {
       seasons: chartingSeasons,
     };
     const wrote_charting = writeJSONIfChanged(OUT_CHARTING, chartingOut);
-  if (!wrote_charting) log(`charting.json unchanged — not rewritten`);
     const latestChart = chartingSeasons[chartYears[chartYears.length - 1]] || { players: {} };
-    log(`wrote charting.json: ${Object.keys(latestChart.players).length} players in ${chartYears[chartYears.length - 1]} — ${Math.round(fs.statSync(OUT_CHARTING).size / 1024)}KB`);
+    log(`${wrote_charting ? 'wrote' : 'unchanged —'} charting.json: ${Object.keys(latestChart.players).length} players in ${chartYears[chartYears.length - 1]} — ${Math.round(fs.statSync(OUT_CHARTING).size / 1024)}KB`);
   }
 
   // The fourth output. Same bargain as charting: only written when a season
@@ -762,11 +784,45 @@ async function main() {
       seasons: fieldmapSeasons,
     };
     const wrote_fieldmap = writeJSONIfChanged(OUT_FIELDMAP, fieldmapOut);
-  if (!wrote_fieldmap) log(`fieldmap.json unchanged — not rewritten`);
     const latestFm = fieldmapSeasons[fmYears[fmYears.length - 1]] || {};
-    log(`wrote fieldmap.json: ${Object.keys(latestFm.passers || {}).length} passers, `
+    log(`${wrote_fieldmap ? 'wrote' : 'unchanged —'} fieldmap.json: ${Object.keys(latestFm.passers || {}).length} passers, `
       + `${Object.keys(latestFm.receivers || {}).length} receivers, ${Object.keys(latestFm.rushers || {}).length} rushers `
       + `in ${fmYears[fmYears.length - 1]} — ${Math.round(fs.statSync(OUT_FIELDMAP).size / 1024)}KB`);
+  }
+
+  // The fifth output. Same bargain as the others: only written when a season
+  // actually produced weeks.
+  const wkYears = Object.keys(weeklySeasons).map(Number).sort();
+  if (wkYears.length) {
+    const weeklyOut = {
+      meta: {
+        generated: new Date().toISOString(),
+        seasons: wkYears,
+        source: 'nflverse pbp for targets, air yards and team denominators; nflverse snap_counts for '
+          + 'offensive snaps, joined on PFR id. REG season only.',
+        wopr: 'WOPR = 1.5 x target share + 0.7 x air-yards share, both as decimals. The standard '
+          + 'weighting of the two halves of a receiving role, volume and depth.',
+        qualifiers: {
+          denominators: 'Shares are of the TEAM total from play-by-play, not of the 350-player pool. '
+            + 'Pool denominators would omit unrostered players and inflate every share.',
+        },
+        caveats: [
+          'ROUTES RUN IS NOT HERE. Yards per route run is the other metric this layer would want, and '
+          + 'route participation is charted by PFF and FTN rather than recorded in play-by-play. Snap '
+          + 'share is the closest free substitute and it is a different thing — a receiver on the '
+          + 'field for a run play ran no route.',
+          'A week a player missed is absent rather than zero. A zero would read as "played and got '
+          + 'nothing", which is a different fact from "did not play".',
+          'Air-yards share is undefined for a team-week with no positive air yards, and is omitted '
+          + 'rather than sent as zero.',
+        ],
+      },
+      seasons: weeklySeasons,
+    };
+    const wroteWeekly = writeJSONIfChanged(OUT_WEEKLY, weeklyOut);
+    const latestWk = weeklySeasons[wkYears[wkYears.length - 1]] || {};
+    log(`${wroteWeekly ? 'wrote' : 'unchanged —'} weekly-usage.json: ${Object.keys(latestWk).length} players in `
+      + `${wkYears[wkYears.length - 1]} — ${Math.round(fs.statSync(OUT_WEEKLY).size / 1024)}KB`);
   }
 }
 

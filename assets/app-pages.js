@@ -2954,6 +2954,33 @@ function renderSeasonPage() {
   const board = document.getElementById('matchupBoard');
   if (!board) return;
 
+  // The season filter belongs to whichever board is up; the position filter to
+  // both. Rendering the state banner first means it is on screen while either
+  // dataset is still loading.
+  const stateHost = document.getElementById('seasonState');
+  if (stateHost && matchupData) stateHost.innerHTML = seasonStateHtml(matchupData.meta || {});
+
+  if (seasonView === 'usage') {
+    if (!weeklyUsage) {
+      board.innerHTML = `<div class="medical-card"><div class="medical-detail">Loading the weekly usage…</div></div>`;
+      ensureWeeklyUsage().then(() => {
+        if (weeklyUsage) renderSeasonPage();
+        else board.innerHTML = `<div class="medical-card"><div class="medical-detail">`
+          + `The weekly usage could not be loaded. Nothing is shown rather than a board built from part of it.</div></div>`;
+      });
+      return;
+    }
+    const years = Object.keys(weeklyUsage.seasons || {}).sort();
+    const seasonRow = document.getElementById('muSeasonFilter');
+    if (seasonRow) {
+      if (!muSeason || !years.includes(muSeason)) muSeason = years[years.length - 1];
+      seasonRow.innerHTML = years.map(y =>
+        `<button class="pos-btn${y === muSeason ? ' active' : ''}" onclick="setMuSeason('${y}', this)">${y}</button>`).join('');
+    }
+    renderUsageBoard(board);
+    return;
+  }
+
   if (!matchupData) {
     board.innerHTML = `<div class="medical-card"><div class="medical-detail">Loading the matchup data…</div></div>`;
     ensureMatchups().then(() => {
@@ -2967,9 +2994,6 @@ function renderSeasonPage() {
   const meta = matchupData.meta || {};
   const years = Object.keys(matchupData.seasons || {}).sort();
   if (!muSeason || !years.includes(muSeason)) muSeason = years[years.length - 1];
-
-  const stateEl = document.getElementById('seasonState');
-  if (stateEl) stateEl.innerHTML = seasonStateHtml(meta);
 
   const seasonRow = document.getElementById('muSeasonFilter');
   if (seasonRow) {
@@ -3033,4 +3057,115 @@ function renderSeasonPage() {
     `${rows.length} defences. Toughest first. vs Baseline is points above or below what these players averaged for themselves that season, so a defence is not credited for drawing weak opponents. `
     + (meta.caveats ? meta.caveats[0] : ''))}</div>`;
   board.innerHTML = h;
+}
+
+/* ── Weekly usage: what a player was GIVEN, and which way it is moving ───────
+   Production tells you what happened; opportunity tells you what is likely to
+   keep happening. The board leads on the CHANGE rather than the level, because
+   a receiver who has held a 22% target share all year is not news and one who
+   went from 12% to 24% last week is. */
+
+let weeklyUsage = null, weeklyUsagePromise = null;
+let seasonView = 'matchups';
+
+function ensureWeeklyUsage() {
+  if (!weeklyUsagePromise) weeklyUsagePromise = loadJSON('/data/weekly-usage.json').then(d => (weeklyUsage = d));
+  return weeklyUsagePromise;
+}
+
+function setSeasonView(view, el) {
+  seasonView = view;
+  document.querySelectorAll('#seasonViewToggle .pos-btn').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  setRoute(view === 'usage' ? 'season/usage' : 'season');
+  renderSeasonPage();
+}
+
+// The comparison is a player against HIMSELF, not against the league. A 60%
+// snap share means one thing for a committee back and another for a starter,
+// so the only reading that travels is which way his own number moved.
+const USAGE_BASELINE_WEEKS = 4;
+
+function usageRows(season) {
+  const bank = (weeklyUsage && weeklyUsage.seasons && weeklyUsage.seasons[season]) || {};
+  const rows = [];
+  for (const [gsis, rec] of Object.entries(bank)) {
+    if (rec.pos !== muPos) continue;
+    const played = rec.weeks.filter(w => w.snapPct !== null || w.targets > 0 || w.carries > 0);
+    if (played.length < 2) continue;
+    const last = played[played.length - 1];
+    const prior = played.slice(Math.max(0, played.length - 1 - USAGE_BASELINE_WEEKS), played.length - 1);
+    if (!prior.length) continue;
+    const mean = (arr, k) => {
+      const vals = arr.map(x => x[k]).filter(v => typeof v === 'number');
+      return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+    };
+    const delta = (now, base) => (typeof now === 'number' && typeof base === 'number')
+      ? Math.round((now - base) * 10) / 10 : null;
+    rows.push({
+      name: rec.name, team: last.team, week: last.week, weeksBack: prior.length,
+      snapPct: last.snapPct, snapDelta: delta(last.snapPct, mean(prior, 'snapPct')),
+      targetShare: last.targetShare, targetDelta: delta(last.targetShare, mean(prior, 'targetShare')),
+      wopr: last.wopr, woprDelta: delta(last.wopr, mean(prior, 'wopr')),
+      touches: last.touches,
+    });
+  }
+  return rows;
+}
+
+function renderUsageBoard(host) {
+  const meta = (weeklyUsage && weeklyUsage.meta) || {};
+  const years = Object.keys((weeklyUsage && weeklyUsage.seasons) || {}).sort();
+  if (!years.length) {
+    host.innerHTML = `<div class="medical-card"><div class="medical-detail">`
+      + `No weekly usage has been built yet. It fills in from Week 1.</div></div>`;
+    return;
+  }
+  if (!muSeason || !years.includes(muSeason)) muSeason = years[years.length - 1];
+  const rows = usageRows(muSeason);
+  // Biggest movers first, by the metric that combines volume and depth.
+  rows.sort((a, b) => (b.woprDelta === null ? -Infinity : b.woprDelta) - (a.woprDelta === null ? -Infinity : a.woprDelta));
+
+  const week = rows.length ? Math.max(...rows.map(r => r.week)) : null;
+  let h = `<div class="lab-head"><span class="lab-title">${rankEsc(`${muPos} usage — week ${week} of ${muSeason}`)}</span>`
+    + `<span class="lab-qual">AGAINST HIS OWN PREVIOUS ${USAGE_BASELINE_WEEKS} WEEKS</span></div>`;
+  h += `<div class="lab-sub">${rankEsc(meta.wopr || '')}</div>`;
+  // WEEK 18 IS NOT A NORMAL WEEK. Teams with their seeding settled rest
+  // starters, so the biggest movers that week are rest days wearing the shape
+  // of role changes — a receiver who "lost 55 points of snap share" was on the
+  // bench by choice. It reads identically to a demotion and it is not one.
+  if (week === 18) {
+    h += `<div class="season-state" style="margin:10px 0 16px;"><span class="season-state-tag">Week 18</span>`
+      + `<span>Teams with nothing left to play for rest their starters in the final week, so the largest `
+      + `moves here are rest days rather than role changes. Read week 17 for the last full-strength picture.</span></div>`;
+  }
+
+  if (!rows.length) {
+    h += `<div class="medical-card"><div class="medical-detail">`
+      + `No ${muPos} has enough weeks in ${muSeason} to compare against. Nothing is shown rather than a change measured off one game.</div></div>`;
+    host.innerHTML = h;
+    return;
+  }
+
+  const arrow = d => d === null ? '<span class="u-flat">—</span>'
+    : d > 0.5 ? `<span class="u-up">▲ +${d}</span>`
+    : d < -0.5 ? `<span class="u-down">▼ ${d}</span>`
+    : `<span class="u-flat">${d > 0 ? '+' : ''}${d}</span>`;
+
+  h += `<div class="table-scroll"><table class="players-table rank-table u-table"><thead><tr>`
+    + `<th>Player</th><th>Tm</th><th>Snap %</th><th>vs base</th><th>Tgt Share</th><th>vs base</th>`
+    + `<th>WOPR</th><th>vs base</th><th>Touches</th></tr></thead><tbody>`;
+  for (const r of rows.slice(0, 40)) {
+    h += `<tr><td class="u-name">${rankEsc(r.name)}</td><td>${rankEsc(r.team || '')}</td>`
+      + `<td>${r.snapPct === null ? '—' : r.snapPct + '%'}</td><td>${arrow(r.snapDelta)}</td>`
+      + `<td>${r.targetShare === null ? '—' : r.targetShare + '%'}</td><td>${arrow(r.targetDelta)}</td>`
+      + `<td>${r.wopr === null ? '—' : r.wopr}</td><td>${arrow(r.woprDelta)}</td>`
+      + `<td>${r.touches}</td></tr>`;
+  }
+  h += `</tbody></table></div>`;
+  h += `<div class="rank-note">${rankEsc(
+    `Top ${Math.min(40, rows.length)} of ${rows.length} by WOPR movement. Each figure is compared with that player's own previous `
+    + `${USAGE_BASELINE_WEEKS} weeks, not with the league — a 60% snap share means one thing for a committee back and another for a starter. `
+    + (meta.caveats ? meta.caveats[0] : ''))}</div>`;
+  host.innerHTML = h;
 }
