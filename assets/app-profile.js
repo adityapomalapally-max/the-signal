@@ -143,6 +143,9 @@ function renderProfileTab(tab) {
     // page about what this player's job actually is. Fills in when the data
     // lands — the tab renders immediately either way.
     html += seasonHeadlineHtml(player);
+    // What is LEFT sits directly under what he has done, because in season that
+    // is the order a reader actually thinks in.
+    html += rosLineHtml(currentProfileId);
     html += trendHtml(currentProfileId);
     html += usageHtml(currentProfileId);
     // Usage says which package he plays in; charting says whether the offence is
@@ -162,6 +165,13 @@ function renderProfileTab(tab) {
           const active = document.querySelector('.profile-tab.active');
           if (active && active.dataset.tab === 'overview') renderProfileTab('overview');
         }
+      });
+    }
+    if (!rosChecked) {
+      ensureRos().then(() => {
+        if (currentProfileId !== player.id) return;
+        const active = document.querySelector('.profile-tab.active');
+        if (active && active.dataset.tab === 'overview') renderProfileTab('overview');
       });
     }
     if (!historyStatus) {
@@ -786,6 +796,43 @@ function ensureUsage() {
     ]);
   }
   return usagePromise;
+}
+
+/**
+ * A player's own rest-of-season line.
+ *
+ * The season headline above it is what he HAS done. This is what is left, which
+ * from September is the number a reader is actually deciding on. It appears only
+ * once data/ros.json exists — out of season there is nothing to say and the card
+ * is absent rather than empty.
+ */
+function rosLineHtml(playerId) {
+  if (!rosData || !rosData.players) return '';
+  const r = rosData.players[playerId];
+  if (!r) return '';
+  const m = rosData.meta || {};
+  const up = r.ppgDelta > 0.05, down = r.ppgDelta < -0.05;
+  const dir = up ? 'above' : down ? 'below' : 'in line with';
+  const colour = up ? 'var(--teal)' : down ? 'var(--blue)' : 'var(--text-muted)';
+
+  return `<div class="medical-card" style="margin-bottom:16px;border-left:2px solid var(--gold);">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">What is left</span>
+      <span style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);">THROUGH WEEK ${rankEsc(String(m.throughWeek))} · ${rankEsc(String(r.gamesRemaining))} GAMES TO COME</span>
+    </div>
+    <div class="season-headline-grid">
+      <div><div class="season-headline-value">${r.restOfSeasonPoints}</div><div class="season-headline-label">Rest-of-season points</div></div>
+      <div><div class="season-headline-value">${r.projectedPpg}</div><div class="season-headline-label">Projected per game</div></div>
+      <div><div class="season-headline-value" style="color:${colour};">${up ? '+' : ''}${r.ppgDelta}</div><div class="season-headline-label">vs preseason /g</div></div>
+    </div>
+    <div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;margin-top:12px;">
+      He has averaged <strong style="color:var(--text);">${r.actualPpg}</strong> a game against a preseason projection of
+      <strong style="color:var(--text);">${r.preseasonPpg}</strong>, so the forecast for what is left sits ${rankEsc(dir)} where it started.
+      The season so far carries <strong style="color:var(--text);">${Math.round(r.weightOnActual * 100)}%</strong> of that — a weight fitted
+      against past seasons rather than chosen, because a handful of games is a handful of games.
+    </div>
+    ${m.simulated ? `<div style="font-size:11.5px;color:var(--red);margin-top:8px;"><strong>Simulated data.</strong> ${rankEsc(m.simulated)}</div>` : ''}
+  </div>`;
 }
 
 /**

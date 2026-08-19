@@ -186,8 +186,14 @@ async function main() {
   console.log('  biggest risers:  ' + movers.slice(0, 3).map(m => `${m.name} ${m.ppgDelta > 0 ? '+' : ''}${m.ppgDelta}`).join(', '));
   console.log('  biggest fallers: ' + movers.slice(-3).map(m => `${m.name} ${m.ppgDelta}`).join(', '));
 
-  if (dry || simArg) {
-    console.log(simArg ? '[ros] simulation — nothing written' : '[ros] dry run — nothing written');
+  // --write lets a SIMULATION produce a real file, which is the only way to
+  // build the pages that read it before September. It is stamped, and there is
+  // a test that fails if a stamped file is ever committed — the capability has
+  // to exist without being able to ship.
+  const writeSim = simArg && process.argv.includes('--write');
+  if (writeSim) out.meta.simulated = `simulated from ${simArg} for interface work — NOT REAL`;
+  if (dry || (simArg && !writeSim)) {
+    console.log(simArg ? '[ros] simulation — nothing written (pass --write to build a file for UI work)' : '[ros] dry run — nothing written');
     return;
   }
   fs.writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n');

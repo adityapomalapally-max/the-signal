@@ -2097,3 +2097,55 @@ a { color: inherit; text-decoration: none; }
 }
 .med-jump a:hover { color: var(--gold); border-bottom-color: var(--gold); }
 .med-jump a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+/* ═══ REST OF SEASON ════════════════════════════════════════════════════════
+   The board for the games that are left. It sits behind its own toggle rather
+   than replacing the analyst's preseason order, because it answers a different
+   question and is allowed a different answer. */
+.ros-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.ros-table td { vertical-align: middle; }
+.ros-rank {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  width: 40px;
+}
+.ros-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+.ros-num {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.ros-dim { color: var(--text-muted); font-size: 11.5px; }
+/* The bar sits behind the number rather than beside it — the column stays one
+   width, and the shape is readable without a second column of chart. */
+.ros-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 5px;
+  min-width: 90px;
+}
+.ros-bar-fill { height: 100%; background: var(--gold); }
+
+@media (max-width: 768px) {
+  /* "So far" is the column a phone can spare — it is context for the
+     projection, not the projection itself. */
+  .ros-table th:nth-child(6), .ros-table td:nth-child(6) { display: none; }
+  .ros-bar { min-width: 60px; }
+}

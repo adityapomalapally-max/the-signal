@@ -116,3 +116,17 @@ test('games on file with nothing projected IS still a failure', () => {
   assert.match(src, /if \(!gamesOnFile\)/, 'the no-op branch must key on games actually seen');
   assert.match(src, /the join has broken/, 'and the other branch must still throw');
 });
+
+test('a simulated rest-of-season file can never be committed', () => {
+  // build-ros --simulate --write exists so the pages that read ros.json can be
+  // built before September. That is a loaded gun: a stamped file on disk looks
+  // exactly like a real one to every page that reads it, and it would put
+  // invented projections on the live site. So the stamp is checked here, where
+  // CI will catch it before it ships.
+  const rosPath = path.join(ROOT, 'data', 'ros.json');
+  if (!fs.existsSync(rosPath)) return;   // correct in the preseason
+  const ros = JSON.parse(fs.readFileSync(rosPath, 'utf8'));
+  assert.strictEqual(ros.meta.simulated, undefined,
+    `data/ros.json is a SIMULATION (${ros.meta.simulated}) — delete it before committing`);
+  assert.ok(ros.meta.season && ros.meta.throughWeek, 'a real file states its season and week');
+});

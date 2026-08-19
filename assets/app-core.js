@@ -299,12 +299,160 @@ function rankTable(rows, showPos) {
   return h + '</tbody></table></div>';
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   REST OF SEASON
+
+   The board on this page is built in August and answers a seventeen-game
+   question. From the first Sunday it keeps answering it, which is the wrong
+   question: by Week 8 nobody is deciding anything about a season that is half
+   gone, they are deciding about the nine games left.
+
+   THE TOGGLE ONLY EXISTS WHEN THE FILE DOES. build-ros.js writes nothing until
+   games have been played, so out of season there is no second view to offer and
+   nothing here pretends otherwise.
+
+   AND IT IS NOT A RE-RANKING OF THE BOARD. rankings.json is untouched; the
+   medians there are the analyst's. This answers a different question, which is
+   exactly why it is allowed to put players in a different order — and why it
+   lives behind its own toggle rather than quietly replacing what he wrote.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+let rosPromise = null, rosData = null, rosChecked = false;
+function ensureRos() {
+  if (!rosPromise) {
+    rosPromise = loadJSON('/data/ros.json').then(d => {
+      rosData = d;            // null out of season, which is the correct answer
+      rosChecked = true;
+      return d;
+    });
+  }
+  return rosPromise;
+}
+
+let rankingsView = 'preseason';   // 'preseason' | 'ros'
+
+function setRankingsView(view) {
+  if (rankingsView === view) return;
+  rankingsView = view;
+  renderRankingsPage();
+}
+
+// The toggle is drawn only when there is something to toggle to.
+function renderRankingsViewToggle() {
+  const host = document.getElementById('rankingsViewMode');
+  if (!host) return;
+  if (!rosData || !rosData.players) { host.innerHTML = ''; return; }
+  host.innerHTML = [['preseason', 'Preseason'], ['ros', 'Rest of season']].map(([k, label]) =>
+    `<button class="pos-btn${rankingsView === k ? ' active' : ''}" onclick="setRankingsView('${k}')">${label}</button>`).join('');
+}
+
+function rosRows(tab) {
+  if (!rosData || !rosData.players) return [];
+  const rows = Object.entries(rosData.players)
+    .map(([id, r]) => ({ id, ...r }))
+    .filter(r => tab === 'overall' ? true : r.pos && r.pos.toLowerCase() === tab);
+  // Ordered by what is LEFT, which is the entire point of the view.
+  return rows.sort((a, b) => b.restOfSeasonPoints - a.restOfSeasonPoints);
+}
+
+function rosBoardHtml(tab) {
+  const rows = rosRows(tab);
+  const m = rosData.meta || {};
+  if (!rows.length) {
+    return `<div class="medical-card"><div class="medical-detail">No rest-of-season projection for this group yet.</div></div>`;
+  }
+
+  const max = Math.max(...rows.map(r => r.restOfSeasonPoints), 1);
+  let h = `<div class="ros-head">
+      <span class="lab-title">Rest of season — through week ${rankEsc(String(m.throughWeek))}</span>
+      <span class="lab-qual">${rankEsc(String(m.gamesRemaining))} GAMES LEFT · ${rows.length} PLAYERS</span>
+    </div>`;
+
+  h += `<div class="table-scroll"><table class="players-table ros-table"><thead><tr>
+      <th>#</th><th>Player</th><th>Rest of season</th><th>Per game</th><th>vs preseason</th><th>So far</th>
+    </tr></thead><tbody>`;
+  rows.slice(0, 60).forEach((r, i) => {
+    const w = Math.max(2, (r.restOfSeasonPoints / max) * 100);
+    // A rise means the season has changed our mind upward. The arrow is the
+    // sign written out, because a bare "+3.2" beside a points total is easy to
+    // read as more points rather than a change of view.
+    const up = r.ppgDelta > 0.05, down = r.ppgDelta < -0.05;
+    const deltaColour = up ? 'var(--teal)' : down ? 'var(--blue)' : 'var(--text-muted)';
+    h += `<tr onclick="openProfile('${jsAttr(r.id)}')">
+      <td class="ros-rank">${i + 1}</td>
+      <td><div class="player-cell-name">${rankEsc(r.name)}</div>
+        <div class="ros-sub">${rankEsc(r.pos)} · ${rankEsc(r.team || '')}</div></td>
+      <td class="ros-num">
+        <div class="ros-bar"><div class="ros-bar-fill" style="width:${w.toFixed(1)}%;"></div></div>
+        <span>${r.restOfSeasonPoints}</span>
+      </td>
+      <td class="ros-num">${r.projectedPpg}</td>
+      <td class="ros-num" style="color:${deltaColour};">${up ? '▲' : down ? '▼' : '='} ${Math.abs(r.ppgDelta).toFixed(2)}/g</td>
+      <td class="ros-num ros-dim">${r.pointsSoFar} in ${r.gamesPlayed}</td>
+    </tr>`;
+  });
+  h += `</tbody></table></div>`;
+
+  // The method, in the reader's language, and the caveats that come with it.
+  const sample = rows[0];
+  h += `<div class="rank-note">Each player's remaining games at a blend of what he has actually
+    averaged and what he was projected for in August. The weight on the season so far is
+    <strong>derived, not chosen</strong> — fitted against past seasons, it is about a third after two
+    games and rises past a half around week seven, because three good games is a sample of three.
+    ${sample ? `At week ${rankEsc(String(m.throughWeek))} it is ${Math.round(sample.weightOnActual * 100)}% for a ${rankEsc(sample.pos)}.` : ''}
+    ${rankEsc(m.isNot || '')}</div>`;
+  if (Array.isArray(m.caveats)) {
+    h += `<div class="rank-note" style="font-style:italic;">${m.caveats.map(c => rankEsc(c)).join(' ')}</div>`;
+  }
+  if (m.simulated) {
+    h += `<div class="medical-card" style="border-left:3px solid var(--red);margin-top:14px;">
+      <div class="medical-detail"><strong>This is simulated data.</strong> ${rankEsc(m.simulated)}</div></div>`;
+  }
+  return h;
+}
+
 function renderRankingsPage() {
   const body = document.getElementById('rankingsBody');
   if (!body) return;
   const meta = rankingsData.meta || {};
   const showPos = currentRankTab === 'overall';
+
+  // Checked once. Out of season the file is absent and the answer is "there is
+  // no second view", which is correct rather than an error.
+  if (!rosChecked) {
+    ensureRos().then(() => {
+      renderRankingsViewToggle();
+      if (rankingsView === 'ros') renderRankingsPage();
+    });
+  }
+  renderRankingsViewToggle();
+  if (rankingsView === 'ros' && !rosData) rankingsView = 'preseason';
+
   setRoute(`rankings/${currentRankTab}`);
+
+  // The band and view toggles belong to the preseason chart — missed-time risk
+  // draws a second downside on a whisker that does not exist here, and there is
+  // no chart to switch to. Left on screen they invite a click that changes
+  // nothing, which is the same mistake the Teams page made with its division
+  // picker in league view.
+  const bandToggles = ['rankAvailToggle', 'rankViewToggle'];
+  bandToggles.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = rankingsView === 'ros' ? 'none' : '';
+  });
+
+  if (rankingsView === 'ros') {
+    const methodElRos = document.getElementById('rankingsMethod');
+    if (methodElRos) {
+      methodElRos.textContent = `${rosData.meta.season} rest of season — the games that are left, not the ones already played.`;
+    }
+    document.querySelectorAll('#rankTabs .pos-btn').forEach(b =>
+      b.classList.toggle('active', b.textContent.trim() === (currentRankTab === 'overall' ? 'Overall' : currentRankTab.toUpperCase())));
+    body.innerHTML = rosBoardHtml(currentRankTab);
+    const caveatEl = document.getElementById('rankingsCaveat');
+    if (caveatEl) caveatEl.textContent = '';
+    return;
+  }
   const tabLabel = currentRankTab === 'overall' ? 'Overall' : currentRankTab.toUpperCase();
   document.querySelectorAll('#rankTabs .pos-btn').forEach(b =>
     b.classList.toggle('active', b.textContent.trim() === tabLabel));

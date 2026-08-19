@@ -348,6 +348,9 @@
           <button class="pos-btn" onclick="setRankTab('te', this)">TE</button>
         </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <!-- Only rendered once data/ros.json exists, which is once games have
+               been played. Out of season there is no second view to offer. -->
+          <div class="position-filter" id="rankingsViewMode"></div>
           <div class="position-filter" id="rankAvailToggle">
             <button class="pos-btn active" onclick="setRankAvail(true, this)">Show missed-time risk</button>
             <button class="pos-btn" onclick="setRankAvail(false, this)">Health assumed</button>

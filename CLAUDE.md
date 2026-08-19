@@ -511,3 +511,20 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   even a raw `window.scrollTo(0,500)` leaves scrollY at 0 — so the jump cannot be exercised
   there. What is checkable is that every anchor resolves, the computed target clears the nav,
   and the address stays clean. Do not "fix" a jump on the strength of an automated scroll test.
+
+## Surfacing rest of season
+- The Rankings page gains a **Preseason / Rest of season** toggle, AND THE TOGGLE ONLY EXISTS
+  WHEN data/ros.json DOES. Out of season the file is absent, `rosData` is null, and there is no
+  second view to offer — which is the correct answer, not an error. Forcing the view in that
+  state falls back to preseason rather than rendering an empty board.
+- IN THE ROS VIEW THE BAND TOGGLES ARE HIDDEN. Missed-time risk draws a second downside onto a
+  whisker that does not exist here and there is no chart to switch to; left on screen they invite
+  a click that changes nothing — the same mistake the Teams page made with its division picker.
+- IT IS NOT A RE-RANKING. rankings.json is untouched and the medians stay the analyst's. This
+  answers a different question, which is why it may order players differently AND why it lives
+  behind a toggle rather than quietly replacing what he wrote.
+- `build-ros.js --simulate 2025:8 --write` produces a REAL FILE from simulated data, which is the
+  only way to build the pages that read it before September. It is stamped `meta.simulated`, the
+  UI prints a red warning when it sees the stamp, and **tests/ros.test.js FAILS if a stamped file
+  is ever committed**. The capability has to exist without being able to ship — a stamped file
+  looks exactly like a real one to every page that reads it.
