@@ -321,6 +321,40 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - A charted pass with no `receiver_player_id` counts for the TEAM and for nobody in particular.
   That is the honest split: the play happened, the attribution did not.
 
+## In Season — the matchup board
+- `data/matchups.json`, built by `scripts/build-matchups.js` from `data/weekly` — no new download, the
+  weekly shards already carry `opp` and `fpts` for 8,524 player-games across three seasons. In the
+  daily Action after fetch-stats, which refreshes what it reads.
+- FANTASY POINTS ALLOWED IS THE MOST-USED MATCHUP NUMBER IN THE SPORT AND IT CONFLATES TWO THINGS:
+  how good the defence is, and how good the offences it happened to draw were. A defence that faced
+  the three best receiving corps looks porous and has not been measured. So the file publishes a
+  second number — `vsBaseline`, the same games measured against THAT PLAYER'S OWN season average —
+  and states that it is the one to trust.
+- THE CORRECTION IS NOT DECORATIVE AND THERE IS A TEST THAT IT ISN'T. Measured on 2025, **twelve of
+  thirty-two defences move five or more places** between the two rankings. If that ever collapses to
+  zero the second column is the first one wearing a different name and should go.
+- External check: PHI lead the 2025 WR board at -2.19, and they also lead the completion-percentage-
+  allowed board built from an entirely different source. DAL are last at +3.55.
+- THE POPULATION IS THE TOP-350 POOL, so this is points allowed to players worth STARTING rather than
+  to everybody at the position. For a start/sit decision that is the right population and for a
+  league-wide claim it is not, which is why the file says so.
+- THE THIN PATH IS THE ONE THAT MATTERS AND IT CANNOT BE TESTED AGAINST A COMPLETED SEASON. Every
+  cell on a finished year clears the eight-player-game floor comfortably, so a mutation deleting the
+  floor passed against real data. `shapeCell` is extracted and unit-tested for exactly this: Weeks 1
+  to 3 are when one afternoon is the entire sample and the board looks identical to one built on
+  seventeen games.
+- The page states which season it was built from and, before Week 1, that defensive personnel changes
+  completely across an offseason — a past season describes that season's defence, not the one lining
+  up on Sunday.
+
+## Film lives inside Draft Lab
+- Film Room had a nav item, a page, a route and one article. A section earns a top-level slot when
+  there is enough in it to be worth navigating to. Both are scouting, so they share `/draft` with a
+  view switch and film sits at `/draft/film`.
+- RETIRING A SECTION IS NOT DELETING A NAV ITEM — the same list the Compare retirement worked through:
+  nav (both bars), page markup, ROUTE_PAGES, route metadata, the render hook, the sitemap note, and a
+  308 from the retired URL. `/film` redirects to `/draft` rather than quietly rendering the home page.
+
 ## In season
 - `data/ros.json` — rest-of-season projections, built by `scripts/build-ros.js`. From the first
   Sunday, projections-2026.json answers a question nobody is asking: what matters in Week 8 is

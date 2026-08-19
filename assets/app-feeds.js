@@ -707,7 +707,7 @@ function toggleMobileNav() {
 // so these are real URLs that answer 200 and can be crawled, linked and shared.
 //
 // The route GRAMMAR is unchanged: what used to follow the # now follows the /.
-const ROUTE_PAGES = ['teams', 'rankings', 'lab', 'players', 'medicals', 'fantasy', 'draft', 'film', 'ask'];
+const ROUTE_PAGES = ['teams', 'rankings', 'lab', 'players', 'medicals', 'fantasy', 'draft', 'season', 'ask'];
 
 function routePath(route) {
   return '/' + String(route || '').replace(/^\/+/, '');
@@ -816,6 +816,14 @@ function handleRoute() {
     switchPage('rankings');
     return;
   }
+  // /draft/film is the film tab. It is a deeper route on a page rather than a
+  // section of its own, because one article does not earn a nav slot.
+  if (parts[0] === 'draft') {
+    switchPage('draft');
+    setDraftView(parts[1] === 'film' ? 'film' : 'model',
+      document.querySelector(`#draftViewToggle .pos-btn:nth-child(${parts[1] === 'film' ? 2 : 1})`));
+    return;
+  }
   if (parts.length === 1 && ROUTE_PAGES.includes(parts[0])) {
     switchPage(parts[0]);
     return;
@@ -856,6 +864,14 @@ const ROUTE_META = {
   players: {
     title: 'Player Database — The Signal',
     description: 'Every fantasy-relevant NFL player: athletic profiles, nflverse production, sourced medical history and current status, updated daily.',
+  },
+  season: {
+    title: 'In Season — The Signal',
+    description: 'Which defences actually cost you points, measured against each player\'s own average rather than against whoever they happened to face.',
+  },
+  'draft/film': {
+    title: 'Film Room — The Signal',
+    description: 'Breakdowns from game film rather than from the box score, alongside the draft model they inform.',
   },
   ask: {
     title: 'Ask The Signal',
@@ -1028,6 +1044,7 @@ function isKnownRoute(route) {
   if (head === 'medicals') return !parts[1] || !!medicalDB[parts[1]] || playersDB.some(p => p.id === parts[1]);
   if (head === 'article') return !!articlesDB[parts[1]];
   if (head === 'rankings') return !parts[1] || ['overall', 'qb', 'rb', 'wr', 'te'].includes(parts[1]);
+  if (head === 'draft') return !parts[1] || parts[1] === 'film';
   return ROUTE_PAGES.includes(head);
 }
 

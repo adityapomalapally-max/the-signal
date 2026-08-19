@@ -1,0 +1,2535 @@
+{
+  "meta": {
+    "generated": "2026-08-19T21:04:38.253Z",
+    "seasons": [
+      2023,
+      2024,
+      2025
+    ],
+    "latestSeasonWithGames": 2025,
+    "source": "Per-game fantasy points from data/weekly, attributed to the defence faced. Half-PPR.",
+    "qualifiers": {
+      "playerGames": "8+ player-games against a defence before any rate is published",
+      "baseline": "a player needs 6+ games that season before his own average is used as a baseline"
+    },
+    "readThis": "vsBaseline is the number to trust. pointsAllowedPerGame conflates the defence with the offences it happened to face; vsBaseline measures each performance against that player's own season average, so a defence is not credited for drawing weak opponents.",
+    "caveats": [
+      "The population is the top-350 fantasy pool, so this is points allowed to players worth starting rather than to everybody at the position. For a start/sit decision that is the right population; it is not the whole league.",
+      "A baseline is the player's average across the games he PLAYED that season, so it already contains his good and bad matchups. It corrects for who a defence faced, not for when in the season they faced them.",
+      "Defensive personnel changes across a season and completely across an offseason. A figure from a past season describes that season's defence, not the one lining up on Sunday."
+    ]
+  },
+  "seasons": {
+    "2023": {
+      "defenses": {
+        "ARI": {
+          "QB": {
+            "playerGames": 17,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 16.71,
+            "vsBaseline": 2.23
+          },
+          "RB": {
+            "playerGames": 24,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 13.68,
+            "vsBaseline": 2.28
+          },
+          "WR": {
+            "playerGames": 29,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 10.08,
+            "vsBaseline": -2.19
+          },
+          "TE": {
+            "playerGames": 14,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 7.86,
+            "vsBaseline": -1.1
+          }
+        },
+        "ATL": {
+          "QB": {
+            "playerGames": 12,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 14.2,
+            "vsBaseline": 0.12
+          },
+          "RB": {
+            "playerGames": 18,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 10.67,
+            "vsBaseline": -0.99
+          },
+          "WR": {
+            "playerGames": 27,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.22,
+            "vsBaseline": -0.53
+          },
+          "TE": {
+            "playerGames": 11,
+            "gamesPlayed": 10,
+            "pointsAllowedPerGame": 11.52,
+            "vsBaseline": 3.22
+          }
+        },
+        "BAL": {
+          "QB": {
+            "playerGames": 14,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 11.15,
+            "vsBaseline": -3.29
+          },
+          "RB": {
+            "playerGames": 15,
+            "gamesPlayed": 10,
+            "pointsAllowedPerGame": 12.03,
+            "vsBaseline": -0.82
+          },
+          "WR": {
+            "playerGames": 28,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 10.86,
+            "vsBaseline": -0.67
+          },
+          "TE": {
+            "playerGames": 12,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 9.13,
+            "vsBaseline": -0.06
+          }
+        },
+        "BUF": {
+          "QB": {
+            "playerGames": 14,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 14.11,
+            "vsBaseline": 0.37
+          },
+          "RB": {
+            "playerGames": 18,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 12.39,
+            "vsBaseline": 0.78
+          },
+          "WR": {
+            "playerGames": 23,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 12.23,
+            "vsBaseline": 0.5
+          },
+          "TE": {
+            "playerGames": 12,
+            "gamesPlayed": 9,
+            "pointsAllowedPerGame": 5.82,
+            "vsBaseline": -0.21
+          }
+        },
+        "CAR": {
+          "QB": {
+            "playerGames": 10,
+            "gamesPlayed": 10,
+            "pointsAllowedPerGame": 15.37,
+            "vsBaseline": -1.49
+          },
+          "RB": {
+            "playerGames": 20,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 13.67,
+            "vsBaseline": 2.27
+          },
+          "WR": {
+            "playerGames": 29,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 9.4,
+            "vsBaseline": -2.9
+          },
+          "TE": {
+            "playerGames": 15,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 6.02,
+            "vsBaseline": -1.72
+          }
+        },
+        "CHI": {
+          "QB": {
+            "playerGames": 12,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 14.25,
+            "vsBaseline": -0.95
+          },
+          "RB": {
+            "playerGames": 18,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 13.31,
+            "vsBaseline": 0.59
+          },
+          "WR": {
+            "playerGames": 30,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.57,
+            "vsBaseline": -0.78
+          },
+          "TE": {
+            "playerGames": 14,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 9.66,
+            "vsBaseline": -0.24
+          }
+        },
+        "CIN": {
+          "QB": {
+            "playerGames": 11,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 18.48,
+            "vsBaseline": 0.9
+          },
+          "RB": {
+            "playerGames": 17,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 12.68,
+            "vsBaseline": -0.26
+          },
+          "WR": {
+            "playerGames": 26,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 12.46,
+            "vsBaseline": 1.41
+          },
+          "TE": {
+            "playerGames": 16,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 9.36,
+            "vsBaseline": -0.14
+          }
+        },
+        "CLE": {
+          "QB": {
+            "playerGames": 9,
+            "gamesPlayed": 9,
+            "pointsAllowedPerGame": 15.89,
+            "vsBaseline": -1.04
+          },
+          "RB": {
+            "playerGames": 21,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 10.99,
+            "vsBaseline": -0.42
+          },
+          "WR": {
+            "playerGames": 30,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 9.53,
+            "vsBaseline": -1.56
+          },
+          "TE": {
+            "playerGames": 10,
+            "gamesPlayed": 9,
+            "pointsAllowedPerGame": 5.99,
+            "vsBaseline": -3.25
+          }
+        },
+        "DAL": {
+          "QB": {
+            "playerGames": 15,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 12.19,
+            "vsBaseline": -2.2
+          },
+          "RB": {
+            "playerGames": 20,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 9.97,
+            "vsBaseline": -2.71
+          },
+          "WR": {
+            "playerGames": 26,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 10.38,
+            "vsBaseline": -1.62
+          },
+          "TE": {
+            "playerGames": 9,
+            "gamesPlayed": 8,
+            "pointsAllowedPerGame": 8.58,
+            "vsBaseline": -1.35
+          }
+        },
+        "DEN": {
+          "QB": {
+            "playerGames": 13,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 15.5,
+            "vsBaseline": -0.09
+          },
+          "RB": {
+            "playerGames": 15,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 13.75,
+            "vsBaseline": 2.69
+          },
+          "WR": {
+            "playerGames": 28,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 12.15,
+            "vsBaseline": 1.21
+          },
+          "TE": {
+            "playerGames": 11,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 10.99,
+            "vsBaseline": 2.46
+          }
+        },
+        "DET": {
+          "QB": {
+            "playerGames": 11,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 21.85,
+            "vsBaseline": 4.55
+          },
+          "RB": {
+            "playerGames": 17,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 7.72,
+            "vsBaseline": -3.2
+          },
+          "WR": {
+            "playerGames": 34,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 13.22,
+            "vsBaseline": 1.15
+          },
+          "TE": {
+            "playerGames": 13,
+            "gamesPlayed": 10,
+            "pointsAllowedPerGame": 5.95,
+            "vsBaseline": -1.32
+          }
+        },
+        "GB": {
+          "QB": {
+            "playerGames": 9,
+            "gamesPlayed": 9,
+            "pointsAllowedPerGame": 18.06,
+            "vsBaseline": 1.44
+          },
+          "RB": {
+            "playerGames": 18,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 15.03,
+            "vsBaseline": 3.21
+          },
+          "WR": {
+            "playerGames": 28,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 12.19,
+            "vsBaseline": -0.57
+          },
+          "TE": {
+            "playerGames": 10,
+            "gamesPlayed": 8,
+            "pointsAllowedPerGame": 8.42,
+            "vsBaseline": -0.87
+          }
+        },
+        "HOU": {
+          "QB": {
+            "playerGames": 12,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 14.82,
+            "vsBaseline": 1.25
+          },
+          "RB": {
+            "playerGames": 22,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 11.43,
+            "vsBaseline": -0.33
+          },
+          "WR": {
+            "playerGames": 26,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 10.9,
+            "vsBaseline": 0.16
+          },
+          "TE": {
+            "playerGames": 11,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 8.55,
+            "vsBaseline": 1.75
+          }
+        },
+        "IND": {
+          "QB": {
+            "playerGames": 12,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 15,
+            "vsBaseline": -0.09
+          },
+          "RB": {
+            "playerGames": 22,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 13.28,
+            "vsBaseline": 2.93
+          },
+          "WR": {
+            "playerGames": 27,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 12.46,
+            "vsBaseline": 1.27
+          },
+          "TE": {
+            "playerGames": 18,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 6.44,
+            "vsBaseline": -0.97
+          }
+        },
+        "JAX": {
+          "QB": {
+            "playerGames": 13,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 15.62,
+            "vsBaseline": 0.49
+          },
+          "RB": {
+            "playerGames": 19,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 11.44,
+            "vsBaseline": -0.74
+          },
+          "WR": {
+            "playerGames": 31,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.23,
+            "vsBaseline": 0.05
+          },
+          "TE": {
+            "playerGames": 14,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 7.39,
+            "vsBaseline": -0.77
+          }
+        },
+        "KC": {
+          "QB": {
+            "playerGames": 13,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 14.72,
+            "vsBaseline": -2.01
+          },
+          "RB": {
+            "playerGames": 14,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 10.61,
+            "vsBaseline": -0.14
+          },
+          "WR": {
+            "playerGames": 34,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 8.76,
+            "vsBaseline": -3.19
+          },
+          "TE": {
+            "playerGames": 12,
+            "gamesPlayed": 8,
+            "pointsAllowedPerGame": 6.38,
+            "vsBaseline": -0.16
+          }
+        },
+        "LAC": {
+          "QB": {
+            "playerGames": 11,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 21.5,
+            "vsBaseline": 4.7
+          },
+          "RB": {
+            "playerGames": 20,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 10.63,
+            "vsBaseline": 0.03
+          },
+          "WR": {
+            "playerGames": 32,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 12.23,
+            "vsBaseline": 1.34
+          },
+          "TE": {
+            "playerGames": 13,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 8.65,
+            "vsBaseline": 0.17
+          }
+        },
+        "LAR": {
+          "QB": {
+            "playerGames": 13,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 18.94,
+            "vsBaseline": 2.65
+          },
+          "RB": {
+            "playerGames": 21,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 8.29,
+            "vsBaseline": -2.36
+          },
+          "WR": {
+            "playerGames": 33,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.41,
+            "vsBaseline": 0.21
+          },
+          "TE": {
+            "playerGames": 10,
+            "gamesPlayed": 10,
+            "pointsAllowedPerGame": 11.93,
+            "vsBaseline": 2.34
+          }
+        },
+        "LV": {
+          "QB": {
+            "playerGames": 12,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 14.36,
+            "vsBaseline": -1.3
+          },
+          "RB": {
+            "playerGames": 14,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 13.78,
+            "vsBaseline": 0.69
+          },
+          "WR": {
+            "playerGames": 31,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 8.85,
+            "vsBaseline": -1.98
+          },
+          "TE": {
+            "playerGames": 13,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 7.32,
+            "vsBaseline": -0.62
+          }
+        },
+        "MIA": {
+          "QB": {
+            "playerGames": 14,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 16.66,
+            "vsBaseline": 1.49
+          },
+          "RB": {
+            "playerGames": 21,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 9.14,
+            "vsBaseline": -1.85
+          },
+          "WR": {
+            "playerGames": 27,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.8,
+            "vsBaseline": 1.05
+          },
+          "TE": {
+            "playerGames": 14,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 10.08,
+            "vsBaseline": 1.97
+          }
+        },
+        "MIN": {
+          "QB": {
+            "playerGames": 14,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 14.97,
+            "vsBaseline": -0.84
+          },
+          "RB": {
+            "playerGames": 20,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 11.82,
+            "vsBaseline": -0.71
+          },
+          "WR": {
+            "playerGames": 34,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 12.78,
+            "vsBaseline": 1.11
+          },
+          "TE": {
+            "playerGames": 12,
+            "gamesPlayed": 10,
+            "pointsAllowedPerGame": 7.8,
+            "vsBaseline": -1.12
+          }
+        },
+        "NE": {
+          "QB": {
+            "playerGames": 11,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 14.8,
+            "vsBaseline": -3.48
+          },
+          "RB": {
+            "playerGames": 19,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 9.77,
+            "vsBaseline": -2.64
+          },
+          "WR": {
+            "playerGames": 29,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.51,
+            "vsBaseline": -1.54
+          },
+          "TE": {
+            "playerGames": 10,
+            "gamesPlayed": 9,
+            "pointsAllowedPerGame": 7.7,
+            "vsBaseline": 0.25
+          }
+        },
+        "NO": {
+          "QB": {
+            "playerGames": 12,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 13.96,
+            "vsBaseline": -0.15
+          },
+          "RB": {
+            "playerGames": 21,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 10.01,
+            "vsBaseline": -2.03
+          },
+          "WR": {
+            "playerGames": 29,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 10.69,
+            "vsBaseline": -0.07
+          },
+          "TE": {
+            "playerGames": 13,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 8.68,
+            "vsBaseline": 0.49
+          }
+        },
+        "NYG": {
+          "QB": {
+            "playerGames": 15,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 12.03,
+            "vsBaseline": -3.81
+          },
+          "RB": {
+            "playerGames": 24,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 13.13,
+            "vsBaseline": 1.51
+          },
+          "WR": {
+            "playerGames": 29,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.9,
+            "vsBaseline": -0.13
+          },
+          "TE": {
+            "playerGames": 12,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 6.64,
+            "vsBaseline": -1.42
+          }
+        },
+        "NYJ": {
+          "QB": {
+            "playerGames": 13,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 11.54,
+            "vsBaseline": -5.16
+          },
+          "RB": {
+            "playerGames": 16,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 11.43,
+            "vsBaseline": 0.67
+          },
+          "WR": {
+            "playerGames": 25,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 9.73,
+            "vsBaseline": -1.74
+          },
+          "TE": {
+            "playerGames": 13,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 7.46,
+            "vsBaseline": -1.04
+          }
+        },
+        "PHI": {
+          "QB": {
+            "playerGames": 15,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 18.93,
+            "vsBaseline": 3.98
+          },
+          "RB": {
+            "playerGames": 21,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 12.21,
+            "vsBaseline": -0.18
+          },
+          "WR": {
+            "playerGames": 28,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 13.96,
+            "vsBaseline": 2.2
+          },
+          "TE": {
+            "playerGames": 13,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 11.37,
+            "vsBaseline": 1.59
+          }
+        },
+        "PIT": {
+          "QB": {
+            "playerGames": 11,
+            "gamesPlayed": 10,
+            "pointsAllowedPerGame": 14.05,
+            "vsBaseline": -1.54
+          },
+          "RB": {
+            "playerGames": 15,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 11.38,
+            "vsBaseline": 1.2
+          },
+          "WR": {
+            "playerGames": 29,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 11.78,
+            "vsBaseline": 0.94
+          },
+          "TE": {
+            "playerGames": 13,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 9.09,
+            "vsBaseline": 0.09
+          }
+        },
+        "SEA": {
+          "QB": {
+            "playerGames": 11,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 16.45,
+            "vsBaseline": -0.89
+          },
+          "RB": {
+            "playerGames": 20,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 14.78,
+            "vsBaseline": 2.19
+          },
+          "WR": {
+            "playerGames": 24,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 12.04,
+            "vsBaseline": -0.62
+          },
+          "TE": {
+            "playerGames": 13,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 11.66,
+            "vsBaseline": 1.05
+          }
+        },
+        "SF": {
+          "QB": {
+            "playerGames": 13,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 11.68,
+            "vsBaseline": -3.76
+          },
+          "RB": {
+            "playerGames": 17,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 9.31,
+            "vsBaseline": -2.08
+          },
+          "WR": {
+            "playerGames": 24,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 13.86,
+            "vsBaseline": 1.13
+          },
+          "TE": {
+            "playerGames": 14,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 7.49,
+            "vsBaseline": -0.24
+          }
+        },
+        "TB": {
+          "QB": {
+            "playerGames": 12,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 18.65,
+            "vsBaseline": 1.86
+          },
+          "RB": {
+            "playerGames": 21,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 10.3,
+            "vsBaseline": -1.99
+          },
+          "WR": {
+            "playerGames": 32,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 13.07,
+            "vsBaseline": 1.47
+          },
+          "TE": {
+            "playerGames": 15,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 11.51,
+            "vsBaseline": 3.45
+          }
+        },
+        "TEN": {
+          "QB": {
+            "playerGames": 14,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 14.91,
+            "vsBaseline": 0.28
+          },
+          "RB": {
+            "playerGames": 17,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 8.29,
+            "vsBaseline": -2.14
+          },
+          "WR": {
+            "playerGames": 29,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 12.86,
+            "vsBaseline": 1.78
+          },
+          "TE": {
+            "playerGames": 9,
+            "gamesPlayed": 9,
+            "pointsAllowedPerGame": 6.64,
+            "vsBaseline": -1.92
+          }
+        },
+        "WAS": {
+          "QB": {
+            "playerGames": 13,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 21.18,
+            "vsBaseline": 5.05
+          },
+          "RB": {
+            "playerGames": 24,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 15.27,
+            "vsBaseline": 3.04
+          },
+          "WR": {
+            "playerGames": 31,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 14.58,
+            "vsBaseline": 3.41
+          },
+          "TE": {
+            "playerGames": 14,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 7.21,
+            "vsBaseline": -0.88
+          }
+        }
+      },
+      "defenseCount": 32
+    },
+    "2024": {
+      "defenses": {
+        "ARI": {
+          "QB": {
+            "playerGames": 16,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 16.06,
+            "vsBaseline": -0.46
+          },
+          "RB": {
+            "playerGames": 30,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.76,
+            "vsBaseline": 0.2
+          },
+          "WR": {
+            "playerGames": 34,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.93,
+            "vsBaseline": -1.3
+          },
+          "TE": {
+            "playerGames": 16,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 5.13,
+            "vsBaseline": -2.32
+          }
+        },
+        "ATL": {
+          "QB": {
+            "playerGames": 12,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 22.29,
+            "vsBaseline": 4.61
+          },
+          "RB": {
+            "playerGames": 25,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.61,
+            "vsBaseline": 0.66
+          },
+          "WR": {
+            "playerGames": 31,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 13.21,
+            "vsBaseline": 1.08
+          },
+          "TE": {
+            "playerGames": 12,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 8.1,
+            "vsBaseline": -1.03
+          }
+        },
+        "BAL": {
+          "QB": {
+            "playerGames": 14,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 17.25,
+            "vsBaseline": 0.45
+          },
+          "RB": {
+            "playerGames": 20,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 10.64,
+            "vsBaseline": -0.52
+          },
+          "WR": {
+            "playerGames": 33,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 14.35,
+            "vsBaseline": 1.55
+          },
+          "TE": {
+            "playerGames": 13,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 9.56,
+            "vsBaseline": -0.04
+          }
+        },
+        "BUF": {
+          "QB": {
+            "playerGames": 17,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 13.09,
+            "vsBaseline": -2.83
+          },
+          "RB": {
+            "playerGames": 27,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 12.34,
+            "vsBaseline": 1.34
+          },
+          "WR": {
+            "playerGames": 34,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 12.42,
+            "vsBaseline": 1
+          },
+          "TE": {
+            "playerGames": 17,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 6.22,
+            "vsBaseline": -1.61
+          }
+        },
+        "CAR": {
+          "QB": {
+            "playerGames": 17,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 17.34,
+            "vsBaseline": 0.65
+          },
+          "RB": {
+            "playerGames": 25,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 15.47,
+            "vsBaseline": 3.35
+          },
+          "WR": {
+            "playerGames": 36,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 13.07,
+            "vsBaseline": 0.52
+          },
+          "TE": {
+            "playerGames": 13,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 6.61,
+            "vsBaseline": -3.07
+          }
+        },
+        "CHI": {
+          "QB": {
+            "playerGames": 19,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.22,
+            "vsBaseline": -3.55
+          },
+          "RB": {
+            "playerGames": 24,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 13.43,
+            "vsBaseline": 1.41
+          },
+          "WR": {
+            "playerGames": 39,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 9.27,
+            "vsBaseline": -2.04
+          },
+          "TE": {
+            "playerGames": 15,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 9.13,
+            "vsBaseline": 0.25
+          }
+        },
+        "CIN": {
+          "QB": {
+            "playerGames": 12,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 18.11,
+            "vsBaseline": 1.59
+          },
+          "RB": {
+            "playerGames": 24,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 11.66,
+            "vsBaseline": 0.95
+          },
+          "WR": {
+            "playerGames": 33,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 10.23,
+            "vsBaseline": -0.29
+          },
+          "TE": {
+            "playerGames": 15,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 12.73,
+            "vsBaseline": 2.97
+          }
+        },
+        "CLE": {
+          "QB": {
+            "playerGames": 16,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 14.06,
+            "vsBaseline": -2.04
+          },
+          "RB": {
+            "playerGames": 25,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 8.8,
+            "vsBaseline": -2.13
+          },
+          "WR": {
+            "playerGames": 31,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 12.55,
+            "vsBaseline": 0.2
+          },
+          "TE": {
+            "playerGames": 15,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 7.59,
+            "vsBaseline": -1.97
+          }
+        },
+        "DAL": {
+          "QB": {
+            "playerGames": 16,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 18.18,
+            "vsBaseline": 1.25
+          },
+          "RB": {
+            "playerGames": 24,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 12.33,
+            "vsBaseline": -0.11
+          },
+          "WR": {
+            "playerGames": 31,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 14.06,
+            "vsBaseline": 0.45
+          },
+          "TE": {
+            "playerGames": 14,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 7.44,
+            "vsBaseline": -1.87
+          }
+        },
+        "DEN": {
+          "QB": {
+            "playerGames": 18,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 12.73,
+            "vsBaseline": -0.99
+          },
+          "RB": {
+            "playerGames": 25,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 9.61,
+            "vsBaseline": -1.39
+          },
+          "WR": {
+            "playerGames": 30,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 10.52,
+            "vsBaseline": -1.86
+          },
+          "TE": {
+            "playerGames": 14,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 9.32,
+            "vsBaseline": 0.28
+          }
+        },
+        "DET": {
+          "QB": {
+            "playerGames": 16,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 16.87,
+            "vsBaseline": 0.69
+          },
+          "RB": {
+            "playerGames": 23,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.02,
+            "vsBaseline": -1.17
+          },
+          "WR": {
+            "playerGames": 47,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.55,
+            "vsBaseline": 0.52
+          },
+          "TE": {
+            "playerGames": 16,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 6.24,
+            "vsBaseline": -1.47
+          }
+        },
+        "GB": {
+          "QB": {
+            "playerGames": 16,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 14.15,
+            "vsBaseline": -1.5
+          },
+          "RB": {
+            "playerGames": 26,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.53,
+            "vsBaseline": -0.27
+          },
+          "WR": {
+            "playerGames": 35,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 10.7,
+            "vsBaseline": -1.16
+          },
+          "TE": {
+            "playerGames": 17,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 7.02,
+            "vsBaseline": -0.36
+          }
+        },
+        "HOU": {
+          "QB": {
+            "playerGames": 15,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 15.94,
+            "vsBaseline": -0.6
+          },
+          "RB": {
+            "playerGames": 26,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 9.72,
+            "vsBaseline": -1.69
+          },
+          "WR": {
+            "playerGames": 39,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.78,
+            "vsBaseline": 1.53
+          },
+          "TE": {
+            "playerGames": 15,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 7.41,
+            "vsBaseline": 0.12
+          }
+        },
+        "IND": {
+          "QB": {
+            "playerGames": 14,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 16.01,
+            "vsBaseline": 2.03
+          },
+          "RB": {
+            "playerGames": 27,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 10.94,
+            "vsBaseline": 0.37
+          },
+          "WR": {
+            "playerGames": 38,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.81,
+            "vsBaseline": 0.44
+          },
+          "TE": {
+            "playerGames": 16,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 8.12,
+            "vsBaseline": 1.03
+          }
+        },
+        "JAX": {
+          "QB": {
+            "playerGames": 15,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 18.59,
+            "vsBaseline": 4.23
+          },
+          "RB": {
+            "playerGames": 21,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 13.87,
+            "vsBaseline": 1.95
+          },
+          "WR": {
+            "playerGames": 41,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 12.62,
+            "vsBaseline": 1.13
+          },
+          "TE": {
+            "playerGames": 17,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 8.5,
+            "vsBaseline": 2.56
+          }
+        },
+        "KC": {
+          "QB": {
+            "playerGames": 15,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 17.07,
+            "vsBaseline": 0.92
+          },
+          "RB": {
+            "playerGames": 26,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 7.67,
+            "vsBaseline": -2.74
+          },
+          "WR": {
+            "playerGames": 32,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 11.43,
+            "vsBaseline": 0.77
+          },
+          "TE": {
+            "playerGames": 12,
+            "gamesPlayed": 10,
+            "pointsAllowedPerGame": 13.96,
+            "vsBaseline": 3.86
+          }
+        },
+        "LAC": {
+          "QB": {
+            "playerGames": 17,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 14.1,
+            "vsBaseline": -0.53
+          },
+          "RB": {
+            "playerGames": 23,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 9.73,
+            "vsBaseline": -1.16
+          },
+          "WR": {
+            "playerGames": 34,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 12.59,
+            "vsBaseline": 1.51
+          },
+          "TE": {
+            "playerGames": 19,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 6.37,
+            "vsBaseline": -2.92
+          }
+        },
+        "LAR": {
+          "QB": {
+            "playerGames": 17,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 16.84,
+            "vsBaseline": 0.39
+          },
+          "RB": {
+            "playerGames": 25,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.76,
+            "vsBaseline": -0.44
+          },
+          "WR": {
+            "playerGames": 31,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 12.45,
+            "vsBaseline": 0.94
+          },
+          "TE": {
+            "playerGames": 14,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 11.59,
+            "vsBaseline": 2.1
+          }
+        },
+        "LV": {
+          "QB": {
+            "playerGames": 16,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 17.33,
+            "vsBaseline": 1.11
+          },
+          "RB": {
+            "playerGames": 25,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.03,
+            "vsBaseline": 0.47
+          },
+          "WR": {
+            "playerGames": 28,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 11.69,
+            "vsBaseline": 0.45
+          },
+          "TE": {
+            "playerGames": 12,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 10.39,
+            "vsBaseline": 1.94
+          }
+        },
+        "MIA": {
+          "QB": {
+            "playerGames": 16,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 14.27,
+            "vsBaseline": -0.2
+          },
+          "RB": {
+            "playerGames": 21,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 12.28,
+            "vsBaseline": 1.88
+          },
+          "WR": {
+            "playerGames": 36,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.78,
+            "vsBaseline": -0.6
+          },
+          "TE": {
+            "playerGames": 17,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 9.06,
+            "vsBaseline": 1.27
+          }
+        },
+        "MIN": {
+          "QB": {
+            "playerGames": 15,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 14.93,
+            "vsBaseline": -0.24
+          },
+          "RB": {
+            "playerGames": 31,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 9.4,
+            "vsBaseline": -1.55
+          },
+          "WR": {
+            "playerGames": 43,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 12.94,
+            "vsBaseline": 1.1
+          },
+          "TE": {
+            "playerGames": 14,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 8.21,
+            "vsBaseline": -0.47
+          }
+        },
+        "NE": {
+          "QB": {
+            "playerGames": 15,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 16.73,
+            "vsBaseline": 1.22
+          },
+          "RB": {
+            "playerGames": 27,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.6,
+            "vsBaseline": 0.98
+          },
+          "WR": {
+            "playerGames": 35,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.97,
+            "vsBaseline": 0.55
+          },
+          "TE": {
+            "playerGames": 10,
+            "gamesPlayed": 9,
+            "pointsAllowedPerGame": 7.06,
+            "vsBaseline": -0.27
+          }
+        },
+        "NO": {
+          "QB": {
+            "playerGames": 16,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 14.34,
+            "vsBaseline": -1.52
+          },
+          "RB": {
+            "playerGames": 26,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 13.38,
+            "vsBaseline": 2.72
+          },
+          "WR": {
+            "playerGames": 36,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.41,
+            "vsBaseline": 0.26
+          },
+          "TE": {
+            "playerGames": 11,
+            "gamesPlayed": 10,
+            "pointsAllowedPerGame": 10.86,
+            "vsBaseline": 1.56
+          }
+        },
+        "NYG": {
+          "QB": {
+            "playerGames": 13,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 16.87,
+            "vsBaseline": 0.54
+          },
+          "RB": {
+            "playerGames": 25,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 13.94,
+            "vsBaseline": 2.08
+          },
+          "WR": {
+            "playerGames": 30,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 10.85,
+            "vsBaseline": -1.82
+          },
+          "TE": {
+            "playerGames": 10,
+            "gamesPlayed": 8,
+            "pointsAllowedPerGame": 6.6,
+            "vsBaseline": -1.82
+          }
+        },
+        "NYJ": {
+          "QB": {
+            "playerGames": 18,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 12.78,
+            "vsBaseline": -0.84
+          },
+          "RB": {
+            "playerGames": 25,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11,
+            "vsBaseline": 0.17
+          },
+          "WR": {
+            "playerGames": 34,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.03,
+            "vsBaseline": 0.35
+          },
+          "TE": {
+            "playerGames": 18,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 5.81,
+            "vsBaseline": -1.28
+          }
+        },
+        "PHI": {
+          "QB": {
+            "playerGames": 14,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 15.39,
+            "vsBaseline": -0.73
+          },
+          "RB": {
+            "playerGames": 28,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 7.66,
+            "vsBaseline": -3.06
+          },
+          "WR": {
+            "playerGames": 30,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 10.67,
+            "vsBaseline": -1.54
+          },
+          "TE": {
+            "playerGames": 12,
+            "gamesPlayed": 10,
+            "pointsAllowedPerGame": 8.03,
+            "vsBaseline": -0.3
+          }
+        },
+        "PIT": {
+          "QB": {
+            "playerGames": 15,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 13.75,
+            "vsBaseline": -4.29
+          },
+          "RB": {
+            "playerGames": 22,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 9.75,
+            "vsBaseline": -0.92
+          },
+          "WR": {
+            "playerGames": 34,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.11,
+            "vsBaseline": -1.92
+          },
+          "TE": {
+            "playerGames": 14,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 11.41,
+            "vsBaseline": 1.7
+          }
+        },
+        "SEA": {
+          "QB": {
+            "playerGames": 17,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 14.59,
+            "vsBaseline": 0.23
+          },
+          "RB": {
+            "playerGames": 31,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 9.38,
+            "vsBaseline": -1.08
+          },
+          "WR": {
+            "playerGames": 35,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 11.79,
+            "vsBaseline": -0.13
+          },
+          "TE": {
+            "playerGames": 16,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 9.52,
+            "vsBaseline": 1.63
+          }
+        },
+        "SF": {
+          "QB": {
+            "playerGames": 19,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 14.36,
+            "vsBaseline": -0.64
+          },
+          "RB": {
+            "playerGames": 24,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 13.11,
+            "vsBaseline": 1.29
+          },
+          "WR": {
+            "playerGames": 29,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 11.47,
+            "vsBaseline": 0.01
+          },
+          "TE": {
+            "playerGames": 13,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 8.45,
+            "vsBaseline": -0.49
+          }
+        },
+        "TB": {
+          "QB": {
+            "playerGames": 15,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 20.43,
+            "vsBaseline": 4.44
+          },
+          "RB": {
+            "playerGames": 25,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 9.1,
+            "vsBaseline": -2.56
+          },
+          "WR": {
+            "playerGames": 30,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 11.27,
+            "vsBaseline": -0.19
+          },
+          "TE": {
+            "playerGames": 14,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 12.76,
+            "vsBaseline": 3.22
+          }
+        },
+        "TEN": {
+          "QB": {
+            "playerGames": 15,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 16.79,
+            "vsBaseline": 1.27
+          },
+          "RB": {
+            "playerGames": 23,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 13.44,
+            "vsBaseline": 2.11
+          },
+          "WR": {
+            "playerGames": 40,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 9.5,
+            "vsBaseline": -1.48
+          },
+          "TE": {
+            "playerGames": 13,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 5.74,
+            "vsBaseline": -1.39
+          }
+        },
+        "WAS": {
+          "QB": {
+            "playerGames": 14,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 13.52,
+            "vsBaseline": -2.18
+          },
+          "RB": {
+            "playerGames": 26,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.7,
+            "vsBaseline": -0.52
+          },
+          "WR": {
+            "playerGames": 34,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.78,
+            "vsBaseline": -0.44
+          },
+          "TE": {
+            "playerGames": 13,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 7.43,
+            "vsBaseline": -1.32
+          }
+        }
+      },
+      "defenseCount": 32
+    },
+    "2025": {
+      "defenses": {
+        "ARI": {
+          "QB": {
+            "playerGames": 18,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 16.02,
+            "vsBaseline": 0.6
+          },
+          "RB": {
+            "playerGames": 35,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.7,
+            "vsBaseline": 0.72
+          },
+          "WR": {
+            "playerGames": 43,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.15,
+            "vsBaseline": -0.91
+          },
+          "TE": {
+            "playerGames": 21,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 10.4,
+            "vsBaseline": 1.76
+          }
+        },
+        "ATL": {
+          "QB": {
+            "playerGames": 18,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 15.42,
+            "vsBaseline": 1.16
+          },
+          "RB": {
+            "playerGames": 32,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 10.07,
+            "vsBaseline": -0.51
+          },
+          "WR": {
+            "playerGames": 37,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.36,
+            "vsBaseline": 1.59
+          },
+          "TE": {
+            "playerGames": 13,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 7.01,
+            "vsBaseline": -2.67
+          }
+        },
+        "BAL": {
+          "QB": {
+            "playerGames": 17,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 16.77,
+            "vsBaseline": 0.78
+          },
+          "RB": {
+            "playerGames": 32,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.84,
+            "vsBaseline": 0.06
+          },
+          "WR": {
+            "playerGames": 39,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.12,
+            "vsBaseline": 1.58
+          },
+          "TE": {
+            "playerGames": 22,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 6.22,
+            "vsBaseline": -1.61
+          }
+        },
+        "BUF": {
+          "QB": {
+            "playerGames": 16,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 13.06,
+            "vsBaseline": -1.86
+          },
+          "RB": {
+            "playerGames": 31,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.49,
+            "vsBaseline": 1.57
+          },
+          "WR": {
+            "playerGames": 34,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.26,
+            "vsBaseline": 0.05
+          },
+          "TE": {
+            "playerGames": 14,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 6.91,
+            "vsBaseline": -2.26
+          }
+        },
+        "CAR": {
+          "QB": {
+            "playerGames": 23,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.21,
+            "vsBaseline": -4.97
+          },
+          "RB": {
+            "playerGames": 35,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.78,
+            "vsBaseline": -0.2
+          },
+          "WR": {
+            "playerGames": 41,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 9.45,
+            "vsBaseline": -1.03
+          },
+          "TE": {
+            "playerGames": 23,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 8.34,
+            "vsBaseline": -0.75
+          }
+        },
+        "CHI": {
+          "QB": {
+            "playerGames": 15,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 16.71,
+            "vsBaseline": 1.59
+          },
+          "RB": {
+            "playerGames": 29,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.99,
+            "vsBaseline": -0.66
+          },
+          "WR": {
+            "playerGames": 39,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 12.01,
+            "vsBaseline": 1.25
+          },
+          "TE": {
+            "playerGames": 15,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 9.73,
+            "vsBaseline": 0.75
+          }
+        },
+        "CIN": {
+          "QB": {
+            "playerGames": 15,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 18.33,
+            "vsBaseline": 2.19
+          },
+          "RB": {
+            "playerGames": 30,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 13.75,
+            "vsBaseline": 3.33
+          },
+          "WR": {
+            "playerGames": 36,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 8.65,
+            "vsBaseline": -0.77
+          },
+          "TE": {
+            "playerGames": 21,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 12.93,
+            "vsBaseline": 3.96
+          }
+        },
+        "CLE": {
+          "QB": {
+            "playerGames": 18,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.78,
+            "vsBaseline": -3.65
+          },
+          "RB": {
+            "playerGames": 30,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11,
+            "vsBaseline": -1.06
+          },
+          "WR": {
+            "playerGames": 31,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 10.62,
+            "vsBaseline": -0.01
+          },
+          "TE": {
+            "playerGames": 22,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 5.52,
+            "vsBaseline": -2.67
+          }
+        },
+        "DAL": {
+          "QB": {
+            "playerGames": 17,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 21.03,
+            "vsBaseline": 4.62
+          },
+          "RB": {
+            "playerGames": 27,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 13.61,
+            "vsBaseline": 2.87
+          },
+          "WR": {
+            "playerGames": 38,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 14.14,
+            "vsBaseline": 3.55
+          },
+          "TE": {
+            "playerGames": 12,
+            "gamesPlayed": 11,
+            "pointsAllowedPerGame": 9.83,
+            "vsBaseline": -1.17
+          }
+        },
+        "DEN": {
+          "QB": {
+            "playerGames": 14,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 14.2,
+            "vsBaseline": -1.75
+          },
+          "RB": {
+            "playerGames": 25,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 9.75,
+            "vsBaseline": -0.63
+          },
+          "WR": {
+            "playerGames": 46,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 7.99,
+            "vsBaseline": -1.92
+          },
+          "TE": {
+            "playerGames": 18,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 8.33,
+            "vsBaseline": -1.01
+          }
+        },
+        "DET": {
+          "QB": {
+            "playerGames": 13,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 19.37,
+            "vsBaseline": 2.53
+          },
+          "RB": {
+            "playerGames": 30,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.1,
+            "vsBaseline": -0.29
+          },
+          "WR": {
+            "playerGames": 40,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.06,
+            "vsBaseline": 0.68
+          },
+          "TE": {
+            "playerGames": 19,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 9.13,
+            "vsBaseline": 0.93
+          }
+        },
+        "GB": {
+          "QB": {
+            "playerGames": 13,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 15.95,
+            "vsBaseline": -0.45
+          },
+          "RB": {
+            "playerGames": 27,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 10.98,
+            "vsBaseline": -0.38
+          },
+          "WR": {
+            "playerGames": 37,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.42,
+            "vsBaseline": -0.51
+          },
+          "TE": {
+            "playerGames": 14,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 9.58,
+            "vsBaseline": 0.03
+          }
+        },
+        "HOU": {
+          "QB": {
+            "playerGames": 15,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 12.93,
+            "vsBaseline": -3.62
+          },
+          "RB": {
+            "playerGames": 27,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 10.64,
+            "vsBaseline": -1.22
+          },
+          "WR": {
+            "playerGames": 41,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 8.55,
+            "vsBaseline": -1.93
+          },
+          "TE": {
+            "playerGames": 22,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 7.51,
+            "vsBaseline": -1.19
+          }
+        },
+        "IND": {
+          "QB": {
+            "playerGames": 19,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 14.98,
+            "vsBaseline": 0.13
+          },
+          "RB": {
+            "playerGames": 26,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 10.16,
+            "vsBaseline": -1.16
+          },
+          "WR": {
+            "playerGames": 46,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.82,
+            "vsBaseline": 1.13
+          },
+          "TE": {
+            "playerGames": 18,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 10.44,
+            "vsBaseline": 0.86
+          }
+        },
+        "JAX": {
+          "QB": {
+            "playerGames": 17,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 12.17,
+            "vsBaseline": -1.84
+          },
+          "RB": {
+            "playerGames": 28,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 8.42,
+            "vsBaseline": -1.77
+          },
+          "WR": {
+            "playerGames": 42,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.09,
+            "vsBaseline": 0.25
+          },
+          "TE": {
+            "playerGames": 19,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 10.53,
+            "vsBaseline": 1.75
+          }
+        },
+        "KC": {
+          "QB": {
+            "playerGames": 17,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 14.8,
+            "vsBaseline": -1.47
+          },
+          "RB": {
+            "playerGames": 27,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 9.9,
+            "vsBaseline": -1.93
+          },
+          "WR": {
+            "playerGames": 48,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 8.68,
+            "vsBaseline": -1
+          },
+          "TE": {
+            "playerGames": 14,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 8.5,
+            "vsBaseline": -0.01
+          }
+        },
+        "LAC": {
+          "QB": {
+            "playerGames": 17,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 12.12,
+            "vsBaseline": -3.28
+          },
+          "RB": {
+            "playerGames": 28,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 9.55,
+            "vsBaseline": -0.91
+          },
+          "WR": {
+            "playerGames": 44,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 8.27,
+            "vsBaseline": -1.06
+          },
+          "TE": {
+            "playerGames": 16,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 9.1,
+            "vsBaseline": -0.51
+          }
+        },
+        "LAR": {
+          "QB": {
+            "playerGames": 16,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 15.56,
+            "vsBaseline": 0.71
+          },
+          "RB": {
+            "playerGames": 28,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 10.74,
+            "vsBaseline": -0.61
+          },
+          "WR": {
+            "playerGames": 39,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.83,
+            "vsBaseline": 1.47
+          },
+          "TE": {
+            "playerGames": 16,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 10.79,
+            "vsBaseline": 0.11
+          }
+        },
+        "LV": {
+          "QB": {
+            "playerGames": 18,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 14.91,
+            "vsBaseline": -0.38
+          },
+          "RB": {
+            "playerGames": 27,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.11,
+            "vsBaseline": 0.97
+          },
+          "WR": {
+            "playerGames": 47,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 9.27,
+            "vsBaseline": -0.49
+          },
+          "TE": {
+            "playerGames": 12,
+            "gamesPlayed": 10,
+            "pointsAllowedPerGame": 9.74,
+            "vsBaseline": 0.06
+          }
+        },
+        "MIA": {
+          "QB": {
+            "playerGames": 18,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 16.76,
+            "vsBaseline": 2.27
+          },
+          "RB": {
+            "playerGames": 33,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.17,
+            "vsBaseline": 0.88
+          },
+          "WR": {
+            "playerGames": 37,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.49,
+            "vsBaseline": 0.75
+          },
+          "TE": {
+            "playerGames": 21,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 9.3,
+            "vsBaseline": 1.57
+          }
+        },
+        "MIN": {
+          "QB": {
+            "playerGames": 16,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 10.21,
+            "vsBaseline": -5.64
+          },
+          "RB": {
+            "playerGames": 30,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 9.55,
+            "vsBaseline": -1.14
+          },
+          "WR": {
+            "playerGames": 39,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 9.39,
+            "vsBaseline": -1.87
+          },
+          "TE": {
+            "playerGames": 18,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 6.93,
+            "vsBaseline": -1.08
+          }
+        },
+        "NE": {
+          "QB": {
+            "playerGames": 16,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 13.69,
+            "vsBaseline": 0.7
+          },
+          "RB": {
+            "playerGames": 29,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 9.61,
+            "vsBaseline": -0.97
+          },
+          "WR": {
+            "playerGames": 29,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 9.95,
+            "vsBaseline": 1.25
+          },
+          "TE": {
+            "playerGames": 20,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 7.44,
+            "vsBaseline": -0.38
+          }
+        },
+        "NO": {
+          "QB": {
+            "playerGames": 17,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 13.96,
+            "vsBaseline": -0.86
+          },
+          "RB": {
+            "playerGames": 34,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 9.83,
+            "vsBaseline": -1.48
+          },
+          "WR": {
+            "playerGames": 35,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.62,
+            "vsBaseline": 0.35
+          },
+          "TE": {
+            "playerGames": 21,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 6.75,
+            "vsBaseline": -1.79
+          }
+        },
+        "NYG": {
+          "QB": {
+            "playerGames": 19,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 15.94,
+            "vsBaseline": 1.05
+          },
+          "RB": {
+            "playerGames": 27,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 14.09,
+            "vsBaseline": 2.96
+          },
+          "WR": {
+            "playerGames": 44,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 10.05,
+            "vsBaseline": -0.28
+          },
+          "TE": {
+            "playerGames": 14,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 9.71,
+            "vsBaseline": 0.11
+          }
+        },
+        "NYJ": {
+          "QB": {
+            "playerGames": 17,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 17.16,
+            "vsBaseline": 2.4
+          },
+          "RB": {
+            "playerGames": 31,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 13.55,
+            "vsBaseline": 2.42
+          },
+          "WR": {
+            "playerGames": 36,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 9.98,
+            "vsBaseline": 0.17
+          },
+          "TE": {
+            "playerGames": 20,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 8.39,
+            "vsBaseline": -0.16
+          }
+        },
+        "PHI": {
+          "QB": {
+            "playerGames": 14,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 15.65,
+            "vsBaseline": -2.32
+          },
+          "RB": {
+            "playerGames": 31,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.26,
+            "vsBaseline": 0.26
+          },
+          "WR": {
+            "playerGames": 40,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 8.84,
+            "vsBaseline": -2.19
+          },
+          "TE": {
+            "playerGames": 12,
+            "gamesPlayed": 12,
+            "pointsAllowedPerGame": 6.07,
+            "vsBaseline": -3.05
+          }
+        },
+        "PIT": {
+          "QB": {
+            "playerGames": 13,
+            "gamesPlayed": 13,
+            "pointsAllowedPerGame": 19.51,
+            "vsBaseline": 2.93
+          },
+          "RB": {
+            "playerGames": 31,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 9.03,
+            "vsBaseline": -1.97
+          },
+          "WR": {
+            "playerGames": 42,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.93,
+            "vsBaseline": 1.48
+          },
+          "TE": {
+            "playerGames": 20,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 10.46,
+            "vsBaseline": 2.17
+          }
+        },
+        "SEA": {
+          "QB": {
+            "playerGames": 17,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 13.75,
+            "vsBaseline": -1.39
+          },
+          "RB": {
+            "playerGames": 31,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 8.97,
+            "vsBaseline": -1.62
+          },
+          "WR": {
+            "playerGames": 35,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 9.67,
+            "vsBaseline": -1.17
+          },
+          "TE": {
+            "playerGames": 18,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 11.11,
+            "vsBaseline": 0.83
+          }
+        },
+        "SF": {
+          "QB": {
+            "playerGames": 16,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 17.11,
+            "vsBaseline": 1.87
+          },
+          "RB": {
+            "playerGames": 30,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.61,
+            "vsBaseline": 1.37
+          },
+          "WR": {
+            "playerGames": 37,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.85,
+            "vsBaseline": -0.31
+          },
+          "TE": {
+            "playerGames": 22,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 9.6,
+            "vsBaseline": 0.29
+          }
+        },
+        "TB": {
+          "QB": {
+            "playerGames": 18,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 18.47,
+            "vsBaseline": 3.46
+          },
+          "RB": {
+            "playerGames": 28,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.16,
+            "vsBaseline": -0.59
+          },
+          "WR": {
+            "playerGames": 37,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.22,
+            "vsBaseline": -0.52
+          },
+          "TE": {
+            "playerGames": 20,
+            "gamesPlayed": 14,
+            "pointsAllowedPerGame": 10.89,
+            "vsBaseline": 1.66
+          }
+        },
+        "TEN": {
+          "QB": {
+            "playerGames": 18,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 16.77,
+            "vsBaseline": 2.15
+          },
+          "RB": {
+            "playerGames": 26,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.71,
+            "vsBaseline": 0.26
+          },
+          "WR": {
+            "playerGames": 50,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 10.63,
+            "vsBaseline": 0.69
+          },
+          "TE": {
+            "playerGames": 18,
+            "gamesPlayed": 16,
+            "pointsAllowedPerGame": 11.18,
+            "vsBaseline": 1.16
+          }
+        },
+        "WAS": {
+          "QB": {
+            "playerGames": 15,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 20.45,
+            "vsBaseline": 4.19
+          },
+          "RB": {
+            "playerGames": 32,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.11,
+            "vsBaseline": 1.08
+          },
+          "WR": {
+            "playerGames": 44,
+            "gamesPlayed": 17,
+            "pointsAllowedPerGame": 11.54,
+            "vsBaseline": 0.9
+          },
+          "TE": {
+            "playerGames": 19,
+            "gamesPlayed": 15,
+            "pointsAllowedPerGame": 9.06,
+            "vsBaseline": -0.16
+          }
+        }
+      },
+      "defenseCount": 32
+    }
+  }
+}

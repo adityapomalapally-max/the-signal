@@ -73,6 +73,11 @@ jobs:
       - name: Build strength of schedule
         run: node scripts/build-sos.js
 
+      # Reads data/weekly, which fetch-stats has already refreshed above. In
+      # season this is the board that changes most from one Sunday to the next.
+      - name: Build defensive matchups
+        run: node scripts/build-matchups.js
+
       # Current season only by default — past seasons never change and each one
       # is ~70MB of participation + play-by-play. Use --all to rebuild history.
       - name: Build scheme and identity

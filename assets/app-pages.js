@@ -1196,8 +1196,25 @@ function labFooterText(m, n) {
 // while a film breakdown sat on the home page the whole time, tagged for this
 // section. The articles carry a `tag`, so the page can simply ask for its own
 // rather than being a dead end in a nine-item nav.
+// FILM LIVES INSIDE DRAFT LAB NOW. It had a nav item, a page and a route while
+// holding one article; a section is worth a top-level slot when it has enough
+// in it to be worth navigating to, and this did not. Both are scouting, so they
+// share a page and a switch.
+let draftView = 'model';
+function setDraftView(view, el) {
+  draftView = view;
+  document.querySelectorAll('#draftViewToggle .pos-btn').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const model = document.getElementById('draftModel');
+  const film = document.getElementById('draftFilm');
+  if (model) model.style.display = view === 'model' ? '' : 'none';
+  if (film) film.style.display = view === 'film' ? '' : 'none';
+  if (view === 'film') renderFilmPage();
+  setRoute(view === 'film' ? 'draft/film' : 'draft');
+}
+
 function renderFilmPage() {
-  const host = document.getElementById('filmList');
+  const host = document.getElementById('draftFilm');
   if (!host) return;
   const mine = Object.values(articlesDB)
     .filter(a => a.tag === 'Film Room' && a.status !== 'draft')
@@ -1996,7 +2013,8 @@ function switchPage(page) {
     });
   }
   if (page === 'draft') renderDraftOutcomes();
-  if (page === 'film') renderFilmPage();
+  if (page === 'season') renderSeasonPage();
+  if (page === 'draft') setDraftView(draftView, document.querySelector('#draftViewToggle .pos-btn.active'));
   if (page === 'teams') {
     const redrawTeams = () => { if (document.getElementById('page-teams').classList.contains('active')) renderTeamPage(); };
     renderTeamPage();
@@ -2870,4 +2888,149 @@ function schemeHtml(team) {
 
   h += `</div>`;
   return h;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   IN SEASON — the matchup board
+
+   Fantasy points allowed is the most-used matchup number in the sport and the
+   most misleading, because it conflates how good a defence is with how good the
+   offences it drew were. This board leads with vsBaseline instead: the same
+   games, each measured against THAT PLAYER'S OWN season average. Measured on
+   2025, twelve of thirty-two defences move five or more places between the two
+   — so the correction is not decorative, and leading with the familiar number
+   would rank a third of the league wrongly.
+
+   The colour ramp is the one validated for the field map. Reused rather than
+   re-picked, because a second diverging scale on the same site would mean the
+   reader has to learn which is which.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+let matchupData = null, matchupPromise = null;
+let muPos = 'WR', muSeason = null;
+
+function ensureMatchups() {
+  if (!matchupPromise) {
+    matchupPromise = loadJSON('/data/matchups.json').then(d => (matchupData = d));
+  }
+  return matchupPromise;
+}
+
+function setMuPos(pos, el) {
+  muPos = pos;
+  document.querySelectorAll('#muPosFilter .pos-btn').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderSeasonPage();
+}
+
+function setMuSeason(year, el) {
+  muSeason = year;
+  document.querySelectorAll('#muSeasonFilter .pos-btn').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderSeasonPage();
+}
+
+// What the page says about itself before Week 1. A matchup board built from
+// last season's defences is genuinely useful for planning and genuinely not a
+// forecast, and the difference has to be on the page rather than assumed.
+function seasonStateHtml(meta) {
+  const live = meta && meta.latestSeasonWithGames;
+  const inSeason = typeof isInSeason === 'function' ? false : false;
+  const rosReady = typeof rosData !== 'undefined' && rosData;
+  let h = `<div style="padding:0 var(--page-gutter) 4px;"><div class="season-state">`;
+  h += `<span class="season-state-tag">Preseason</span>`;
+  h += `<span>No games have been played this year, so every board here is built from ${rankEsc(String(live || 'last season'))}. `
+    + `Defensive personnel changes completely across an offseason — a figure from a past season describes that season's defence, `
+    + `not the one lining up in September. These fill in weekly from Week 1.</span>`;
+  h += `</div>`;
+  if (rosReady) {
+    h += `<div class="season-state" style="margin-top:8px;"><span class="season-state-tag">Live</span>`
+      + `<span>Rest-of-season projections are available on the <a href="/rankings" onclick="event.preventDefault();navigate('rankings')">Rankings</a> page.</span></div>`;
+  }
+  return h + `</div>`;
+}
+
+function renderSeasonPage() {
+  const board = document.getElementById('matchupBoard');
+  if (!board) return;
+
+  if (!matchupData) {
+    board.innerHTML = `<div class="medical-card"><div class="medical-detail">Loading the matchup data…</div></div>`;
+    ensureMatchups().then(() => {
+      if (matchupData) renderSeasonPage();
+      else board.innerHTML = `<div class="medical-card"><div class="medical-detail">`
+        + `The matchup data could not be loaded. Nothing is shown rather than a board built from part of it.</div></div>`;
+    });
+    return;
+  }
+
+  const meta = matchupData.meta || {};
+  const years = Object.keys(matchupData.seasons || {}).sort();
+  if (!muSeason || !years.includes(muSeason)) muSeason = years[years.length - 1];
+
+  const stateEl = document.getElementById('seasonState');
+  if (stateEl) stateEl.innerHTML = seasonStateHtml(meta);
+
+  const seasonRow = document.getElementById('muSeasonFilter');
+  if (seasonRow) {
+    seasonRow.innerHTML = years.map(y =>
+      `<button class="pos-btn${y === muSeason ? ' active' : ''}" onclick="setMuSeason('${y}', this)">${y}</button>`).join('');
+  }
+
+  const defs = (matchupData.seasons[muSeason] || {}).defenses || {};
+  const rows = [];
+  for (const [team, byPos] of Object.entries(defs)) {
+    const c = byPos[muPos];
+    if (!c || c.thin || typeof c.vsBaseline !== 'number') continue;
+    rows.push({ team, ...c });
+  }
+  // Toughest first: a negative vsBaseline means the defence held players below
+  // their own averages.
+  rows.sort((a, b) => a.vsBaseline - b.vsBaseline);
+
+  let h = `<div class="lab-head"><span class="lab-title">${rankEsc(`Fantasy points allowed to ${muPos}s — ${muSeason}`)}</span>`
+    + `<span class="lab-qual">${rankEsc(meta.qualifiers ? meta.qualifiers.playerGames : '')}</span></div>`;
+  h += `<div class="lab-sub">${rankEsc(meta.readThis || '')}</div>`;
+
+  if (!rows.length) {
+    h += `<div class="medical-card"><div class="medical-detail">`
+      + `No defence has faced enough ${muPos}s in ${muSeason} to publish a rate. Nothing is shown rather than a number built on a handful of games.`
+      + `</div></div>`;
+    board.innerHTML = h;
+    return;
+  }
+
+  // Scale the colour across this board only — the spread differs by position,
+  // and a shared scale would paint every quarterback board neutral.
+  const vals = rows.map(r => r.vsBaseline);
+  const mid = 0;   // zero IS the meaningful midpoint here: "as expected"
+  const spread = Math.max(...vals.map(v => Math.abs(v - mid))) || 1;
+  const colour = v => {
+    const step = Math.min(3, Math.round(Math.abs(v - mid) / spread * 3.2));
+    if (!step) return FIELD_NEUTRAL;
+    return (v > mid ? FIELD_WARM : FIELD_COOL)[step - 1];
+  };
+
+  h += `<div class="mu-legend">`
+    + `<span class="field-key" style="background:${FIELD_COOL[2]};"></span>`
+    + `<span class="mu-legend-label">Held below their own average</span>`
+    + `<span class="field-key" style="background:${FIELD_WARM[2]};"></span>`
+    + `<span class="mu-legend-label">Beat it</span>`
+    + `</div>`;
+
+  h += `<div class="table-scroll"><table class="players-table rank-table mu-table"><thead><tr>`
+    + `<th>#</th><th>Defence</th><th>vs Baseline</th><th>Pts Allowed/Gm</th><th>Player-Games</th>`
+    + `</tr></thead><tbody>`;
+  rows.forEach((r, i) => {
+    const sign = r.vsBaseline > 0 ? '+' : '';
+    h += `<tr onclick="navigate('teams/${jsAttr(r.team.toLowerCase())}')">`
+      + `<td>${i + 1}</td><td class="mu-team">${rankEsc(r.team)}</td>`
+      + `<td class="mu-cell" style="background:${colour(r.vsBaseline)};">${sign}${r.vsBaseline}</td>`
+      + `<td>${r.pointsAllowedPerGame}</td><td>${r.playerGames}</td></tr>`;
+  });
+  h += `</tbody></table></div>`;
+  h += `<div class="rank-note">${rankEsc(
+    `${rows.length} defences. Toughest first. vs Baseline is points above or below what these players averaged for themselves that season, so a defence is not credited for drawing weak opponents. `
+    + (meta.caveats ? meta.caveats[0] : ''))}</div>`;
+  board.innerHTML = h;
 }

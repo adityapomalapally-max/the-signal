@@ -59,7 +59,9 @@ function build() {
   for (const [slug, priority] of Object.entries(sections)) {
     urls.push(url(`${ORIGIN}/${slug}`, { priority, changefreq: 'daily', lastmod: dataDate }));
   }
-  // /film is deliberately absent: it says "coming soon" and there is nothing to
+  // /film is gone — it is a tab inside /draft now, and the retired URL 308s
+  // there. What was deliberately absent before is simply not a page any more.
+  // The old note, kept because the reasoning still applies to any future stub:
   // index. Put it back the day it has content.
 
   for (const tab of ['overall', 'qb', 'rb', 'wr', 'te']) {

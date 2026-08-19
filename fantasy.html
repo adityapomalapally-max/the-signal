@@ -91,8 +91,8 @@
       <a class="nav-item" data-page="players" href="/players" onclick="event.preventDefault();switchPage('players')">Players</a>
       <a class="nav-item" data-page="medicals" href="/medicals" onclick="event.preventDefault();switchPage('medicals')">Medicals</a>
       <a class="nav-item" data-page="fantasy" href="/fantasy" onclick="event.preventDefault();switchPage('fantasy')">Fantasy</a>
+      <a class="nav-item" data-page="season" href="/season" onclick="event.preventDefault();switchPage('season')">In Season</a>
       <a class="nav-item" data-page="draft" href="/draft" onclick="event.preventDefault();switchPage('draft')">Draft Lab</a>
-      <a class="nav-item" data-page="film" href="/film" onclick="event.preventDefault();switchPage('film')">Film Room</a>
       <a class="nav-item" data-page="ask" href="/ask" onclick="event.preventDefault();switchPage('ask')">Ask</a>
     </div>
     <div class="nav-right">
@@ -125,8 +125,8 @@
     <a class="mobile-nav-link" data-page="players" href="/players" onclick="event.preventDefault();switchPage('players');toggleMobileNav();">Players</a>
     <a class="mobile-nav-link" data-page="medicals" href="/medicals" onclick="event.preventDefault();switchPage('medicals');toggleMobileNav();">Medicals</a>
     <a class="mobile-nav-link" data-page="fantasy" href="/fantasy" onclick="event.preventDefault();switchPage('fantasy');toggleMobileNav();">Fantasy</a>
+    <a class="mobile-nav-link" data-page="season" href="/season" onclick="event.preventDefault();switchPage('season');toggleMobileNav();">In Season</a>
     <a class="mobile-nav-link" data-page="draft" href="/draft" onclick="event.preventDefault();switchPage('draft');toggleMobileNav();">Draft Lab</a>
-    <a class="mobile-nav-link" data-page="film" href="/film" onclick="event.preventDefault();switchPage('film');toggleMobileNav();">Film Room</a>
     <a class="mobile-nav-link" data-page="ask" href="/ask" onclick="event.preventDefault();switchPage('ask');toggleMobileNav();">Ask</a>
   </div>
   <div style="padding:16px 28px;border-top:1px solid var(--border);">
@@ -613,8 +613,21 @@
   <div style="max-width:1440px;margin:0 auto;">
     <div class="players-header">
       <h1>Draft Lab</h1>
-      <p>The Predictive Model — a regression-based system that scores prospects on production over expected, adjusted for context, and sorts them into tiers. It has been checked retrospectively against one draft class; out-of-sample validation across classes is still outstanding, and until it exists this page reports what the model does, not how often it is right.</p>
+      <p>Prospect evaluation and film. The model scores prospects on production over expected, adjusted for context; the breakdowns work from the tape. Out-of-sample validation across draft classes is still outstanding, so this page reports what the model does, not how often it is right.</p>
     </div>
+
+    <div class="lab-controls" style="padding:0 var(--page-gutter) 8px;">
+      <div class="lab-control">
+        <span class="lab-control-label">Show</span>
+        <div class="position-filter" id="draftViewToggle">
+          <button class="pos-btn active" onclick="setDraftView('model', this)">The Model</button>
+          <button class="pos-btn" onclick="setDraftView('film', this)">Film Room</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="draftFilm" style="display:none;padding:0 var(--page-gutter) 48px;"></div>
+    <div id="draftModel">
 
     <!-- Model overview stats -->
     <div class="draft-stats">
@@ -748,6 +761,37 @@
       </div>
     </div>
   </div>
+  </div>
+</div>
+
+<!-- ===== IN SEASON ===== -->
+<div class="page-section" id="page-season">
+  <div style="max-width:1440px;margin:0 auto;">
+    <div class="players-header">
+      <h1>In Season</h1>
+      <p>What matters once games are being played: which defences actually cost you points, and what is left of the season rather than all of it. Each board states the week it was built from.</p>
+    </div>
+
+    <div id="seasonState"></div>
+
+    <div class="lab-controls" style="padding:0 var(--page-gutter) 8px;">
+      <div class="lab-control">
+        <span class="lab-control-label">Position</span>
+        <div class="position-filter" id="muPosFilter">
+          <button class="pos-btn" onclick="setMuPos('QB', this)">QB</button>
+          <button class="pos-btn" onclick="setMuPos('RB', this)">RB</button>
+          <button class="pos-btn active" onclick="setMuPos('WR', this)">WR</button>
+          <button class="pos-btn" onclick="setMuPos('TE', this)">TE</button>
+        </div>
+      </div>
+      <div class="lab-control">
+        <span class="lab-control-label">Season</span>
+        <div class="position-filter" id="muSeasonFilter"></div>
+      </div>
+    </div>
+
+    <div id="matchupBoard" style="padding:0 var(--page-gutter) 48px;"></div>
+  </div>
 </div>
 
 <!-- ===== ASK ===== -->
@@ -776,17 +820,6 @@
       </div>
       <div id="askOut" class="ask-out" aria-live="polite"></div>
     </div>
-  </div>
-</div>
-
-<!-- ===== FILM ===== -->
-<div class="page-section" id="page-film">
-  <div style="max-width:1440px;margin:0 auto;">
-    <div class="players-header">
-      <h1>Film Room</h1>
-      <p>Breakdowns from game film rather than from the box score.</p>
-    </div>
-    <div id="filmList" style="padding:0 var(--page-gutter) 48px;"></div>
   </div>
 </div>
 
