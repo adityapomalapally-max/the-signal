@@ -118,13 +118,30 @@ test('nulls never reach the model', () => {
   walk(ctx, 'context');
 });
 
-test('topics decide which layers are loaded, so a question pays only for itself', () => {
-  const medical = R.buildContext('is Malik Nabers healthy');
-  const field = R.buildContext('where is Malik Nabers targeted on the field');
-  const m = medical.askedAbout[0], f = field.askedAbout[0];
-  assert.ok(m.medical, 'an injury question must carry the medical layer');
-  assert.ok(!m.fieldMap, 'and must not pay for the field map');
-  assert.ok(f.fieldMap || f.production, 'a field question must carry the field layer');
+test('the phrasing of a question never decides whether real data reaches the model', () => {
+  // This used to gate the layers on keywords in the question, and the gate
+  // failed on the most natural phrasing there is: "where does Stafford throw
+  // best" did not match the field regex, so the field map never loaded and the
+  // answer said the site has no such data. It has exactly that data.
+  //
+  // A false "we do not have it" hides a real number as surely as an invented
+  // one states a fake, and it is harder to catch because it wears the same
+  // honesty the rest of the engine is built on.
+  const phrasings = [
+    'where does Matthew Stafford throw best',
+    'Matthew Stafford deep ball',
+    'how good is Matthew Stafford',
+    'tell me about Matthew Stafford',
+  ];
+  const layers = phrasings.map(q => {
+    const p = (R.buildContext(q).askedAbout || [])[0];
+    assert.ok(p, `no player matched for: ${q}`);
+    return Object.keys(p).sort().join(',');
+  });
+  assert.strictEqual(new Set(layers).size, 1,
+    `the same player returns different layers depending on wording:\n  ${phrasings.map((q, i) => `${q} -> ${layers[i]}`).join('\n  ')}`);
+  const first = (R.buildContext(phrasings[0]).askedAbout || [])[0];
+  assert.ok(first.fieldMap, 'the field map must reach the model for a "where does he throw" question');
 });
 
 test('every figure travels with the season it belongs to', () => {

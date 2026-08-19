@@ -277,19 +277,31 @@ function buildContext(question, opts) {
   const rankings = load('rankings');
   const { players, ambiguous } = findPlayers(question, pool);
   const topics = detectTopics(question);
-  const chart = topics.includes('charting') ? load('charting') : null;
+  const chart = load('charting');
 
-  const people = players.map(p => {
-    const ctx = { name: p.name, position: p.pos, team: p.team, age: p.age, status: p.status || 'No designation' };
-    ctx.ranking = rankOf(p, rankings);
-    if (topics.includes('stats') || topics.includes('rank')) ctx.production = statsOf(p);
-    if (topics.includes('charting')) ctx.charting = chartingOf(p, chart);
-    if (topics.includes('field')) ctx.fieldMap = fieldOf(p);
-    if (topics.includes('medical')) ctx.medical = medicalOf(p);
-    if (topics.includes('usage')) ctx.usage = usageOf(p);
-    if (topics.includes('rank')) ctx.adp = adpOf(p);
-    return compact(ctx);
-  });
+  // EVERY LAYER, EVERY TIME. This used to load only the layers whose keywords
+  // appeared in the question, to save tokens. It cost almost nothing — a
+  // two-player context is 8KB with everything in it — and it bought a failure
+  // worse than the one it prevented: asked "where does Stafford throw best",
+  // the topic regex did not fire on "where" or "throw", the field map never
+  // loaded, and the answer said the site does not have that data. It has
+  // exactly that data. A false "we do not have it" hides a real number as
+  // surely as an invented one states a fake, and it is harder to notice,
+  // because it looks like the honesty this whole engine is built on.
+  //
+  // Topics are still detected — they tell the model what was ASKED and show the
+  // reader what the answer drew on — but they no longer gate what is loaded.
+  const people = players.map(p => compact({
+    name: p.name, position: p.pos, team: p.team, age: p.age,
+    status: p.status || 'No designation',
+    ranking: rankOf(p, rankings),
+    production: statsOf(p),
+    charting: chartingOf(p, chart),
+    fieldMap: fieldOf(p),
+    medical: medicalOf(p),
+    usage: usageOf(p),
+    adp: adpOf(p),
+  }));
 
   const meta = load('meta') || {};
   return compact({
