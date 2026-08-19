@@ -15,7 +15,13 @@
 // wearing a number's clothes, so players under the bar are excluded from
 // the board rather than ranked — same principle as the volatility panels.
 let labExportBoard = null, labExportScatter = null, rankExportSpec = null;
-let labMode = 'stats';   // 'stats' = production, 'charts' = how it happened
+// 'stats' = production (what happened), 'charts' = how it happened,
+// 'athletic' = the combine (no season — a man's forty does not change in
+// September), 'defense' = team defences (no position — it ranks 32 teams).
+// The last two carry FEWER dimensions than the first two, which is why the
+// route, the controls, the title and the table columns all have to ask the
+// mode rather than assume a player in a season.
+let labMode = 'stats';
 let labPos = 'WR';
 let labSeason = null;      // set from the data on first render
 let labMetricKey = null;
@@ -153,6 +159,16 @@ function setLabView(view, btn) {
   renderLabPage();
 }
 
+// Where a board row points. Player boards open a profile; the Defence board is
+// team rows, and a team row calling openProfile(null) would be a control that
+// looks live and does nothing.
+function labRowAction(r) {
+  if (r.id) return `openProfile('${jsAttr(r.id)}')`;
+  const teamTarget = r.teamLink || r.team;
+  if (teamTarget) return `navigate('teams/${jsAttr(String(teamTarget).toLowerCase())}')`;
+  return '';
+}
+
 function labBarBoard(rows, m) {
   const vals = rows.map(r => r.value);
   const lo = Math.min(...vals), hi = Math.max(...vals);
@@ -178,7 +194,7 @@ function labBarBoard(rows, m) {
     const w = (Math.abs(r.value) / span) * 100;
     const left = pos ? zeroPct : zeroPct - w;
     const tip = `${r.name} (${r.team}) — ${m.label}: ${r.value}${m.unit}`;
-    return `<div class="lab-row" tabindex="0" role="button" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}" onclick="openProfile('${r.id}')">
+    return `<div class="lab-row" tabindex="0" role="button" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}" onclick="${labRowAction(r)}">
       <div class="lab-name"><span class="lab-rank">${i + 1}</span><span class="lab-player">${rankEsc(r.name)}</span><span class="lab-team">${rankEsc(r.team || '')}</span></div>
       <div class="lab-track"><div style="position:absolute;left:${left.toFixed(2)}%;width:${Math.max(w, 0.4).toFixed(2)}%;"><div class="lab-bar${pos ? '' : ' neg'}"></div></div></div>
       <div class="lab-val">${r.value}${m.unit}</div>
@@ -198,12 +214,19 @@ function labDotBoard(rows, m, lo, hi) {
 
   let h = `<div class="lab-scale"><div class="lab-scale-inner">`
     + `<span>${fmt(a)}${m.unit}</span>`
-    + `<span style="letter-spacing:1px;">RANGE ACROSS QUALIFIED ${labPos}s</span>`
+    // The Defence board ranks TEAMS, and labPos is only the leftover default
+    // there — the position picker is hidden precisely because it means nothing.
+    // Printed unchecked it read "RANGE ACROSS QUALIFIED WRs" over a table of
+    // 32 defences, which names a population the board does not contain.
+    + `<span style="letter-spacing:1px;">RANGE ACROSS QUALIFIED ${labMode === 'defense' ? 'DEFENCES' : labPos + 's'}</span>`
     + `<span>${fmt(b)}${m.unit}</span></div></div>`;
   h += `<div class="medical-card" style="padding:20px;position:relative;">`;
   h += rows.map((r, i) => {
-    const tip = `${r.name} (${r.team}) — ${m.label}: ${r.value}${m.unit}`;
-    return `<div class="lab-row" tabindex="0" role="button" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}" onclick="openProfile('${r.id}')">
+    // A defence row IS the team, so there is no second team to put in
+    // brackets — unchecked it read "SEA () — Yards per Target Allowed".
+    const tip = `${r.name}${r.team ? ` (${r.team})` : ''} — ${m.label}: ${r.value}${m.unit}`
+      + (typeof r.pct === 'number' ? ` — ${r.pct}th percentile at his position` : '');
+    return `<div class="lab-row" tabindex="0" role="button" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}" onclick="${labRowAction(r)}">
       <div class="lab-name"><span class="lab-rank">${i + 1}</span><span class="lab-player">${rankEsc(r.name)}</span><span class="lab-team">${rankEsc(r.team || '')}</span></div>
       <div class="lab-track"><div class="lab-rule"></div><div class="lab-dot" style="left:${X(r.value).toFixed(2)}%;"></div></div>
       <div class="lab-val">${r.value}${m.unit}</div>
@@ -213,8 +236,16 @@ function labDotBoard(rows, m, lo, hi) {
 }
 
 function labTable(rows, m) {
-  let h = `<div class="table-scroll"><table class="players-table rank-table"><thead><tr><th>#</th><th>Player</th><th>Team</th><th>${rankEsc(m.label)}</th></tr></thead><tbody>`;
-  h += rows.map((r, i) => `<tr onclick="openProfile('${r.id}')"><td>${i + 1}</td><td>${rankEsc(r.name)}</td><td>${rankEsc(r.team || '')}</td><td>${r.value}${m.unit}</td></tr>`).join('');
+  // The Defence board ranks teams, so "Player" heads a column of team codes and
+  // "Team" heads an empty one. A column every row leaves blank is a column that
+  // should not be there.
+  const teams = labMode === 'defense';
+  let h = `<div class="table-scroll"><table class="players-table rank-table"><thead><tr><th>#</th><th>${teams ? 'Defence' : 'Player'}</th>`
+    + (teams ? '' : '<th>Team</th>')
+    + `<th>${rankEsc(m.label)}</th></tr></thead><tbody>`;
+  h += rows.map((r, i) => `<tr onclick="${labRowAction(r)}"><td>${i + 1}</td><td>${rankEsc(r.name)}</td>`
+    + (teams ? '' : `<td>${rankEsc(r.team || '')}</td>`)
+    + `<td>${r.value}${m.unit}</td></tr>`).join('');
   return h + '</tbody></table></div>';
 }
 
@@ -342,13 +373,14 @@ const CHART_METRICS = {
   ],
 };
 
-let labCharting = null, labAdvstats = null;
+let labCharting = null, labAdvstats = null, labContext = null;
 let chartsPromise = null;
 function ensureChartData() {
   if (!chartsPromise) {
     chartsPromise = Promise.all([
       loadJSON('/data/charting.json').then(d => (labCharting = d)),
       loadJSON('/data/advstats.json').then(d => (labAdvstats = d)),
+      loadJSON('/data/context.json').then(d => (labContext = d)),
     ]);
   }
   return chartsPromise;
@@ -358,10 +390,25 @@ function ensureChartData() {
 // go as far back — so the season buttons follow whichever half is showing
 // rather than claiming a year the data cannot fill.
 function labSeasons() {
+  // Combine testing is not a season. A man's forty does not change in
+  // September, and offering a year picker over it would imply it might.
+  if (labMode === 'athletic') return [];
+  if (labMode === 'defense') {
+    const any = labAdvstats && labAdvstats.defenseByTeam && Object.values(labAdvstats.defenseByTeam)[0];
+    return any ? Object.keys(any).sort() : LAB_SEASONS;
+  }
   if (labMode !== 'charts') return LAB_SEASONS;
   if (!labCharting || !labCharting.meta) return LAB_SEASONS;
   return (labCharting.meta.seasons || []).map(String);
 }
+
+const LAB_TABLES = {
+  stats: () => LAB_METRICS,
+  charts: () => CHART_METRICS,
+  athletic: () => ({ QB: ATHLETIC_METRICS, RB: ATHLETIC_METRICS, WR: ATHLETIC_METRICS, TE: ATHLETIC_METRICS }),
+  // Team-scoped, so every position resolves to the same board.
+  defense: () => ({ QB: DEFENSE_METRICS, RB: DEFENSE_METRICS, WR: DEFENSE_METRICS, TE: DEFENSE_METRICS }),
+};
 
 function chartRowFor(id, season) {
   const box = labCharting && labCharting.seasons && labCharting.seasons[season];
@@ -669,15 +716,137 @@ function labFactsHtml(season, pos) {
   </div>`;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   ATHLETIC — what he is, before anything he did
+
+   Combine testing, percentiled against every player on record AT THAT POSITION
+   rather than against this year's pool. A 4.5 forty is unremarkable for a
+   receiver and exceptional for a tight end, and a pool-relative figure would
+   move a man's athleticism every time somebody else got cut.
+
+   These boards are the only ones here that are not about a season. They do not
+   move week to week and they never will — which is exactly why the numbers on
+   them are worth knowing and why they carry no season at all.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+const ATHLETIC_METRICS = [
+  { key: 'forty', label: '40-Yard Dash', drill: 'forty', unit: 's', lower: true,
+    note: 'Straight-line speed. Lower is faster, so this board ranks up from the quickest.' },
+  { key: 'vertical', label: 'Vertical Jump', drill: 'vertical', unit: '"',
+    note: 'Lower-body explosion — the closest thing the combine has to a jump-ball proxy.' },
+  { key: 'broadJump', label: 'Broad Jump', drill: 'broadJump', unit: '"',
+    note: 'Horizontal explosion. Travels better to football than the vertical does.' },
+  { key: 'cone', label: '3-Cone Drill', drill: 'cone', unit: 's', lower: true,
+    note: 'Change of direction. The test that separates a route runner from a sprinter.' },
+  { key: 'shuttle', label: '20-Yard Shuttle', drill: 'shuttle', unit: 's', lower: true,
+    note: 'Short-area quickness in both directions.' },
+  { key: 'bench', label: 'Bench Press', drill: 'bench', unit: ' reps',
+    note: '225lb to failure. Means least of the six for a skill position, and is included because it is measured.' },
+];
+
+// Team-level, so it answers to a different filter than the rest of the page.
+const DEFENSE_METRICS = [
+  { key: 'compPct', label: 'Completion % Allowed', get: d => d.completionPctAllowed, unit: '%', lower: true, minTargets: 200,
+    note: 'Share of throws at this defence that were caught. The cleanest single measure of a coverage unit, and lower is better.' },
+  { key: 'ypt', label: 'Yards per Target Allowed', get: d => d.yardsPerTargetAllowed, unit: '', lower: true, minTargets: 200,
+    note: 'Yards conceded per ball thrown their way — completion rate and depth in one number.' },
+  { key: 'yards', label: 'Yards Allowed', get: d => d.yards, unit: '', lower: true, minTargets: 200,
+    note: 'Total receiving yards conceded across every charted defender.' },
+  { key: 'td', label: 'Touchdowns Allowed', get: d => d.td, unit: '', lower: true, minTargets: 200,
+    note: 'Receiving touchdowns conceded. The number fantasy scoring actually turns on.' },
+  { key: 'int', label: 'Interceptions', get: d => d.int, unit: '', minTargets: 200,
+    note: 'Passes intercepted by the charted defenders.' },
+  { key: 'pressures', label: 'Pressures', get: d => d.pressures, unit: '', minTargets: 200,
+    note: 'A quarterback under pressure is a different quarterback. This is the front, not the coverage.' },
+  { key: 'sacks', label: 'Sacks', get: d => d.sacks, unit: '', minTargets: 200,
+    note: 'Sacks by the charted defenders.' },
+  { key: 'blitzes', label: 'Blitzes', get: d => d.blitzes, unit: '', minTargets: 200,
+    note: 'How often this defence sends extra rushers — scheme rather than personnel.' },
+  { key: 'missedTacklePct', label: 'Missed Tackle %', get: d => d.missedTacklePct, unit: '%', lower: true, minTargets: 200,
+    note: 'Share of tackle attempts missed. A high number is yards after contact waiting to happen.' },
+];
+
+function athleticRows(m) {
+  if (!labContext || !labContext.combine) return [];
+  const rows = [];
+  for (const p of playersDB) {
+    if (p.pos !== labPos) continue;
+    const c = labContext.combine[p.id];
+    const d = c && c.drills && c.drills[m.drill];
+    if (!d || typeof d.value !== 'number') continue;
+    rows.push({ id: p.id, name: p.name, team: p.team, value: d.value, pct: d.percentileAtPosition });
+  }
+  return rows;
+}
+
+function defenseRows(m) {
+  if (!labAdvstats || !labAdvstats.defenseByTeam) return [];
+  const rows = [];
+  for (const [team, seasons] of Object.entries(labAdvstats.defenseByTeam)) {
+    const d = seasons[labSeason];
+    if (!d) continue;
+    // The same discipline as every other board: a rate off a thin sample is
+    // noise, and a defence with 200 charted targets is barely a season.
+    if (m.minTargets && (d.targets || 0) < m.minTargets) continue;
+    const v = m.get(d);
+    if (typeof v !== 'number' || isNaN(v)) continue;
+    // name and team are rendered as separate columns, so a defence row that set
+    // both to the abbreviation printed "PHI PHI". The team IS the subject here.
+    rows.push({ id: null, name: team, team: '', teamLink: team, value: v });
+  }
+  return rows;
+}
+
+// What each half is built from, in one place. This was four separate ternaries
+// scattered through the renderer, and adding a third mode would have meant
+// finding all of them.
+function labQualFor(m) {
+  if (labMode === 'charts') return chartQualText(m);
+  if (labMode === 'athletic') return 'QUALIFIER: PERCENTILES ARE AGAINST EVERY PLAYER ON RECORD AT THIS POSITION';
+  if (labMode === 'defense') return m.minTargets ? `QUALIFIER: ${m.minTargets}+ charted targets faced` : '';
+  return labQualText(m);
+}
+
+function labSourceText(m) {
+  if (labMode === 'charts') return `${chartQualText(m)} · ${m.chart ? 'FTN charting' : 'Pro Football Reference'}`;
+  if (labMode === 'athletic') return 'NFL Scouting Combine via nflverse · percentiles against every tested player at the position';
+  if (labMode === 'defense') return 'Pro Football Reference advanced defensive splits, aggregated across every charted defender';
+  return `${labQualText(m)} · nflverse${m.ngs ? ' · NFL Next Gen Stats' : ''}`;
+}
+
+function labFooterText(m, n) {
+  if (labMode === 'athletic') {
+    return `Top ${n} ${labPos}s in the pool by this test. Click any player for the full profile. `
+      + 'Combine testing is not a season — these numbers do not move, and not every player tested. '
+      + 'Source: NFL Scouting Combine via nflverse.';
+  }
+  if (labMode === 'defense') {
+    return `All ${n} defences that clear the qualifier. Aggregated across every charted defender on the team, `
+      + 'with rates recomputed from totals rather than averaged across players — a nickel corner\'s twelve targets '
+      + 'must not weigh the same as a number one corner\'s season. Source: Pro Football Reference advanced splits.';
+  }
+  const src = labMode === 'charts'
+    ? (m.chart ? 'FTN play-by-play charting' : 'Pro Football Reference advanced splits')
+    : `nflverse${m.ngs ? ' · NFL Next Gen Stats' : ''}`;
+  return `Top ${n} of the ${labPos} pool. Click any player for the full profile. Source: ${src} · REG season only.`;
+}
+
 function renderLabPage() {
   const board = document.getElementById('labBoard');
   if (!board || !playersDB.length) return;
 
   // The charting files are only needed by the Charts half, so a reader who
   // never leaves the production boards never pays for them.
-  if (labMode === 'charts' && !labCharting) {
+  if ((labMode === 'charts' || labMode === 'athletic' || labMode === 'defense') && !labCharting) {
     board.innerHTML = `<div class="medical-card"><div class="medical-detail">Loading the charting…</div></div>`;
-    ensureChartData().then(() => { if (labMode === 'charts') renderLabPage(); });
+    // Same guard, same reason: loadJSON SWALLOWS a failed fetch and resolves
+    // with null, so re-rendering on anything other than "the data arrived"
+    // spins this branch forever the first time the network drops. Empty beats
+    // wrong and a stated failure beats a spinner that never stops.
+    ensureChartData().then(() => {
+      if (labCharting) renderLabPage();
+      else board.innerHTML = `<div class="medical-card"><div class="medical-detail">The charting data could not be loaded. Nothing is shown rather than a board built from part of it.</div></div>`;
+    });
     return;
   }
 
@@ -685,7 +854,7 @@ function renderLabPage() {
   // happened, out of the two layers a box score cannot produce.
   const modeRow = document.getElementById('labModeToggle');
   if (modeRow) {
-    modeRow.innerHTML = [['stats', 'Stats'], ['charts', 'Charts']].map(([k, label]) =>
+    modeRow.innerHTML = [['stats', 'Stats'], ['charts', 'Charts'], ['athletic', 'Athletic'], ['defense', 'Defense']].map(([k, label]) =>
       `<button class="pos-btn${labMode === k ? ' active' : ''}" onclick="setLabMode('${k}')">${label}</button>`).join('');
   }
 
@@ -693,17 +862,33 @@ function renderLabPage() {
   // back as the box scores go, and offering a year the data cannot fill is a
   // board that renders empty for no stated reason.
   const seasons = labSeasons();
+  if (seasons.length && (!labSeason || !seasons.includes(labSeason))) labSeason = seasons[seasons.length - 1];
   const seasonRow = document.getElementById('labSeasonFilter');
-  if (!labSeason || !seasons.includes(labSeason)) labSeason = seasons[seasons.length - 1];
   if (seasonRow) {
     seasonRow.innerHTML = seasons.map(y =>
       `<button class="pos-btn${y === labSeason ? ' active' : ''}" onclick="setLabSeason('${y}', this)">${y}</button>`).join('');
   }
+  // A control that applies to nothing is worse than a missing one — it invites
+  // a click that changes nothing. Athletic has no season; Defense is by team,
+  // so a position picker means nothing there.
+  const seasonGroup = seasonRow && seasonRow.closest('.lab-control');
+  if (seasonGroup) seasonGroup.style.display = seasons.length ? '' : 'none';
+  const posGroup = document.getElementById('labPosFilter');
+  const posWrap = posGroup && posGroup.closest('.lab-control');
+  if (posWrap) posWrap.style.display = labMode === 'defense' ? 'none' : '';
 
-  const metrics = (labMode === 'charts' ? CHART_METRICS : LAB_METRICS)[labPos] || [];
+  const metrics = (LAB_TABLES[labMode] || LAB_TABLES.stats)()[labPos] || [];
   if (!labMetricKey || !metrics.some(m => m.key === labMetricKey)) labMetricKey = metrics[0] && metrics[0].key;
   // Keep the address bar pointing at exactly this board, so it can be shared.
-  setRoute(`lab/${labMode}/${labPos.toLowerCase()}/${labSeason}/${labMetricKey}`);
+  // Athletic has no season, so the address must not carry one — a URL that
+  // names a year the board does not have is a link that lies about itself.
+  // Each half writes only the segments it actually has. Athletic has no season
+  // and Defence has no position, and a URL naming a dimension the board does not
+  // carry is a link that lies about itself — and, worse, one the parser then
+  // misreads on the way back in.
+  setRoute(labMode === 'athletic' ? `lab/athletic/${labPos.toLowerCase()}/${labMetricKey}`
+    : labMode === 'defense' ? `lab/defense/${labSeason}/${labMetricKey}`
+    : `lab/${labMode}/${labPos.toLowerCase()}/${labSeason}/${labMetricKey}`);
   // A deep link sets the state directly, so the filter buttons have to be
   // told what is active — they only track their own clicks otherwise.
   document.querySelectorAll('#labPosFilter .pos-btn').forEach(b =>
@@ -716,16 +901,20 @@ function renderLabPage() {
   if (!m) { board.innerHTML = ''; return; }
 
   const valueOf = m.ngs ? ((s, n) => m.ngs(n)) : ((s) => m.stat(s));
-  const rows = (labMode === 'charts' ? chartRows(m) : labRows(valueOf, m))
-    .sort((a, b) => m.lower ? a.value - b.value : b.value - a.value).slice(0, 20);
+  const rowsFor = { charts: () => chartRows(m), athletic: () => athleticRows(m), defense: () => defenseRows(m) };
+  const rows = (rowsFor[labMode] ? rowsFor[labMode]() : labRows(valueOf, m))
+    .sort((a, b) => m.lower ? a.value - b.value : b.value - a.value)
+    .slice(0, labMode === 'defense' ? 32 : 20);
 
-  const boardTitle = `${m.label} — ${labPos}, ${labSeason}`;
+  // Athletic has no season and Defense has no position, so a title built from
+  // both would claim two things the board does not have.
+  const boardTitle = labMode === 'athletic' ? `${m.label} — ${labPos}, all-time`
+    : labMode === 'defense' ? `${m.label} — team defence, ${labSeason}`
+    : `${m.label} — ${labPos}, ${labSeason}`;
   labExportBoard = rows.length ? {
     title: boardTitle,
     subtitle: m.note,
-    source: labMode === 'charts'
-      ? `${chartQualText(m)} · ${m.chart ? 'FTN charting' : 'Pro Football Reference'}`
-      : `${labQualText(m)} · nflverse${m.ngs ? ' · NFL Next Gen Stats' : ''}`,
+    source: labSourceText(m),
     unit: m.unit,
     mode: rows.length && Math.min(...rows.map(r => r.value)) >= 0
       && (Math.max(...rows.map(r => r.value)) - Math.min(...rows.map(r => r.value))) / Math.max(...rows.map(r => r.value)) < 0.35
@@ -734,7 +923,7 @@ function renderLabPage() {
   } : null;
 
   let h = `<div class="lab-head"><span class="lab-title">${rankEsc(boardTitle)}</span>`
-    + `<span class="lab-qual">${rankEsc(labMode === 'charts' ? chartQualText(m) : labQualText(m))}${m.lower ? ' · LOWER RANKS FIRST' : ''}`
+    + `<span class="lab-qual">${rankEsc(labQualFor(m))}${m.lower ? ' · LOWER RANKS FIRST' : ''}`
     + (rows.length ? ` <button class="export-btn" onclick="runExport(() => exportRowChart(labExportBoard), labExportBoard.title, this)">Export PNG</button>` : '')
     + `</span></div>`;
   h += `<div class="lab-sub">${rankEsc(m.note)}</div>`;
@@ -742,10 +931,7 @@ function renderLabPage() {
     h += `<div class="medical-card"><div class="medical-detail">No player in the pool clears this board's qualifier for ${labSeason}. Nothing is shown rather than ranking on partial seasons.</div></div>`;
   } else {
     h += labView === 'chart' ? labBarBoard(rows, m) : labTable(rows, m);
-    const src = labMode === 'charts'
-      ? (m.chart ? 'FTN play-by-play charting' : 'Pro Football Reference advanced splits')
-      : `nflverse${m.ngs ? ' · NFL Next Gen Stats' : ''}`;
-    h += `<div class="rank-note">Top ${rows.length} of the ${labPos} pool. Click any player for the full profile. Source: ${rankEsc(src)} · REG season only.</div>`;
+    h += `<div class="rank-note">${rankEsc(labFooterText(m, rows.length))}</div>`;
   }
   // The findings render in BOTH halves. They were behind the Charts toggle,
   // which defaults off — so a reader landing on /lab saw no fun stats at all,
@@ -753,15 +939,24 @@ function renderLabPage() {
   // and the SEASON, not about which board happens to be on screen, so the mode
   // was never the right thing to gate them on. The charting files are fetched
   // for them either way.
-  if (labCharting) h += labFactsHtml(labSeason, labPos);
-  else ensureChartData().then(() => { if (document.getElementById('page-lab').classList.contains('active')) renderLabPage(); });
+  // Not on the Defence board: the findings are about players at a position, and
+  // under a table of team defences they answer a question nobody asked.
+  // THE GUARD IS "THE DATA IS STILL MISSING", NEVER "THE PAGE IS STILL OPEN".
+  // These are two decisions and folding them into one condition froze the tab:
+  // on the Defence board labCharting IS loaded, but the mode test made the
+  // first branch false, so the else re-fetched — got the cached, already
+  // resolved promise back — and re-rendered itself forever. Whether to FETCH
+  // depends only on whether the data is here; whether to SHOW the findings
+  // depends only on the mode.
+  if (!labCharting) ensureChartData().then(() => { if (labCharting) renderLabPage(); });
+  else if (labMode !== 'defense') h += labFactsHtml(labSeason, labPos);
   board.innerHTML = h;
 
   // ---- Scatter ----
   // Built from production stats, so it belongs to the Stats half only. Leaving
   // it under a charting board would sit an unrelated chart beneath the table
   // and imply the two are about the same thing.
-  const spec = labMode === 'charts' ? null : LAB_SCATTER[labPos];
+  const spec = labMode === 'stats' ? LAB_SCATTER[labPos] : null;
   const scatterEl = document.getElementById('labScatter');
   if (!spec) { scatterEl.innerHTML = ''; return; }
   const pts = [];

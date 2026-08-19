@@ -183,6 +183,11 @@ function renderProfileTab(tab) {
     }
     if (!usageData) {
       ensureUsage().then(() => {
+        // usageData has no `|| {}` fallback, so a failed fetch leaves it null,
+        // walks back into `if (!usageData)`, and re-enters on the cached
+        // promise. The history block above is safe only because its loads
+        // fall back to []; this one has to say so itself.
+        if (!usageData) return;
         if (currentProfileId !== player.id) return;
         const active = document.querySelector('.profile-tab.active');
         if (active && active.dataset.tab === 'overview') renderProfileTab('overview');

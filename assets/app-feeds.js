@@ -756,20 +756,32 @@ function handleRoute() {
   // those links always meant.
   if (parts[0] === 'lab') {
     let i = 1;
-    if (parts[1] === 'stats' || parts[1] === 'charts') { labMode = parts[1]; i = 2; }
+    const MODES = ['stats', 'charts', 'athletic', 'defense'];
+    if (MODES.includes(parts[1])) { labMode = parts[1]; i = 2; }
     else if (parts[1] && LAB_METRICS[parts[1].toUpperCase()]) labMode = 'stats';
-    const table = labMode === 'charts' ? CHART_METRICS : LAB_METRICS;
-    if (parts[i] && table[parts[i].toUpperCase()]) labPos = parts[i].toUpperCase();
+    const table = (LAB_TABLES[labMode] || LAB_TABLES.stats)();
+    // Defence writes no position, so its season sits where a position normally
+    // would. Reading it as a position left the metric unparsed and every
+    // defence deep link snapped back to the first board.
+    if (labMode === 'defense') i -= 1;
+    else if (parts[i] && table[parts[i].toUpperCase()]) labPos = parts[i].toUpperCase();
     // The charted seasons are a subset of the stats seasons, so the year is
     // validated against whichever half is actually being addressed.
-    const seasons = labMode === 'charts' ? null : LAB_SEASONS;
+    // Charts, athletic and defence each answer to their own season set — or to
+    // none at all, in athletic's case.
+    const seasons = labMode === 'stats' ? LAB_SEASONS : null;
     if (parts[i + 1] && /^\d{4}$/.test(parts[i + 1]) && (!seasons || seasons.includes(parts[i + 1]))) {
       labSeason = parts[i + 1];
     }
     // Metric is validated against the position AND the mode that actually
     // apply, so a stale link to a board that no longer exists falls back to the
     // first one rather than rendering nothing.
-    labMetricKey = (parts[i + 2] && (table[labPos] || []).some(m => m.key === parts[i + 2])) ? parts[i + 2] : null;
+    // Athletic writes no season into its address, so its metric sits one
+    // segment earlier. Reading it at the usual offset silently dropped it and
+    // every athletic deep link fell back to the first board.
+    const metricPart = labMode === 'athletic' ? parts[i + 1] : parts[i + 2];
+    // (defence already shifted i above, so its season/metric land correctly)
+    labMetricKey = (metricPart && (table[labPos] || []).some(m => m.key === metricPart)) ? metricPart : null;
     switchPage('lab');
     return;
   }
@@ -928,17 +940,33 @@ function metaForRoute(route) {
   }
 
   if (parts[0] === 'lab') {
-    const mode = (parts[1] === 'stats' || parts[1] === 'charts') ? parts[1] : 'stats';
-    const posPart = (parts[1] === 'stats' || parts[1] === 'charts') ? parts[2] : parts[1];
-    const seasonPart = (parts[1] === 'stats' || parts[1] === 'charts') ? parts[3] : parts[2];
-    if (POS[posPart]) {
-      return mode === 'charts' ? {
-        title: `${POS[posPart]} Charts${seasonPart ? ' — ' + seasonPart : ''} | The Signal`,
-        description: `${POS[posPart]} boards from play-by-play charting and advanced splits — first reads against checkdowns, and the yards a player made himself.`,
-      } : {
-        title: `${POS[posPart]} Stats${seasonPart ? ' — ' + seasonPart : ''} | The Signal`,
-        description: `${POS[posPart]} leaderboards from nflverse and Next Gen Stats. Every board states its qualifier and excludes anyone under it.`,
+    const known = ['stats', 'charts', 'athletic', 'defense'];
+    const hasMode = known.includes(parts[1]);
+    const mode = hasMode ? parts[1] : 'stats';
+    const posPart = hasMode ? parts[2] : parts[1];
+    const seasonPart = hasMode ? parts[3] : parts[2];
+    if (mode === 'defense') {
+      return {
+        title: `Team Defence${seasonPart ? ' — ' + seasonPart : ''} | The Signal`,
+        description: 'What each defence actually allows when it is thrown at — completion rate, yards per target, pressure and missed tackles, from charted defensive splits.',
       };
+    }
+    if (POS[posPart]) {
+      const meta = {
+        charts: {
+          title: `${POS[posPart]} Charts${seasonPart ? ' — ' + seasonPart : ''} | The Signal`,
+          description: `${POS[posPart]} boards from play-by-play charting and advanced splits — first reads against checkdowns, and the yards a player made himself.`,
+        },
+        athletic: {
+          title: `${POS[posPart]} Athletic Testing | The Signal`,
+          description: `${POS[posPart]} combine testing, percentiled against every player on record at the position rather than against this year's pool.`,
+        },
+        stats: {
+          title: `${POS[posPart]} Stats${seasonPart ? ' — ' + seasonPart : ''} | The Signal`,
+          description: `${POS[posPart]} leaderboards from nflverse and Next Gen Stats. Every board states its qualifier and excludes anyone under it.`,
+        },
+      };
+      return meta[mode] || meta.stats;
     }
   }
 
@@ -1197,7 +1225,14 @@ function renderBodyMap() {
   if (!host) return;
   if (!anatomyData) {
     host.innerHTML = `<div class="medical-card"><div class="medical-detail">Loading the injury map…</div></div>`;
-    ensureAnatomy().then(() => renderBodyMap());
+    // Re-render only if the data actually arrived. loadJSON swallows a failed
+    // fetch and resolves with null, and the promise is cached — so an
+    // unconditional re-render walks straight back into this branch, calls the
+    // resolved promise again, and freezes the page.
+    ensureAnatomy().then(() => {
+      if (anatomyData) renderBodyMap();
+      else host.innerHTML = `<div class="medical-card"><div class="medical-detail">The injury map could not be loaded.</div></div>`;
+    });
     return;
   }
   const regions = anatomyData.regions || {};
