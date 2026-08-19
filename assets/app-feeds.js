@@ -857,6 +857,10 @@ const ROUTE_META = {
     title: 'Player Database — The Signal',
     description: 'Every fantasy-relevant NFL player: athletic profiles, nflverse production, sourced medical history and current status, updated daily.',
   },
+  ask: {
+    title: 'Ask The Signal',
+    description: "Questions answered from this site's own rows — production, charting, field position, usage, rankings and medical history. It answers from the data or says it cannot.",
+  },
   rankings: {
     title: 'Fantasy Rankings — The Signal',
     description: 'Half-PPR redraft rankings with projection ranges and missed-time risk priced in as a second downside, not hidden in the median.',
