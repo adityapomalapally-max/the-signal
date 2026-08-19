@@ -617,7 +617,7 @@ function toggleMobileNav() {
 // so these are real URLs that answer 200 and can be crawled, linked and shared.
 //
 // The route GRAMMAR is unchanged: what used to follow the # now follows the /.
-const ROUTE_PAGES = ['teams', 'rankings', 'lab', 'players', 'medicals', 'compare', 'fantasy', 'draft', 'film'];
+const ROUTE_PAGES = ['teams', 'rankings', 'lab', 'players', 'medicals', 'fantasy', 'draft', 'film'];
 
 function routePath(route) {
   return '/' + String(route || '').replace(/^\/+/, '');
@@ -750,7 +750,7 @@ const ROUTE_META = {
     description: 'Sourced injury histories, official NFL injury-report records, and research-backed return-to-play curves for the players who matter.',
   },
   lab: {
-    title: 'Leaders — The Signal',
+    title: 'Stats & Charts — The Signal',
     description: 'Positional leaderboards from nflverse and Next Gen Stats. Every board states its qualifier and excludes anyone under it.',
   },
   teams: {
@@ -764,10 +764,6 @@ const ROUTE_META = {
   draft: {
     title: 'Draft Lab — The Signal',
     description: 'Draft-capital hit rates by round and position — the base rate any prospect model has to beat.',
-  },
-  compare: {
-    title: 'Player Comparison — The Signal',
-    description: 'Two or three players on the same axes, with percentiles stated against the position they actually play.',
   },
   film: {
     title: 'Film Room — The Signal',

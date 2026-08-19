@@ -107,7 +107,6 @@ async function initData() {
       // Re-render anything that draws an avatar, now that IDs resolve.
       renderInjuryWatch();
       if (document.getElementById('page-players').classList.contains('active')) renderPlayersTable();
-      if (document.getElementById('page-compare').classList.contains('active')) renderComparePage();
     });
   }
 

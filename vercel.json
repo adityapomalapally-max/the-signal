@@ -31,10 +31,6 @@
       "destination": "/draft.html"
     },
     {
-      "source": "/compare",
-      "destination": "/compare.html"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
@@ -65,6 +61,13 @@
           "value": "SAMEORIGIN"
         }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/compare",
+      "destination": "/players",
+      "permanent": true
     }
   ]
 }

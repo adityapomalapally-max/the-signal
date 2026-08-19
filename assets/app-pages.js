@@ -938,12 +938,6 @@ function switchPage(page) {
   if (page === 'rankings') renderRankingsPage();
   // These three are the ones that genuinely need the season totals, so they
   // are also the ones that pay for loading them.
-  if (page === 'compare') {
-    renderComparePage();
-    ensureStats().then(() => {
-      if (document.getElementById('page-compare').classList.contains('active')) renderComparePage();
-    });
-  }
   if (page === 'lab') {
     // Leaders needs both the season totals and the tracking data; render as
     // each arrives rather than blocking on the pair.

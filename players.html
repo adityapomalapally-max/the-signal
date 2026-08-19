@@ -87,9 +87,8 @@
       <a class="nav-item active" data-page="home" onclick="switchPage('home')">Home</a>
       <a class="nav-item" data-page="teams" onclick="switchPage('teams')">Teams</a>
       <a class="nav-item" data-page="rankings" onclick="switchPage('rankings')">Rankings</a>
-      <a class="nav-item" data-page="lab" onclick="switchPage('lab')">Leaders</a>
+      <a class="nav-item" data-page="lab" onclick="switchPage('lab')">Stats &amp; Charts</a>
       <a class="nav-item" data-page="players" onclick="switchPage('players')">Players</a>
-      <a class="nav-item" data-page="compare" onclick="switchPage('compare')">Compare</a>
       <a class="nav-item" data-page="medicals" onclick="switchPage('medicals')">Medicals</a>
       <a class="nav-item" data-page="fantasy" onclick="switchPage('fantasy')">Fantasy</a>
       <a class="nav-item" data-page="draft" onclick="switchPage('draft')">Draft Lab</a>
@@ -509,26 +508,6 @@
 <!-- ============================= -->
 <!-- ====== FANTASY PAGE ========= -->
 <!-- ============================= -->
-<!-- ===== COMPARE ===== -->
-<div class="page-section" id="page-compare">
-  <div style="max-width:1440px;margin:0 auto;">
-    <div class="players-header">
-      <h1>Player Comparison</h1>
-      <p>Overlay two or three players on the same axes. Percentiles are within position, so comparisons across position groups are disabled — a 90th-percentile WR and a 90th-percentile RB are not the same athlete.</p>
-    </div>
-
-    <div style="padding:0 48px 24px;">
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
-        <span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;">Position</span>
-        <div id="comparePosTabs" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
-      </div>
-      <div id="compareRoster" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"></div>
-      <div id="compareHint" style="font-size:12px;color:var(--text-muted);font-style:italic;"></div>
-    </div>
-
-    <div id="compareOutput" style="padding:0 48px 60px;"></div>
-  </div>
-</div>
 
 <div class="page-section" id="page-fantasy">
   <div style="max-width:1440px;margin:0 auto;">
@@ -767,10 +746,10 @@
       <button class="profile-close" onclick="closeProfile()" aria-label="Close player profile">✕</button>
     </div>
     <div class="profile-tabs">
-      <div class="profile-tab active" data-tab="medical" onclick="switchProfileTab('medical', this)">Medical</div>
-      <div class="profile-tab" data-tab="overview" onclick="switchProfileTab('overview', this)">Overview</div>
+      <div class="profile-tab active" data-tab="overview" onclick="switchProfileTab('overview', this)">Overview</div>
       <div class="profile-tab" data-tab="stats" onclick="switchProfileTab('stats', this)">Stats</div>
       <div class="profile-tab" data-tab="fantasy" onclick="switchProfileTab('fantasy', this)">Fantasy</div>
+      <div class="profile-tab" data-tab="medical" onclick="switchProfileTab('medical', this)">Medical</div>
     </div>
     <div class="profile-content" id="profileContent"></div>
   </div>

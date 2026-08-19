@@ -48,10 +48,21 @@ function openProfile(id, fromRoute) {
   document.getElementById('profileName').textContent = player.name;
   document.getElementById('profileTeamLine').innerHTML = `${player.pos} · ${player.team}${player.fRank ? ` · <span>${player.fRank}</span>` : ''}${player.experience ? ' · ' + player.experience : ''}`;
 
-  // Reset to medical tab
+  // Open on OVERVIEW, not on Medical.
+  //
+  // A profile used to lead with a man's injury history, which is the narrowest
+  // thing the site knows about him and the thing fewest readers came for. It
+  // also meant the usage, charting and advanced splits — the work that actually
+  // separates this site from every other one — sat behind a tab most people
+  // never clicked. Medical is still one click away, where it belongs: something
+  // you go looking for rather than something you are shown.
+  //
+  // The reset reads the tab list rather than assuming an index, so reordering
+  // the markup again cannot silently un-do this.
   document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.profile-tab')[0].classList.add('active');
-  renderProfileTab('medical');
+  const firstTab = document.querySelector('.profile-tab');
+  if (firstTab) firstTab.classList.add('active');
+  renderProfileTab(firstTab ? firstTab.dataset.tab : 'overview');
 
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -131,6 +142,7 @@ function renderProfileTab(tab) {
     // was his. They read as one argument in that order.
     html += chartingHtml(currentProfileId);
     html += advancedHtml(currentProfileId);
+    html += profileCompareHtml(currentProfileId);
     // Only schedule a redraw while the data is still missing. Re-rendering
     // unconditionally re-enters this branch, calls ensureUsage again, and the
     // cached promise resolves immediately — an infinite render loop that hangs
@@ -1462,8 +1474,57 @@ function toggleCompare(id) {
   renderComparePage();
 }
 
-function renderCompareOutput() {
-  const out = document.getElementById('compareOutput');
+/**
+ * COMPARISON, MOVED INTO THE PROFILE.
+ *
+ * This used to be its own nav section, and it was the thinnest view of a player
+ * on the site: the same within-position percentiles the profile already shows,
+ * for two players at once, reached by leaving the player you were reading about.
+ * Nobody goes looking for a comparison in the abstract — they are on someone's
+ * page, wondering how he stacks up against one other man.
+ *
+ * The one genuinely good idea in it survives intact: percentiles are within
+ * position, so the picker only ever offers players at the SAME position. A
+ * 90th-percentile receiver and a 90th-percentile back are not the same athlete,
+ * and the old page refused that comparison rather than drawing it. So does this.
+ */
+function profileCompareHtml(playerId) {
+  const player = playersDB.find(p => p.id === playerId);
+  if (!player) return '';
+  const peers = playersDB
+    .filter(p => p.pos === player.pos && p.id !== player.id)
+    .sort((a, b) => (fRankValue(a.fRank) ?? 999) - (fRankValue(b.fRank) ?? 999));
+  if (peers.length < 1) return '';
+
+  const current = compareSelected.length === 2 && compareSelected[0] === playerId ? compareSelected[1] : '';
+
+  return `<div class="medical-card" style="margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px;">
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">Compare against</span>
+      <select class="filter-select" id="profileCompareSelect" onchange="setProfileCompare(this.value)">
+        <option value="">Pick another ${rankEsc(player.pos)}…</option>
+        ${peers.map(p => `<option value="${rankEsc(p.id)}"${p.id === current ? ' selected' : ''}>${rankEsc(p.name)}${p.fRank ? ` · ${rankEsc(p.fRank)}` : ''}</option>`).join('')}
+      </select>
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);line-height:1.6;">Only players at the same position. Percentiles are within position, so a receiver and a back cannot be laid over each other honestly.</div>
+    <div id="profileCompareOutput" style="margin-top:12px;"></div>
+  </div>`;
+}
+
+function setProfileCompare(otherId) {
+  if (!otherId) {
+    compareSelected = [];
+    const out = document.getElementById('profileCompareOutput');
+    if (out) out.innerHTML = '';
+    return;
+  }
+  compareSelected = [currentProfileId, otherId];
+  renderCompareOutput('profileCompareOutput');
+}
+
+function renderCompareOutput(targetId) {
+  const out = document.getElementById(targetId || 'compareOutput');
+  if (!out) return;
   if (compareSelected.length < 2) { out.innerHTML = ''; return; }
 
   const picks = compareSelected.map((id, i) => ({

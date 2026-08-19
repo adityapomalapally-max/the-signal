@@ -49,7 +49,7 @@ const PAGES = {
     description: 'Who gets the ball, and how each offense lines up: personnel groupings, the box they draw, coverage faced, and year-over-year identity shifts.',
   },
   lab: {
-    title: 'Leaders — The Signal',
+    title: 'Stats & Charts — The Signal',
     description: 'Positional leaderboards from nflverse and Next Gen Stats. Every board states its qualifier and excludes anyone under it.',
   },
   fantasy: {
@@ -59,10 +59,6 @@ const PAGES = {
   draft: {
     title: 'Draft Lab — The Signal',
     description: 'Draft-capital hit rates by round and position — the base rate any prospect model has to beat.',
-  },
-  compare: {
-    title: 'Player Comparison — The Signal',
-    description: 'Two or three players on the same axes, with percentiles stated against the position they actually play.',
   },
 };
 

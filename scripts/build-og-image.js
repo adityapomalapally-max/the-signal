@@ -48,7 +48,6 @@ const SECTIONS = {
   lab:      { tagline: 'Leaders', blurb: 'Positional leaderboards from nflverse and Next Gen Stats. Every board states its qualifier.' },
   fantasy:  { tagline: 'Value Board', blurb: 'Our positional ranks against consensus ADP, compared rank to rank so the gaps mean something.' },
   draft:    { tagline: 'Draft Lab', blurb: 'Draft-capital hit rates by round and position — the base rate any prospect model has to beat.' },
-  compare:  { tagline: 'Player Comparison', blurb: 'Two or three players on the same axes, with percentiles stated against the position they actually play.' },
 };
 const W = 1200, H = 630;
 const SITE_HOST = 'the-signal-gamma.vercel.app';

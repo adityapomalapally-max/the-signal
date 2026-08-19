@@ -49,9 +49,12 @@ function build() {
 
   urls.push(url(`${ORIGIN}/`, { priority: 1.0, changefreq: 'daily', lastmod: dataDate }));
 
+  // /compare is gone — the comparison lives inside a player's own profile now,
+  // which is where somebody actually wants it. Submitting a URL that 404s, or
+  // that the router no longer recognises, is worse than never having listed it.
   const sections = {
     players: 0.9, rankings: 0.9, medicals: 0.8, lab: 0.7,
-    teams: 0.7, fantasy: 0.8, draft: 0.6, compare: 0.5,
+    teams: 0.7, fantasy: 0.8, draft: 0.6,
   };
   for (const [slug, priority] of Object.entries(sections)) {
     urls.push(url(`${ORIGIN}/${slug}`, { priority, changefreq: 'daily', lastmod: dataDate }));
