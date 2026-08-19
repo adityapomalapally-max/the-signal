@@ -53,6 +53,30 @@ test('a generational suffix is not a surname', () => {
   assert.ok(cook.players.some(p => /Cook/.test(p.name)), 'the name under the suffix must still match');
 });
 
+test('a name written without its suffix still resolves, and consumes both words', () => {
+  // Two bugs in one question. People write "James Cook", not "James Cook III",
+  // so the full-name match missed and fell through to the surname — which
+  // matched Brady Cook too. And "James" is Jordan James's surname, so the
+  // first name matched a third player. One named player returned three.
+  const m = R.findPlayers('which gaps does James Cook run well through?', pool);
+  assert.strictEqual(m.players.length, 1, `got ${m.players.map(p => p.name).join(', ')}`);
+  assert.match(m.players[0].name, /^James Cook/);
+  assert.strictEqual(m.ambiguous.length, 0, 'a full name is not ambiguous');
+});
+
+test('a first name that is also a surname does not pull in a stranger', () => {
+  const m = R.findPlayers('James Cook', pool);
+  assert.ok(!m.players.some(p => p.name === 'Jordan James'),
+    'matched Jordan James on the word "James" inside another player\'s full name');
+});
+
+test('the bare surname is still ambiguous once the first name is gone', () => {
+  // The fix above must not over-correct: "cook" alone genuinely is ambiguous.
+  const m = R.findPlayers('how is cook doing this year', pool);
+  assert.ok(m.players.length > 1, `expected several Cooks, got ${m.players.map(p => p.name).join(', ')}`);
+  assert.strictEqual(m.ambiguous.length, 1);
+});
+
 test('a genuinely short surname still matches', () => {
   // The first version of this excluded anything under four letters, which was
   // safe and also made Bo Nix unanswerable.

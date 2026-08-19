@@ -71,10 +71,24 @@ function findPlayers(question, pool) {
   // and offering three players as though it were is its own kind of wrong.
   const resolved = new Set();
 
+  // Words a full-name match has already accounted for. "James Cook" consumes
+  // both, so Jordan James must not then match on "james" — the question named
+  // one player and got three, one of them because a FIRST name is somebody
+  // else's surname.
+  const consumed = new Set();
+
   for (const p of pool) {
     const name = normalize(p.name);
     if (!name) continue;
-    if (q.includes(' ' + name + ' ')) { full.push(p); resolved.add(surnameOf(name)); continue; }
+    // Try the name as written and with the generational suffix removed, because
+    // people write "James Cook", not "James Cook III".
+    const bare = name.split(' ').filter(x => !SUFFIXES.has(x.replace(/\.$/, ''))).join(' ');
+    if (q.includes(' ' + name + ' ') || (bare !== name && q.includes(' ' + bare + ' '))) {
+      full.push(p);
+      resolved.add(surnameOf(name));
+      bare.split(' ').forEach(w => consumed.add(w));
+      continue;
+    }
     const surname = surnameOf(name);
     // Two letters is a coincidence waiting to happen. Three is not: Bo Nix and
     // Nazir Ali are both in the pool, and excluding them to be safe makes the
@@ -91,6 +105,8 @@ function findPlayers(question, pool) {
   for (const [surname, players] of bySurname) {
     // Already pinned by a full-name match in the same question.
     if (resolved.has(surname)) continue;
+    // Or the word was part of one — a first name doing double duty.
+    if (consumed.has(surname)) continue;
     if (players.length === 1) out.push(players[0]);
     else {
       ambiguous.push({ surname, players: players.map(p => `${p.name} (${p.pos}, ${p.team})`) });
