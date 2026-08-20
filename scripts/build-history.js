@@ -67,6 +67,36 @@ function upsertDay(file, date, line, dry) {
   return rows.length;
 }
 
+/**
+ * Which depth-chart entries actually moved.
+ *
+ * Extracted so the UNCHANGED path can be tested. On the first day every entry
+ * is a first sighting, so a test against real data never exercises the skip —
+ * and a mutation deleting it passed cleanly. The skip is the entire reason this
+ * is an event log rather than 342 identical lines a morning.
+ */
+const depthKey = (d) => d && `${d.team}|${d.position}|${d.positionRank}|${d.slot}`;
+
+function depthChangesFor(depth, priorState, pool, inPool, date) {
+  const out = [];
+  const byId = new Map((pool || []).map(p => [p.id, p]));
+  for (const [id, d] of Object.entries(depth || {})) {
+    if (inPool && !inPool.has(id)) continue;
+    const now = { team: d.team, position: d.position, positionRank: d.positionRank, slot: d.slot };
+    const prev = priorState.get(id);
+    if (prev && depthKey(prev) === depthKey(now)) continue;
+    const player = byId.get(id);
+    out.push({
+      date, id, name: player ? player.name : id,
+      from: prev || null,
+      to: now,
+      // A first sighting is the day we started watching, not a promotion.
+      first: prev ? undefined : true,
+    });
+  }
+  return out;
+}
+
 function main() {
   const dry = process.argv.includes('--dry');
   const date = new Date().toISOString().slice(0, 10);
@@ -175,6 +205,71 @@ function main() {
   const real = changes.filter(c => !c.first && c.to !== '__left__').length;
   report.push(`status     ${changes.length} entries today (${real} real changes, ${changes.length - real} first sightings/exits) → ${statusCount} total`);
 
+  // ---- Trending adds and drops -------------------------------------------
+  // THIS IS THE MOST PERISHABLE THING ON THE SITE. Sleeper serves what the room
+  // is doing RIGHT NOW and nothing else — there is no endpoint for last
+  // Tuesday's add rate, and no way to reconstruct one. Every other layer here
+  // can be rebuilt from play-by-play on demand; this cannot be rebuilt at all,
+  // so a morning it does not run is a morning gone for good.
+  //
+  // A SERIES, not an event log: the counts move every day and the movement is
+  // the signal. Kept as the published top-15 rather than per-player values,
+  // because that is the shape the source actually publishes.
+  const trending = read('trending.json');
+  const shapeTrend = (list) => (list || []).map(row => {
+    const id = byName.get(normalize(row.name));
+    // An unmatched name is kept with its count. The player is outside the
+    // 350-man pool — usually a free agent the room is speculating on — and the
+    // fact that the room is speculating is the interesting part. It is just not
+    // cross-referenceable, so it carries no id rather than a guessed one.
+    return id
+      ? { id, count: Number(row.count) }
+      : { name: row.name, team: row.team || null, count: Number(row.count) };
+  });
+  const trendAdds = shapeTrend(trending.adds);
+  const trendDrops = shapeTrend(trending.drops);
+  let trendCount = readLines('trending.jsonl').length;
+  if (trendAdds.length || trendDrops.length) {
+    trendCount = upsertDay('trending.jsonl', date, {
+      date,
+      source: 'sleeper trending, 24h window',
+      adds: trendAdds,
+      drops: trendDrops,
+    }, dry);
+  }
+  const trendInPool = trendAdds.filter(a => a.id).length + trendDrops.filter(d => d.id).length;
+  report.push(`trending   ${trendAdds.length} adds, ${trendDrops.length} drops `
+    + `(${trendInPool} in the pool) → ${trendCount} days on file`);
+
+  // ---- Depth chart position ----------------------------------------------
+  // nflverse publishes the CURRENT depth chart and no history of it, so a
+  // promotion is visible the day it happens and invisible a week later.
+  //
+  // AN EVENT, NOT A SERIES, for the same reason status is: 342 players sit
+  // still and logging "still second on the depth chart" every morning would
+  // bury the handful of lines that matter under a hundred thousand that do not.
+  const depth = (read('context.json') || {}).depthChart || {};
+  const depthLog = readLines('depth.jsonl');
+  const depthState = new Map();
+  for (const e of depthLog) {
+    if (e.date === date) continue;
+    depthState.set(e.id, e.to);
+  }
+  const depthChanges = depthChangesFor(depth, depthState, pool, inPool, date);
+  let depthCount = depthLog.length;
+  if (depthChanges.length) {
+    const kept = depthLog.filter(e => e.date !== date);
+    const rows = kept.concat(depthChanges);
+    depthCount = rows.length;
+    if (!dry) {
+      fs.mkdirSync(HIST, { recursive: true });
+      fs.writeFileSync(path.join(HIST, 'depth.jsonl'), rows.map(r => JSON.stringify(r)).join('\n') + '\n');
+    }
+  }
+  const realDepth = depthChanges.filter(c => !c.first).length;
+  report.push(`depth      ${depthChanges.length} entries today `
+    + `(${realDepth} real moves, ${depthChanges.length - realDepth} first sightings) → ${depthCount} on file`);
+
   console.log(`[history] ${date}${dry ? ' (dry run — nothing written)' : ''}`);
   for (const line of report) console.log('  ' + line);
   if (real) {
@@ -184,9 +279,12 @@ function main() {
   }
 }
 
-try {
+// Required by tests for its pure helpers; only runs as a script.
+if (require.main === module) try {
   main();
 } catch (e) {
   console.error('[history] FAILED:', e.message);
   process.exit(1);
 }
+
+module.exports = { depthChangesFor, depthKey, normalize };

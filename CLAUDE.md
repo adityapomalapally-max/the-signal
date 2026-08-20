@@ -243,6 +243,27 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   it could not reach is permanent — adp.json only goes back to 2026-08-16 because that is when
   it was added.
 
+## Record what cannot be rebuilt
+- THE DIVIDING LINE IS RECONSTRUCTIBILITY, NOT IMPORTANCE. Usage, charting, field maps, matchups and
+  scheme all come back out of play-by-play whenever they are asked for, so losing them costs a
+  download. Two things do not come back at all, and they are the ones the history layer exists for:
+  - **Sleeper trending** is what the room is doing RIGHT NOW. There is no endpoint for last Tuesday's
+    add rate and no way to derive one. A morning it does not run is a morning gone for good.
+  - **Depth chart position** is published by nflverse as the CURRENT chart with no history behind it,
+    so a promotion is visible the day it happens and invisible a week later.
+- SHAPE FOLLOWS BEHAVIOUR, the same split as rankings against status. Trending is a SERIES — the
+  counts move daily and the movement is the signal. Depth is an EVENT LOG — 342 players sit still,
+  and logging "still second on the depth chart" every morning buries the handful of lines that matter.
+- AN UNMATCHED TRENDING NAME KEEPS ITS COUNT AND NEVER A GUESSED ID. The pool is 350; the room
+  speculates on more. A free agent added 60,000 times is worth recording, and attaching him to the
+  wrong player is not — the same rule the matcher follows everywhere else.
+- THE SKIP CANNOT BE TESTED AGAINST DAY-ONE DATA. On the first run every entry is a first sighting,
+  so there is nothing to skip and a mutation deleting the guard passes cleanly. `depthChangesFor` is
+  extracted and unit-tested for exactly that, including the case a rank comparison alone would miss:
+  A TRADE IS A MOVE, and the rank is often identical on both sides of it.
+- The history layer went live 2026-08-18. Anything before that in the continuous series was recovered
+  by backfill-history from the repo's own commits, and what it could not reach is permanent.
+
 ## The season rollover
 - `scripts/lib/season.js` is the ONLY place that knows what season it is. It reads Sleeper's
   free `/state/nfl` (season, week, season_type) and falls back to the calendar if that is
