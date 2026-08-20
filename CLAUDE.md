@@ -338,6 +338,36 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   on the missing binding just says "undefined". What identifies it is that the file's FUNCTIONS exist
   while its LETS do not.
 
+## The matchup board is a record, not a forecast
+- MEASURED, AND THE ANSWER IS UNCOMFORTABLE. `scripts/research-matchup-stability.js` splits each of
+  2023-25 at several weeks and correlates a defence's vsBaseline over the first N weeks with its
+  rating over the rest of the season. **r = 0.05 to 0.32 for QB, RB and WR** — and it does NOT improve
+  as the sample grows: the week-8 split is no better than the week-4 one. TE reads higher early (0.67
+  at week 4) on the thinnest sample and collapses to 0.11 by week 10, which is what noise looks like.
+- SO THE BOARD DESCRIBES WHAT A DEFENCE HAS ALLOWED AND SAYS SO ON THE PAGE. Every reader will use it
+  to predict; the gap between what it says and what it will be used for is not something a reader can
+  infer from the numbers, so the measured range is printed above the table and carried in meta. A test
+  fails if the caveat loses the figures or stops naming the script that reproduces them.
+- Research, not a build: it writes no file and is not in the Action, same bargain as
+  research-vegas-weather.js. It exists so the question is answered by a measurement rather than
+  reopened from memory.
+
+## The sample is games, not player-games
+- A FLAT PLAYER-GAME FLOOR SOUNDS EVEN-HANDED AND IS NOT. Measured across 2025 a defence faces 2.39
+  pool receivers per game and 1.07 quarterbacks, so the old floor of 8 player-games demanded 3.3 games
+  of evidence at receiver and 7.5 at quarterback. Simulated forward, THE QB MATCHUP BOARD PUBLISHED
+  NOTHING UNTIL WEEK 8 and was not full until week 10 — over half a season on last year's data,
+  because the unit was wrong rather than the threshold.
+- A defensive performance is a GAME. `MIN_GAMES = 4` distinct weeks asks the same question of every
+  position and needs no per-position rate to be estimated or kept up to date; `MIN_PLAYER_GAMES = 4`
+  survives as a backstop for four games against one player. Simulated: every position now publishes
+  from week 4 and is essentially full by week 8.
+- This changed nothing on completed seasons — every defence has 17 games there — which is the point.
+  It only moves the weeks the old floor got wrong.
+- `build-matchups.js --simulate 2026:6` drives the calendar forward, same flag and same stamp as
+  build-ros.js. THE PATHS THAT MATTER MOST CANNOT BE REACHED UNTIL THEY ARRIVE, and by then it is too
+  late to discover the board is empty.
+
 ## The opening weeks are the hard case
 - SIMULATED AGAINST 2025, the In Season section was nearly EMPTY for the first three weeks — which is
   when people look hardest. Weekly usage had 0 players in week 1 (a change needs two games); the

@@ -3036,6 +3036,16 @@ function renderSeasonPage() {
   let h = `<div class="lab-head"><span class="lab-title">${rankEsc(`Fantasy points allowed to ${muPos}s — ${shownSeason}`)}</span>`
     + `<span class="lab-qual">${rankEsc(meta.qualifiers ? meta.qualifiers.playerGames : '')}</span></div>`;
   h += `<div class="lab-sub">${rankEsc(meta.readThis || '')}</div>`;
+  // THE READER WILL USE THIS TO PREDICT. The board records what a defence has
+  // allowed, and measured against itself that record barely carries into the
+  // rest of the season. Saying so is the difference between a record and a
+  // forecast, and it is not something a reader can infer from the numbers.
+  if (meta.predictiveness) {
+    h += `<div class="season-state" style="margin:10px 0 4px;"><span class="season-state-tag">Read as</span>`
+      + `<span>A record, not a forecast. Measured across 2023&ndash;25, a defence's rating over the first `
+      + `weeks of a season correlates with its rest-of-season rating at only r&nbsp;=&nbsp;0.05&ndash;0.32 `
+      + `for QB, RB and WR &mdash; and that does not improve as more games are played.</span></div>`;
+  }
   if (fellBackFrom) {
     h += `<div class="season-state" style="margin:10px 0 16px;"><span class="season-state-tag">Early season</span>`
       + `<span>Only ${fellBackFrom.had} of 32 defences have faced enough ${muPos}s in ${rankEsc(String(fellBackFrom.thin))} `

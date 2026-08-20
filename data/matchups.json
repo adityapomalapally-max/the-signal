@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-08-19T21:04:38.253Z",
+    "generated": "2026-08-20T03:12:21.059Z",
     "seasons": [
       2023,
       2024,
@@ -9,10 +9,12 @@
     "latestSeasonWithGames": 2025,
     "source": "Per-game fantasy points from data/weekly, attributed to the defence faced. Half-PPR.",
     "qualifiers": {
-      "playerGames": "8+ player-games against a defence before any rate is published",
+      "games": "4+ separate games against the position before any rate is published. The sample is GAMES, not player-games: a defence faces about 2.4 pool receivers a game and only 1.07 quarterbacks, so a flat player-game floor asks three times as much of a quarterback board as of a receiver one.",
+      "playerGames": "4+ player-games as a backstop, for four games against one player",
       "baseline": "a player needs 6+ games that season before his own average is used as a baseline"
     },
-    "readThis": "vsBaseline is the number to trust. pointsAllowedPerGame conflates the defence with the offences it happened to face; vsBaseline measures each performance against that player's own season average, so a defence is not credited for drawing weak opponents.",
+    "readThis": "This board is DESCRIPTIVE. It records what a defence has already allowed; it is not a forecast of what it will allow. Of the two numbers, vsBaseline is the sounder — pointsAllowedPerGame conflates the defence with the offences it happened to face, while vsBaseline measures each performance against that player's own season average, so a defence is not credited for drawing weak opponents.",
+    "predictiveness": "MEASURED, AND IT IS WEAK. Splitting 2023-25 at several points and correlating a defence's vsBaseline over the first N weeks with its rating over the rest of the season gives r = 0.05 to 0.32 for QB, RB and WR, and it does NOT improve as the sample grows — the week-8 split is no better than the week-4 one. Reproduce with scripts/research-matchup-stability.js. Read this board as a record of what happened, not as a projection of what will.",
     "caveats": [
       "The population is the top-350 fantasy pool, so this is points allowed to players worth starting rather than to everybody at the position. For a start/sit decision that is the right population; it is not the whole league.",
       "A baseline is the player's average across the games he PLAYED that season, so it already contains his good and bad matchups. It corrects for who a defence faced, not for when in the season they faced them.",

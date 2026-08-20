@@ -29,7 +29,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const { dataSeasons, latestDataSeason } = require('./lib/season');
+const seasonLib = require('./lib/season');
+const { dataSeasons, latestDataSeason } = seasonLib;
 const { isTeam, teamKey } = require('./lib/teams');
 const { writeJSONIfChanged } = require('./lib/write');
 
@@ -37,9 +38,22 @@ const DATA = path.join(__dirname, '..', 'data');
 const WEEKLY = path.join(DATA, 'weekly');
 const OUT = path.join(DATA, 'matchups.json');
 
-// A defence-position pair needs this many player-games before a rate is
-// published. Below it the average is one good afternoon wearing a trend.
-const MIN_PLAYER_GAMES = 8;
+// THE SAMPLE IS GAMES, NOT PLAYER-GAMES, AND THAT DISTINCTION IS THE WHOLE
+// CALIBRATION. A flat player-game floor sounds even-handed and is not: measured
+// across 2025, a defence faces 2.39 pool receivers per game but only 1.07
+// quarterbacks. A floor of 8 player-games therefore demanded 3.3 games of
+// evidence at receiver and 7.5 at quarterback — and simulated forward, the QB
+// matchup board did not publish a single defence until week 8 and was not full
+// until week 10. Over half a season on last year's data because the unit was
+// wrong.
+//
+// A defensive performance is a GAME. Gating on the number of distinct weeks a
+// defence has faced the position asks the same question of every position and
+// needs no per-position rate to be estimated or maintained.
+const MIN_GAMES = 4;
+// And a floor on observations, for the pathological case of four games against
+// one player. Deliberately low: it is a backstop, not the qualifier.
+const MIN_PLAYER_GAMES = 4;
 // And a player needs a real season behind him before his own average is a
 // baseline worth measuring anything against.
 const MIN_BASELINE_GAMES = 6;
@@ -63,16 +77,32 @@ function round(v, p = 2) {
  */
 function shapeCell(c, floor) {
   const min = floor === undefined ? MIN_PLAYER_GAMES : floor;
-  if (c.playerGames < min) return { playerGames: c.playerGames, thin: true };
+  const games = c.weeks ? c.weeks.size : 0;
+  if (games < MIN_GAMES || c.playerGames < min) {
+    return { playerGames: c.playerGames, gamesPlayed: games, thin: true };
+  }
   return {
     playerGames: c.playerGames,
-    gamesPlayed: c.weeks ? c.weeks.size : undefined,
+    gamesPlayed: games,
     pointsAllowedPerGame: round(c.points / c.playerGames),
     vsBaseline: c.deltaN >= min ? round(c.delta / c.deltaN) : null,
   };
 }
 
 async function main() {
+  // --simulate 2026:6 drives the calendar forward so the in-season paths can be
+  // built and looked at before September. Same flag, same spelling and the same
+  // stamp as build-ros.js, because the problem is identical: the weeks that
+  // matter most cannot be reached until they arrive, and by then it is too late
+  // to find out the board is empty.
+  const simArg = process.argv.includes('--simulate')
+    ? process.argv[process.argv.indexOf('--simulate') + 1] : null;
+  if (simArg) {
+    const [sy, sw] = simArg.split(':').map(Number);
+    seasonLib.__setState({ season: sy, previousSeason: sy - 1, week: sw, phase: 'regular', source: 'simulation' });
+    log(`SIMULATING ${sy} week ${sw} — the output is stamped and cannot be committed`);
+  }
+
   const pool = JSON.parse(fs.readFileSync(path.join(DATA, 'players.json'), 'utf8'));
   const byId = new Map(pool.map(p => [p.id, p]));
   const seasons = (await dataSeasons(3)).map(String);
@@ -146,12 +176,23 @@ async function main() {
     latestSeasonWithGames: live,
     source: 'Per-game fantasy points from data/weekly, attributed to the defence faced. Half-PPR.',
     qualifiers: {
-      playerGames: `${MIN_PLAYER_GAMES}+ player-games against a defence before any rate is published`,
+      games: `${MIN_GAMES}+ separate games against the position before any rate is published. The `
+        + `sample is GAMES, not player-games: a defence faces about 2.4 pool receivers a game and only `
+        + `1.07 quarterbacks, so a flat player-game floor asks three times as much of a quarterback `
+        + `board as of a receiver one.`,
+      playerGames: `${MIN_PLAYER_GAMES}+ player-games as a backstop, for four games against one player`,
       baseline: `a player needs ${MIN_BASELINE_GAMES}+ games that season before his own average is used as a baseline`,
     },
-    readThis: 'vsBaseline is the number to trust. pointsAllowedPerGame conflates the defence with the '
-      + 'offences it happened to face; vsBaseline measures each performance against that player\'s own '
-      + 'season average, so a defence is not credited for drawing weak opponents.',
+    readThis: 'This board is DESCRIPTIVE. It records what a defence has already allowed; it is not a '
+      + 'forecast of what it will allow. Of the two numbers, vsBaseline is the sounder — '
+      + 'pointsAllowedPerGame conflates the defence with the offences it happened to face, while '
+      + 'vsBaseline measures each performance against that player\'s own season average, so a defence '
+      + 'is not credited for drawing weak opponents.',
+    predictiveness: 'MEASURED, AND IT IS WEAK. Splitting 2023-25 at several points and correlating a '
+      + 'defence\'s vsBaseline over the first N weeks with its rating over the rest of the season gives '
+      + 'r = 0.05 to 0.32 for QB, RB and WR, and it does NOT improve as the sample grows — the week-8 '
+      + 'split is no better than the week-4 one. Reproduce with scripts/research-matchup-stability.js. '
+      + 'Read this board as a record of what happened, not as a projection of what will.',
     caveats: [
       'The population is the top-350 fantasy pool, so this is points allowed to players worth '
       + 'starting rather than to everybody at the position. For a start/sit decision that is the '
@@ -164,6 +205,10 @@ async function main() {
     ],
   };
 
+  // A stamped file looks exactly like a real one to every page that reads it,
+  // so it carries the stamp and tests/no-simulated-data.test.js refuses to let
+  // it be committed.
+  if (simArg) out.meta.simulated = `simulated from ${simArg} for interface work — NOT REAL`;
   const wrote = writeJSONIfChanged(OUT, out);
   log(`${counted} player-games counted, ${published} cells published, ${withheld} withheld as thin`);
   log(`skipped: ${skippedNoPos} non-pool shards, ${skippedThinBaseline} player-seasons too short for a baseline`);
@@ -172,6 +217,6 @@ async function main() {
             : 'data/matchups.json unchanged — not rewritten');
 }
 
-module.exports = { shapeCell, MIN_PLAYER_GAMES, MIN_BASELINE_GAMES };
+module.exports = { shapeCell, MIN_GAMES, MIN_PLAYER_GAMES, MIN_BASELINE_GAMES };
 
 if (require.main === module) main().catch(e => { console.error('[matchups] fatal:', e.message); process.exit(1); });
