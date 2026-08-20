@@ -321,6 +321,19 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - A charted pass with no `receiver_player_id` counts for the TEAM and for nobody in particular.
   That is the honest split: the play happened, the attribution did not.
 
+## Splitting app-pages.js — measured, then declined
+- It is the largest asset (3,244 lines, 51KB gzipped) and the obvious maintenance target. MEASURED:
+  splitting it at its section banners into six classic scripts produces **56KB gzipped, not 51** —
+  gzip has a smaller window to work with across separate files, so the payload grows. Plus six
+  requests instead of one.
+- LAZY LOADING IS NOT AVAILABLE HERE. 97 inline onclick handlers need their globals present when the
+  markup is parsed; deferring any file breaks every handler it defines, silently.
+- Total JS is 121KB gzipped for the entire site, which is a healthy budget and not a problem anyone
+  has. There is no user-facing benefit to trade the risk against — and the risk is real: a duplicated
+  top-level `let` across files kills a whole script while its functions still hoist.
+- So it stays one file. If it is ever split, the reason will be developer navigation and the measured
+  cost is +5KB and five extra requests. Re-run the measurement rather than re-deciding from memory.
+
 ## One global scope, five files
 - The asset scripts are CLASSIC SCRIPTS SHARING ONE GLOBAL SCOPE, which is deliberate — the markup
   carries ~108 inline onclick handlers and an inline handler can only see globals. The cost is that a
