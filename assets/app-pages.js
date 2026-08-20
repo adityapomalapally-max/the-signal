@@ -3001,20 +3001,48 @@ function renderSeasonPage() {
       `<button class="pos-btn${y === muSeason ? ' active' : ''}" onclick="setMuSeason('${y}', this)">${y}</button>`).join('');
   }
 
-  const defs = (matchupData.seasons[muSeason] || {}).defenses || {};
-  const rows = [];
-  for (const [team, byPos] of Object.entries(defs)) {
-    const c = byPos[muPos];
-    if (!c || c.thin || typeof c.vsBaseline !== 'number') continue;
-    rows.push({ team, ...c });
+  // A DEFENCE NEEDS ABOUT FOUR WEEKS BEFORE IT HAS A PUBLISHABLE FIGURE.
+  // Simulated against 2025: one of thirty-two defences cleared the sample floor
+  // in week 2, eleven by week 3, twenty-seven by week 4. So for the first month
+  // of a season this board is mostly empty — which is honest and useless. The
+  // previous season is the only evidence that exists in that window, and it is
+  // what every other site is showing too; the difference is saying so, because
+  // defensive personnel changes completely across an offseason.
+  const readRows = (year) => {
+    const d = (matchupData.seasons[year] || {}).defenses || {};
+    const out = [];
+    for (const [team, byPos] of Object.entries(d)) {
+      const c = byPos[muPos];
+      if (!c || c.thin || typeof c.vsBaseline !== 'number') continue;
+      out.push({ team, ...c });
+    }
+    return out;
+  };
+  let rows = readRows(muSeason);
+  let fellBackFrom = null;
+  if (rows.length < 16) {
+    const prior = years.filter(y => y < muSeason).pop();
+    const priorRows = prior ? readRows(prior) : [];
+    if (priorRows.length > rows.length) {
+      fellBackFrom = { thin: muSeason, using: prior, had: rows.length };
+      rows = priorRows;
+    }
   }
   // Toughest first: a negative vsBaseline means the defence held players below
   // their own averages.
   rows.sort((a, b) => a.vsBaseline - b.vsBaseline);
 
-  let h = `<div class="lab-head"><span class="lab-title">${rankEsc(`Fantasy points allowed to ${muPos}s — ${muSeason}`)}</span>`
+  const shownSeason = fellBackFrom ? fellBackFrom.using : muSeason;
+  let h = `<div class="lab-head"><span class="lab-title">${rankEsc(`Fantasy points allowed to ${muPos}s — ${shownSeason}`)}</span>`
     + `<span class="lab-qual">${rankEsc(meta.qualifiers ? meta.qualifiers.playerGames : '')}</span></div>`;
   h += `<div class="lab-sub">${rankEsc(meta.readThis || '')}</div>`;
+  if (fellBackFrom) {
+    h += `<div class="season-state" style="margin:10px 0 16px;"><span class="season-state-tag">Early season</span>`
+      + `<span>Only ${fellBackFrom.had} of 32 defences have faced enough ${muPos}s in ${rankEsc(String(fellBackFrom.thin))} `
+      + `to publish a figure, so this is ${rankEsc(String(fellBackFrom.using))}. A defence takes about four weeks to `
+      + `produce a sample worth reading, and personnel changes completely across an offseason — treat this as a prior, `
+      + `not as this year's defence.</span></div>`;
+  }
 
   if (!rows.length) {
     h += `<div class="medical-card"><div class="medical-detail">`
@@ -3086,16 +3114,39 @@ function setSeasonView(view, el) {
 // so the only reading that travels is which way his own number moved.
 const USAGE_BASELINE_WEEKS = 4;
 
+/**
+ * THE FIRST WEEKS OF A SEASON HAVE NO TRENDS, AND THAT IS WHEN PEOPLE LOOK.
+ *
+ * Simulated against 2025: in week 1 this board had NOTHING on it, because a
+ * change needs two games. The floor is right — a trend off one game is not a
+ * trend — but an empty page for the opening Sunday is the wrong answer to it.
+ *
+ * So the board has two modes. With a baseline it shows MOVEMENT, which is the
+ * useful reading. Without one it shows LEVELS, which are complete facts that
+ * simply have nothing to be compared against yet, and says which it is showing.
+ */
 function usageRows(season) {
   const bank = (weeklyUsage && weeklyUsage.seasons && weeklyUsage.seasons[season]) || {};
   const rows = [];
+  let anyBaseline = false;
   for (const [gsis, rec] of Object.entries(bank)) {
     if (rec.pos !== muPos) continue;
     const played = rec.weeks.filter(w => w.snapPct !== null || w.targets > 0 || w.carries > 0);
-    if (played.length < 2) continue;
+    if (!played.length) continue;
     const last = played[played.length - 1];
     const prior = played.slice(Math.max(0, played.length - 1 - USAGE_BASELINE_WEEKS), played.length - 1);
-    if (!prior.length) continue;
+    if (prior.length) anyBaseline = true;
+    if (!prior.length) {
+      // Week one: the level is all there is, and it is real.
+      rows.push({
+        name: rec.name, team: last.team, week: last.week, weeksBack: 0,
+        snapPct: last.snapPct, snapDelta: null,
+        targetShare: last.targetShare, targetDelta: null,
+        wopr: last.wopr, woprDelta: null,
+        touches: last.touches,
+      });
+      continue;
+    }
     const mean = (arr, k) => {
       const vals = arr.map(x => x[k]).filter(v => typeof v === 'number');
       return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
@@ -3110,6 +3161,7 @@ function usageRows(season) {
       touches: last.touches,
     });
   }
+  rows.anyBaseline = anyBaseline;
   return rows;
 }
 
@@ -3123,12 +3175,18 @@ function renderUsageBoard(host) {
   }
   if (!muSeason || !years.includes(muSeason)) muSeason = years[years.length - 1];
   const rows = usageRows(muSeason);
-  // Biggest movers first, by the metric that combines volume and depth.
-  rows.sort((a, b) => (b.woprDelta === null ? -Infinity : b.woprDelta) - (a.woprDelta === null ? -Infinity : a.woprDelta));
+  const byMovement = rows.anyBaseline;
+  // With a baseline the useful order is biggest movers; without one there is
+  // nothing to move, so the level itself is the ranking.
+  if (byMovement) {
+    rows.sort((a, b) => (b.woprDelta === null ? -Infinity : b.woprDelta) - (a.woprDelta === null ? -Infinity : a.woprDelta));
+  } else {
+    rows.sort((a, b) => (b.wopr === null ? -Infinity : b.wopr) - (a.wopr === null ? -Infinity : a.wopr));
+  }
 
   const week = rows.length ? Math.max(...rows.map(r => r.week)) : null;
   let h = `<div class="lab-head"><span class="lab-title">${rankEsc(`${muPos} usage — week ${week} of ${muSeason}`)}</span>`
-    + `<span class="lab-qual">AGAINST HIS OWN PREVIOUS ${USAGE_BASELINE_WEEKS} WEEKS</span></div>`;
+    + `<span class="lab-qual">${byMovement ? `AGAINST HIS OWN PREVIOUS ${USAGE_BASELINE_WEEKS} WEEKS` : 'LEVELS — NO PRIOR WEEK TO COMPARE'}</span></div>`;
   h += `<div class="lab-sub">${rankEsc(meta.wopr || '')}</div>`;
   // WEEK 18 IS NOT A NORMAL WEEK. Teams with their seeding settled rest
   // starters, so the biggest movers that week are rest days wearing the shape
@@ -3140,9 +3198,14 @@ function renderUsageBoard(host) {
       + `moves here are rest days rather than role changes. Read week 17 for the last full-strength picture.</span></div>`;
   }
 
+  if (!byMovement && rows.length) {
+    h += `<div class="season-state" style="margin:10px 0 16px;"><span class="season-state-tag">Week 1</span>`
+      + `<span>One game in, so there is nothing to compare against yet. These are levels rather than changes — `
+      + `real numbers with no trend behind them. Movement appears from week two.</span></div>`;
+  }
   if (!rows.length) {
     h += `<div class="medical-card"><div class="medical-detail">`
-      + `No ${muPos} has enough weeks in ${muSeason} to compare against. Nothing is shown rather than a change measured off one game.</div></div>`;
+      + `No ${muPos} has played a recorded snap in ${muSeason} yet. This fills in from the first Sunday.</div></div>`;
     host.innerHTML = h;
     return;
   }

@@ -338,6 +338,22 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   on the missing binding just says "undefined". What identifies it is that the file's FUNCTIONS exist
   while its LETS do not.
 
+## The opening weeks are the hard case
+- SIMULATED AGAINST 2025, the In Season section was nearly EMPTY for the first three weeks — which is
+  when people look hardest. Weekly usage had 0 players in week 1 (a change needs two games); the
+  matchup board had 0 of 32 defences in week 1, 1 by week 2, 11 by week 3 and 27 by week 4.
+- THE FLOORS ARE NOT THE PROBLEM AND WERE NOT LOWERED. A trend off one game is not a trend and a
+  defensive rate off three player-games is noise. The fix is to show what IS valid that early:
+  - Weekly usage falls back to LEVELS, which are complete facts with nothing yet to compare them
+    against, and the qualifier says "LEVELS — NO PRIOR WEEK TO COMPARE".
+  - The matchup board falls back to the previous season, states how many defences failed to qualify,
+    and says to treat it as a prior rather than as this year's defence.
+- Both are verified by BUILDING a week-1 season and looking at the page, because these paths cannot
+  be reached before September. Week 1 of a simulated 2026: usage went 0 -> 40 rows, matchups 0 -> 32.
+- `tests/no-simulated-data.test.js` is what makes that safe. The ros.json guard already existed; it
+  now covers EVERY generated file, plus a second shape of the same mistake — rows for a season the
+  league has not played, checked against the calendar rather than a hardcoded year.
+
 ## Weekly usage — what a player was given
 - `data/weekly-usage.json`, the fifth output of the one pbp download, joined to `snap_counts` on PFR
   id via lib/ids.js rather than by name. Snap counts ship per game; `offense_pct` is a FRACTION (1 =
