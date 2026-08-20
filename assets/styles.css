@@ -2690,3 +2690,25 @@ a { color: inherit; text-decoration: none; }
 @media (pointer: coarse), (max-width: 768px) {
   .ask-inline-btn { min-height: 40px; display: inline-flex; align-items: center; }
 }
+
+/* ── Data freshness ────────────────────────────────────────────────────────
+   Hidden on a healthy day. A banner that is always there is one people stop
+   seeing, and the whole value of this one is that its appearance means
+   something. */
+.data-health {
+  display: flex; gap: 12px; align-items: baseline;
+  padding: 11px var(--page-gutter);
+  font-size: 13.5px; line-height: 1.6;
+  border-bottom: 1px solid var(--border);
+}
+.data-health-tag {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1.4px;
+  text-transform: uppercase; flex-shrink: 0;
+}
+.data-health-partial { background: rgba(201,168,76,.08); color: var(--cream); }
+.data-health-partial .data-health-tag { color: var(--gold); }
+.data-health-stale { background: rgba(201,168,76,.14); color: var(--cream); }
+.data-health-stale .data-health-tag { color: var(--gold); }
+.data-health-very-stale { background: rgba(224,90,76,.14); color: var(--text); }
+.data-health-very-stale .data-health-tag { color: #e05a4c; }
+@media (max-width: 768px) { .data-health { font-size: 12.5px; padding: 10px var(--page-gutter); } }

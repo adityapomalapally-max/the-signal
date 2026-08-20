@@ -259,6 +259,22 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   contains `labPos` passes while the default branch says "Who led this board?", because the other
   branches keep the token alive.
 
+## Telling a reader the data is old
+- THE SILENT FAILURE, FROM THE READER'S SIDE. check-season and check-feeds red the RUN when the daily
+  job breaks; a reader looking at a board has no way to know, and in season that is the whole game.
+  The footer already printed "Data updated: 18 Aug" — same grey, same size, whether that was six
+  hours ago or six days. A DATE IS NOT AN AGE: it asks the reader to know today's date and subtract.
+- `dataHealth(meta, now)` in app-core.js returns ok / partial / stale / very-stale. Thresholds are 36
+  and 96 hours, sitting ABOVE the daily cadence with room for a late run rather than at it.
+- THE HARD PART IS THE SILENCE. A banner on a healthy morning is noise that trains people to ignore
+  banners, and then it is worth nothing on the morning it matters. The host ships `hidden` with no
+  content, occupies zero height, and is re-hidden when a build recovers — most of the tests are about
+  it staying quiet, including every hour from 0 to 35.
+- A MISSING TIMESTAMP IS NOT FRESH. `{}` or a null `lastUpdate` returns `unknown`, never `ok` — the
+  dangerous default would be silence on the one input that means we cannot tell.
+- A FAILED SOURCE IS REPORTED EVEN ON A RECENT RUN, and it names which. One layer being older than
+  the rest is harder to spot than the whole site being behind, because every other number is current.
+
 ## Record what cannot be rebuilt
 - THE DIVIDING LINE IS RECONSTRUCTIBILITY, NOT IMPORTANCE. Usage, charting, field maps, matchups and
   scheme all come back out of play-by-play whenever they are asked for, so losing them costs a

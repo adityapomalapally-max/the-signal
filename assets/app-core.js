@@ -119,6 +119,7 @@ async function initData() {
         const el = document.getElementById('footerLastUpdate');
         if (el) el.textContent = '· Data updated: ' + new Date(meta.lastUpdate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
       }
+      renderDataHealth(meta);
     }
   } catch (e) {}
 
@@ -127,6 +128,70 @@ async function initData() {
     entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+}
+
+
+/* ── Is the data actually current? ──────────────────────────────────────────
+   THE SILENT FAILURE THIS SITE IS BUILT AROUND. If the daily job breaks on a
+   Tuesday, nothing errors: every build that did run succeeded, every page
+   renders, and every number quietly belongs to last week. The footer already
+   printed "Data updated: 18 Aug" — in the same grey, at the same size, whether
+   that was six hours ago or six days.
+
+   So the reading has to be an AGE, not a date, and it has to be loud only when
+   it should be. A banner on a healthy morning is noise that trains people to
+   ignore banners; the whole value is that its appearance means something.
+
+   The job runs daily at about 11:30 UTC, so a normal age is under a day. The
+   thresholds sit above that with room for a late run rather than at it. */
+
+const STALE_HOURS = 36;      // missed a day
+const VERY_STALE_HOURS = 96; // missed three, and the boards are a week out
+
+function dataHealth(meta, now) {
+  if (!meta || !meta.lastUpdate) {
+    return { level: 'unknown', hours: null, message: 'The site cannot tell when its data was last built.' };
+  }
+  const then = new Date(meta.lastUpdate).getTime();
+  const hours = (((now || Date.now()) - then) / 36e5);
+  const failures = Array.isArray(meta.fetchFailures) ? meta.fetchFailures : [];
+
+  // A failed source is worth saying even when the run itself was recent — it
+  // means one layer is older than the rest, which is harder to spot than a
+  // whole site being behind.
+  if (hours >= VERY_STALE_HOURS) {
+    return { level: 'very-stale', hours, failures,
+      message: `The data on this site has not been rebuilt for ${describeAge(hours)}. Every figure below is that old.` };
+  }
+  if (hours >= STALE_HOURS) {
+    return { level: 'stale', hours, failures,
+      message: `The daily build has not run for ${describeAge(hours)}. Numbers here may be behind.` };
+  }
+  if (failures.length) {
+    return { level: 'partial', hours, failures,
+      message: `The last build completed, but ${failures.length} source${failures.length === 1 ? '' : 's'} `
+        + `failed to fetch: ${failures.map(f => f.source).join(', ')}. Those layers are older than the rest.` };
+  }
+  return { level: 'ok', hours, failures: [] };
+}
+
+function describeAge(hours) {
+  if (hours < 48) return `${Math.round(hours)} hours`;
+  const days = Math.floor(hours / 24);
+  return `${days} days`;
+}
+
+// Rendered above the page content rather than in the footer, because the point
+// is to be seen before the numbers are read, not after.
+function renderDataHealth(meta) {
+  const host = document.getElementById('dataHealth');
+  if (!host) return;
+  const h = dataHealth(meta);
+  if (h.level === 'ok') { host.innerHTML = ''; host.hidden = true; return; }
+  host.hidden = false;
+  host.innerHTML = `<div class="data-health data-health-${h.level}" role="status">`
+    + `<span class="data-health-tag">${h.level === 'partial' ? 'Partial' : 'Stale'}</span>`
+    + `<span>${rankEsc(h.message)}</span></div>`;
 }
 
 // ===== TICKER =====
