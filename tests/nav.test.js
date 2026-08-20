@@ -144,3 +144,24 @@ test('each step of the header ladder sits above what the step below needs', () =
   assert.ok(dropLabel > hideSearch,
     `the search label drops at ${dropLabel}px, at or below where the whole search goes (${hideSearch}px)`);
 });
+
+test('the profile dialog announces which player it is', () => {
+  // aria-modal scopes a screen reader to the dialog, so the page h1 behind it
+  // is not the problem — the dialog's own name is. It carried a fixed
+  // "Player profile", which is the same announcement for all 350 of them.
+  const HTML_ = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+  const overlay = HTML_.match(/<div class="profile-overlay"[^>]*>/);
+  assert.ok(overlay, 'the profile overlay is missing');
+  const tag = overlay[0];
+  assert.match(tag, /role="dialog"/);
+  assert.match(tag, /aria-modal="true"/);
+  const labelledBy = (tag.match(/aria-labelledby="([^"]+)"/) || [])[1];
+  assert.ok(labelledBy, `the dialog has no aria-labelledby: ${tag}`);
+  assert.ok(!/aria-label="/.test(tag),
+    'a static aria-label wins over aria-labelledby and would put the fixed name back');
+  // And the element it points at must be the one the render fills in.
+  assert.ok(HTML_.includes(`id="${labelledBy}"`), `nothing on the page has id="${labelledBy}"`);
+  const profileJs = fs.readFileSync(path.join(__dirname, '..', 'assets', 'app-profile.js'), 'utf8');
+  assert.match(profileJs, new RegExp(`getElementById\\('${labelledBy}'\\)\\.textContent = player\\.name`),
+    `${labelledBy} is not filled with the player's name, so the dialog would announce whatever was there last`);
+});

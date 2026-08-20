@@ -2661,3 +2661,17 @@ a { color: inherit; text-decoration: none; }
   .u-table th, .u-table td { padding-left: 6px; padding-right: 6px; font-size: 11.5px; }
   .u-table td.u-name { max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
 }
+
+/* ── Extracted from repeated inline styles ─────────────────────────────────
+   These were duplicated across the markup, which meant they could not be
+   themed, could not respond to a breakpoint, and could not be found by
+   searching this file. */
+.page-shell { max-width: 1440px; margin: 0 auto; }
+.section-body { padding: 0 var(--page-gutter) 48px; }
+.factor-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+.stat-tile { text-align: center; padding: 24px; }
+.body-sm { font-size: 13px; color: var(--text-secondary); }
+@media (max-width: 768px) {
+  .section-body { padding-bottom: 32px; }
+  .stat-tile { padding: 18px 14px; }
+}

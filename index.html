@@ -361,7 +361,7 @@
         </div>
       </div>
     </div>
-    <div style="padding:0 var(--page-gutter) 48px;">
+    <div class="section-body">
       <div id="rankingsBody"></div>
       <div id="rankingsCaveat" class="rank-note"></div>
     </div>
@@ -383,7 +383,7 @@
       <div id="teamsTabs"></div>
       <div id="teamPicker" class="team-picker"></div>
     </div>
-    <div style="padding:0 var(--page-gutter) 48px;">
+    <div class="section-body">
       <div id="teamBody"></div>
     </div>
   </div>
@@ -429,7 +429,7 @@
         </div>
       </div>
     </div>
-    <div style="padding:0 var(--page-gutter) 48px;">
+    <div class="section-body">
       <div class="lab-metric-row" id="labMetricRow"></div>
       <div id="labBoard"></div>
       <div id="labScatter"></div>
@@ -441,7 +441,7 @@
 <!-- ======= PLAYERS PAGE ======== -->
 <!-- ============================= -->
 <div class="page-section" id="page-players">
-  <div style="max-width:1440px;margin:0 auto;">
+  <div class="page-shell">
     <div class="players-header">
       <h1>Player Database</h1>
       <p>Every player in the pool, with medical history, performance metrics and sourced analysis. Select a player for the full profile.</p>
@@ -481,7 +481,7 @@
 <!-- ======= MEDICALS PAGE ======= -->
 <!-- ============================= -->
 <div class="page-section" id="page-medicals">
-  <div style="max-width:1440px;margin:0 auto;">
+  <div class="page-shell">
     <div class="players-header">
       <h1>Medical Intelligence</h1>
       <p>Who is hurt today, what the injury usually costs, and every sourced medical history on file. Return rates come from published research and are labelled with what they actually measure — a designation is what a team has declared, never a prediction.</p>
@@ -559,7 +559,7 @@
 <!-- ============================= -->
 
 <div class="page-section" id="page-fantasy">
-  <div style="max-width:1440px;margin:0 auto;">
+  <div class="page-shell">
     <div class="players-header">
       <h1>Fantasy Football</h1>
       <p>Draft and in-season tools built on the same data as the rest of the site. The Value Board compares these rankings against consensus ADP; Sleeper Analytics is a separate application for league management.</p>
@@ -609,7 +609,7 @@
 
 <!-- ===== DRAFT LAB ===== -->
 <div class="page-section" id="page-draft">
-  <div style="max-width:1440px;margin:0 auto;">
+  <div class="page-shell">
     <div class="players-header">
       <h1>Draft Lab</h1>
       <p>Prospect evaluation and film. The model scores prospects on production over expected, adjusted for context; the breakdowns work from the tape. Out-of-sample validation across draft classes is still outstanding, so this page reports what the model does, not how often it is right.</p>
@@ -630,19 +630,19 @@
 
     <!-- Model overview stats -->
     <div class="draft-stats">
-      <div class="medical-card" style="text-align:center;padding:24px;">
+      <div class="medical-card stat-tile">
         <div style="font-family:var(--serif);font-size:36px;font-weight:700;color:var(--text-muted);">Pending</div>
         <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:6px;">Out-of-sample accuracy</div>
       </div>
-      <div class="medical-card" style="text-align:center;padding:24px;">
+      <div class="medical-card stat-tile">
         <div style="font-family:var(--serif);font-size:36px;font-weight:700;color:var(--teal);">2023</div>
         <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:6px;">Only class checked so far</div>
       </div>
-      <div class="medical-card" style="text-align:center;padding:24px;">
+      <div class="medical-card stat-tile">
         <div style="font-family:var(--serif);font-size:36px;font-weight:700;color:var(--text);">50%+</div>
         <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:6px;">POE Model Weight (WR)</div>
       </div>
-      <div class="medical-card" style="text-align:center;padding:24px;">
+      <div class="medical-card stat-tile">
         <div style="font-family:var(--serif);font-size:36px;font-weight:700;color:var(--text);">2018–23</div>
         <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:6px;">Training Data Range</div>
       </div>
@@ -667,20 +667,20 @@
         <h3 style="font-family:var(--serif);font-size:20px;font-weight:600;margin-bottom:16px;color:var(--gold);">What POE Adjusts For</h3>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px;">
           <div class="medical-card" style="padding:16px;">
-            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Conference Strength</div>
-            <div style="font-size:13px;color:var(--text-secondary);">SEC production weighted differently than Group of 5</div>
+            <div class="factor-name">Conference Strength</div>
+            <div class="body-sm">SEC production weighted differently than Group of 5</div>
           </div>
           <div class="medical-card" style="padding:16px;">
-            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">O-Line Quality</div>
-            <div style="font-size:13px;color:var(--text-secondary);">RB rushing yards adjusted for blocking grades</div>
+            <div class="factor-name">O-Line Quality</div>
+            <div class="body-sm">RB rushing yards adjusted for blocking grades</div>
           </div>
           <div class="medical-card" style="padding:16px;">
-            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">QB Talent</div>
-            <div style="font-size:13px;color:var(--text-secondary);">WR production adjusted for passer quality</div>
+            <div class="factor-name">QB Talent</div>
+            <div class="body-sm">WR production adjusted for passer quality</div>
           </div>
           <div class="medical-card" style="padding:16px;">
-            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Surrounding Competition</div>
-            <div style="font-size:13px;color:var(--text-secondary);">Target share context — was he WR1 by default?</div>
+            <div class="factor-name">Surrounding Competition</div>
+            <div class="body-sm">Target share context — was he WR1 by default?</div>
           </div>
         </div>
 
@@ -688,19 +688,19 @@
         <p style="font-size:15px;line-height:1.8;color:var(--text-secondary);margin-bottom:16px;">After the model initially undervalued speed backs like De'Von Achane, the RB evaluation was rebuilt with archetype-specific criteria:</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px;">
           <div class="medical-card" style="padding:16px;border-left:3px solid var(--gold);">
-            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Zone Backs</div>
+            <div class="factor-name">Zone Backs</div>
             <div style="font-size:12px;color:var(--text-secondary);">Vision, patience, one-cut ability. Key metric: yards after contact per attempt</div>
           </div>
           <div class="medical-card" style="padding:16px;border-left:3px solid var(--red);">
-            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Power Backs</div>
+            <div class="factor-name">Power Backs</div>
             <div style="font-size:12px;color:var(--text-secondary);">Contact balance, short-yardage conversion. Key metric: broken tackle rate</div>
           </div>
           <div class="medical-card" style="padding:16px;border-left:3px solid var(--teal);">
-            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Receiving Backs</div>
+            <div class="factor-name">Receiving Backs</div>
             <div style="font-size:12px;color:var(--text-secondary);">Route-running, catch radius. Key metric: yards per route run</div>
           </div>
           <div class="medical-card" style="padding:16px;border-left:3px solid var(--blue);">
-            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Speed Backs</div>
+            <div class="factor-name">Speed Backs</div>
             <div style="font-size:12px;color:var(--text-secondary);">Breakaway rate, acceleration. Key metric: speed build ratio</div>
           </div>
         </div>
@@ -765,7 +765,7 @@
 
 <!-- ===== IN SEASON ===== -->
 <div class="page-section" id="page-season">
-  <div style="max-width:1440px;margin:0 auto;">
+  <div class="page-shell">
     <div class="players-header">
       <h1>In Season</h1>
       <p>What matters once games are being played: which defences actually cost you points, and what is left of the season rather than all of it. Each board states the week it was built from.</p>
@@ -796,13 +796,13 @@
       </div>
     </div>
 
-    <div id="matchupBoard" style="padding:0 var(--page-gutter) 48px;"></div>
+    <div id="matchupBoard" class="section-body"></div>
   </div>
 </div>
 
 <!-- ===== ASK ===== -->
 <div class="page-section" id="page-ask">
-  <div style="max-width:1440px;margin:0 auto;">
+  <div class="page-shell">
     <div class="players-header">
       <h1>Ask The Signal</h1>
       <p>Questions answered from this site's own data — rankings, production, charting, field maps, usage and medical histories. It answers from those rows or it says it cannot; it does not fall back on general football knowledge.</p>
@@ -831,7 +831,7 @@
 
 <!-- ===== ARTICLE PAGE ===== -->
 <div class="page-section" id="page-article">
-  <div style="max-width:1440px;margin:0 auto;">
+  <div class="page-shell">
     <div class="article-page">
       <div class="article-back" onclick="switchPage('home')">← Back to Home</div>
       <div class="article-page-header">
@@ -849,7 +849,7 @@
 </div>
 
 <!-- ===== PLAYER PROFILE MODAL ===== -->
-<div class="profile-overlay" id="profileOverlay" role="dialog" aria-modal="true" aria-label="Player profile" onclick="if(event.target===this)closeProfile()">
+<div class="profile-overlay" id="profileOverlay" role="dialog" aria-modal="true" aria-labelledby="profileName" onclick="if(event.target===this)closeProfile()">
   <div class="profile-modal">
     <div class="profile-modal-header">
       <div class="profile-player-info">
