@@ -2675,3 +2675,18 @@ a { color: inherit; text-decoration: none; }
   .section-body { padding-bottom: 32px; }
   .stat-tile { padding: 18px 14px; }
 }
+
+/* ── Ask, from where you already are ───────────────────────────────────── */
+.profile-header-actions { display: flex; align-items: center; gap: 10px; }
+.ask-inline-row { padding: 0 var(--page-gutter) 20px; margin-top: -8px; }
+.ask-inline-btn {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .8px;
+  padding: 7px 12px; border-radius: 999px; cursor: pointer;
+  background: transparent; border: 1px solid var(--border-hover); color: var(--text-secondary);
+  white-space: nowrap;
+}
+.ask-inline-btn:hover { border-color: var(--gold); color: var(--gold); }
+.ask-inline-btn::before { content: '↳ '; color: var(--gold); }
+@media (pointer: coarse), (max-width: 768px) {
+  .ask-inline-btn { min-height: 40px; display: inline-flex; align-items: center; }
+}

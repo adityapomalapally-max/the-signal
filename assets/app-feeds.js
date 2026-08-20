@@ -1510,3 +1510,52 @@ function playerSlug(name) {
   const p = playersDB.find(x => x.name === name);
   return p ? p.id : '';
 }
+
+/* ── Asking from where you already are ──────────────────────────────────────
+   The answer engine worked and lived on a page nobody had a reason to visit.
+   A reader looking at a player's field map already has the question; the point
+   of these buttons is that they do not have to leave, retype his name, and
+   describe the board they were just looking at.
+
+   THE QUESTION IS PREFILLED, NOT SENT. It goes into the box for the reader to
+   edit or replace, because a button that fires an unseen question off to a
+   paid API on one click is a button people press by accident. */
+
+function askAbout(kind) {
+  let question = '';
+  if (kind === 'player') {
+    const player = playersDB.find(p => p.id === currentProfileId);
+    if (!player) return;
+    // Whichever tab is open is what they are reading, so it is what they are
+    // most likely to be asking about.
+    const tab = (document.querySelector('.profile-tab[aria-selected="true"]') || {}).dataset;
+    const topic = tab && tab.tab === 'medical' ? 'What does his injury history say, and what is his status now?'
+      : tab && tab.tab === 'fantasy' ? 'What is he projected for, and where does the room have him?'
+      : tab && tab.tab === 'stats' ? 'What did he do last season?'
+      : 'How is he used, and where does he win on the field?';
+    question = `${player.name}: ${topic}`;
+    closeProfile();
+  } else if (kind === 'board') {
+    const metric = (LAB_TABLES[labMode] ? LAB_TABLES[labMode]()[labPos] : null) || [];
+    const m = metric.find(x => x.key === labMetricKey);
+    const label = m ? m.label : 'this board';
+    question = labMode === 'defense'
+      ? `Which defences were best and worst at ${label.toLowerCase()} in ${labSeason}, and what does that actually measure?`
+      : labMode === 'athletic'
+      ? `Who tested best among ${labPos}s on ${label.toLowerCase()}, and how much does that predict?`
+      : `Who led ${labPos}s in ${label.toLowerCase()} in ${labSeason}, and what does that tell me?`;
+  }
+  if (!question) return;
+  navigate('ask');
+  // The page has to exist before the box can be filled.
+  setTimeout(() => {
+    const input = document.getElementById('askInput');
+    if (!input) return;
+    input.value = question;
+    if (typeof askCount === 'function') askCount();
+    input.focus();
+    // Cursor at the end, so editing continues the sentence rather than
+    // overwriting it.
+    input.setSelectionRange(question.length, question.length);
+  }, 60);
+}

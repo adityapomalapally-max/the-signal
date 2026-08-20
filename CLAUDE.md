@@ -243,6 +243,22 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   it could not reach is permanent — adp.json only goes back to 2026-08-16 because that is when
   it was added.
 
+## Asking from where you already are
+- The answer engine worked and lived on a page nobody had a reason to visit. A reader looking at a
+  player's field map already HAS the question; the entry points exist so they do not have to leave,
+  retype his name, and describe the board they were just looking at.
+- THE QUESTION IS PREFILLED, NEVER SENT. Every ask costs money and burns a slot against a
+  five-a-minute free tier, so a button that fires an unseen question on one click is one people press
+  by accident and then press again. The cursor lands at the end so editing continues the sentence.
+- IT FOLLOWS WHAT THE READER IS READING. Four profile tabs, four questions — the medical tab asks
+  about the injury history, the stats tab about last season. A single generic prompt would send the
+  same thing from all four and waste the context the reader had already chosen.
+- A board question names the metric, the position and the season, and the defence and athletic boards
+  get their own phrasing because they carry fewer dimensions — the same reason their routes differ.
+- The test checks EVERY question template, not the function as a whole. Asserting the function
+  contains `labPos` passes while the default branch says "Who led this board?", because the other
+  branches keep the token alive.
+
 ## Record what cannot be rebuilt
 - THE DIVIDING LINE IS RECONSTRUCTIBILITY, NOT IMPORTANCE. Usage, charting, field maps, matchups and
   scheme all come back out of play-by-play whenever they are asked for, so losing them costs a

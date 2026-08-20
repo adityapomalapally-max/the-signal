@@ -432,6 +432,7 @@
     </div>
     <div class="section-body">
       <div class="lab-metric-row" id="labMetricRow"></div>
+      <div class="ask-inline-row"><button class="ask-inline-btn" onclick="askAbout('board')">Ask about this board</button></div>
       <div id="labBoard"></div>
       <div id="labScatter"></div>
     </div>
@@ -860,7 +861,10 @@
           <div class="team-line" id="profileTeamLine">WR · New York Giants · <span>#1</span> · 2nd Year</div>
         </div>
       </div>
-      <button class="profile-close" onclick="closeProfile()" aria-label="Close player profile">✕</button>
+      <div class="profile-header-actions">
+        <button class="ask-inline-btn" id="profileAskBtn" onclick="askAbout('player')">Ask about him</button>
+        <button class="profile-close" onclick="closeProfile()" aria-label="Close player profile">✕</button>
+      </div>
     </div>
     <div class="profile-tabs" role="tablist" aria-label="Player profile sections">
       <button type="button" class="profile-tab active" role="tab" id="ptab-overview" aria-selected="true" aria-controls="profileContent" tabindex="0" data-tab="overview" onclick="switchProfileTab('overview', this)">Overview</button>
