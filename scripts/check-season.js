@@ -63,9 +63,26 @@ async function main() {
       }
     }
 
-    const scheme = has('scheme.json') ? read('scheme.json') : null;
-    if (scheme && !(scheme.meta.seasons || []).map(String).includes(String(latest))) {
-      problems.push(`scheme.json has no ${latest} — personnel and identity are last season's.`);
+    // The layers that state their own seasons in meta. THE IN-SEASON SECTION
+    // EXISTS TO BE USED DURING THE SEASON, which makes a silent rollover there
+    // worse than anywhere else on the site: the page would go on showing last
+    // year's defences under a banner that says "preseason" and look correct.
+    const metaSeasoned = [
+      { file: 'scheme.json', label: 'personnel and identity' },
+      { file: 'charting.json', label: 'first reads and checkdowns' },
+      { file: 'fieldmap.json', label: 'the field maps' },
+      { file: 'matchups.json', label: 'the matchup board' },
+      { file: 'weekly-usage.json', label: 'weekly snap and target share' },
+    ];
+    for (const m of metaSeasoned) {
+      if (!has(m.file)) { problems.push(`${m.file} is missing entirely`); continue; }
+      const j = read(m.file);
+      const years = ((j.meta && j.meta.seasons) || []).map(String);
+      if (!years.includes(String(latest))) {
+        problems.push(
+          `${m.label} (${m.file}) has no ${latest} — the season is under way and this layer still ends at `
+          + `${years[years.length - 1] || 'nothing'}.`);
+      }
     }
   } else {
     notes.push(`not in season yet, so ${target} stat rows are correctly absent`);

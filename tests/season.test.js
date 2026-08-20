@@ -104,4 +104,14 @@ test('THE ALARM RINGS: today\'s data would fail a Week 1 check', async () => {
   assert.strictEqual(failed, true,
     'with the season under way and only 2025 data on disk, the check MUST fail — otherwise it would never fire');
   assert.match(output, /no 2026 rows|stale|ADP/i, 'and it has to say what is stale');
+
+  // EVERY LAYER THE IN-SEASON SECTION READS HAS TO BE NAMED. The section exists
+  // to be used during the season, which makes a silent rollover there the worst
+  // case on the site: the matchup board would go on showing last year's
+  // defences under a banner that says "preseason" and look entirely correct.
+  // A layer missing from this list is a layer that can go stale in silence.
+  for (const layer of ['matchups.json', 'weekly-usage.json', 'fieldmap.json', 'charting.json']) {
+    assert.ok(output.includes(layer),
+      `the alarm did not name ${layer} — it can go a year stale without reddening the run.\n\nGot:\n${output}`);
+  }
 });
