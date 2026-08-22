@@ -26,11 +26,16 @@ const fs = require('fs');
 const path = require('path');
 const { fetchCSV, parseCSV } = require('./lib/match');
 const { writeJSONIfChanged } = require('./lib/write');
+const season = require('./lib/season');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA_DIR, 'teams.json');
-const SEASON = 2026;
-const STATS_SEASON = 2025;        // the most recent completed season
+// Both from lib/season.js. They were hand-typed, which meant the team pages
+// would go on describing the 2026 schedule for as long as it took somebody to
+// remember — and check-season would red the run every morning until they did.
+// An alarm that fires because a constant needs editing is a chore, not a fault.
+let SEASON = null;          // the league year being played or prepared for
+let STATS_SEASON = null;    // the most recent COMPLETED season
 const MIN_TEAMS = 30;
 
 const SCHEDULE_URL = 'https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv';
@@ -40,6 +45,9 @@ const log = (m) => console.log(`[teams] ${m}`);
 const r1 = (n) => (typeof n === 'number' ? Math.round(n * 10) / 10 : null);
 
 async function main() {
+  SEASON = await season.targetSeason();
+  STATS_SEASON = await season.lastCompletedSeason();
+  log(`league is in ${await season.describe()} — schedule for ${SEASON}, production from ${STATS_SEASON}`);
   log('=== Teams Start ===');
 
   const meta = parseCSV(await fetchCSV(TEAMS_URL));

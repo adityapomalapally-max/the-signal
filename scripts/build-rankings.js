@@ -26,6 +26,8 @@
 const fs = require('fs');
 const path = require('path');
 const { normalizeName } = require('./lib/match');
+const { writeJSONIfChanged } = require('./lib/write');
+const season = require('./lib/season');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const SRC = path.join(DATA_DIR, 'projections-2026.json');
@@ -44,7 +46,14 @@ const OUT = path.join(DATA_DIR, 'rankings.json');
 //
 // Seasons are historical and complete, so this is stable between runs — it
 // only moves when a projection or the pool changes.
-const AVAIL_SEASONS = [2023, 2024, 2025];
+// COMPLETED seasons only, and that is not the same window the rest of the site
+// fetches. Availability is games played out of 17, so a season in progress
+// counts every game not yet played as a game missed: in week 3 a perfectly
+// healthy starter reads as 3 of 17, and every floor on the site collapses. The
+// three most recent FINISHED seasons is the only window this number can be
+// read over. Filled from lib/season.js in main() — it used to be the hand-typed
+// [2023, 2024, 2025] that season.js exists to abolish.
+let AVAIL_SEASONS = [];
 const GAMES_PER_SEASON = 17;
 // The projections define their floor as roughly a 15th-percentile outcome,
 // so the league-wide availability floor is read at the same percentile.
@@ -193,7 +202,10 @@ const TAB_SIZE = { overall: 24, qb: 20, rb: 24, wr: 32, te: 16 };
 
 const log = (m) => console.log(`[rankings] ${m}`);
 
-function main() {
+async function main() {
+  const last = await season.lastCompletedSeason();
+  AVAIL_SEASONS = [last - 2, last - 1, last];
+  log(`league is in ${await season.describe()} — availability read over ${AVAIL_SEASONS.join(', ')}`);
   if (!fs.existsSync(SRC)) {
     console.error(`[rankings] ABORT: ${SRC} not found`);
     process.exit(1);
@@ -421,9 +433,12 @@ function main() {
     log(`  overall: DERIVED from manual tabs (${manualPositional.join(', ')}) via slot-inherited VORP`);
   }
 
-  fs.writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n');
-  log(`Wrote ${OUT}`);
+  // Through the helper, because this now runs every morning: the status flags
+  // move a few times a week and the ordering hardly ever, so most days there
+  // is nothing here to write and a rewritten file would be pure commit noise.
+  const wrote = writeJSONIfChanged(OUT, out);
+  log(wrote ? `Wrote ${OUT}` : `${OUT} unchanged`);
   for (const tab of ['overall', 'qb', 'rb', 'wr', 'te']) log(`  ${tab}: ${out[tab].length} rows`);
 }
 
-main();
+main().catch((e) => { console.error(`[rankings] FATAL: ${e.message}`); process.exit(1); });

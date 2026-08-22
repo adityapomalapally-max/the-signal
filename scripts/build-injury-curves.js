@@ -29,12 +29,17 @@
 
 const fs = require('fs');
 const path = require('path');
+const season = require('./lib/season');
 const { fetchCSV, parseCSV } = require('./lib/match');
 const { writeJSONIfChanged } = require('./lib/write');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA_DIR, 'injury-curves.json');
-const SEASONS = [2023, 2024, 2025];
+// COMPLETED seasons, from lib/season.js rather than hand-typed. A season in
+// progress does not belong in a return-to-play curve: an absence that has not
+// ended yet is not a long recovery, it is an unfinished one, and averaging it
+// in reads every current injury as worse than it is.
+let SEASONS = [];
 const SCHEDULE_URL = 'https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv';
 
 // A one-week gap is as often a rest day or a late scratch as an injury, and
@@ -128,6 +133,9 @@ function teamForSeason(weekly, season, opponent) {
 }
 
 async function main() {
+  const last = await season.lastCompletedSeason();
+  SEASONS = [last - 2, last - 1, last];
+  log(`league is in ${await season.describe()} — curves built over ${SEASONS.join(', ')}`);
   log('=== Injury Curves Start ===');
   const players = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'players.json'), 'utf8'));
   const injuries = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'injuries.json'), 'utf8'));

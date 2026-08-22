@@ -119,6 +119,33 @@ async function main() {
     }
   }
 
+  // ---- Does a board carrying a LIVE figure get rebuilt with the run? -----
+  // rankings.json prints a status flag beside each player's missed-time case,
+  // and that flag is computed at build time. The file was not in the daily
+  // Action for most of a year, so the flag was as fresh as the last time
+  // somebody ran the script by hand — four days stale when this was written,
+  // and nothing on the site or in the checks said so. A number that looks live
+  // and is not is worse than an absent one: the data-age banner reads
+  // meta.json, so the site would call itself current while this board
+  // described last week's injuries.
+  if (has('rankings.json')) {
+    const r = read('rankings.json');
+    const builtAt = r.meta && r.meta.builtAt;
+    const ageDays = builtAt ? (Date.now() - Date.parse(builtAt)) / 86400000 : null;
+    if (ageDays === null) {
+      problems.push('rankings.json has no meta.builtAt, so there is no way to tell whether its live status flags are current');
+    } else if (inSeason && ageDays > 3) {
+      problems.push(
+        `rankings.json was built ${Math.floor(ageDays)} days ago and the season is under way. The status flag `
+        + `beside each missed-time case is that old, so the board is describing injuries from a previous week `
+        + `while the rest of the site is current. build-rankings.js should be running in the daily Action.`);
+    } else if (ageDays > 8) {
+      notes.push(`rankings.json is ${Math.floor(ageDays)} days old — fine out of season, but its status flags are that stale`);
+    } else {
+      notes.push(`rankings.json rebuilt ${Math.floor(ageDays)} day(s) ago, so its live status flags are current`);
+    }
+  }
+
   // ---- Is the target season itself stale? --------------------------------
   const teams = has('teams.json') ? read('teams.json') : null;
   if (teams && teams.meta && teams.meta.season && Number(teams.meta.season) !== target) {

@@ -32,6 +32,7 @@ const path = require('path');
 const { fetchCSV, parseCSV, parseCSVLine } = require('./lib/match');
 const { buildWeeklyUsage } = require('./lib/weekly');
 const { poolCrosswalk } = require('./lib/ids');
+const season = require('./lib/season');
 const { buildFieldMap, finishFieldMap, DEPTH_BANDS, GAPS,
         MIN_ATTEMPTS, MIN_TARGETS, MIN_CARRIES, MIN_CELL, MIN_CELL_STRIP } = require('./lib/fieldmap');
 
@@ -44,13 +45,20 @@ const OUT_WEEKLY = path.join(DATA_DIR, 'weekly-usage.json');
 
 // The seasons participation data covers well. 2016-2022 exists but the schema
 // and the league both moved; three seasons is enough to read a trend and short
-// enough that every number on the page is about the current game.
-const HISTORY = [2023, 2024, 2025];
+// enough that every number on the page is about the current game. Which three
+// comes from lib/season.js — it used to be the hand-typed [2023, 2024, 2025]
+// that season.js was written to abolish, and this file was the one it missed.
+const HISTORY_COUNT = 3;
 
-// An NFL season is named for the year it starts, and starts in September.
-function currentSeason(now = new Date()) {
-  return now.getUTCMonth() >= 8 ? now.getUTCFullYear() : now.getUTCFullYear() - 1;
-}
+// THIS FILE HAD ITS OWN CALENDAR AND IT DISAGREED WITH THE SITE'S. It read the
+// season off the month — September or later means this year — while everything
+// else derived it from Sleeper's state feed. The rollover dry run caught the
+// gap: told the league was in 2026 week 1, build-scheme went and fetched 2025,
+// exited 0, and printed "unchanged" five times. Five layers would have stayed
+// on last season under this season's heading, weekly usage among them, which
+// is the one the In Season section reads.
+//
+// A date is a guess about the calendar; the state feed IS the calendar.
 
 // Explosive play, stated so nobody has to guess: 20+ yards passing, 10+ rushing.
 // These are the conventional thresholds; the number moves a lot if you change
@@ -601,8 +609,9 @@ async function main() {
   const explicit = args.includes('--seasons') ? args[args.indexOf('--seasons') + 1].split(',').map(Number) : null;
 
   const existing = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, 'utf8')) : { seasons: {} };
-  const live = currentSeason();
-  const wanted = explicit || (all ? HISTORY : [live]);
+  log(`league is in ${await season.describe()}`);
+  const live = await season.latestDataSeason();
+  const wanted = explicit || (all ? await season.dataSeasons(HISTORY_COUNT) : [live]);
 
   const existingUsage = fs.existsSync(OUT_USAGE) ? JSON.parse(fs.readFileSync(OUT_USAGE, 'utf8')) : { seasons: {} };
   const existingCharting = fs.existsSync(OUT_CHARTING) ? JSON.parse(fs.readFileSync(OUT_CHARTING, 'utf8')) : { seasons: {} };

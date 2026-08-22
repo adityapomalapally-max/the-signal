@@ -61,6 +61,19 @@ jobs:
       - name: Fetch average draft position
         run: node scripts/fetch-adp.js
 
+      # THE BOARD CARRIES A LIVE INJURY FLAG AND WAS NOT BEING REBUILT. It was
+      # run by hand, so the flag beside a player's missed-time case was as fresh
+      # as the last time somebody remembered — four days stale when this was
+      # found, with nothing anywhere to say so. Ordering cannot drift into
+      # Adi's ranks by running it: rankings-manual.json wins outright, and
+      # availability moves the downside, never the rank.
+      #
+      # After update-data (statuses) and fetch-stats (the weekly game logs the
+      # availability figure is computed from), and BEFORE build-ros and
+      # build-history, which both read what it writes.
+      - name: Build rankings
+        run: node scripts/build-rankings.js
+
       # Writes nothing until the season starts, by design: a rest-of-season
       # projection before any football has been played is the season projection
       # under another name.

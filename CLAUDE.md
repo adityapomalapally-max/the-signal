@@ -911,3 +911,34 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - A CSS TEST MUST STRIP COMMENTS FIRST. Every rule here is explained in prose that quotes the
   declaration it explains, so a test that greps the raw file passes on the comment describing a
   rule that has been deleted. That is how the `visibility: hidden` mutant escaped.
+
+## The rollover, rehearsed
+- `node scripts/dry-run-rollover.js` COPIES the repo to a temp dir, tells it the season has
+  flipped, runs the daily Action's steps in the Action's order, and classifies each one: OK (it
+  produced the new season), LOUD (it failed and said so — correct, nflverse has no file for a
+  season that has not started), NET (a socket died; says nothing), QUIET (exit 0 and the file it
+  wrote still describes the old season — the only dangerous outcome). Then it runs check-season
+  and expects RED. An alarm that has never been made to ring is a claim, not a guarantee.
+- It reads the step list OUT of daily-update.yml. A list kept beside the workflow drifts from it,
+  and the drift would be silent in the one tool built to find silence.
+- `SIGNAL_SEASON_STATE='{"season":2026,"week":1,"phase":"regular"}'` drives lib/season.js from
+  outside for a single process. It ABORTS if CI or GITHUB_ACTIONS is set, and announces itself on
+  every read: a file built under a simulated calendar describes a season nobody has played.
+- WHAT THE FIRST RUN FOUND: `build-scheme.js` never migrated to lib/season.js. It read the season
+  off the calendar month, so told the league was in 2026 week 1 it fetched 2025, exited 0, and
+  printed "unchanged" five times — scheme, charting, fieldmap, player-usage and weekly-usage would
+  all have stayed a year behind under this season's heading, and weekly usage is what the In
+  Season section reads. season.js's own docblock listed nine scripts it was written to replace;
+  five had been migrated and nothing said the other four had not.
+- AVAILABILITY IS MEASURED OVER COMPLETED SEASONS, NEVER ONE IN PROGRESS. Games played out of 17
+  means a live season counts every game not yet played as a game missed: in week 3 a healthy
+  starter reads as 3 of 17 and every floor on the site collapses. `lastCompletedSeason()` for
+  build-rankings and build-injury-curves, NOT `dataSeasons()`.
+- `build-rankings.js` RUNS IN THE DAILY ACTION, after update-data and fetch-stats and before
+  build-ros and build-history, which read what it writes. It was run by hand for most of a year
+  while printing a live injury status beside each missed-time case — four days stale when this was
+  found, with no alarm anywhere. check-season now reds the run if its `builtAt` is more than three
+  days old in season, and tests/daily-pipeline.test.js fails if the step is removed or reordered.
+- A test that greps for a symbol NEAR a guard passes when the guard is gutted. Scope the assertion
+  to the branch itself — the CI check in season.js was reduced to a console warning and stayed
+  green, because two unrelated `process.exit(1)` calls sat a few lines below it.

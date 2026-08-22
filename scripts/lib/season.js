@@ -41,9 +41,59 @@ const STATE_URL = 'https://api.sleeper.app/v1/state/nfl';
 
 let cached = null;
 
+/**
+ * DRIVING THE CALENDAR FROM OUTSIDE, for the rollover dry run.
+ *
+ * The rollover is a failure with no symptom — the fetches go on asking for the
+ * season they were told about, every build succeeds, the site renders — so the
+ * only way to find out what the pipeline does on the first Sunday in September
+ * is to tell it that day has come and watch. `__setState` does that inside a
+ * test, but every script here is a separate process, and this is what reaches
+ * them:
+ *
+ *   SIGNAL_SEASON_STATE='{"season":2026,"week":1,"phase":"regular"}' node scripts/...
+ *
+ * IT REFUSES TO RUN IN CI. A simulated calendar that reached the daily Action
+ * would publish a file built for a season the league has not played, which is
+ * the exact thing scripts/../tests/no-simulated-data.test.js exists to catch —
+ * and catching it after the commit is later than refusing it before. It is also
+ * announced on every single read, because a quiet override is a lie about where
+ * a number came from.
+ */
+function fromEnv() {
+  const raw = process.env.SIGNAL_SEASON_STATE;
+  if (!raw) return null;
+  if (process.env.GITHUB_ACTIONS || process.env.CI) {
+    console.error('[season] ABORT: SIGNAL_SEASON_STATE is set in CI. A simulated calendar must never build a file that ships.');
+    process.exit(1);
+  }
+  let s;
+  try {
+    s = JSON.parse(raw);
+  } catch (e) {
+    console.error(`[season] ABORT: SIGNAL_SEASON_STATE is not valid JSON — ${e.message}`);
+    process.exit(1);
+  }
+  if (!s || !s.season) {
+    console.error('[season] ABORT: SIGNAL_SEASON_STATE has no season in it');
+    process.exit(1);
+  }
+  const out = {
+    season: Number(s.season),
+    previousSeason: Number(s.previousSeason || Number(s.season) - 1),
+    week: Number(s.week || 0),
+    phase: normalizePhase(s.phase || s.season_type),
+    source: 'SIMULATED via SIGNAL_SEASON_STATE',
+  };
+  console.error(`[season] *** SIMULATED CALENDAR: ${out.season} ${out.phase} week ${out.week} — nothing built under this may be committed ***`);
+  return out;
+}
+
 /** The NFL calendar, from the feed if it answers and from the date if it does not. */
 async function state() {
   if (cached) return cached;
+  const forced = fromEnv();
+  if (forced) { cached = forced; return cached; }
   try {
     const res = await fetch(STATE_URL);
     if (!res.ok) throw new Error(`state/nfl returned ${res.status}`);
