@@ -45,9 +45,10 @@ const SECTIONS = {
   rankings: { tagline: 'Fantasy Rankings', blurb: 'Half-PPR redraft ranks with the projection range derived, and missed-time risk priced as a second downside.' },
   medicals: { tagline: 'Medical Intelligence', blurb: 'Sourced injury histories, official injury-report records, and research-backed return-to-play curves.' },
   teams:    { tagline: 'Scheme & Identity', blurb: 'Personnel groupings, the box they draw, coverage faced, and how each offence changed year over year.' },
-  lab:      { tagline: 'Leaders', blurb: 'Positional leaderboards from nflverse and Next Gen Stats. Every board states its qualifier.' },
+  lab:      { tagline: 'Stats & Charts', blurb: 'Positional leaderboards from nflverse and Next Gen Stats. Every board states its qualifier.' },
   fantasy:  { tagline: 'Value Board', blurb: 'Our positional ranks against consensus ADP, compared rank to rank so the gaps mean something.' },
   draft:    { tagline: 'Draft Lab', blurb: 'Draft-capital hit rates by round and position — the base rate any prospect model has to beat.' },
+  season:   { tagline: 'In Season', blurb: 'Which defences actually cost you points, weekly usage measured against a player\'s own recent weeks, and the waiver wire.' },
 };
 const W = 1200, H = 630;
 const SITE_HOST = 'the-signal-gamma.vercel.app';

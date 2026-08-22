@@ -2935,7 +2935,6 @@ function setMuSeason(year, el) {
 // forecast, and the difference has to be on the page rather than assumed.
 function seasonStateHtml(meta) {
   const live = meta && meta.latestSeasonWithGames;
-  const inSeason = typeof isInSeason === 'function' ? false : false;
   const rosReady = typeof rosData !== 'undefined' && rosData;
   let h = `<div style="padding:0 var(--page-gutter) 4px;"><div class="season-state">`;
   h += `<span class="season-state-tag">Preseason</span>`;
@@ -3159,8 +3158,13 @@ function renderWireBoard(host) {
     return;
   }
 
-  const arrow = (d) => {
-    if (!d) return '';
+  // A player with no reading yesterday gets the true statement rather than a
+  // percentage: the list is a top fifteen and its membership churns, so being
+  // on it this morning and not yesterday is the fact, and there is no honest
+  // number to put beside it.
+  const arrow = (p) => {
+    const d = p.direction;
+    if (!d) return p.newToday ? `<span class="wire-dir wire-new">new to the list today</span>` : '';
     if (d.move === 'rising') return `<span class="wire-dir wire-up">▲ ${Math.abs(d.pct)}%</span>`;
     if (d.move === 'cooling') return `<span class="wire-dir wire-down">▼ ${Math.abs(d.pct)}%</span>`;
     return `<span class="wire-dir wire-flat">— steady</span>`;
@@ -3186,7 +3190,7 @@ function renderWireBoard(host) {
     return `<div class="wire-row">
       <div class="wire-count"><span class="wire-n">${p.count.toLocaleString()}</span><span class="wire-n-label">adds</span></div>
       <div class="wire-body">
-        <div class="wire-head">${name}${badges}${arrow(p.direction)}</div>
+        <div class="wire-head">${name}${badges}${arrow(p)}</div>
         ${depth}
       </div>
     </div>`;
@@ -3245,11 +3249,19 @@ function renderWireBoard(host) {
   host.innerHTML = h;
 }
 
+// ONE LIST, in the order the toggle's buttons appear, read by the setter here
+// and by the router and the known-route check in app-feeds.js. Two lists drift:
+// the first version of this built the URL from the view name directly, so the
+// default view addressed itself as /season/matchups — a path isKnownRoute does
+// not recognise, which put a `noindex` on the page and gave it the fallback
+// canonical. The first entry is the default and carries no suffix.
+const SEASON_VIEWS = ['matchups', 'usage', 'wire'];
+
 function setSeasonView(view, el) {
-  seasonView = view;
+  seasonView = SEASON_VIEWS.includes(view) ? view : SEASON_VIEWS[0];
   document.querySelectorAll('#seasonViewToggle .pos-btn').forEach(b => b.classList.remove('active'));
   if (el) el.classList.add('active');
-  setRoute(view === 'season' || !view ? 'season' : `season/${view}`);
+  setRoute(seasonView === SEASON_VIEWS[0] ? 'season' : `season/${seasonView}`);
   renderSeasonPage();
 }
 

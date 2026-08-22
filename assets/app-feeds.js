@@ -841,12 +841,10 @@ function handleRoute() {
   // section of its own, because one article does not earn a nav slot.
   if (parts[0] === 'season') {
     switchPage('season');
-    // The toggle's buttons are in the order the views are listed here, so the
-    // index comes from the list rather than from a hand-counted nth-child that
-    // has to be re-counted every time a view is added.
-    const views = ['matchups', 'usage', 'wire'];
-    const idx = Math.max(0, views.indexOf(parts[1]));
-    setSeasonView(views[idx], document.querySelector(`#seasonViewToggle .pos-btn:nth-child(${idx + 1})`));
+    // SEASON_VIEWS is defined in app-pages.js and is the same list the toggle
+    // is built from, so the nth-child index cannot drift from the view names.
+    const idx = Math.max(0, SEASON_VIEWS.indexOf(parts[1]));
+    setSeasonView(SEASON_VIEWS[idx], document.querySelector(`#seasonViewToggle .pos-btn:nth-child(${idx + 1})`));
     return;
   }
   if (parts[0] === 'draft') {
@@ -1094,7 +1092,7 @@ function isKnownRoute(route) {
   if (head === 'article') return !!articlesDB[parts[1]];
   if (head === 'rankings') return !parts[1] || ['overall', 'qb', 'rb', 'wr', 'te'].includes(parts[1]);
   if (head === 'draft') return !parts[1] || parts[1] === 'film';
-  if (head === 'season') return !parts[1] || ['usage', 'wire'].includes(parts[1]);
+  if (head === 'season') return !parts[1] || SEASON_VIEWS.slice(1).includes(parts[1]);
   return ROUTE_PAGES.includes(head);
 }
 

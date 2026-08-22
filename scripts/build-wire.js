@@ -125,12 +125,23 @@ function seriesFor(history, key, name) {
   return out;
 }
 
-function directionOf(series) {
+// THE LIST IS A TOP FIFTEEN AND ITS MEMBERSHIP CHURNS. A player can be on it
+// on Monday, off it on Tuesday and back on Wednesday, so two readings in his
+// series are not necessarily two consecutive mornings — and the board says
+// "this morning against yesterday". Comparing Wednesday with Monday under that
+// sentence is a false statement about a real number, which is worse than
+// having no arrow at all.
+//
+// So a direction needs a reading on BOTH of the last two mornings on file.
+// Anything else is a player who was not on the list yesterday, and the honest
+// thing to say about him is that, not a percentage.
+function directionOf(series, today, yesterday) {
+  if (!today || !yesterday) return null;
   if (series.length < MIN_DAYS_FOR_DIRECTION) return null;
-  const last = series[series.length - 1].count;
-  const prev = series[series.length - 2].count;
-  if (!prev) return null;
-  const pct = Math.round(((last - prev) / prev) * 100);
+  const now = series.find(s => s.date === today);
+  const then = series.find(s => s.date === yesterday);
+  if (!now || !then || !then.count) return null;
+  const pct = Math.round(((now.count - then.count) / then.count) * 100);
   if (Math.abs(pct) < DIRECTION_PCT) return { move: 'steady', pct };
   return { move: pct > 0 ? 'rising' : 'cooling', pct };
 }
@@ -152,6 +163,7 @@ function main() {
 
   const index = depthIndex(league);
   const history = readJSONL(HISTORY).slice(-SERIES_DAYS);
+  const days = history.length;
 
   // The pool, for "we already have a page on him".
   const poolByName = new Map();
@@ -161,6 +173,12 @@ function main() {
     (rankings[tab] || []).forEach((r, i) => rankOf.set(normalizeName(r.name), `${tab.toUpperCase()}${i + 1}`));
   }
 
+  // The last two mornings the file actually has, which is what "yesterday"
+  // means here — not what the calendar says, because a morning the Action did
+  // not run is a morning that does not exist in the series.
+  const today = days ? history[history.length - 1].date : null;
+  const yesterday = days > 1 ? history[history.length - 2].date : null;
+
   const shape = (row) => {
     const team = row.team || null;
     const pooled = team ? poolByName.get(`${team}|${normalizeName(row.name)}`) : null;
@@ -169,7 +187,7 @@ function main() {
       name: row.name,
       team,
       pos: row.position || (pooled && pooled.pos) || null,
-      count: row.count,
+      count: Number(row.count) || 0,
       // A link only when we are certain who he is. No id is guessed.
       id: pooled ? pooled.id : null,
       inPool: Boolean(pooled),
@@ -177,7 +195,12 @@ function main() {
       status: (pooled && pooled.status) || row.injury_status || null,
       depth: team ? depthFor(index, team, row.name) : null,
       series,
-      direction: directionOf(series),
+      direction: directionOf(series, today, yesterday),
+      // He is on the list today and was not yesterday. That is a fact worth
+      // printing, and it is the only true thing available when there is
+      // nothing to compare against.
+      newToday: Boolean(today && series.some(s => s.date === today)
+        && yesterday && !series.some(s => s.date === yesterday)),
     };
   };
 
@@ -206,7 +229,6 @@ function main() {
     }))
     .sort((a, b) => (a.date < b.date ? 1 : -1));
 
-  const days = history.length;
   const out = {
     meta: {
       generated: new Date().toISOString(),

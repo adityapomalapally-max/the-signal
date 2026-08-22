@@ -25,6 +25,15 @@
  * A boundary that has to be remembered is a boundary that will be forgotten, so
  * it is derived here instead, from a feed that already knows.
  *
+ * ALL NINE ARE MIGRATED NOW — and five of them were, for months, while this
+ * block went on describing the problem as though it were solved. The last four
+ * (build-scheme, build-teams, build-rankings, build-injury-curves) were only
+ * found because scripts/dry-run-rollover.js rehearsed the rollover and caught
+ * build-scheme fetching last season while being told it was this one. A list of
+ * things to fix, left in place after some of them are fixed, reads as a list of
+ * things still broken; tests/rollover.test.js is what actually keeps this true
+ * now, and it fails on any daily script holding a year that nothing can move.
+ *
  * THE SOURCE
  * Sleeper's /state/nfl is free, unauthenticated, and already a dependency of the
  * daily Action. It carries season, week, and season_type ("pre" | "regular" |

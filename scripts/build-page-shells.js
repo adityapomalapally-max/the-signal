@@ -60,6 +60,13 @@ const PAGES = {
     title: 'Draft Lab — The Signal',
     description: 'Draft-capital hit rates by round and position — the base rate any prospect model has to beat.',
   },
+  // Added when the waiver wire made this section worth sharing. Without a shell
+  // a link pasted into a group chat carries the house card and the house title,
+  // which is the one thing this file exists to prevent.
+  season: {
+    title: 'In Season — The Signal',
+    description: 'Which defences actually cost you points, measured against each player\'s own average rather than against whoever they happened to face.',
+  },
 };
 
 function replaceTag(html, pattern, replacement, label) {

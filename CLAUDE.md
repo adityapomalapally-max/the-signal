@@ -316,9 +316,13 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   as check-overrides and check-feeds. It fails when the data on disk does not contain the season
   being played. There is a test that drives the calendar to Week 1 with today's data and asserts
   the check GOES RED — an alarm that cannot be made to ring is not an alarm.
-- Still hand-pinned and still needing a decision each year, because they are editorial rather
-  than mechanical: `build-teams.js` SEASON/STATS_SEASON, `build-sos.js` SEASON/DEF_SEASON,
-  `fetch-adp.js` SEASON, `build-draft-outcomes.js` FIRST_CLASS/LAST_CLASS.
+- ALL NINE ARE MIGRATED NOW. build-teams, build-rankings, build-injury-curves and build-scheme were
+  the last four, found by the rollover dry run rather than by reading the code — and this bullet
+  used to list three of them as "still hand-pinned", which is how a list of known gaps quietly
+  becomes a list of things nobody rechecks. The only year still decided by a person is
+  `build-draft-outcomes.js` FIRST_CLASS/LAST_CLASS, which is editorial (a class is only judged once
+  it has three seasons behind it) and is not in the daily Action.
+  `tests/rollover.test.js` now fails on any daily script holding a year nothing can move.
 - IN-SEASON, THREE PRESEASON PRODUCTS START LYING and check-season says so: ADP describes a
   market that has closed, SOS was built off last season's defences, and the projections are
   season-long medians when the useful number has become rest-of-season.

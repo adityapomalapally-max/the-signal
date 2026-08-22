@@ -965,7 +965,6 @@ a { color: inherit; text-decoration: none; }
 .status-healthy { background: var(--green-muted); color: var(--green); }
 .status-quest { background: var(--gold-muted); color: var(--gold); }
 .status-out { background: var(--red-muted); color: var(--red); }
-.status-ir { background: rgba(139,92,246,0.1); color: #8b5cf6; }
 
 /* ===== TOOLS STRIP ===== */
 .tools-strip {
@@ -1028,7 +1027,6 @@ a { color: inherit; text-decoration: none; }
 }
 
 .badge-live { background: var(--green-muted); color: var(--green); }
-.badge-soon { background: var(--gold-muted); color: var(--gold); }
 .badge-new { background: var(--teal-muted); color: var(--teal); }
 
 /* ===== PLAYERS PAGE ===== */
@@ -2556,7 +2554,7 @@ a { color: inherit; text-decoration: none; }
    min-height with flex centring rather than more padding, because padding has
    to be recomputed every time a font size changes and this does not. */
 @media (pointer: coarse), (max-width: 768px) {
-  .team-chip, .lab-metric, .pos-btn, .lab-view-btn {
+  .team-chip, .lab-metric, .pos-btn {
     min-height: 44px;
     display: inline-flex;
     align-items: center;
@@ -2766,7 +2764,7 @@ a { color: inherit; text-decoration: none; }
 
 /* ── Touch targets ──────────────────────────────────────────────────────────
    44px is the floor. The dense data controls were raised to it last pass
-   (.team-chip, .lab-metric, .pos-btn, .lab-view-btn); these are the ones that
+   (.team-chip, .lab-metric, .pos-btn); these are the ones that
    were missed, and the first is the worst of them — the hamburger is the ONLY
    navigation a phone has, and it was a 30×24 target.
 
@@ -2932,15 +2930,22 @@ a.wire-name:hover { color: var(--gold); }
   text-transform: uppercase; color: var(--text-muted);
 }
 .wire-rank { color: var(--gold); }
-.wire-status { color: #e0a34c; }
+/* The colour the status chips already use for a Questionable, because it means
+   the same thing. A second amber invented for this row would drift from that
+   one the first time either was touched. */
+.wire-status { color: var(--gold); }
 /* Beside the badges, not shoved to the far edge. `margin-left: auto` put the
    direction against the right rim of a 1200px window, half a screen from the
    name it belongs to — the eye had to travel the width of the page to pair
    two facts about one player. */
 .wire-dir { font-family: var(--mono); font-size: 10.5px; letter-spacing: .5px; }
-.wire-up { color: var(--teal, #1ba89b); }
-.wire-down { color: #2a78d6; }
-.wire-flat { color: var(--text-muted); }
+/* The up/down pair the weekly usage board already uses. These are not chart
+   marks, so they take the site's existing delta colours rather than a new pair:
+   two different greens for "went up" on two boards is a palette nobody chose.
+   (The fallback in the first version was dead anyway — --teal is defined.) */
+.wire-up { color: #7fbf7f; }
+.wire-down { color: #e08a80; }
+.wire-flat, .wire-new { color: var(--text-muted); }
 .wire-depth { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.6; }
 /* Absence is stated, never filled in with a plausible line. */
 .wire-depth-none { color: var(--text-muted); font-style: italic; }

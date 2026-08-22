@@ -20,8 +20,9 @@
  *             the run rather than leave last season's in place.
  *   NET     — it failed on a socket. Says nothing either way; this run pulls
  *             the same ~200MB from nflverse repeatedly and they do time out.
- *   QUIET   — it exited 0 and the file it wrote still describes the old
- *             season. This is the whole point of the exercise, and it found
+ *   —       — it wrote nothing carrying a season. Not evidence either way.
+ *   QUIET   — it exited 0 and a season-tagged file it wrote still describes
+ *             the old season. This is the whole point of the exercise, and it found
  *             one: build-scheme carried its own calendar, read the season off
  *             the month, fetched 2025 while being told it was 2026, and
  *             printed "unchanged" five times on the way out.
@@ -109,6 +110,7 @@ async function main() {
   console.log(`[dry-run] the league is now: ${target} regular week ${WEEK}\n`);
 
   const results = [];
+  let prev = before;
   for (const step of workflowSteps()) {
     const file = path.join(sandbox, 'scripts', `${step.script}.js`);
     if (!fs.existsSync(file)) continue;
@@ -126,7 +128,16 @@ async function main() {
       code = e.status === undefined ? 1 : e.status;
       out = `${e.stdout || ''}${e.stderr || ''}`;
     }
-    results.push({ ...step, code, out, secs: Math.round((Date.now() - started) / 1000) });
+    // SNAPSHOT AFTER EVERY STEP, not once at the end. The first version of this
+    // compared each step against the state after ALL of them, so every step
+    // that exited 0 was credited with every file any step had written — which
+    // meant the verdict column, the entire point of the tool, was the same
+    // answer copied down the page.
+    const stepAfter = snapshotSeasons(dataDir);
+    const changed = Object.keys(stepAfter).filter(
+      f => JSON.stringify(stepAfter[f]) !== JSON.stringify(prev[f] || []));
+    results.push({ ...step, code, out, changed, prev, stepAfter, secs: Math.round((Date.now() - started) / 1000) });
+    prev = stepAfter;
     console.log(`  ${code === 0 ? '·' : '✗'} ${step.script} (${Math.round((Date.now() - started) / 1000)}s)${code ? ` exit ${code}` : ''}`);
   }
 
@@ -134,25 +145,60 @@ async function main() {
   const after = snapshotSeasons(dataDir);
   const y = String(target);
   const rows = [];
+  const failedBefore = [];
   for (const r of results) {
-    const touched = Object.keys(after).filter(f => JSON.stringify(after[f]) !== JSON.stringify(before[f] || []));
-    let verdict;
-    // A download that timed out says nothing about the rollover, and reading it
-    // as a finding is how a flaky afternoon turns into a bug report. This run
-    // pulls ~200MB from nflverse several times over, so it happens.
-    const networky = /ETIMEDOUT|ECONNRESET|ENOTFOUND|EAI_AGAIN|socket hang up|network|fetch failed/i.test(r.out || '');
+    let verdict, note = '';
+    // A socket that died says nothing about the rollover, and reading it as a
+    // finding is how a flaky afternoon turns into a bug report. This run pulls
+    // ~200MB from nflverse several times over, so it happens.
+    //
+    // A 404 IS NOT A NETWORK ERROR, it is the answer. The first version of this
+    // matched the words "fetch failed", which is how fetch-stats phrases a
+    // clean 404 — so the single most important LOUD in the run was being filed
+    // under "ignore, the wifi wobbled".
+    const out = r.out || '';
+    const socketErr = /ETIMEDOUT|ECONNRESET|ENOTFOUND|EAI_AGAIN|socket hang up/i.test(out);
+    const httpStatus = /HTTP \d{3}|status \d{3}|\b40\d\b|\b50\d\b/.test(out);
+    const networky = socketErr && !httpStatus;
     if (r.code !== 0 && networky) verdict = 'NET';
     else if (r.code !== 0) verdict = 'LOUD';
     else {
-      // Did anything this run wrote come to include the new season?
-      const gained = touched.some(f => after[f].includes(y) && !(before[f] || []).includes(y));
-      verdict = gained ? 'OK' : 'QUIET';
+      const gained = r.changed.filter(f => r.stepAfter[f].includes(y) && !(r.prev[f] || []).includes(y));
+      // A file with no season markers at all is not evidence either way —
+      // sitemap.xml, playcallers and the checks legitimately write none.
+      const seasonTagged = r.changed.filter(f => r.stepAfter[f].length);
+      if (gained.length) { verdict = 'OK'; note = gained.join(', '); }
+      else if (seasonTagged.length) {
+        verdict = 'QUIET';
+        note = `wrote ${seasonTagged.join(', ')} without ${y} in it`;
+        // THE REAL ACTION STOPS AT THE FIRST FAILED STEP; this does not, so it
+        // can see everything. That means a step downstream of a failed fetch
+        // is being judged on inputs it would never have had — build-matchups
+        // reads the weekly shards fetch-stats did not get. Say so rather than
+        // reporting it as a finding.
+        if (failedBefore.length) note += ` — but it ran after ${failedBefore.join(', ')} failed, so its inputs are missing rather than stale`;
+      }
+      else { verdict = '—'; note = r.changed.length ? `wrote ${r.changed.length} file(s) carrying no season` : 'wrote nothing'; }
     }
-    rows.push({ script: r.script, code: r.code, verdict, secs: r.secs, tail: (r.out || '').trim().split('\n').slice(-3).join(' | ').slice(0, 180) });
+    rows.push({ script: r.script, code: r.code, verdict, note, secs: r.secs,
+                downstream: verdict === 'QUIET' && failedBefore.length > 0,
+                tail: (r.out || '').trim().split('\n').slice(-2).join(' | ').slice(0, 120) });
+    if (r.code !== 0) failedBefore.push(r.script);
   }
 
   console.log(`\n${'='.repeat(78)}\nSTEP OUTCOMES`);
-  for (const r of rows) console.log(`  ${r.verdict.padEnd(6)} ${r.script.padEnd(24)} ${r.code ? 'exit ' + r.code : ''}  ${r.tail}`);
+  for (const r of rows) {
+    console.log(`  ${r.verdict.padEnd(6)} ${r.script.padEnd(24)} ${r.code ? 'exit ' + r.code : ''}  ${r.note || r.tail}`);
+  }
+  const quiet = rows.filter(r => r.verdict === 'QUIET' && !r.downstream);
+  const downstream = rows.filter(r => r.verdict === 'QUIET' && r.downstream);
+  console.log(quiet.length
+    ? `\n  ${quiet.length} step(s) exited 0 having written a season-tagged file with no ${y} in it: ${quiet.map(r => r.script).join(', ')}`
+    : `\n  No step exited 0 while leaving a season-tagged file on the old season.`);
+  if (downstream.length) {
+    console.log(`  (${downstream.map(r => r.script).join(', ')} also wrote one, but ran after a failed step — in the real`);
+    console.log(`   Action the job stops at that failure, so they would never have run at all.)`);
+  }
 
   console.log(`\n${'='.repeat(78)}\nWHICH LAYERS NOW CONTAIN ${y}`);
   for (const f of Object.keys(after).sort()) {
