@@ -697,6 +697,27 @@ function toggleMobileNav() {
   document.body.style.overflow = document.getElementById('mobileNavDrawer').classList.contains('open') ? 'hidden' : '';
 }
 
+// The phone had no search at all. `.nav-search` is display:none under 768px and
+// the drawer never carried a replacement, so the only route to a player was to
+// reach the Players page first and use the box on it — two steps for the thing
+// people open this site to do.
+//
+// IT IS A REAL INPUT, NOT A SHORTCUT THAT FOCUSES THE OTHER ONE. The desktop
+// affordance works by switching page and calling focus() behind a timeout; iOS
+// only raises the keyboard for a focus that happens inside the tap itself, so
+// on the device this is for, that pattern lands on a search box with no
+// keyboard in front of it. Typing happens here, and the query is handed to the
+// same filter the page uses — never a second implementation of the search.
+function mobileNavSearch(q) {
+  const query = (q || '').trim();
+  switchPage('players');
+  const box = document.getElementById('playerSearchGlobal');
+  if (box) box.value = query;
+  filterPlayers(query);
+  const drawer = document.getElementById('mobileNavDrawer');
+  if (drawer && drawer.classList.contains('open')) toggleMobileNav();
+}
+
 // ===== ROUTING =====
 // The address is a PATH, not a fragment.
 //

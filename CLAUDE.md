@@ -873,3 +873,41 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - The figure is a plain dummy, not an anatomical drawing: regions have to be big enough to hit
   with a thumb, and every region is a real `<button>` layered over an `aria-hidden` SVG, because
   a drawing full of `<path onmouseover>` is unreachable by keyboard.
+
+## The phone
+- MEASURE AT 390px BEFORE AND AFTER, in a browser, and put the numbers in the commit. Every
+  finding in this section came from a measurement and none of them from reading the CSS.
+- The phone-wide overrides live in ONE block at the END of `styles.css`, not scattered. At equal
+  specificity the later rule wins, and this file has a history of a mobile fix being silently
+  beaten by a later block re-setting the same property. Component-local mobile rules stay with
+  their component; anything cross-cutting goes in the block at the bottom.
+- BUT ORDER ONLY BREAKS TIES. The first version of the 16px form-control rule was
+  `input, select, textarea` and it changed nothing at all, because `.players-search-input` beats a
+  bare element selector on specificity from anywhere in the file. The rule names the classes, and
+  a test asserts it names every control the markup actually uses.
+- A FORM CONTROL UNDER 16px ZOOMS iOS ON FOCUS and does not zoom back out. Every field here was
+  under it. Fix the font size — never `maximum-scale`, which takes pinch-zoom from the people who
+  need it most.
+- A FLEX ROW OF PILLS MUST WRAP. `.position-filter` could not, so the Stats & Charts mode switch
+  set the page width to 537px against a 390px viewport and scrolled the whole DOCUMENT sideways.
+  Wrapping is free on a desktop, where the row never reaches it.
+- WHEN A TABLE IS TOO WIDE, PIN ITS FIRST COLUMN — do not drop a column until it fits. The field
+  map settled this once; the players table (540px in a 385px box) and the scheme table (475 in
+  307) now do the same. Dropping a column makes the phone reader the only one who cannot see it.
+  A sticky cell must repaint its own background or the scrolled columns show through it, and the
+  head and the body do not share one — the body sits on `--bg`, the header on `--bg-elevated`.
+- 44px IS THE FLOOR FOR ANYTHING A THUMB HAS TO HIT, under `(pointer: coarse), (max-width: 768px)`.
+  The hamburger was 30×24 — the only navigation a phone has.
+- AN OFF-CANVAS DRAWER IS STILL IN THE TAB ORDER. Parked at `right:-300px` it kept fourteen
+  controls focusable on a desktop that has no way to open it. `visibility: hidden` when closed.
+  Switch visibility with a DELAY (`visibility 0s linear .3s` closing, `0s` opening) rather than
+  transitioning it: discrete interpolation flips at a different moment in different engines, and
+  in a throttled frame it never flips at all.
+- THE PHONE HAD NO SEARCH. `.nav-search` is `display:none` under 768px and nothing replaced it, so
+  the only way to a player was the Players page's own box. The drawer carries a REAL input now —
+  iOS raises the keyboard only for a focus that happens inside the tap itself, so the desktop
+  trick of switching page and calling `focus()` behind a timeout lands on a box with no keyboard.
+  It hands the query to `filterPlayers`; there is still exactly one search on this site.
+- A CSS TEST MUST STRIP COMMENTS FIRST. Every rule here is explained in prose that quotes the
+  declaration it explains, so a test that greps the raw file passes on the comment describing a
+  rule that has been deleted. That is how the `visibility: hidden` mutant escaped.

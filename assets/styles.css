@@ -1074,7 +1074,11 @@ a { color: inherit; text-decoration: none; }
 .players-search-input:focus { border-color: var(--gold); }
 .players-search-input::placeholder { color: var(--text-muted); }
 
-.position-filter { display: flex; gap: 4px; }
+/* WRAPS. The mode switch on Stats & Charts is four long pills in this
+   container — 517px against a 390px viewport — and a flex row that cannot wrap
+   sets the page width, which scrolls the whole DOCUMENT sideways. It never
+   reaches the wrap on a desktop, so this costs the wide layout nothing. */
+.position-filter { display: flex; gap: 4px; flex-wrap: wrap; }
 
 .pos-btn {
   padding: 8px 16px;
@@ -1600,11 +1604,23 @@ a { color: inherit; text-decoration: none; }
   background: var(--bg-elevated);
   border-left: 1px solid var(--border);
   z-index: 200;
-  transition: right 0.3s ease;
+  /* Visibility is switched with a DELAY rather than transitioned: instant on
+     the way in (0s), held until the slide has finished on the way out (0.3s).
+     Transitioning it instead leaves the flip to discrete-interpolation timing,
+     which is a different moment in different engines and, in a throttled
+     frame, never arrives at all. */
+  transition: right 0.3s ease, visibility 0s linear 0.3s;
   overflow-y: auto;
+  /* A CLOSED DRAWER IS NOT JUST OFF SCREEN, IT IS GONE. Parked at right:-300px
+     it stayed visible to the keyboard and to a screen reader: fourteen
+     controls a desktop reader could tab into and never see, in a drawer that
+     desktop has no way to open. visibility:hidden takes it out of the tab
+     order and out of the accessibility tree, and transitions discretely — it
+     applies at the END of the slide out, so the animation is unaffected. */
+  visibility: hidden;
 }
 
-.mobile-nav-drawer.open { right: 0; }
+.mobile-nav-drawer.open { right: 0; visibility: visible; transition: right 0.3s ease, visibility 0s; }
 
 .mobile-nav-link {
   display: block;
@@ -2712,3 +2728,154 @@ a { color: inherit; text-decoration: none; }
 .data-health-very-stale { background: rgba(224,90,76,.14); color: var(--text); }
 .data-health-very-stale .data-health-tag { color: #e05a4c; }
 @media (max-width: 768px) { .data-health { font-size: 12.5px; padding: 10px var(--page-gutter); } }
+
+/* ═══ THE PHONE ═════════════════════════════════════════════════════════════
+   This block is LAST IN THE FILE ON PURPOSE. Every rule in it is a phone
+   override of something defined earlier, and at equal specificity the later
+   rule wins — the mobile padding fix for the players table was written once,
+   sat above a later 768px block that re-set the same property, and silently
+   never applied while the comment beside it said it had. Anything phone-only
+   and cross-cutting goes here, at the bottom, where nothing can quietly beat
+   it. Component-local mobile rules stay with their component.
+
+   Nothing in here is reachable from a desktop layout: every rule is inside a
+   width or pointer query, so the wide view is untouched by construction. */
+
+/* ── A form control under 16px zooms iOS on focus ───────────────────────────
+   Mobile Safari zooms the viewport when a text field smaller than 16px takes
+   focus, and it does NOT zoom back out when the field is blurred. Every input
+   on this site was under it — the player search at 14px, the Ask box at 15,
+   the filter selects at 11 — so tapping search left the reader magnified and
+   scrolled sideways on a site that otherwise never scrolls sideways, with no
+   control that undoes it. The fix is the font size and nothing else; a
+   maximum-scale viewport tag would "fix" it by taking pinch-zoom away from
+   everyone, including the readers who need it to read at all.
+
+   THE SELECTORS ARE THE CLASSES, NOT `input`. A bare element selector loses to
+   `.players-search-input` on specificity no matter how late it sits in the
+   file, so the first version of this rule computed to 14px and changed
+   nothing. Every control on the site is one of these three classes; a fourth
+   one added later is caught by the test rather than by a reader's zoom. */
+@media (max-width: 768px) {
+  .players-search-input, .filter-select, .ask-input,
+  .mobile-nav-search input { font-size: 16px; }
+  /* The select's text is 5px bigger, so it gives back some padding to stay
+     the same size on screen. */
+  .filter-select { padding: 8px 26px 8px 9px; }
+}
+
+/* ── Touch targets ──────────────────────────────────────────────────────────
+   44px is the floor. The dense data controls were raised to it last pass
+   (.team-chip, .lab-metric, .pos-btn, .lab-view-btn); these are the ones that
+   were missed, and the first is the worst of them — the hamburger is the ONLY
+   navigation a phone has, and it was a 30×24 target.
+
+   min-height with flex centring rather than more padding, for the same reason
+   as before: padding has to be recomputed every time a font size changes. */
+@media (pointer: coarse), (max-width: 768px) {
+  .hamburger {
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    /* The bars centre inside a box 14px wider than they were, so the icon
+       would drift left of the gutter it used to sit in. This puts it back. */
+    margin-right: -7px;
+  }
+  .filter-select { min-height: 44px; }
+  .profile-close { width: 44px; height: 44px; }
+  .social-link { width: 44px; height: 44px; }
+  .ask-send { min-height: 44px; }
+  .ask-ex, .profile-jump {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  /* A column of link text at 29px line boxes is a column of mis-taps: the
+     rows are closer together than a fingertip is wide, so the wrong one is
+     the likely outcome rather than the unlucky one. */
+  .footer-col a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
+
+/* ── A wide table needs an anchor, not a smaller table ──────────────────────
+   The field map settled this once: when a table is wider than a phone, the
+   name column STICKS and the data scrolls under it, because scrolling right
+   past an unlabelled row makes every number on it unattributable. The same
+   tables that are too wide elsewhere had no anchor at all.
+
+   Measured at 390px: the players table is 540px in a 385px box, and the
+   scheme table 475 in 307. Both now hold their first column.
+
+   This is deliberately NOT "drop a column until it fits". The alternative on
+   the table was dropping Pos, and a phone reader would then be the only one
+   who cannot see it. Sticking the name costs nothing and hides nothing. */
+@media (max-width: 768px) {
+  .players-table th:first-child,
+  .players-table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    box-shadow: 1px 0 0 var(--border);
+  }
+  /* A sticky cell that does not repaint its own background lets the scrolled
+     columns show through it — and the two rows do not share one. The body
+     sits directly on the page; the header carries its own raised surface, and
+     giving it the page colour left a dark notch at the head of the column. */
+  .players-table td:first-child { background: var(--bg); }
+  .players-table thead th:first-child { background: var(--bg-elevated); z-index: 3; }
+  .players-table tbody tr:hover td:first-child { background: var(--bg-card); }
+
+  .scheme-table th:first-child,
+  .scheme-table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: var(--bg-card);
+    box-shadow: 1px 0 0 var(--border);
+    /* The personnel gloss ("11 — 1 back, 1 TE, 3 WR") runs to 145px on one
+       line and would take half the screen with it. It wraps instead: the
+       label is the thing that has to survive, not its shape. */
+    white-space: normal;
+    max-width: 118px;
+  }
+  .scheme-table thead th:first-child { z-index: 3; }
+}
+
+/* ── The drawer's search ────────────────────────────────────────────────────
+   It sits above the section list because it is the more common intent: people
+   come here for a player far more often than for a board. The input is 16px
+   like every other field on a phone, for the zoom reason above. */
+.mobile-nav-search {
+  display: flex;
+  gap: 8px;
+  padding: 16px 28px 4px;
+}
+.mobile-nav-search input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 16px;
+}
+.mobile-nav-search input:focus { outline: none; border-color: var(--gold); }
+.mobile-nav-search input::placeholder { color: var(--text-muted); }
+.mobile-nav-search button {
+  min-width: 44px;
+  min-height: 44px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 16px;
+  cursor: pointer;
+}
+.mobile-nav-search button:hover { border-color: var(--gold); color: var(--gold); }

@@ -120,6 +120,12 @@
       <span class="logo-signal">Sign<em>al</em></span>
     </a>
   </div>
+  <!-- The phone's search. The desktop bar's version is hidden under 768px, so
+       without this a phone has no way into a player but the Players page. -->
+  <form class="mobile-nav-search" role="search" onsubmit="event.preventDefault();mobileNavSearch(this.q.value);">
+    <input type="search" name="q" enterkeyhint="search" aria-label="Search players" placeholder="Search players...">
+    <button type="submit" aria-label="Search">&rarr;</button>
+  </form>
   <div style="padding:12px 0;">
     <a class="mobile-nav-link" data-page="home" href="/" onclick="event.preventDefault();switchPage('home');toggleMobileNav();">Home</a>
     <a class="mobile-nav-link" data-page="teams" href="/teams" onclick="event.preventDefault();switchPage('teams');toggleMobileNav();">Teams</a>
