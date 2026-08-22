@@ -99,6 +99,23 @@ function depthChangesFor(depth, priorState, pool, inPool, date) {
 
 function main() {
   const dry = process.argv.includes('--dry');
+  // EVENTS ONLY, for the in-season status refreshes.
+  //
+  // The two halves of this file behave differently and the cadence made the
+  // difference matter. ADP, ranks and trending are SERIES: one reading a day,
+  // and they have to be sampled at the same hour or every delta computed over
+  // them afterwards carries a time-of-day wobble. Status and depth are EVENT
+  // LOGS: they record that something changed, and the honest time to write one
+  // is when it changed.
+  //
+  // The light refresh syncs statuses four more times a week than the full build
+  // runs. Skipping this file entirely on those runs left the log describing a
+  // pool it no longer matched — the replay said Healthy while players.json said
+  // Questionable (Hand) — and that is not cosmetic: the log IS the state this
+  // script diffs against, so every future change would have been computed from
+  // a position that never existed. tests/history.test.js caught it within
+  // minutes of the cadence being wired up.
+  const eventsOnly = process.argv.includes('--events-only');
   const date = new Date().toISOString().slice(0, 10);
 
   const pool = read('players.json');
@@ -132,8 +149,10 @@ function main() {
   if (adp.meta && adp.meta.historical) {
     report.push(`adp        frozen ${String(adp.meta.closedAt).slice(0, 10)} — the market closed, so the series does too`);
   } else {
-    const adpCount = upsertDay('adp.jsonl', date, { date, source: adp.meta.source, values: adpValues }, dry);
-    report.push(`adp        ${adpMatched}/${adp.players.length} players → ${adpCount} days on file`);
+    const adpCount = upsertDay('adp.jsonl', date, { date, source: adp.meta.source, values: adpValues }, dry || eventsOnly);
+    report.push(eventsOnly
+      ? 'adp        skipped — a series is sampled once a day, by the full build'
+      : `adp        ${adpMatched}/${adp.players.length} players → ${adpCount} days on file`);
   }
 
   // ---- Ranks and projections ---------------------------------------------
@@ -156,8 +175,10 @@ function main() {
     throw new Error(`Rankings join collapsed: ${rankMatched}/${rankTotal} matched (${(rankRate * 100).toFixed(0)}%).`);
   }
   const rankCount = upsertDay('rankings.jsonl', date,
-    { date, format: ranks.meta.format, fields: ['rank', 'median', 'floor', 'ceiling'], values: rankValues }, dry);
-  report.push(`rankings   ${rankMatched}/${rankTotal} players → ${rankCount} days on file`);
+    { date, format: ranks.meta.format, fields: ['rank', 'median', 'floor', 'ceiling'], values: rankValues }, dry || eventsOnly);
+  report.push(eventsOnly
+    ? 'rankings   skipped — a series is sampled once a day, by the full build'
+    : `rankings   ${rankMatched}/${rankTotal} players → ${rankCount} days on file`);
 
   // ---- Status changes -----------------------------------------------------
   // Replayed from the log rather than kept in a side file: one artefact to keep
@@ -235,11 +256,13 @@ function main() {
       source: 'sleeper trending, 24h window',
       adds: trendAdds,
       drops: trendDrops,
-    }, dry);
+    }, dry || eventsOnly);
   }
   const trendInPool = trendAdds.filter(a => a.id).length + trendDrops.filter(d => d.id).length;
-  report.push(`trending   ${trendAdds.length} adds, ${trendDrops.length} drops `
-    + `(${trendInPool} in the pool) → ${trendCount} days on file`);
+  report.push(eventsOnly
+    ? 'trending   skipped — a series is sampled once a day, by the full build'
+    : `trending   ${trendAdds.length} adds, ${trendDrops.length} drops `
+      + `(${trendInPool} in the pool) → ${trendCount} days on file`);
 
   // ---- Depth chart position ----------------------------------------------
   // nflverse publishes the CURRENT depth chart and no history of it, so a

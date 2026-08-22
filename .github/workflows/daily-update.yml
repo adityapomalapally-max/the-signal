@@ -2,10 +2,38 @@ name: Daily Data Update
 
 on:
   schedule:
-    # Run daily at 11:00 UTC (6:00 AM ET / 5:00 AM CT)
+    # THE FULL BUILD, and the only one that touches nflverse. 11:00 UTC is
+    # 6:00 AM ET, which measured against nflverse's own publishing schedule is
+    # the right hour: they rebuild play-by-play after Thursday night (05:30 UTC
+    # Fri), the early window (22:00 UTC Sun), the late window (00:05 UTC Mon),
+    # SNF (05:30 UTC Mon) and MNF (05:30 UTC Tue) — all overnight, so this run
+    # has the weekend by Monday morning and Monday night's game by Tuesday.
     - cron: '0 11 * * *'
+
+    # LIGHT REFRESHES — Sleeper statuses, trending, news, and the boards built
+    # from them. Seconds, no CSVs, and scripts/lib/cadence.js turns every one of
+    # them into a no-op out of season, so there is no month range here to be
+    # remembered and updated every year.
+    #
+    # Sunday 16:30 UTC = 12:30 ET. Inactives are official ninety minutes before
+    # kickoff, so this is the first build of the week that knows who is playing.
+    - cron: '30 16 * * 0'
+    # Sunday 22:30 UTC = 18:30 ET. What the early window did to people, before
+    # the late games and Sunday night.
+    - cron: '30 22 * * 0'
+    # Tuesday 23:00 UTC = 19:00 ET. Claims go in on Tuesday night and process on
+    # Wednesday morning, so this is when the wire is actually read.
+    - cron: '0 23 * * 2'
+    # Thursday 23:00 UTC = 19:00 ET. TNF inactives, an hour before kickoff.
+    - cron: '0 23 * * 4'
+
   workflow_dispatch:
-    # Allow manual trigger from GitHub Actions tab
+    inputs:
+      tier:
+        description: 'full = everything including nflverse; light = statuses, trending and the wire'
+        type: choice
+        options: [full, light]
+        default: full
 
 jobs:
   update-data:
@@ -22,43 +50,68 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-      
+
+      # WHAT KIND OF RUN IS THIS. Decided from the cron that fired rather than
+      # from the clock, because GitHub delays scheduled runs and a late daily
+      # build read off the wall clock would silently demote itself to a status
+      # refresh and skip the day's real work.
+      - name: Decide what this run is
+        id: plan
+        run: node scripts/lib/cadence.js --schedule "${{ github.event.schedule }}" --tier "${{ inputs.tier }}" >> "$GITHUB_OUTPUT"
+
+      # FULL BUILD ONLY, even though it runs first and everything reads it. It
+      # downloads the nflverse rosters for the GSIS crosswalk, which makes it a
+      # download rather than an API call — and a status refresh does not need
+      # the pool rebuilt. update-data syncs today's statuses onto the pool that
+      # is already on disk; membership moves slowly and is deliberately
+      # hysteretic, so nobody joins or leaves it between Sunday morning and
+      # Sunday lunchtime.
       - name: Build player pool
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/build-players.js
 
       - name: Run data update script
+        if: steps.plan.outputs.tier != 'none'
         run: node scripts/update-data.js
       
       - name: Fetch nflverse player stats
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/fetch-stats.js
 
       - name: Fetch Next Gen Stats + snap counts
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/fetch-ngs.js
 
       - name: Fetch official injury reports
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/fetch-injuries.js
 
       # PFR advanced splits: what a player DID versus what was done to him —
       # yards before/after the catch, drops, broken tackles, pressure faced. The
       # join is gsis_id -> pfr_id through nflverse's own crosswalk, never by name.
       - name: Fetch PFR advanced splits
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/fetch-advstats.js
 
       # Depth chart position and combine testing. The depth chart says where a
       # player sits on his OWN team, which no volume stat says; the combine
       # percentiles replace hand-typed athletic numbers with generated ones.
       - name: Fetch depth charts and combine testing
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/fetch-context.js
 
       - name: Build aggregate return-to-play curves
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/build-injury-curves.js
 
       # Reads the injury reports and the curves the step above just built, so it
       # has to follow them.
       - name: Build the injury body map
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/build-injury-anatomy.js
 
       - name: Fetch average draft position
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/fetch-adp.js
 
       # THE BOARD CARRIES A LIVE INJURY FLAG AND WAS NOT BEING REBUILT. It was
@@ -72,37 +125,46 @@ jobs:
       # availability figure is computed from), and BEFORE build-ros and
       # build-history, which both read what it writes.
       - name: Build rankings
+        if: steps.plan.outputs.tier != 'none'
         run: node scripts/build-rankings.js
 
       # Writes nothing until the season starts, by design: a rest-of-season
       # projection before any football has been played is the season projection
       # under another name.
       - name: Build rest-of-season projections
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/build-ros.js
 
       - name: Build team pages and schedule
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/build-teams.js
 
       - name: Build strength of schedule
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/build-sos.js
 
       # Reads data/weekly, which fetch-stats has already refreshed above. In
       # season this is the board that changes most from one Sunday to the next.
       - name: Build defensive matchups
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/build-matchups.js
 
       # Current season only by default — past seasons never change and each one
       # is ~70MB of participation + play-by-play. Use --all to rebuild history.
       - name: Build scheme and identity
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/build-scheme.js
 
       # Adds a row for any team-season that appeared; never overwrites an answer.
       - name: Scaffold play-caller rows
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/build-playcallers.js
       
       # After the data steps: the pool changes, and a sitemap listing yesterday's
       # players is a list of soft 404s submitted to Google.
+      # Follows the pool, which only the full build changes.
       - name: Build sitemap and robots.txt
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/build-sitemap.js
 
       # Last of the data steps and before the commit, because it reads what the
@@ -110,7 +172,18 @@ jobs:
       # today" and is then overwritten; this one is the only record that today
       # ever happened. A morning it does not run is a morning gone for good.
       - name: Append today to the history series
+        if: steps.plan.outputs.tier == 'full'
         run: node scripts/build-history.js
+
+      # A LIGHT REFRESH STILL HAS TO LOG THE EVENTS IT CAUSED. It syncs statuses,
+      # and the status log is the state this script diffs against — skip it and
+      # the log says Healthy while players.json says Questionable (Hand), so the
+      # next real change is computed against a position that never existed. The
+      # SERIES are skipped instead (--events-only), because one reading a day at
+      # the same hour is what makes a delta over them mean anything.
+      - name: Log the events a status refresh caused
+        if: steps.plan.outputs.tier == 'light'
+        run: node scripts/build-history.js --events-only
 
       # AFTER build-history, which appends this morning's trending line — the
       # wire reads the series to say which way a count is moving, and reading
@@ -118,6 +191,7 @@ jobs:
       # before. Also after fetch-context, which writes the league-wide depth
       # chart the board's reasons come from.
       - name: Build the waiver wire
+        if: steps.plan.outputs.tier != 'none'
         run: node scripts/build-wire.js
 
       - name: Check for changes
@@ -132,13 +206,27 @@ jobs:
           git config user.email "bot@thesignal.app"
           git add data/ sitemap.xml robots.txt
           DATE=$(date -u +"%Y-%m-%d %H:%M UTC")
-          git commit -m "Automated data update: ${DATE}
+          # THE MESSAGE HAS TO MATCH THE RUN. A light refresh touches no
+          # nflverse file, and a commit claiming "stats synced from nflverse"
+          # on a Sunday afternoon sends anyone reading the log looking for a
+          # change that is not in it.
+          if [ "${{ steps.plan.outputs.tier }}" = "light" ]; then
+            git commit -m "Status refresh: ${DATE}
+
+          - Player statuses synced from Sleeper
+          - Trending adds and drops cached
+          - ESPN news cached
+          - Rankings flags and the waiver wire rebuilt from those
+          - No nflverse data touched: this is an in-season status run"
+          else
+            git commit -m "Automated data update: ${DATE}
 
           - Player pool rebuilt from Sleeper (top 200 + curated overlay)
           - Player statuses synced from Sleeper API
           - Trending players cached
           - ESPN news cached
           - Player stats synced from nflverse"
+          fi
           git push
 
       # The data-integrity suite has to run HERE, not only in test.yml.
@@ -162,13 +250,13 @@ jobs:
       # him healthy — so the run has to go red. Running it here means a typo in
       # a hand file reds the Action without holding up the day's real data.
       - name: Validate injury overrides
-        if: always()
+        if: always() && steps.plan.outputs.tier != 'none'
         run: node scripts/check-overrides.js
 
       # Same bargain: update-data.js swallows a dead API so the rest of the
       # pipeline still runs, and this turns that into a red run afterwards.
       - name: Check every feed reported in
-        if: always()
+        if: always() && steps.plan.outputs.tier != 'none'
         run: node scripts/check-feeds.js
 
       # The season rollover is the failure with no symptom: on the first Sunday
@@ -177,5 +265,5 @@ jobs:
       # nothing tells anyone. This asks the only question that matters — does the
       # data on disk contain the season the league is actually playing.
       - name: Check the data matches the season being played
-        if: always()
+        if: always() && steps.plan.outputs.tier != 'none'
         run: node scripts/check-season.js

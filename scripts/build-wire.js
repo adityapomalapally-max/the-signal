@@ -46,8 +46,9 @@ const SERIES_DAYS = 14;
 // Depth chart moves worth showing. A promotion three weeks ago is roster news,
 // not wire news.
 const MOVE_DAYS = 21;
-// A direction needs two readings. Stated as a constant so the fallback below
-// is obviously tied to it rather than to a hidden assumption.
+// A direction needs two readings — today's and yesterday's. Stated as a
+// constant so the fallback below is obviously tied to it rather than to a
+// hidden assumption.
 const MIN_DAYS_FOR_DIRECTION = 2;
 // Below this the day-over-day move is noise in a number that swings on one
 // beat writer's tweet.
@@ -126,22 +127,20 @@ function seriesFor(history, key, name) {
 }
 
 // THE LIST IS A TOP FIFTEEN AND ITS MEMBERSHIP CHURNS. A player can be on it
-// on Monday, off it on Tuesday and back on Wednesday, so two readings in his
-// series are not necessarily two consecutive mornings — and the board says
+// on Monday, off it on Tuesday and back on Wednesday, so two readings in a
+// player's series are not necessarily two consecutive days — and the board says
 // "this morning against yesterday". Comparing Wednesday with Monday under that
-// sentence is a false statement about a real number, which is worse than
-// having no arrow at all.
+// sentence is a false statement about a real number, which is worse than having
+// no arrow at all.
 //
-// So a direction needs a reading on BOTH of the last two mornings on file.
+// So a direction needs today's live count AND a reading dated yesterday.
 // Anything else is a player who was not on the list yesterday, and the honest
 // thing to say about him is that, not a percentage.
-function directionOf(series, today, yesterday) {
-  if (!today || !yesterday) return null;
-  if (series.length < MIN_DAYS_FOR_DIRECTION) return null;
-  const now = series.find(s => s.date === today);
-  const then = series.find(s => s.date === yesterday);
-  if (!now || !then || !then.count) return null;
-  const pct = Math.round(((now.count - then.count) / then.count) * 100);
+function directionOf(liveCount, series, yesterdayDate) {
+  if (!liveCount || !yesterdayDate) return null;
+  const then = series.find((s) => s.date === yesterdayDate);
+  if (!then || !then.count) return null;
+  const pct = Math.round(((liveCount - then.count) / then.count) * 100);
   if (Math.abs(pct) < DIRECTION_PCT) return { move: 'steady', pct };
   return { move: pct > 0 ? 'rising' : 'cooling', pct };
 }
@@ -173,11 +172,27 @@ function main() {
     (rankings[tab] || []).forEach((r, i) => rankOf.set(normalizeName(r.name), `${tab.toUpperCase()}${i + 1}`));
   }
 
-  // The last two mornings the file actually has, which is what "yesterday"
-  // means here — not what the calendar says, because a morning the Action did
-  // not run is a morning that does not exist in the series.
-  const today = days ? history[history.length - 1].date : null;
-  const yesterday = days > 1 ? history[history.length - 2].date : null;
+  // TODAY'S READING IS trending.json, NOT THE SERIES. The full build writes one
+  // history line a morning; the light in-season refreshes run four more times a
+  // week and do not, because a series sampled at 11:00 on some days and 22:30
+  // on others has a time-of-day wobble baked into every delta computed from it.
+  // But the COUNT on screen comes from trending.json, which those refreshes do
+  // update — so reading today's number out of the series would print a fresh
+  // count beside an arrow computed from the morning's, which is two different
+  // days' arithmetic in one row.
+  //
+  // So: today is now and its reading is the live one; yesterday is yesterday
+  // and its reading comes from the log. If yesterday's line is missing — a
+  // morning the Action did not run — there is no comparison to make and no
+  // sentence that would be true about one.
+  // AND THE READING IS DATED BY THE DATA, NOT BY THE CLOCK. trending.json is
+  // written by update-data; if that has not run since yesterday then "today's
+  // count" is yesterday's count, and dating it today compares a number with
+  // itself and prints "steady, 0%" over a board where plenty moved. The
+  // timestamp in the file is when the room was actually counted.
+  const liveDate = (trending.updated ? new Date(trending.updated) : new Date()).toISOString().slice(0, 10);
+  const prevDate = new Date(Date.parse(liveDate) - 86400000).toISOString().slice(0, 10);
+  const havePrev = history.some((d) => d.date === prevDate);
 
   const shape = (row) => {
     const team = row.team || null;
@@ -194,13 +209,15 @@ function main() {
       rank: rankOf.get(normalizeName(row.name)) || null,
       status: (pooled && pooled.status) || row.injury_status || null,
       depth: team ? depthFor(index, team, row.name) : null,
-      series,
-      direction: directionOf(series, today, yesterday),
+      // The series as the reader sees it: the log for every day before today,
+      // and the live count for today.
+      series: [...series.filter((s) => s.date < liveDate), { date: liveDate, count: Number(row.count) || 0 }],
+      direction: directionOf(Number(row.count) || 0, series, prevDate),
       // He is on the list today and was not yesterday. That is a fact worth
-      // printing, and it is the only true thing available when there is
-      // nothing to compare against.
-      newToday: Boolean(today && series.some(s => s.date === today)
-        && yesterday && !series.some(s => s.date === yesterday)),
+      // printing, and the only true thing available when there is nothing to
+      // compare against — but it can only be said when yesterday was recorded
+      // at all, which is why a missed morning produces neither.
+      newToday: Boolean(havePrev && !series.some((s) => s.date === prevDate)),
     };
   };
 
@@ -235,8 +252,19 @@ function main() {
       window: trending.updated || null,
       source: 'Sleeper adds and drops over the last 24 hours, across every Sleeper league',
       daysOnFile: days,
+      // The LOGGED range — mornings the history layer actually holds. It is not
+      // the same thing as the live reading below and must not be named as
+      // though it were: the last logged morning is written once a day by the
+      // full build, while the count on screen is refreshed four more times a
+      // week in season.
       seriesFrom: days ? history[0].date : null,
       seriesTo: days ? history[days - 1].date : null,
+      // When the room was actually counted, which in a light refresh is minutes
+      // ago and in a stale one is yesterday. The board prints it, because "adds
+      // today" means nothing without saying which moment it counted.
+      countedAt: trending.updated || null,
+      liveDate,
+      comparedWith: prevDate,
       moveWindowDays: MOVE_DAYS,
       // What the reader has to know to read the numbers, each a separate thing.
       caveats: [
@@ -263,4 +291,10 @@ function main() {
   log(wrote ? `wrote data/wire.json` : 'data/wire.json unchanged — not rewritten');
 }
 
-main();
+// Extracted and exported for the same reason depthChangesFor and shapeCell
+// were: the paths that matter are the ones the day's data does not exercise.
+// With two mornings on file every player has two readings, so a rule about
+// what happens when he has one cannot be reached by running this and looking.
+module.exports = { directionOf, depthFor, depthIndex, andList, ordinal };
+
+if (require.main === module) main();

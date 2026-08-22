@@ -69,14 +69,30 @@ test('every add either carries a real id or none at all', () => {
   }
 });
 
-test('the guard against a direction from one reading exists', () => {
+test('a direction needs a reading dated the day before, or there is none', () => {
   // The data cannot test this while the series has two mornings in it: every
-  // player has two readings, so deleting the guard changes nothing on disk and
-  // a data-only assertion goes green on a rule that is gone. It matters on the
-  // day the series starts, and on any player first seen this morning.
-  const fn = SRC.slice(SRC.indexOf('function directionOf'), SRC.indexOf('function directionOf') + 400);
-  assert.match(fn, /series\.length < MIN_DAYS_FOR_DIRECTION/,
-    'directionOf no longer refuses a single reading — a player first seen this morning will carry a trend drawn through one point');
+  // player has a reading on both, so the guard changes nothing on disk and a
+  // data-only assertion goes green on a rule that is gone. These are the cases
+  // that only exist on the days they matter.
+  const { directionOf } = require('../scripts/build-wire');
+  const series = [{ date: '2026-08-20', count: 100 }, { date: '2026-08-21', count: 200 }];
+
+  assert.deepStrictEqual(directionOf(300, series, '2026-08-21'), { move: 'rising', pct: 50 },
+    'a live count against yesterday should give a direction');
+  assert.strictEqual(directionOf(300, series, '2026-08-22'), null,
+    'there is no reading dated 08-22, so there is nothing to compare against');
+  assert.strictEqual(directionOf(300, [], '2026-08-21'), null,
+    'a player with no history at all cannot have a direction');
+  assert.strictEqual(directionOf(0, series, '2026-08-21'), null,
+    'no live count is not a 100% fall');
+  assert.strictEqual(directionOf(300, [{ date: '2026-08-21', count: 0 }], '2026-08-21'), null,
+    'a division by a zero count is not an infinite rise');
+  // The gap case, which is the whole reason the date is checked rather than
+  // the position: a player on the list Monday and Wednesday but not Tuesday.
+  assert.strictEqual(directionOf(300, [{ date: '2026-08-19', count: 100 }], '2026-08-21'), null,
+    'a reading from two days ago must not be compared as though it were yesterday');
+  assert.deepStrictEqual(directionOf(205, series, '2026-08-21'), { move: 'steady', pct: 3 },
+    'a small move reads as steady rather than as a trend');
 });
 
 test('a direction is never drawn through one point', () => {
@@ -106,6 +122,28 @@ test('a depth line is absent rather than invented', () => {
       `${row.name}: listed ${row.depth.rank} but ${row.depth.behind.length} names are shown ahead of him`);
   }
   assert.ok(!/behind (undefined|null)/.test(JSON.stringify(wire.adds)), 'a depth line names a player that is not there');
+});
+
+test('the logged range and the live reading are not the same field', () => {
+  // In season the count is refreshed four more times a week than the history
+  // series is written, so "the last morning on file" and "when this was
+  // counted" are different moments — and seriesTo used to hold whichever of
+  // them was written last, which is a field that means two things.
+  const m = wire.meta;
+  assert.ok(m.seriesFrom && m.seriesTo, 'the logged range is gone');
+  assert.ok(m.liveDate, 'nothing records the date of the live reading');
+  assert.ok(m.seriesTo <= m.liveDate,
+    `the last logged morning (${m.seriesTo}) is after the live reading (${m.liveDate})`);
+  assert.strictEqual(m.comparedWith, new Date(Date.parse(m.liveDate) - 86400000).toISOString().slice(0, 10),
+    'the direction is compared against something other than the day before the live reading');
+  // Every direction on the board has to be against that date and no other.
+  for (const row of wire.adds) {
+    if (!row.direction) continue;
+    assert.ok(row.series.some(s => s.date === m.comparedWith),
+      `${row.name} carries a direction with no reading dated ${m.comparedWith}`);
+    assert.strictEqual(row.series[row.series.length - 1].date, m.liveDate,
+      `${row.name}'s series does not end at the live reading`);
+  }
 });
 
 test('the chart is described as a claim, not as a snap count', () => {

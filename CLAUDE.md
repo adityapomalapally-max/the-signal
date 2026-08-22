@@ -976,3 +976,47 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - A ROUTE KEY WITH A SLASH IN IT NOW RESOLVES. `metaForRoute` read only the first segment, so
   `season/usage` and `draft/film` had titles written for them that were never once used — both
   served the parent's. Two-segment keys are looked up before the per-prefix handlers.
+
+## In-season cadence — two tiers
+- MEASURED AGAINST NFLVERSE'S OWN SCHEDULE, THE DAILY BUILD IS ALREADY RIGHT FOR THE STATS. They
+  rebuild play-by-play after every window — TNF 05:30 UTC Fri, early window 22:00 UTC Sun, late
+  window 00:05 UTC Mon, SNF 05:30 UTC Mon, MNF 05:30 UTC Tue — and all of it lands overnight, so
+  the 11:00 UTC build has the weekend in it by Monday morning and Monday night's game by Tuesday
+  morning. Running the 200MB half more often would cost everything and change nothing.
+- WHAT IS BADLY TIMED IS THE LIVE STATE. Inactives are official ninety minutes before kickoff, so a
+  build that ran at 6:00 ET does not have them: a reader setting a lineup at noon on Sunday is
+  looking at a status page from before the teams said who was playing. Same for the adds a room
+  makes on Tuesday night, before Wednesday's waivers process.
+- So there are two tiers, split by WHERE THE DATA COMES FROM: `full` (everything, including the
+  nflverse CSVs) once a day, and `light` (Sleeper statuses, trending, ESPN news, and the boards
+  derived from them — all API calls, about a second of work) four more times a week in season.
+  Schedules: Sun 16:30 UTC (12:30 ET, after inactives), Sun 22:30 UTC, Tue 23:00 UTC (claims go in
+  Tuesday night), Thu 23:00 UTC (TNF inactives).
+- `scripts/lib/cadence.js` decides, AND IT READS THE CRON THAT FIRED, NOT THE CLOCK. GitHub delays
+  scheduled runs, sometimes past the hour, so `getUTCHours() === 11` would quietly demote a late
+  daily build to a status refresh and skip the day's real work. `github.event.schedule` is the exact
+  expression that triggered the run and is never late.
+- The mapping is a RULE, not a list: the full build is whichever cron sits at 11:00 UTC, everything
+  else is light. A list of cron strings in the planner would be a second copy of the workflow's
+  schedule and the two would drift the first time either was edited.
+- OUT OF SEASON THE LIGHT SCHEDULES ARE NO-OPS, decided at runtime from lib/season.js rather than by
+  a month range in the cron — a month range is a boundary somebody has to remember, which is the
+  thing season.js exists to abolish. Four no-op runs a week is cheaper than that.
+- THE POOL REBUILD IS FULL-ONLY even though it runs first: build-players downloads the nflverse
+  rosters for the GSIS crosswalk, and a status refresh does not need the pool rebuilt. Membership is
+  deliberately hysteretic, so nobody joins or leaves it between Sunday morning and Sunday lunchtime.
+- SERIES ARE SAMPLED ONCE A DAY; EVENT LOGS ARE WRITTEN WHENEVER THE EVENT HAPPENS. This is what the
+  cadence turned from a distinction into a rule. ADP, ranks and trending are series and stay with
+  the full build, or a delta over them carries a time-of-day wobble. Status and depth are event logs
+  and the light refresh writes them with `build-history.js --events-only` — skipping the file
+  entirely left the log saying Healthy while players.json said "Questionable (Hand)", and the log IS
+  the state the script diffs against, so every later change would have been computed from a position
+  that never existed. tests/history.test.js caught that within minutes of the tiers being wired up.
+- THE WIRE'S READING IS DATED BY THE DATA, NOT THE CLOCK. trending.json carries the moment the room
+  was counted; a light refresh updates it and the full build writes the day's history line. Reading
+  "today" off the wall clock printed a fresh count beside an arrow computed from the morning's, and
+  when nothing had refreshed at all it compared a number with itself and reported "steady, 0%" over
+  a board where plenty had moved.
+- The commit message names the tier. A light refresh touches no nflverse file, and a commit saying
+  "stats synced from nflverse" on a Sunday afternoon sends whoever reads the log looking for a
+  change that is not in it.

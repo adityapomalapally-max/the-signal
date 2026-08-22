@@ -3208,8 +3208,17 @@ function renderWireBoard(host) {
       + `<span>This is the first morning on file, so nobody carries a direction yet — there is nothing to `
       + `compare today against. Movement appears tomorrow.</span></div>`;
   } else {
-    h += `<div class="lab-sub wire-intro">Direction compares this morning with yesterday, over ${meta.daysOnFile} mornings on file `
-      + `(${rankEsc(String(meta.seriesFrom || ''))} to ${rankEsc(String(meta.seriesTo || ''))}). `
+    // WHEN THE ROOM WAS COUNTED, not when the page was built. In season the
+    // status refreshes run four more times a week than the full build does, so
+    // these counts can be an hour old on a Sunday and a day old on a Wednesday;
+    // "adds today" means nothing without saying which moment it is counting.
+    const counted = meta.countedAt ? new Date(meta.countedAt) : null;
+    const when = counted && !isNaN(counted)
+      ? counted.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+      : null;
+    h += `<div class="lab-sub wire-intro">Counted ${when ? rankEsc(when) : 'at the last build'}, `
+      + `against the same count a day earlier — ${meta.daysOnFile} mornings on file `
+      + `(from ${rankEsc(String(meta.seriesFrom || ''))}). `
       + `Sleeper publishes no history of its own, so this series only reaches back as far as the site has been keeping it.</div>`;
   }
 
