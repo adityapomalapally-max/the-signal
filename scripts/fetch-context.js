@@ -37,11 +37,19 @@ const { writeJSONIfChanged } = require('./lib/write');
 const DATA = path.join(__dirname, '..', 'data');
 const BASE = 'https://github.com/nflverse/nflverse-data/releases/download';
 const OUT = path.join(DATA, 'context.json');
+// ITS OWN FILE, NOT A SECTION OF context.json. The profile and Stats & Charts
+// both load context.json and neither has any use for the other 31 teams' backup
+// receivers — 135KB on two of the site's most-visited paths for data only the
+// Wire reads.
+const OUT_LEAGUE = path.join(DATA, 'depth-league.json');
 
 // Depth charts carry defensive and special-teams groups too, and a skill player
 // appears on the latter as a returner — with a pos_rank that means something
 // entirely different.
 const NON_OFFENSE = new Set(['Base 4-3 D', 'Base 3-4 D', 'Special Teams']);
+
+// The positions a waiver claim is ever about.
+const SKILL = new Set(['QB', 'RB', 'WR', 'TE']);
 
 // Lower is better for these, so the percentile has to be inverted.
 const LOWER_IS_BETTER = new Set(['forty', 'cone', 'shuttle']);
@@ -109,6 +117,50 @@ async function main() {
     const prev = latestByPlayer.get(String(r.gsis_id));
     if (!prev || String(r.dt) > String(prev.dt)) latestByPlayer.set(String(r.gsis_id), r);
   }
+  // ===== THE REST OF THE LEAGUE =====
+  // The pool is the 350 fantasy-relevant players — which is to say, the players
+  // who are already rostered. A waiver page is about the other ones, so a depth
+  // layer that stops at the pool has nothing to say about the exact players it
+  // is asked about: "38,000 people added Xavier Hutchinson" with no answer to
+  // "and where does he sit on his own team" is a leaderboard, not a reason.
+  //
+  // Slim on purpose: name, rank and slot for the four skill positions, which is
+  // what "he is third at his spot, behind these two" needs and nothing more.
+  // Every defender and specialist would be four times the file for a question
+  // nobody is asking it.
+  const depthLeague = {};
+  const leagueLatest = new Map();
+  for (const r of depthRows) {
+    if (NON_OFFENSE.has(String(r.pos_grp || '').trim())) continue;
+    if (!SKILL.has(String(r.pos_abb || '').toUpperCase())) continue;
+    if (!r.player_name) continue;
+    const key = `${r.gsis_id || r.player_name}|${r.team}`;
+    const prev = leagueLatest.get(key);
+    if (!prev || String(r.dt) > String(prev.dt)) leagueLatest.set(key, r);
+  }
+  for (const r of leagueLatest.values()) {
+    const team = teamKey(r.team);
+    const pos = String(r.pos_abb).toUpperCase();
+    depthLeague[team] = depthLeague[team] || {};
+    depthLeague[team][pos] = depthLeague[team][pos] || [];
+    depthLeague[team][pos].push({
+      name: r.player_name,
+      gsisId: r.gsis_id || null,
+      rank: Number(r.pos_rank) || null,
+      slot: Number(r.pos_slot) || null,
+    });
+  }
+  // Sorted by rank so the chart reads top down, and a missing rank sorts last
+  // rather than first — an unranked man is not the starter.
+  for (const team of Object.keys(depthLeague)) {
+    for (const pos of Object.keys(depthLeague[team])) {
+      depthLeague[team][pos].sort((a, b) => (a.rank || 99) - (b.rank || 99));
+    }
+  }
+  const leagueRows = Object.values(depthLeague).reduce(
+    (n, byPos) => n + Object.values(byPos).reduce((m, list) => m + list.length, 0), 0);
+  console.log(`[context] depth charts league-wide: ${leagueRows} skill players across ${Object.keys(depthLeague).length} teams`);
+
   for (const [gsis, r] of latestByPlayer) {
     const p = byGsis.get(gsis);
     out.depthChart[p.id] = {
@@ -172,6 +224,25 @@ async function main() {
   out.meta.coverage = { depthChart: Object.keys(out.depthChart).length, combine: tested, of: pool.length };
 
   if (dry) { console.log('[context] dry run — nothing written'); return; }
+  const leagueOut = {
+    meta: {
+      generated: new Date().toISOString(),
+      source: 'nflverse depth_charts, the whole league rather than the pool',
+      season: depthSeason,
+      positions: [...SKILL],
+      caveats: [
+        'A depth chart is what a team publishes, not what it does. It is a claim about intent, and a coach who lists a rookie second is not obliged to play him second.',
+        'Skill positions only. A waiver claim is never about a guard.',
+        'Ranked by the team\'s own ordering; a player the chart does not rank is listed last rather than first.',
+      ],
+    },
+    teams: depthLeague,
+  };
+  const wroteLeague = writeJSONIfChanged(OUT_LEAGUE, leagueOut);
+  console.log(wroteLeague
+    ? `[context] wrote data/depth-league.json (${Math.round(fs.statSync(OUT_LEAGUE).size / 1024)}KB)`
+    : '[context] depth-league.json unchanged — not rewritten');
+
   const wrote = writeJSONIfChanged(OUT, out);
   if (!wrote) console.log('[context] unchanged — not rewritten');
   else console.log(`[context] wrote data/context.json (${Math.round(fs.statSync(OUT).size / 1024)}KB)`);

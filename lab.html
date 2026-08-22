@@ -791,9 +791,10 @@
         <div class="position-filter" id="seasonViewToggle">
           <button class="pos-btn active" onclick="setSeasonView('matchups', this)">Matchups</button>
           <button class="pos-btn" onclick="setSeasonView('usage', this)">Weekly Usage</button>
+          <button class="pos-btn" onclick="setSeasonView('wire', this)">Waiver Wire</button>
         </div>
       </div>
-      <div class="lab-control">
+      <div class="lab-control" id="muPosControl">
         <span class="lab-control-label">Position</span>
         <div class="position-filter" id="muPosFilter">
           <button class="pos-btn" onclick="setMuPos('QB', this)">QB</button>
@@ -802,7 +803,7 @@
           <button class="pos-btn" onclick="setMuPos('TE', this)">TE</button>
         </div>
       </div>
-      <div class="lab-control">
+      <div class="lab-control" id="muSeasonControl">
         <span class="lab-control-label">Season</span>
         <div class="position-filter" id="muSeasonFilter"></div>
       </div>

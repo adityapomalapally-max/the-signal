@@ -2957,8 +2957,30 @@ function renderSeasonPage() {
   // The season filter belongs to whichever board is up; the position filter to
   // both. Rendering the state banner first means it is on screen while either
   // dataset is still loading.
+  // THE PRESEASON BANNER IS NOT TRUE OF THE WIRE. It says every board here is
+  // built from last season, which is the honest thing to say about a matchup
+  // board in August and a false one about a list of adds from this morning.
+  // A caveat that does not apply to what is on screen teaches the reader to
+  // skip the ones that do.
   const stateHost = document.getElementById('seasonState');
-  if (stateHost && matchupData) stateHost.innerHTML = seasonStateHtml(matchupData.meta || {});
+  if (stateHost) {
+    stateHost.innerHTML = (seasonView !== 'wire' && matchupData) ? seasonStateHtml(matchupData.meta || {}) : '';
+  }
+  seasonControls(seasonView);
+
+  if (seasonView === 'wire') {
+    if (!wireData) {
+      board.innerHTML = `<div class="medical-card"><div class="medical-detail">Loading the wire…</div></div>`;
+      ensureWire().then(() => {
+        if (wireData) renderSeasonPage();
+        else board.innerHTML = `<div class="medical-card"><div class="medical-detail">`
+          + `The wire could not be loaded. Nothing is shown rather than a board built from part of it.</div></div>`;
+      });
+      return;
+    }
+    renderWireBoard(board);
+    return;
+  }
 
   if (seasonView === 'usage') {
     if (!weeklyUsage) {
@@ -3111,12 +3133,135 @@ function ensureWeeklyUsage() {
   return weeklyUsagePromise;
 }
 
+let wireData = null, wirePromise = null;
+function ensureWire() {
+  if (!wirePromise) wirePromise = loadJSON('/data/wire.json').then(d => (wireData = d));
+  return wirePromise;
+}
+
+// ===== THE WIRE =====
+// A trending list is a leaderboard of names. The two things that make one of
+// those a reason are where he sits on his own team and whether the room is
+// still piling in — a depth chart and a series, and the site keeps both now.
+//
+// The row is the unit, not the table. These are eleven-word answers, not
+// numbers to sort against each other, and a wide table on a phone would be a
+// swipe to reach the only column that says anything.
+function renderWireBoard(host) {
+  const meta = (wireData && wireData.meta) || {};
+  const adds = (wireData && wireData.adds) || [];
+  const drops = (wireData && wireData.drops) || [];
+  const moves = (wireData && wireData.depthMoves) || [];
+
+  if (!adds.length) {
+    host.innerHTML = `<div class="medical-card"><div class="medical-detail">`
+      + `Sleeper reported no adds in the last day. Nothing is shown rather than yesterday's list dressed as today's.</div></div>`;
+    return;
+  }
+
+  const arrow = (d) => {
+    if (!d) return '';
+    if (d.move === 'rising') return `<span class="wire-dir wire-up">▲ ${Math.abs(d.pct)}%</span>`;
+    if (d.move === 'cooling') return `<span class="wire-dir wire-down">▼ ${Math.abs(d.pct)}%</span>`;
+    return `<span class="wire-dir wire-flat">— steady</span>`;
+  };
+
+  const row = (p, i) => {
+    // A link only where the site actually has a page. The room speculates on
+    // players outside the 350, and a name with no profile behind it is text.
+    const name = p.id
+      ? `<a class="wire-name" href="/player/${jsAttr(p.id)}" onclick="event.preventDefault();navigate('player/${jsAttr(p.id)}')">${rankEsc(p.name)}</a>`
+      : `<span class="wire-name wire-unlinked">${rankEsc(p.name)}</span>`;
+    const badges = [
+      p.pos ? `<span class="wire-pos">${rankEsc(p.pos)}</span>` : '',
+      p.team ? `<span class="wire-team">${rankEsc(p.team)}</span>` : '',
+      p.rank ? `<span class="wire-rank">${rankEsc(p.rank)}</span>` : '',
+      p.status && !/^healthy$/i.test(p.status) ? `<span class="wire-status">${rankEsc(p.status)}</span>` : '',
+    ].join('');
+    // The depth line is the reason. Absent when the chart does not carry him,
+    // because a plausible line here would be an invented one.
+    const depth = p.depth
+      ? `<div class="wire-depth">${rankEsc(p.depth.reading)}</div>`
+      : `<div class="wire-depth wire-depth-none">not on his team's published chart at a skill position</div>`;
+    return `<div class="wire-row">
+      <div class="wire-count"><span class="wire-n">${p.count.toLocaleString()}</span><span class="wire-n-label">adds</span></div>
+      <div class="wire-body">
+        <div class="wire-head">${name}${badges}${arrow(p.direction)}</div>
+        ${depth}
+      </div>
+    </div>`;
+  };
+
+  let h = `<div class="lab-head"><span class="lab-title">Waiver wire — who the room is adding</span>`
+    + `<span class="lab-qual">SLEEPER, LAST 24 HOURS</span></div>`;
+
+  // WHAT THE SERIES CAN SAY YET. It began on the day it began, and a direction
+  // needs two readings — so on day one the page says so rather than drawing a
+  // trend through a single point. Same call as the In Season boards make in
+  // their opening weeks.
+  if ((meta.daysOnFile || 0) < 2) {
+    h += `<div class="season-state" style="margin:10px 0 16px;"><span class="season-state-tag">Day one</span>`
+      + `<span>This is the first morning on file, so nobody carries a direction yet — there is nothing to `
+      + `compare today against. Movement appears tomorrow.</span></div>`;
+  } else {
+    h += `<div class="lab-sub wire-intro">Direction compares this morning with yesterday, over ${meta.daysOnFile} mornings on file `
+      + `(${rankEsc(String(meta.seriesFrom || ''))} to ${rankEsc(String(meta.seriesTo || ''))}). `
+      + `Sleeper publishes no history of its own, so this series only reaches back as far as the site has been keeping it.</div>`;
+  }
+
+  h += `<div class="wire-list">${adds.map(row).join('')}</div>`;
+
+  // ===== WHO ACTUALLY MOVED =====
+  // The other half, and the one nobody else can show: a promotion is visible
+  // the day it happens and invisible a week later, because the published chart
+  // carries no history behind it.
+  h += `<div class="lab-head" style="margin-top:36px;"><span class="lab-title">Depth chart moves</span>`
+    + `<span class="lab-qual">LAST ${meta.moveWindowDays || 21} DAYS</span></div>`;
+  if (!moves.length) {
+    h += `<div class="medical-card"><div class="medical-detail">`
+      + `No player in the pool has changed position on his team's published chart in the last `
+      + `${meta.moveWindowDays || 21} days. The chart is published without any history behind it, so this fills `
+      + `only from the day the site started keeping one — a move it did not see is a move that cannot be recovered.</div></div>`;
+  } else {
+    h += `<div class="wire-list">` + moves.map(m => {
+      const label = m.kind === 'traded' ? 'traded' : m.kind;
+      const name = m.id
+        ? `<a class="wire-name" href="/player/${jsAttr(m.id)}" onclick="event.preventDefault();navigate('player/${jsAttr(m.id)}')">${rankEsc(m.name)}</a>`
+        : `<span class="wire-name wire-unlinked">${rankEsc(m.name)}</span>`;
+      return `<div class="wire-row">
+        <div class="wire-count"><span class="wire-move ${m.kind === 'demoted' ? 'wire-down' : 'wire-up'}">${rankEsc(label)}</span>
+          <span class="wire-n-label">${rankEsc(m.date)}</span></div>
+        <div class="wire-body">
+          <div class="wire-head">${name}<span class="wire-pos">${rankEsc(m.position || '')}</span><span class="wire-team">${rankEsc(m.team || '')}</span></div>
+          <div class="wire-depth">${rankEsc(`${m.position || 'his spot'} ${m.fromRank} → ${m.toRank} on the published chart`)}</div>
+        </div>
+      </div>`;
+    }).join('') + `</div>`;
+  }
+
+  // Each caveat is a separate thing the reader has to know, so it renders as a
+  // list. caveatHtml is the one renderer for this on the site.
+  h += `<div class="rank-note">${caveatHtml(meta.caveats)}</div>`;
+  host.innerHTML = h;
+}
+
 function setSeasonView(view, el) {
   seasonView = view;
   document.querySelectorAll('#seasonViewToggle .pos-btn').forEach(b => b.classList.remove('active'));
   if (el) el.classList.add('active');
-  setRoute(view === 'usage' ? 'season/usage' : 'season');
+  setRoute(view === 'season' || !view ? 'season' : `season/${view}`);
   renderSeasonPage();
+}
+
+// A control that reaches nothing is worse than one that is missing: it invites
+// a click that changes what the reader is looking at in no way at all. The wire
+// has neither a position nor a season — it is one morning's adds — so both
+// controls go, the same call the field map's view toggle got.
+function seasonControls(view) {
+  const pos = document.getElementById('muPosControl');
+  const season = document.getElementById('muSeasonControl');
+  if (pos) pos.style.display = view === 'wire' ? 'none' : '';
+  if (season) season.style.display = view === 'wire' ? 'none' : '';
 }
 
 // The comparison is a player against HIMSELF, not against the league. A 60%

@@ -55,6 +55,10 @@ function build() {
   const sections = {
     players: 0.9, rankings: 0.9, medicals: 0.8, lab: 0.7,
     teams: 0.7, fantasy: 0.8, draft: 0.6,
+    // In Season was left out while it had nothing in it. It has three boards
+    // now, and the waiver wire is the one people go looking for by name —
+    // an unlisted page is a page nobody is sent to.
+    season: 0.7,
   };
   for (const [slug, priority] of Object.entries(sections)) {
     urls.push(url(`${ORIGIN}/${slug}`, { priority, changefreq: 'daily', lastmod: dataDate }));
@@ -63,6 +67,9 @@ function build() {
   // there. What was deliberately absent before is simply not a page any more.
   // The old note, kept because the reasoning still applies to any future stub:
   // index. Put it back the day it has content.
+
+  // The wire is its own page with its own title, and it changes every morning.
+  urls.push(url(`${ORIGIN}/season/wire`, { priority: 0.7, changefreq: 'daily', lastmod: dataDate }));
 
   for (const tab of ['overall', 'qb', 'rb', 'wr', 'te']) {
     urls.push(url(`${ORIGIN}/rankings/${tab}`, { priority: 0.8, changefreq: 'daily', lastmod: dataDate }));

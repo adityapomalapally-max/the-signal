@@ -112,6 +112,14 @@ jobs:
       - name: Append today to the history series
         run: node scripts/build-history.js
 
+      # AFTER build-history, which appends this morning's trending line — the
+      # wire reads the series to say which way a count is moving, and reading
+      # it before today was written would compare yesterday with the day
+      # before. Also after fetch-context, which writes the league-wide depth
+      # chart the board's reasons come from.
+      - name: Build the waiver wire
+        run: node scripts/build-wire.js
+
       - name: Check for changes
         id: changes
         run: |

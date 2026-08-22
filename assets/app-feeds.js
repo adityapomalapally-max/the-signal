@@ -841,8 +841,12 @@ function handleRoute() {
   // section of its own, because one article does not earn a nav slot.
   if (parts[0] === 'season') {
     switchPage('season');
-    setSeasonView(parts[1] === 'usage' ? 'usage' : 'matchups',
-      document.querySelector(`#seasonViewToggle .pos-btn:nth-child(${parts[1] === 'usage' ? 2 : 1})`));
+    // The toggle's buttons are in the order the views are listed here, so the
+    // index comes from the list rather than from a hand-counted nth-child that
+    // has to be re-counted every time a view is added.
+    const views = ['matchups', 'usage', 'wire'];
+    const idx = Math.max(0, views.indexOf(parts[1]));
+    setSeasonView(views[idx], document.querySelector(`#seasonViewToggle .pos-btn:nth-child(${idx + 1})`));
     return;
   }
   if (parts[0] === 'draft') {
@@ -896,6 +900,10 @@ const ROUTE_META = {
     title: 'In Season — The Signal',
     description: 'Which defences actually cost you points, measured against each player\'s own average rather than against whoever they happened to face.',
   },
+  'season/wire': {
+    title: 'Waiver Wire — The Signal',
+    description: 'Who the room is adding, where he sits on his own team\'s published depth chart, and which way the count is moving.',
+  },
   'season/usage': {
     title: 'Weekly Usage — The Signal',
     description: 'Snap share, target share and WOPR week by week, each measured against that player\'s own recent weeks rather than against the league.',
@@ -942,6 +950,16 @@ function metaForRoute(route) {
   const parts = String(route || '').split('/').filter(Boolean);
   const base = ROUTE_META[parts[0] || ''] || ROUTE_META[''];
   if (parts.length < 2) return base;
+
+  // A KEY WITH A SLASH IN IT IS A ROUTE, AND WAS BEING IGNORED. Three of them
+  // were written — season/usage, draft/film and season/wire — and none was
+  // ever looked up: the function read the first segment, fell through every
+  // handler below, and returned the parent's title. So /season/usage shared a
+  // description with the matchup board it is not, and a link to either said
+  // the same thing about both. The Ask page had exactly this bug in August and
+  // it was fixed one page at a time; this fixes the shape of it.
+  const joined = parts.join('/');
+  if (ROUTE_META[joined]) return ROUTE_META[joined];
 
   const POS = { qb: 'Quarterback', rb: 'Running Back', wr: 'Wide Receiver', te: 'Tight End', overall: 'Overall' };
 
@@ -1076,7 +1094,7 @@ function isKnownRoute(route) {
   if (head === 'article') return !!articlesDB[parts[1]];
   if (head === 'rankings') return !parts[1] || ['overall', 'qb', 'rb', 'wr', 'te'].includes(parts[1]);
   if (head === 'draft') return !parts[1] || parts[1] === 'film';
-  if (head === 'season') return !parts[1] || parts[1] === 'usage';
+  if (head === 'season') return !parts[1] || ['usage', 'wire'].includes(parts[1]);
   return ROUTE_PAGES.includes(head);
 }
 

@@ -942,3 +942,33 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - A test that greps for a symbol NEAR a guard passes when the guard is gutted. Scope the assertion
   to the branch itself — the CI check in season.js was reduced to a console warning and stayed
   green, because two unrelated `process.exit(1)` calls sat a few lines below it.
+
+## The waiver wire
+- `data/depth-league.json` IS THE POINT OF THE PAGE. The 350-player pool is the players already
+  rostered; a waiver board is about the others, so a depth layer that stops at the pool has nothing
+  to say about the exact players it is asked about. fetch-context now keeps the whole league at the
+  four skill positions — 1,066 players — in its OWN file, because the profile and Stats & Charts
+  both load context.json and neither needs 31 other teams' backup receivers (+135KB on two of the
+  most-visited paths).
+- THE REASON IS THE NAMES, NOT THE RANK. "3rd at WR" is a number; "behind Nico Collins and Jayden
+  Higgins" is why the add is or is not worth making.
+- NO DENOMINATOR ON THE DEPTH LINE. "3 of 16 at WR" reads as better than it is — before the cutdown
+  a published chart lists the whole 90-man camp roster, so the 16 is a headcount of everyone with a
+  locker. The rank and the names ahead of him are the true parts.
+- A DIRECTION NEEDS TWO READINGS, and Sleeper publishes no history of its own, so the series only
+  reaches as far back as the site has been keeping it (it began 2026-08-20). On day one the board
+  says so instead of drawing a trend through one point — the same call the In Season boards make in
+  their opening weeks.
+- AN UNMATCHED NAME KEEPS ITS COUNT AND NEVER A GUESSED ID. The room speculates on players outside
+  the pool; a free agent added 60,000 times is worth listing, attaching him to the wrong player is
+  not. Unlinked names are styled as text, because a link that goes nowhere is worse than none.
+- FIRST SIGHTINGS ARE NOT MOVES. On the first run every depth entry is one — publishing them would
+  announce 354 promotions on day one.
+- IT DROPS THE CONTROLS THAT DO NOT REACH IT. One morning's adds have no position and no season, so
+  both filters are hidden — the same call the field map's view toggle got. And the preseason banner
+  is suppressed on this view: "every board here is built from 2025" is true of the matchup board and
+  false of a list of adds from this morning, and a caveat that does not apply teaches people to skip
+  the ones that do.
+- A ROUTE KEY WITH A SLASH IN IT NOW RESOLVES. `metaForRoute` read only the first segment, so
+  `season/usage` and `draft/film` had titles written for them that were never once used — both
+  served the parent's. Two-segment keys are looked up before the per-prefix handlers.

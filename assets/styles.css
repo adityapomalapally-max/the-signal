@@ -2879,3 +2879,82 @@ a { color: inherit; text-decoration: none; }
   cursor: pointer;
 }
 .mobile-nav-search button:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ═══ THE WIRE ══════════════════════════════════════════════════════════════
+   A row, not a table. These are eleven-word answers — how many people added
+   him, where he sits, which way it is moving — and a table would make the
+   reader swipe on a phone to reach the only column that says anything.
+
+   The count leads because it is what the reader came for, and it is set in the
+   mono face at a size that survives being read down a column rather than
+   across a row. */
+/* A measure, not the window. These rows are a sentence each and a sentence set
+   across 1400px is read twice or not at all. */
+.wire-list { display: flex; flex-direction: column; max-width: 880px; }
+/* The same measure as the rows under it, so the explanation and the thing it
+   explains have the same left and right edge. */
+.wire-intro { max-width: 880px; }
+.wire-row {
+  display: grid;
+  grid-template-columns: 116px 1fr;
+  gap: 16px;
+  align-items: baseline;
+  padding: 14px var(--page-gutter);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.wire-row:last-child { border-bottom: none; }
+.wire-count { text-align: right; }
+.wire-n {
+  display: block;
+  font-family: var(--mono);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.wire-n-label {
+  display: block;
+  font-family: var(--mono); font-size: 9px; letter-spacing: 1.2px;
+  text-transform: uppercase; color: var(--text-muted); margin-top: 2px;
+}
+.wire-move {
+  display: block; font-family: var(--mono); font-size: 11px;
+  letter-spacing: 1px; text-transform: uppercase;
+}
+.wire-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.wire-name { font-size: 15px; color: var(--text); font-weight: 500; }
+a.wire-name:hover { color: var(--gold); }
+/* A name with no page behind it is text, and looks like text. The room
+   speculates on players outside the 350 and their counts are worth showing;
+   dressing one as a link that goes nowhere is not. */
+.wire-unlinked { color: var(--text-secondary); }
+.wire-pos, .wire-team, .wire-rank, .wire-status {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--text-muted);
+}
+.wire-rank { color: var(--gold); }
+.wire-status { color: #e0a34c; }
+/* Beside the badges, not shoved to the far edge. `margin-left: auto` put the
+   direction against the right rim of a 1200px window, half a screen from the
+   name it belongs to — the eye had to travel the width of the page to pair
+   two facts about one player. */
+.wire-dir { font-family: var(--mono); font-size: 10.5px; letter-spacing: .5px; }
+.wire-up { color: var(--teal, #1ba89b); }
+.wire-down { color: #2a78d6; }
+.wire-flat { color: var(--text-muted); }
+.wire-depth { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.6; }
+/* Absence is stated, never filled in with a plausible line. */
+.wire-depth-none { color: var(--text-muted); font-style: italic; }
+
+@media (max-width: 768px) {
+  /* Once the pills wrap onto two rows, a label centred against them sits
+     opposite the gap between the rows rather than opposite anything. */
+  .lab-control { align-items: flex-start; }
+  .lab-control .filter-label, .lab-control-label { padding-top: 12px; }
+  /* The count stops being a column and becomes a label above the name: 116px
+     of gutter is a third of a phone spent on four digits. */
+  .wire-row { grid-template-columns: 1fr; gap: 2px; }
+  .wire-count { text-align: left; display: flex; align-items: baseline; gap: 6px; }
+  .wire-n { display: inline; font-size: 14px; }
+  .wire-n-label { display: inline; margin-top: 0; }
+  .wire-dir { margin-left: 0; }
+}
