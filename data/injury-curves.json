@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-curves.js",
-    "builtAt": "2026-08-22T11:27:59.150Z",
+    "builtAt": "2026-08-23T11:28:28.511Z",
     "seasons": [
       2023,
       2024,
@@ -24,15 +24,15 @@
   },
   "types": {
     "Hamstring": {
-      "absences": 38,
-      "players": 30,
+      "absences": 37,
+      "players": 29,
       "medianMissed": 3,
-      "medianBaseline": 10.3,
+      "medianBaseline": 10.4,
       "curve": [
         {
           "label": "Games 1–2 back",
-          "n": 38,
-          "pct": 91
+          "n": 37,
+          "pct": 93
         },
         {
           "label": "Games 3–5",
@@ -210,22 +210,22 @@
       "absences": 18,
       "players": 17,
       "medianMissed": 2,
-      "medianBaseline": 5.1,
+      "medianBaseline": 5.9,
       "curve": [
         {
           "label": "Games 1–2 back",
           "n": 18,
-          "pct": 116
+          "pct": 97
         },
         {
           "label": "Games 3–5",
           "n": 16,
-          "pct": 113
+          "pct": 103
         },
         {
           "label": "Games 6–8",
-          "n": 14,
-          "pct": 116
+          "n": 13,
+          "pct": 114
         }
       ],
       "examples": [
@@ -233,12 +233,6 @@
           "id": "olave",
           "name": "Chris Olave",
           "season": 2024,
-          "missed": 8
-        },
-        {
-          "id": "ali",
-          "name": "Rasheen Ali",
-          "season": 2025,
           "missed": 8
         },
         {
@@ -264,29 +258,35 @@
           "name": "Gunner Olszewski",
           "season": 2025,
           "missed": 3
+        },
+        {
+          "id": "wilson-z",
+          "name": "Zach Wilson",
+          "season": 2023,
+          "missed": 3
         }
       ]
     },
     "Arm / Hand": {
-      "absences": 17,
-      "players": 17,
+      "absences": 16,
+      "players": 16,
       "medianMissed": 3,
-      "medianBaseline": 9.1,
+      "medianBaseline": 9.3,
       "curve": [
         {
           "label": "Games 1–2 back",
-          "n": 17,
-          "pct": 109
+          "n": 16,
+          "pct": 102
         },
         {
           "label": "Games 3–5",
-          "n": 13,
-          "pct": 168
+          "n": 12,
+          "pct": 149
         },
         {
           "label": "Games 6–8",
-          "n": 12,
-          "pct": 92
+          "n": 11,
+          "pct": 90
         }
       ],
       "examples": [
@@ -321,9 +321,9 @@
           "missed": 4
         },
         {
-          "id": "tillman",
-          "name": "Cedric Tillman",
-          "season": 2025,
+          "id": "fields-j",
+          "name": "Justin Fields",
+          "season": 2023,
           "missed": 4
         }
       ]
@@ -390,15 +390,15 @@
       ]
     },
     "Calf / Quad": {
-      "absences": 15,
-      "players": 12,
+      "absences": 14,
+      "players": 11,
       "medianMissed": 3,
-      "medianBaseline": 11.4,
+      "medianBaseline": 11.7,
       "curve": [
         {
           "label": "Games 1–2 back",
-          "n": 15,
-          "pct": 99
+          "n": 14,
+          "pct": 102
         },
         {
           "label": "Games 3–5",
@@ -407,17 +407,11 @@
         },
         {
           "label": "Games 6–8",
-          "n": 14,
+          "n": 13,
           "pct": 75
         }
       ],
       "examples": [
-        {
-          "id": "homer",
-          "name": "Travis Homer",
-          "season": 2025,
-          "missed": 9
-        },
         {
           "id": "cmc",
           "name": "Christian McCaffrey",
@@ -425,9 +419,9 @@
           "missed": 8
         },
         {
-          "id": "durham",
-          "name": "Payne Durham",
-          "season": 2024,
+          "id": "valdes-scantling",
+          "name": "Marquez Valdes-Scantling",
+          "season": 2025,
           "missed": 7
         },
         {
@@ -447,19 +441,25 @@
           "name": "Josh Jacobs",
           "season": 2023,
           "missed": 4
+        },
+        {
+          "id": "mclaurin",
+          "name": "Terry McLaurin",
+          "season": 2025,
+          "missed": 4
         }
       ]
     },
     "Foot / Toe": {
-      "absences": 13,
-      "players": 12,
+      "absences": 12,
+      "players": 11,
       "medianMissed": 4,
-      "medianBaseline": 12.3,
+      "medianBaseline": 12.6,
       "curve": [
         {
           "label": "Games 1–2 back",
-          "n": 13,
-          "pct": 53
+          "n": 12,
+          "pct": 54
         },
         {
           "label": "Games 3–5",
@@ -504,10 +504,10 @@
           "missed": 6
         },
         {
-          "id": "laube",
-          "name": "Dylan Laube",
+          "id": "likely",
+          "name": "Isaiah Likely",
           "season": 2025,
-          "missed": 6
+          "missed": 4
         }
       ]
     },
@@ -596,15 +596,15 @@
       ],
       "examples": [
         {
-          "id": "gesicki",
-          "name": "Mike Gesicki",
-          "season": 2025,
-          "missed": 5
-        },
-        {
           "id": "taylor-t",
           "name": "Tyrod Taylor",
           "season": 2023,
+          "missed": 5
+        },
+        {
+          "id": "gesicki",
+          "name": "Mike Gesicki",
+          "season": 2025,
           "missed": 5
         },
         {
