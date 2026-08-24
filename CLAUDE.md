@@ -1020,3 +1020,53 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - The commit message names the tier. A light refresh touches no nflverse file, and a commit saying
   "stats synced from nflverse" on a Sunday afternoon sends whoever reads the log looking for a
   change that is not in it.
+
+## What a player is running into — the team environment
+- `data/environment.json` — `scripts/build-environment.js`, daily. Every other board here measures a
+  PLAYER; this one measures what he was handed. Two backs with identical numbers are not identical
+  if one of them runs behind a top-five line, and nothing on the site said so.
+- THERE ARE TWO READINGS OF A LINE AND THEY DO NOT AGREE. Next Gen Stats computes an EXPECTED yards
+  figure for every carry from the position, speed and direction of all 22 players at the handoff —
+  so the blocking is priced INTO the bar rather than subtracted afterwards. Pro Football Reference
+  charts YARDS BEFORE CONTACT by watching the play. **Measured across 238 team-seasons they agree at
+  r = 0.32.** Both are published, the gap between a team's two ranks is shown, and they are never
+  averaged: in 2025 Miami is 1st by tracking and 28th by charting, San Francisco 2nd and 23rd.
+- THE EXPECTATION IS THE PART THAT PERSISTS: **r = 0.42 year over year** across 192 team pairs, which
+  is what makes it an environment rather than a result. A back's own RYOE repeats at 0.22.
+- DELIBERATELY NOT PFF. Their run-blocking grade is the number usually quoted for this, and it is a
+  paid, hand-graded product nobody outside can check or reproduce. Everything here is free and
+  carries its own source.
+- The agreement and the persistence are COMPUTED BY THE BUILD and travel in meta, so the page prints
+  a number that is currently true rather than one somebody measured once and typed in.
+- THE TEAM IS THE ONE HE PLAYED FOR THAT SEASON. Both source CSVs carry it per row; reading it from
+  today's pool attributes a 2023 season to whoever employs him now. That single mistake moved the
+  vendor agreement from 0.32 to 0.15 while this was being written. PFR files a traded player under
+  `2TM`/`3TM`, which is not a franchise — `isRealTeam` is exported and unit-tested, because a
+  mutation that gutted it to `return true` passed a test that only checked the name still appeared.
+- THE PASSING CSV USES DIFFERENT COLUMN NAMES FROM THE RUSHING ONE — `team` not `tm`,
+  `pass_attempts` not `att`, `times_pressured` not `prss`. Read with the rushing names it produced a
+  complete set of nulls that rendered perfectly. The build now fails if fewer than 20 teams carry a
+  pressure rate.
+
+## Rushing: three legs, and they disagree
+- RYOE is the number everyone quotes and the one most likely to be over-read. MEASURED HERE over
+  2018-2025: RYOE per attempt repeats year to year at **r = 0.22**, and as a percentage at **0.09** —
+  the form it is usually quoted in is the least repeatable of the three. Yards per carry repeats
+  better at 0.29. Skew is +0.57 and the 90th percentile is 0.86 against a maximum of 2.87, so a
+  season figure is carried by a handful of long runs. It is a description, never a projection input.
+- SO THE THREE TRAVEL TOGETHER: RYOE for talent isolation, EPA per carry for what the run was worth
+  in the situation, yards per carry as the raw check. 2025 is the clean demonstration — **Rhamondre
+  Stevenson is 1st in RYOE percentage and 41st of 46 in EPA per carry**, and Rachaad White is 40th
+  and 2nd. A board showing either alone would name the wrong back.
+- `rush_pct_over_expected` IS NOT RYOE AS A PERCENTAGE, whatever the name suggests. It runs 0.34 to
+  0.49 across qualified backs: it is the SHARE OF CARRIES that beat their expectation, which is a
+  consistency measure worth having under an honest name (`beatRate`). Read as the percentage form it
+  would have printed 0.4% beside a James Cook season he ran 28% above the bar. The percentage form
+  is DERIVED — RYOE over the expectation — because nothing published gives it.
+- `data/rushing.json` is the SIXTH OUTPUT of the one play-by-play download, via `lib/rushing.js`.
+  EPA per carry is an average over a skewed distribution, so success rate travels with it — the same
+  question asked in a way one long touchdown cannot dominate. Kneels and spikes are excluded;
+  counted in they drag every leader down by an amount unrelated to running the ball.
+- A CONSTANT NAMED `FIRST_<x>_SEASON` IS EXEMPT from the no-hand-typed-seasons rule and the rollover
+  test says so. NGS has no expected-yards figure before 2018 — the columns exist and are empty. That
+  is a fact about history, not a boundary that moves with the calendar.

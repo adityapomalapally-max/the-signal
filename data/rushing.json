@@ -1,0 +1,875 @@
+{
+  "meta": {
+    "generated": "2026-08-24T03:37:15.710Z",
+    "builtBy": "scripts/build-scheme.js via lib/rushing.js",
+    "source": "nflverse play-by-play — EPA and yards on run plays, keyed on rusher_player_id",
+    "seasons": [
+      2025
+    ],
+    "minCarries": 20,
+    "caveats": [
+      "EPA per carry is what a run was worth in the situation it happened in: the same eight yards is worth more on third and six than on first and ten with a lead. It answers a different question from yards per carry and from rush yards over expected, which is the reason all three are published together.",
+      "It is an average over a skewed distribution, so one long touchdown moves it. Success rate — the share of carries with positive EPA — is the same question asked in a way a single run cannot dominate.",
+      "Kneels and spikes are excluded. Counted in, they drag every leader down by an amount that has nothing to do with running the ball.",
+      "The team recorded is the one he was carrying for, not the one that employs him now."
+    ]
+  },
+  "seasons": {
+    "2025": {
+      "00-0033553": {
+        "carries": 32,
+        "team": "ARI",
+        "epaPerCarry": -0.087,
+        "successRate": 34.4,
+        "ypc": 2.97
+      },
+      "00-0039921": {
+        "carries": 29,
+        "team": "ARI",
+        "epaPerCarry": -0.007,
+        "successRate": 27.6,
+        "ypc": 5.52
+      },
+      "00-0033906": {
+        "carries": 131,
+        "team": "NO",
+        "epaPerCarry": -0.22,
+        "successRate": 32.1,
+        "ypc": 3.6
+      },
+      "00-0035228": {
+        "carries": 28,
+        "team": "ARI",
+        "epaPerCarry": 0.146,
+        "successRate": 46.4,
+        "ypc": 6.25
+      },
+      "00-0039376": {
+        "carries": 31,
+        "team": "NO",
+        "epaPerCarry": 0.279,
+        "successRate": 71,
+        "ypc": 5.42
+      },
+      "00-0038551": {
+        "carries": 47,
+        "team": "NO",
+        "epaPerCarry": -0.062,
+        "successRate": 40.4,
+        "ypc": 4.11
+      },
+      "00-0040202": {
+        "carries": 57,
+        "team": "NO",
+        "epaPerCarry": -0.138,
+        "successRate": 35.1,
+        "ypc": 3.61
+      },
+      "00-0037248": {
+        "carries": 348,
+        "team": "BUF",
+        "epaPerCarry": -0.002,
+        "successRate": 44.8,
+        "ypc": 5.13
+      },
+      "00-0034857": {
+        "carries": 115,
+        "team": "BUF",
+        "epaPerCarry": 0.531,
+        "successRate": 67.8,
+        "ypc": 6.09
+      },
+      "00-0035537": {
+        "carries": 50,
+        "team": "BUF",
+        "epaPerCarry": 0.055,
+        "successRate": 50,
+        "ypc": 4
+      },
+      "00-0032764": {
+        "carries": 307,
+        "team": "BAL",
+        "epaPerCarry": 0.03,
+        "successRate": 41.7,
+        "ypc": 5.2
+      },
+      "00-0034796": {
+        "carries": 58,
+        "team": "BAL",
+        "epaPerCarry": 0.409,
+        "successRate": 55.2,
+        "ypc": 6.19
+      },
+      "00-0039875": {
+        "carries": 58,
+        "team": "BUF",
+        "epaPerCarry": 0.023,
+        "successRate": 41.4,
+        "ypc": 4.74
+      },
+      "00-0036973": {
+        "carries": 270,
+        "team": "JAX",
+        "epaPerCarry": -0.06,
+        "successRate": 37,
+        "ypc": 4.35
+      },
+      "00-0036555": {
+        "carries": 148,
+        "team": "CAR",
+        "epaPerCarry": -0.101,
+        "successRate": 41.9,
+        "ypc": 3.76
+      },
+      "00-0039150": {
+        "carries": 41,
+        "team": "CAR",
+        "epaPerCarry": 0.334,
+        "successRate": 58.5,
+        "ypc": 6.32
+      },
+      "00-0040238": {
+        "carries": 24,
+        "team": "JAX",
+        "epaPerCarry": -0.147,
+        "successRate": 25,
+        "ypc": 4.04
+      },
+      "00-0036971": {
+        "carries": 81,
+        "team": "JAX",
+        "epaPerCarry": 0.319,
+        "successRate": 61.7,
+        "ypc": 4.96
+      },
+      "00-0040719": {
+        "carries": 88,
+        "team": "JAX",
+        "epaPerCarry": -0.08,
+        "successRate": 47.7,
+        "ypc": 4.07
+      },
+      "00-0040644": {
+        "carries": 21,
+        "team": "CAR",
+        "epaPerCarry": -0.096,
+        "successRate": 33.3,
+        "ypc": 4.67
+      },
+      "00-0036139": {
+        "carries": 242,
+        "team": "CAR",
+        "epaPerCarry": -0.016,
+        "successRate": 41.7,
+        "ypc": 4.48
+      },
+      "00-0038555": {
+        "carries": 67,
+        "team": "PHI",
+        "epaPerCarry": 0.112,
+        "successRate": 47.8,
+        "ypc": 5.6
+      },
+      "00-0038597": {
+        "carries": 233,
+        "team": "CIN",
+        "epaPerCarry": -0.018,
+        "successRate": 39.9,
+        "ypc": 4.37
+      },
+      "00-0040162": {
+        "carries": 65,
+        "team": "CLE",
+        "epaPerCarry": -0.259,
+        "successRate": 26.2,
+        "ypc": 2.69
+      },
+      "00-0037267": {
+        "carries": 24,
+        "team": "CLE",
+        "epaPerCarry": -0.126,
+        "successRate": 33.3,
+        "ypc": 3.04
+      },
+      "00-0040466": {
+        "carries": 27,
+        "team": "CLE",
+        "epaPerCarry": 0.033,
+        "successRate": 40.7,
+        "ypc": 3.41
+      },
+      "00-0036997": {
+        "carries": 252,
+        "team": "DAL",
+        "epaPerCarry": 0.048,
+        "successRate": 45.6,
+        "ypc": 4.77
+      },
+      "00-0034844": {
+        "carries": 307,
+        "team": "PHI",
+        "epaPerCarry": -0.089,
+        "successRate": 38.4,
+        "ypc": 4.07
+      },
+      "00-0036389": {
+        "carries": 99,
+        "team": "PHI",
+        "epaPerCarry": 0.264,
+        "successRate": 55.6,
+        "ypc": 4.55
+      },
+      "00-0035243": {
+        "carries": 20,
+        "team": "DAL",
+        "epaPerCarry": -0.094,
+        "successRate": 45,
+        "ypc": 5.85
+      },
+      "00-0033077": {
+        "carries": 37,
+        "team": "DAL",
+        "epaPerCarry": 0.058,
+        "successRate": 59.5,
+        "ypc": 5.11
+      },
+      "00-0035700": {
+        "carries": 253,
+        "team": "GB",
+        "epaPerCarry": -0.078,
+        "successRate": 43.1,
+        "ypc": 3.89
+      },
+      "00-0039139": {
+        "carries": 243,
+        "team": "DET",
+        "epaPerCarry": -0.011,
+        "successRate": 39.9,
+        "ypc": 5.03
+      },
+      "00-0035685": {
+        "carries": 159,
+        "team": "DET",
+        "epaPerCarry": 0.003,
+        "successRate": 43.4,
+        "ypc": 4.52
+      },
+      "00-0038685": {
+        "carries": 28,
+        "team": "GB",
+        "epaPerCarry": -0.149,
+        "successRate": 39.3,
+        "ypc": 4.36
+      },
+      "00-0036264": {
+        "carries": 35,
+        "team": "GB",
+        "epaPerCarry": 0.591,
+        "successRate": 62.9,
+        "ypc": 6.34
+      },
+      "00-0038797": {
+        "carries": 126,
+        "team": "GB",
+        "epaPerCarry": -0.062,
+        "successRate": 43.7,
+        "ypc": 3.96
+      },
+      "00-0034791": {
+        "carries": 136,
+        "team": "HOU",
+        "epaPerCarry": -0.063,
+        "successRate": 36.8,
+        "ypc": 4.18
+      },
+      "00-0037840": {
+        "carries": 303,
+        "team": "LA",
+        "epaPerCarry": 0.026,
+        "successRate": 49.2,
+        "ypc": 4.74
+      },
+      "00-0039163": {
+        "carries": 41,
+        "team": "HOU",
+        "epaPerCarry": 0.504,
+        "successRate": 61,
+        "ypc": 5.49
+      },
+      "00-0040583": {
+        "carries": 229,
+        "team": "HOU",
+        "epaPerCarry": -0.155,
+        "successRate": 36.2,
+        "ypc": 3.63
+      },
+      "00-0039738": {
+        "carries": 171,
+        "team": "LA",
+        "epaPerCarry": 0.084,
+        "successRate": 50.3,
+        "ypc": 5.06
+      },
+      "00-0037197": {
+        "carries": 118,
+        "team": "KC",
+        "epaPerCarry": -0.116,
+        "successRate": 34.7,
+        "ypc": 3.92
+      },
+      "00-0036355": {
+        "carries": 84,
+        "team": "LAC",
+        "epaPerCarry": 0.36,
+        "successRate": 65.5,
+        "ypc": 6.77
+      },
+      "00-0040666": {
+        "carries": 125,
+        "team": "LAC",
+        "epaPerCarry": -0.012,
+        "successRate": 41.6,
+        "ypc": 4.35
+      },
+      "00-0033873": {
+        "carries": 56,
+        "team": "KC",
+        "epaPerCarry": 0.571,
+        "successRate": 69.6,
+        "ypc": 7.66
+      },
+      "00-0033923": {
+        "carries": 163,
+        "team": "KC",
+        "epaPerCarry": 0.059,
+        "successRate": 47.9,
+        "ypc": 3.75
+      },
+      "00-0040122": {
+        "carries": 267,
+        "team": "LV",
+        "epaPerCarry": -0.244,
+        "successRate": 31.8,
+        "ypc": 3.65
+      },
+      "00-0039851": {
+        "carries": 103,
+        "team": "NE",
+        "epaPerCarry": 0.361,
+        "successRate": 62.1,
+        "ypc": 6.47
+      },
+      "00-0036875": {
+        "carries": 189,
+        "team": "NE",
+        "epaPerCarry": -0.136,
+        "successRate": 36,
+        "ypc": 4.35
+      },
+      "00-0040734": {
+        "carries": 210,
+        "team": "NE",
+        "epaPerCarry": -0.013,
+        "successRate": 39,
+        "ypc": 4.7
+      },
+      "00-0030565": {
+        "carries": 35,
+        "team": "LV",
+        "epaPerCarry": 0.01,
+        "successRate": 45.7,
+        "ypc": 3.29
+      },
+      "00-0036328": {
+        "carries": 25,
+        "team": "NE",
+        "epaPerCarry": -0.188,
+        "successRate": 44,
+        "ypc": 4.24
+      },
+      "00-0036223": {
+        "carries": 324,
+        "team": "IND",
+        "epaPerCarry": 0.058,
+        "successRate": 44.4,
+        "ypc": 4.9
+      },
+      "00-0035710": {
+        "carries": 38,
+        "team": "IND",
+        "epaPerCarry": 0.489,
+        "successRate": 68.4,
+        "ypc": 4.5
+      },
+      "00-0039040": {
+        "carries": 238,
+        "team": "MIA",
+        "epaPerCarry": 0.059,
+        "successRate": 38.2,
+        "ypc": 5.67
+      },
+      "00-0040198": {
+        "carries": 70,
+        "team": "MIA",
+        "epaPerCarry": -0.137,
+        "successRate": 40,
+        "ypc": 2.84
+      },
+      "00-0040179": {
+        "carries": 26,
+        "team": "IND",
+        "epaPerCarry": 0.001,
+        "successRate": 42.3,
+        "ypc": 3.69
+      },
+      "00-0033293": {
+        "carries": 132,
+        "team": "MIN",
+        "epaPerCarry": -0.018,
+        "successRate": 43.2,
+        "ypc": 4.15
+      },
+      "00-0036275": {
+        "carries": 255,
+        "team": "CHI",
+        "epaPerCarry": 0.049,
+        "successRate": 46.7,
+        "ypc": 4.77
+      },
+      "00-0039918": {
+        "carries": 75,
+        "team": "CHI",
+        "epaPerCarry": 0.22,
+        "successRate": 57.3,
+        "ypc": 6.13
+      },
+      "00-0037525": {
+        "carries": 159,
+        "team": "MIN",
+        "epaPerCarry": -0.036,
+        "successRate": 46.5,
+        "ypc": 4.77
+      },
+      "00-0039923": {
+        "carries": 28,
+        "team": "MIN",
+        "epaPerCarry": 0.427,
+        "successRate": 60.7,
+        "ypc": 6.82
+      },
+      "00-0039910": {
+        "carries": 54,
+        "team": "WAS",
+        "epaPerCarry": 0.075,
+        "successRate": 51.9,
+        "ypc": 5.24
+      },
+      "00-0039384": {
+        "carries": 176,
+        "team": "NYG",
+        "epaPerCarry": -0.056,
+        "successRate": 36.9,
+        "ypc": 4.2
+      },
+      "00-0040715": {
+        "carries": 102,
+        "team": "NYG",
+        "epaPerCarry": -0.119,
+        "successRate": 41.2,
+        "ypc": 4.04
+      },
+      "00-0040242": {
+        "carries": 176,
+        "team": "WAS",
+        "epaPerCarry": -0.037,
+        "successRate": 42.6,
+        "ypc": 4.57
+      },
+      "00-0035250": {
+        "carries": 119,
+        "team": "NYG",
+        "epaPerCarry": -0.023,
+        "successRate": 38.7,
+        "ypc": 3.67
+      },
+      "00-0033955": {
+        "carries": 45,
+        "team": "WAS",
+        "epaPerCarry": 0.032,
+        "successRate": 42.2,
+        "ypc": 4.96
+      },
+      "00-0038120": {
+        "carries": 243,
+        "team": "NYJ",
+        "epaPerCarry": -0.092,
+        "successRate": 40.7,
+        "ypc": 4.38
+      },
+      "00-0036945": {
+        "carries": 69,
+        "team": "NYJ",
+        "epaPerCarry": 0.175,
+        "successRate": 62.3,
+        "ypc": 5.67
+      },
+      "00-0039798": {
+        "carries": 43,
+        "team": "NYJ",
+        "epaPerCarry": -0.075,
+        "successRate": 34.9,
+        "ypc": 5.49
+      },
+      "00-0036919": {
+        "carries": 120,
+        "team": "PIT",
+        "epaPerCarry": -0.017,
+        "successRate": 45.8,
+        "ypc": 4.64
+      },
+      "00-0037228": {
+        "carries": 223,
+        "team": "PIT",
+        "epaPerCarry": -0.019,
+        "successRate": 42.6,
+        "ypc": 4.49
+      },
+      "00-0040142": {
+        "carries": 28,
+        "team": "PIT",
+        "epaPerCarry": -0.276,
+        "successRate": 25,
+        "ypc": 2.46
+      },
+      "00-0038134": {
+        "carries": 286,
+        "team": "SEA",
+        "epaPerCarry": -0.035,
+        "successRate": 38.5,
+        "ypc": 4.69
+      },
+      "00-0037834": {
+        "carries": 40,
+        "team": "SF",
+        "epaPerCarry": 0.46,
+        "successRate": 65,
+        "ypc": 5.38
+      },
+      "00-0033280": {
+        "carries": 337,
+        "team": "SF",
+        "epaPerCarry": -0.077,
+        "successRate": 39.2,
+        "ypc": 3.81
+      },
+      "00-0037746": {
+        "carries": 95,
+        "team": "SF",
+        "epaPerCarry": -0.032,
+        "successRate": 42.1,
+        "ypc": 4.25
+      },
+      "00-0039165": {
+        "carries": 190,
+        "team": "SEA",
+        "epaPerCarry": -0.006,
+        "successRate": 41.6,
+        "ypc": 3.96
+      },
+      "00-0034869": {
+        "carries": 27,
+        "team": "SEA",
+        "epaPerCarry": -0.073,
+        "successRate": 66.7,
+        "ypc": 4.52
+      },
+      "00-0037263": {
+        "carries": 143,
+        "team": "ATL",
+        "epaPerCarry": -0.081,
+        "successRate": 39.9,
+        "ypc": 3.59
+      },
+      "00-0039361": {
+        "carries": 173,
+        "team": "TB",
+        "epaPerCarry": -0.206,
+        "successRate": 34.7,
+        "ypc": 3.4
+      },
+      "00-0034855": {
+        "carries": 47,
+        "team": "TB",
+        "epaPerCarry": 0.879,
+        "successRate": 66,
+        "ypc": 8.32
+      },
+      "00-0038542": {
+        "carries": 288,
+        "team": "ATL",
+        "epaPerCarry": -0.043,
+        "successRate": 41.3,
+        "ypc": 5.14
+      },
+      "00-0038951": {
+        "carries": 86,
+        "team": "TB",
+        "epaPerCarry": -0.043,
+        "successRate": 37.2,
+        "ypc": 3.72
+      },
+      "00-0037256": {
+        "carries": 133,
+        "team": "TB",
+        "epaPerCarry": 0.078,
+        "successRate": 48.1,
+        "ypc": 4.3
+      },
+      "00-0035261": {
+        "carries": 242,
+        "team": "TEN",
+        "epaPerCarry": -0.09,
+        "successRate": 39.3,
+        "ypc": 4.47
+      },
+      "00-0036158": {
+        "carries": 153,
+        "team": "DEN",
+        "epaPerCarry": 0.027,
+        "successRate": 45.8,
+        "ypc": 5.05
+      },
+      "00-0040730": {
+        "carries": 166,
+        "team": "DEN",
+        "epaPerCarry": -0.16,
+        "successRate": 35.5,
+        "ypc": 3.6
+      },
+      "00-0039732": {
+        "carries": 76,
+        "team": "DEN",
+        "epaPerCarry": 0.258,
+        "successRate": 55.3,
+        "ypc": 5.34
+      },
+      "00-0028118": {
+        "carries": 25,
+        "team": "NYJ",
+        "epaPerCarry": 0.217,
+        "successRate": 52,
+        "ypc": 5.8
+      },
+      "00-0033119": {
+        "carries": 36,
+        "team": "ARI",
+        "epaPerCarry": 0.207,
+        "successRate": 61.1,
+        "ypc": 4.69
+      },
+      "00-0040236": {
+        "carries": 192,
+        "team": "CHI",
+        "epaPerCarry": -0.021,
+        "successRate": 44.8,
+        "ypc": 4.43
+      },
+      "00-0040784": {
+        "carries": 231,
+        "team": "CLE",
+        "epaPerCarry": -0.109,
+        "successRate": 33.3,
+        "ypc": 3.59
+      },
+      "00-0040676": {
+        "carries": 33,
+        "team": "TEN",
+        "epaPerCarry": 0.372,
+        "successRate": 63.6,
+        "ypc": 5.12
+      },
+      "00-0040691": {
+        "carries": 79,
+        "team": "NYG",
+        "epaPerCarry": 0.524,
+        "successRate": 67.1,
+        "ypc": 6.23
+      },
+      "00-0040078": {
+        "carries": 44,
+        "team": "KC",
+        "epaPerCarry": -0.221,
+        "successRate": 29.5,
+        "ypc": 3.43
+      },
+      "00-0036972": {
+        "carries": 23,
+        "team": "SF",
+        "epaPerCarry": 0.379,
+        "successRate": 60.9,
+        "ypc": 3.52
+      },
+      "00-0038705": {
+        "carries": 44,
+        "team": "ARI",
+        "epaPerCarry": -0.157,
+        "successRate": 31.8,
+        "ypc": 7.09
+      },
+      "00-0033526": {
+        "carries": 84,
+        "team": "CIN",
+        "epaPerCarry": -0.003,
+        "successRate": 54.8,
+        "ypc": 4.55
+      },
+      "00-0038440": {
+        "carries": 32,
+        "team": "MIN",
+        "epaPerCarry": -0.281,
+        "successRate": 40.6,
+        "ypc": 3.56
+      },
+      "00-0038611": {
+        "carries": 112,
+        "team": "WAS",
+        "epaPerCarry": 0.055,
+        "successRate": 46.4,
+        "ypc": 4.46
+      },
+      "00-0032268": {
+        "carries": 44,
+        "team": "WAS",
+        "epaPerCarry": 0.152,
+        "successRate": 52.3,
+        "ypc": 6.89
+      },
+      "00-0039299": {
+        "carries": 27,
+        "team": "SEA",
+        "epaPerCarry": -0.403,
+        "successRate": 22.2,
+        "ypc": 3.07
+      },
+      "00-0031687": {
+        "carries": 22,
+        "team": "LV",
+        "epaPerCarry": -0.412,
+        "successRate": 31.8,
+        "ypc": 4.73
+      },
+      "00-0036924": {
+        "carries": 92,
+        "team": "ARI",
+        "epaPerCarry": -0.074,
+        "successRate": 42.4,
+        "ypc": 3.62
+      },
+      "00-0040586": {
+        "carries": 38,
+        "team": "DAL",
+        "epaPerCarry": -0.197,
+        "successRate": 28.9,
+        "ypc": 3.39
+      },
+      "00-0038454": {
+        "carries": 59,
+        "team": "BAL",
+        "epaPerCarry": 0.044,
+        "successRate": 35.6,
+        "ypc": 5.78
+      },
+      "00-0033357": {
+        "carries": 52,
+        "team": "NO",
+        "epaPerCarry": -0.273,
+        "successRate": 36.5,
+        "ypc": 2.19
+      },
+      "00-0039032": {
+        "carries": 72,
+        "team": "TEN",
+        "epaPerCarry": -0.054,
+        "successRate": 34.7,
+        "ypc": 3.93
+      },
+      "00-0037157": {
+        "carries": 83,
+        "team": "ARI",
+        "epaPerCarry": -0.197,
+        "successRate": 37.3,
+        "ypc": 3.24
+      },
+      "00-0039391": {
+        "carries": 166,
+        "team": "LAC",
+        "epaPerCarry": -0.101,
+        "successRate": 34.9,
+        "ypc": 4.06
+      },
+      "00-0038794": {
+        "carries": 45,
+        "team": "DEN",
+        "epaPerCarry": -0.011,
+        "successRate": 48.9,
+        "ypc": 4.87
+      },
+      "00-0039757": {
+        "carries": 23,
+        "team": "NE",
+        "epaPerCarry": 0.104,
+        "successRate": 34.8,
+        "ypc": 3.17
+      },
+      "00-0037563": {
+        "carries": 52,
+        "team": "DAL",
+        "epaPerCarry": 0.016,
+        "successRate": 40.4,
+        "ypc": 4.81
+      },
+      "00-0039874": {
+        "carries": 70,
+        "team": "MIA",
+        "epaPerCarry": -0.081,
+        "successRate": 47.1,
+        "ypc": 4.11
+      },
+      "00-0036755": {
+        "carries": 41,
+        "team": "LAC",
+        "epaPerCarry": -0.036,
+        "successRate": 39,
+        "ypc": 3.88
+      },
+      "00-0040743": {
+        "carries": 39,
+        "team": "NO",
+        "epaPerCarry": 0.205,
+        "successRate": 53.8,
+        "ypc": 5.1
+      },
+      "00-0040668": {
+        "carries": 20,
+        "team": "CLE",
+        "epaPerCarry": 0.489,
+        "successRate": 75,
+        "ypc": 8.55
+      },
+      "00-0039373": {
+        "carries": 46,
+        "team": "NO",
+        "epaPerCarry": 0.102,
+        "successRate": 43.5,
+        "ypc": 4.3
+      },
+      "00-0039405": {
+        "carries": 43,
+        "team": "HOU",
+        "epaPerCarry": -0.209,
+        "successRate": 25.6,
+        "ypc": 4.49
+      }
+    }
+  }
+}

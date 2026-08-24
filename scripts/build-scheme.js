@@ -31,6 +31,7 @@ const fs = require('fs');
 const path = require('path');
 const { fetchCSV, parseCSV, parseCSVLine } = require('./lib/match');
 const { buildWeeklyUsage } = require('./lib/weekly');
+const { buildRushing } = require('./lib/rushing');
 const { poolCrosswalk } = require('./lib/ids');
 const season = require('./lib/season');
 const { buildFieldMap, finishFieldMap, DEPTH_BANDS, GAPS,
@@ -42,6 +43,7 @@ const OUT_USAGE = path.join(DATA_DIR, 'player-usage.json');
 const OUT_CHARTING = path.join(DATA_DIR, 'charting.json');
 const OUT_FIELDMAP = path.join(DATA_DIR, 'fieldmap.json');
 const OUT_WEEKLY = path.join(DATA_DIR, 'weekly-usage.json');
+const OUT_RUSHING = path.join(DATA_DIR, 'rushing.json');
 
 // The seasons participation data covers well. 2016-2022 exists but the schema
 // and the league both moved; three seasons is enough to read a trend and short
@@ -559,7 +561,19 @@ async function buildSeason(season) {
     log(`  weekly usage unavailable for ${season}: ${e.message}`);
   }
 
-  return { teams, league, usage, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage, weekly };
+  // THE SIXTH OUTPUT OF THE ONE pbp DOWNLOAD. EPA per carry is the leg the
+  // rushing triangulation was missing: RYOE says how much of a run was the
+  // back rather than the blocking, EPA says what the run was worth in the
+  // situation it happened in, and they disagree often enough to be worth
+  // showing together.
+  const rushing = buildRushing(pbpCsv);
+  log(`  rushing: ${rushing.meta.rushersQualified} backs at ${rushing.meta.minCarries}+ carries `
+    + `from ${rushing.meta.carries} carries (${rushing.meta.missingEpaPct}% carried no EPA)`);
+  if (rushing.meta.missingEpaPct !== null && rushing.meta.missingEpaPct > 5) {
+    throw new Error(`${rushing.meta.missingEpaPct}% of carries have no EPA — play-by-play has changed`);
+  }
+
+  return { teams, league, usage, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage, weekly, rushing };
 }
 
 function shapeDefense(d) {
@@ -624,11 +638,13 @@ async function main() {
   let fmCoverageLatest = (existingFieldmap.meta || {}).coverage || null;
   const existingWeekly = fs.existsSync(OUT_WEEKLY) ? JSON.parse(fs.readFileSync(OUT_WEEKLY, 'utf8')) : { seasons: {} };
   const weeklySeasons = { ...(existingWeekly.seasons || {}) };
+  const existingRushing = fs.existsSync(OUT_RUSHING) ? JSON.parse(fs.readFileSync(OUT_RUSHING, 'utf8')) : { seasons: {} };
+  const rushingSeasons = { ...(existingRushing.seasons || {}) };
   const failures = [];
 
   for (const season of wanted) {
     try {
-      const { teams, league: lg, usage, defenses, charting, fieldmap, fmCoverage, weekly } = await buildSeason(season);
+      const { teams, league: lg, usage, defenses, charting, fieldmap, fmCoverage, weekly, rushing } = await buildSeason(season);
       if (!Object.keys(teams).length) throw new Error('no team rows produced');
       const shaped = {};
       for (const [team, raw] of Object.entries(teams)) shaped[team] = shapeTeam(raw);
@@ -648,6 +664,7 @@ async function main() {
       if (charting) chartingSeasons[season] = charting;
       if (fieldmap) { fieldmapSeasons[season] = fieldmap; fmCoverageLatest = fmCoverage; }
       if (weekly && Object.keys(weekly).length) weeklySeasons[season] = weekly;
+      if (rushing && Object.keys(rushing.players).length) rushingSeasons[season] = rushing.players;
       league[season] = shapeTeam(lg);
       league[season].defense = shapeDefense(leagueDef);
       // Share of his own snaps, per grouping. A raw count says how much he
@@ -832,6 +849,30 @@ async function main() {
     const latestWk = weeklySeasons[wkYears[wkYears.length - 1]] || {};
     log(`${wroteWeekly ? 'wrote' : 'unchanged —'} weekly-usage.json: ${Object.keys(latestWk).length} players in `
       + `${wkYears[wkYears.length - 1]} — ${Math.round(fs.statSync(OUT_WEEKLY).size / 1024)}KB`);
+  }
+
+  const rushYears = Object.keys(rushingSeasons).sort();
+  if (rushYears.length) {
+    const rushingOut = {
+      meta: {
+        generated: new Date().toISOString(),
+        builtBy: 'scripts/build-scheme.js via lib/rushing.js',
+        source: 'nflverse play-by-play — EPA and yards on run plays, keyed on rusher_player_id',
+        seasons: rushYears.map(Number),
+        minCarries: 20,
+        caveats: [
+          'EPA per carry is what a run was worth in the situation it happened in: the same eight yards is worth more on third and six than on first and ten with a lead. It answers a different question from yards per carry and from rush yards over expected, which is the reason all three are published together.',
+          'It is an average over a skewed distribution, so one long touchdown moves it. Success rate — the share of carries with positive EPA — is the same question asked in a way a single run cannot dominate.',
+          'Kneels and spikes are excluded. Counted in, they drag every leader down by an amount that has nothing to do with running the ball.',
+          'The team recorded is the one he was carrying for, not the one that employs him now.',
+        ],
+      },
+      seasons: rushingSeasons,
+    };
+    const wroteRushing = writeJSONIfChanged(OUT_RUSHING, rushingOut);
+    const latestRush = rushingSeasons[rushYears[rushYears.length - 1]] || {};
+    log(`${wroteRushing ? 'wrote' : 'unchanged —'} rushing.json: ${Object.keys(latestRush).length} backs in `
+      + `${rushYears[rushYears.length - 1]} — ${Math.round(fs.statSync(OUT_RUSHING).size / 1024)}KB`);
   }
 }
 

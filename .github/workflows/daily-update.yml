@@ -155,6 +155,14 @@ jobs:
         if: steps.plan.outputs.tier == 'full'
         run: node scripts/build-scheme.js
 
+      # AFTER build-scheme, which writes the play-by-play half, and after
+      # fetch-advstats, which writes the charted half. It reads neither file —
+      # both source CSVs are fetched fresh — but it publishes numbers beside
+      # theirs and should not describe a different week from them.
+      - name: Build the team environment
+        if: steps.plan.outputs.tier == 'full'
+        run: node scripts/build-environment.js
+
       # Adds a row for any team-season that appeared; never overwrites an answer.
       - name: Scaffold play-caller rows
         if: steps.plan.outputs.tier == 'full'

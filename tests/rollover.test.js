@@ -43,6 +43,17 @@ test('no script in the daily Action hand-types a season', () => {
     const src = fs.readFileSync(file, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
     const decls = [...src.matchAll(/(const|let|var)\s+([A-Za-z_]+)\s*=\s*(20\d\d\b|\[\s*20\d\d\s*,)/g)];
     for (const [, kind, varName] of decls) {
+      // ONE EXCEPTION, AND IT IS A DIFFERENT KIND OF NUMBER. A constant named
+      // FIRST_<something>_SEASON is not a boundary that has to move with the
+      // calendar — it records the season an upstream feed STARTED publishing a
+      // column, which is a fact about history and will be as true in 2030 as it
+      // is now. Next Gen Stats has no expected-yards figure before 2018; the
+      // columns exist and are empty. Deriving that from lib/season.js would be
+      // deriving the wrong thing.
+      //
+      // The name has to say so, so the exception is visible in the code rather
+      // than living only here.
+      if (/^FIRST_[A-Z_]*SEASON$/.test(varName)) continue;
       if (kind === 'const') { offenders.push(`${name}: const ${varName} — nothing can move it`); continue; }
       // Reassigned from the calendar anywhere else in the file?
       // The whole assignment expression, not just what follows the `=`:

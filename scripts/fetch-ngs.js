@@ -43,6 +43,15 @@ function round(n, d = 1) {
 
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+// RYOE as a share of the expectation. Guarded because a back with no carries
+// has no expectation to beat, and dividing by it would produce Infinity rather
+// than the honest answer, which is nothing.
+const pct = (over, expected) => {
+  const o = Number(over), e = Number(expected);
+  if (!isFinite(o) || !isFinite(e) || e <= 0) return null;
+  return Math.round((o / e) * 1000) / 10;
+};
+
 const NGS_URL = t => `https://github.com/nflverse/nflverse-data/releases/download/nextgen_stats/ngs_${t}.csv.gz`;
 const SNAP_URL = s => `https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_${s}.csv`;
 
@@ -84,7 +93,32 @@ async function main() {
     rushing: (r) => ({
       efficiency: round(r.efficiency, 2),
       eightBoxPct: round(r.percent_attempts_gte_eight_defenders),
-      timeToLos: round(r.avg_time_to_los, 2)
+      timeToLos: round(r.avg_time_to_los, 2),
+      // RUSH YARDS OVER EXPECTED. These four columns were being downloaded and
+      // thrown away. The expectation is the interesting one: at the handoff the
+      // model reads the position, speed and direction of all 22 players and
+      // says what an average back gains from that picture, so the blocking is
+      // priced INTO the bar rather than subtracted from the result afterwards.
+      //
+      // Null before 2018 — the columns exist and are empty — so this carries
+      // whatever is there rather than defaulting a season of zeroes.
+      attempts: round(r.rush_attempts, 0),
+      expYards: round(r.expected_rush_yards, 1),
+      ryoe: round(r.rush_yards_over_expected, 1),
+      ryoePerAtt: round(r.rush_yards_over_expected_per_att, 2),
+      // THE PERCENTAGE FORM IS DERIVED, because nothing published gives it:
+      // how far above the bar he ran, as a share of the bar. It is the reading
+      // that survives a change of workload — a back with 300 carries and one
+      // with 150 can be compared on it, which is the whole reason to quote a
+      // percentage instead of a per-carry figure.
+      ryoePct: pct(r.rush_yards_over_expected, r.expected_rush_yards),
+      // NOT THE PERCENTAGE FORM, WHATEVER ITS NAME SAYS. `rush_pct_over_expected`
+      // runs 0.34 to 0.49 across qualified backs — it is the SHARE OF CARRIES
+      // that beat their expectation, which is a consistency measure and a
+      // genuinely useful one. Read as "RYOE as a percentage" it would have put
+      // 0.4% beside James Cook's 2025, a season he ran 28% above the bar.
+      beatRate: round(r.rush_pct_over_expected, 3),
+      ypc: round(r.avg_rush_yards, 2)
     })
   };
   const ngsKey = { receiving: 'rec', passing: 'pass', rushing: 'rush' };

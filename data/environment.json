@@ -1,0 +1,5718 @@
+{
+  "meta": {
+    "generated": "2026-08-24T03:34:00.510Z",
+    "builtBy": "scripts/build-environment.js",
+    "seasons": [
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "sources": {
+      "expected": "Next Gen Stats expected rush yards — player tracking at the handoff, via nflverse",
+      "ybc": "Pro Football Reference advanced rushing — yards before contact, charted",
+      "pressure": "Pro Football Reference advanced passing — pressures faced",
+      "scheme": "data/scheme.json, built from play-by-play participation",
+      "caller": "data/playcallers.json, hand-kept and sourced"
+    },
+    "measured": {
+      "vendorAgreement": 0.32,
+      "vendorAgreementPairs": 238,
+      "expectationPersistence": 0.42,
+      "expectationPersistencePairs": 192
+    },
+    "caveats": [
+      "The two readings of a line are not the same measurement and do not agree closely. Expected yards comes from tracking every player at the handoff; yards before contact is charted by watching the play. They are published side by side, and the gap between a team's two ranks is shown rather than averaged away.",
+      "The expectation is the picture at the handoff, so blocking that develops after it — second level, downfield — leaks into the back's number rather than the line's.",
+      "This describes what a team's carries ran into, not what its five linemen are worth. Personnel, defensive attention and game script are all inside it.",
+      "Pressure faced is not the line alone either: a quarterback who holds the ball creates some of it, and a quick game hides some of it. Pocket time is published beside it for that reason.",
+      "Deliberately not PFF. Their run-blocking grade is the number usually quoted here, and it is a paid hand-graded product nobody outside can check or reproduce."
+    ]
+  },
+  "seasons": {
+    "2018": {
+      "BUF": {
+        "run": {
+          "expPerAtt": 3.99,
+          "expRank": 20,
+          "ybcPerAtt": 2.01,
+          "ybcRank": 30,
+          "rankGap": 10,
+          "carries": 276
+        },
+        "pass": {
+          "pressurePct": 34.47,
+          "pressureRank": 29,
+          "pocketTime": 2.38,
+          "dropbacks": 499
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "TEN": {
+        "run": {
+          "expPerAtt": 3.78,
+          "expRank": 27,
+          "ybcPerAtt": 2.14,
+          "ybcRank": 25,
+          "rankGap": 2,
+          "carries": 370
+        },
+        "pass": {
+          "pressurePct": 30.21,
+          "pressureRank": 24,
+          "pocketTime": 2.32,
+          "dropbacks": 437
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "MIN": {
+        "run": {
+          "expPerAtt": 4.06,
+          "expRank": 19,
+          "ybcPerAtt": 2.38,
+          "ybcRank": 18,
+          "rankGap": 1,
+          "carries": 273
+        },
+        "pass": {
+          "pressurePct": 29.04,
+          "pressureRank": 20,
+          "pocketTime": 2.5,
+          "dropbacks": 606
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "PHI": {
+        "run": {
+          "expPerAtt": 4.44,
+          "expRank": 7,
+          "ybcPerAtt": 2.09,
+          "ybcRank": 28,
+          "rankGap": 21,
+          "carries": 207
+        },
+        "pass": {
+          "pressurePct": 25.21,
+          "pressureRank": 12,
+          "pocketTime": 2.33,
+          "dropbacks": 599
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CLE": {
+        "run": {
+          "expPerAtt": 3.98,
+          "expRank": 21,
+          "ybcPerAtt": 2.36,
+          "ybcRank": 19,
+          "rankGap": 2,
+          "carries": 192
+        },
+        "pass": {
+          "pressurePct": 29.62,
+          "pressureRank": 21,
+          "pocketTime": 2.23,
+          "dropbacks": 574
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "IND": {
+        "run": {
+          "expPerAtt": 4.4,
+          "expRank": 10,
+          "ybcPerAtt": 2.3,
+          "ybcRank": 20,
+          "rankGap": 10,
+          "carries": 280
+        },
+        "pass": {
+          "pressurePct": 18.79,
+          "pressureRank": 3,
+          "pocketTime": 2.3,
+          "dropbacks": 644
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NE": {
+        "run": {
+          "expPerAtt": 4.63,
+          "expRank": 3,
+          "ybcPerAtt": 2.55,
+          "ybcRank": 14,
+          "rankGap": 11,
+          "carries": 303
+        },
+        "pass": {
+          "pressurePct": 18.82,
+          "pressureRank": 4,
+          "pocketTime": 2.39,
+          "dropbacks": 574
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NYG": {
+        "run": {
+          "expPerAtt": 3.45,
+          "expRank": 32,
+          "ybcPerAtt": 2.18,
+          "ybcRank": 23,
+          "rankGap": 9,
+          "carries": 261
+        },
+        "pass": {
+          "pressurePct": 26.59,
+          "pressureRank": 15,
+          "pocketTime": 2.4,
+          "dropbacks": 583
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "ARI": {
+        "run": {
+          "expPerAtt": 3.71,
+          "expRank": 28,
+          "ybcPerAtt": 2.13,
+          "ybcRank": 26,
+          "rankGap": 2,
+          "carries": 258
+        },
+        "pass": {
+          "pressurePct": 29.7,
+          "pressureRank": 23,
+          "pocketTime": 2.27,
+          "dropbacks": 495
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "JAX": {
+        "run": {
+          "expPerAtt": 3.67,
+          "expRank": 31,
+          "ybcPerAtt": 2.63,
+          "ybcRank": 10,
+          "rankGap": 21,
+          "carries": 409
+        },
+        "pass": {
+          "pressurePct": 28.92,
+          "pressureRank": 19,
+          "pocketTime": 2.42,
+          "dropbacks": 536
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "MIA": {
+        "run": {
+          "expPerAtt": 4.26,
+          "expRank": 13,
+          "ybcPerAtt": 2.74,
+          "ybcRank": 7,
+          "rankGap": 6,
+          "carries": 276
+        },
+        "pass": {
+          "pressurePct": 34.29,
+          "pressureRank": 28,
+          "pocketTime": 2.35,
+          "dropbacks": 455
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "DEN": {
+        "run": {
+          "expPerAtt": 4.21,
+          "expRank": 16,
+          "ybcPerAtt": 2.91,
+          "ybcRank": 3,
+          "rankGap": 13,
+          "carries": 322
+        },
+        "pass": {
+          "pressurePct": 27.55,
+          "pressureRank": 18,
+          "pocketTime": 2.3,
+          "dropbacks": 588
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "ATL": {
+        "run": {
+          "expPerAtt": 4.42,
+          "expRank": 8,
+          "ybcPerAtt": 2.87,
+          "ybcRank": 4,
+          "rankGap": 4,
+          "carries": 257
+        },
+        "pass": {
+          "pressurePct": 23.18,
+          "pressureRank": 7,
+          "pocketTime": 2.29,
+          "dropbacks": 617
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "DET": {
+        "run": {
+          "expPerAtt": 3.89,
+          "expRank": 24,
+          "ybcPerAtt": 2.12,
+          "ybcRank": 27,
+          "rankGap": 3,
+          "carries": 272
+        },
+        "pass": {
+          "pressurePct": 23.04,
+          "pressureRank": 6,
+          "pocketTime": 2.3,
+          "dropbacks": 573
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CAR": {
+        "run": {
+          "expPerAtt": 4.48,
+          "expRank": 6,
+          "ybcPerAtt": 2.97,
+          "ybcRank": 2,
+          "rankGap": 4,
+          "carries": 219
+        },
+        "pass": {
+          "pressurePct": 22.38,
+          "pressureRank": 5,
+          "pocketTime": 2.31,
+          "dropbacks": 563
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "BAL": {
+        "run": {
+          "expPerAtt": 4.38,
+          "expRank": 11,
+          "ybcPerAtt": 2.39,
+          "ybcRank": 17,
+          "rankGap": 6,
+          "carries": 251
+        },
+        "pass": {
+          "pressurePct": 25.9,
+          "pressureRank": 13,
+          "pocketTime": 2.36,
+          "dropbacks": 556
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "TB": {
+        "run": {
+          "expPerAtt": 3.68,
+          "expRank": 30,
+          "ybcPerAtt": 2.18,
+          "ybcRank": 24,
+          "rankGap": 6,
+          "carries": 234
+        },
+        "pass": {
+          "pressurePct": 26.24,
+          "pressureRank": 14,
+          "pocketTime": 2.4,
+          "dropbacks": 625
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "LAC": {
+        "run": {
+          "expPerAtt": 4.99,
+          "expRank": 1,
+          "ybcPerAtt": 2.2,
+          "ybcRank": 22,
+          "rankGap": 21,
+          "carries": 281
+        },
+        "pass": {
+          "pressurePct": 25,
+          "pressureRank": 11,
+          "pocketTime": 2.4,
+          "dropbacks": 512
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NO": {
+        "run": {
+          "expPerAtt": 4.57,
+          "expRank": 4,
+          "ybcPerAtt": 2.01,
+          "ybcRank": 29,
+          "rankGap": 25,
+          "carries": 332
+        },
+        "pass": {
+          "pressurePct": 17.92,
+          "pressureRank": 2,
+          "pocketTime": 2.41,
+          "dropbacks": 519
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "HOU": {
+        "run": {
+          "expPerAtt": 3.81,
+          "expRank": 26,
+          "ybcPerAtt": 2.59,
+          "ybcRank": 12,
+          "rankGap": 14,
+          "carries": 360
+        },
+        "pass": {
+          "pressurePct": 39.13,
+          "pressureRank": 32,
+          "pocketTime": 2.5,
+          "dropbacks": 506
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "KC": {
+        "run": {
+          "expPerAtt": 3.98,
+          "expRank": 22,
+          "ybcPerAtt": 2.79,
+          "ybcRank": 6,
+          "rankGap": 16,
+          "carries": 181
+        },
+        "pass": {
+          "pressurePct": 36.71,
+          "pressureRank": 30,
+          "pocketTime": 2.4,
+          "dropbacks": 583
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "SEA": {
+        "run": {
+          "expPerAtt": 4.22,
+          "expRank": 15,
+          "ybcPerAtt": 2.86,
+          "ybcRank": 5,
+          "rankGap": 10,
+          "carries": 444
+        },
+        "pass": {
+          "pressurePct": 38.41,
+          "pressureRank": 31,
+          "pocketTime": 2.5,
+          "dropbacks": 427
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NYJ": {
+        "run": {
+          "expPerAtt": 3.69,
+          "expRank": 29,
+          "ybcPerAtt": 1.84,
+          "ybcRank": 32,
+          "rankGap": 3,
+          "carries": 235
+        },
+        "pass": {
+          "pressurePct": 26.72,
+          "pressureRank": 16,
+          "pocketTime": 2.38,
+          "dropbacks": 524
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "WAS": {
+        "run": {
+          "expPerAtt": 3.82,
+          "expRank": 25,
+          "ybcPerAtt": 2.62,
+          "ybcRank": 11,
+          "rankGap": 14,
+          "carries": 251
+        },
+        "pass": {
+          "pressurePct": 32.81,
+          "pressureRank": 26,
+          "pocketTime": 2.42,
+          "dropbacks": 509
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "SF": {
+        "run": {
+          "expPerAtt": 4.42,
+          "expRank": 9,
+          "ybcPerAtt": 2.44,
+          "ybcRank": 15,
+          "rankGap": 6,
+          "carries": 264
+        },
+        "pass": {
+          "pressurePct": 31.77,
+          "pressureRank": 25,
+          "pocketTime": 2.32,
+          "dropbacks": 532
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CIN": {
+        "run": {
+          "expPerAtt": 4.12,
+          "expRank": 18,
+          "ybcPerAtt": 2.64,
+          "ybcRank": 9,
+          "rankGap": 9,
+          "carries": 237
+        },
+        "pass": {
+          "pressurePct": 24.35,
+          "pressureRank": 10,
+          "pocketTime": 2.33,
+          "dropbacks": 542
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CHI": {
+        "run": {
+          "expPerAtt": 4.34,
+          "expRank": 12,
+          "ybcPerAtt": 2.42,
+          "ybcRank": 16,
+          "rankGap": 4,
+          "carries": 349
+        },
+        "pass": {
+          "pressurePct": 23.63,
+          "pressureRank": 9,
+          "pocketTime": 2.41,
+          "dropbacks": 512
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "GB": {
+        "run": {
+          "expPerAtt": 4.52,
+          "expRank": 5,
+          "ybcPerAtt": 3.38,
+          "ybcRank": 1,
+          "rankGap": 4,
+          "carries": 254
+        },
+        "pass": {
+          "pressurePct": 29.69,
+          "pressureRank": 22,
+          "pocketTime": 2.5,
+          "dropbacks": 640
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "PIT": {
+        "run": {
+          "expPerAtt": 3.89,
+          "expRank": 23,
+          "ybcPerAtt": 2.28,
+          "ybcRank": 21,
+          "rankGap": 2,
+          "carries": 215
+        },
+        "pass": {
+          "pressurePct": 17.71,
+          "pressureRank": 1,
+          "pocketTime": 2.3,
+          "dropbacks": 689
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "DAL": {
+        "run": {
+          "expPerAtt": 4.25,
+          "expRank": 14,
+          "ybcPerAtt": 2.65,
+          "ybcRank": 8,
+          "rankGap": 6,
+          "carries": 304
+        },
+        "pass": {
+          "pressurePct": 33.97,
+          "pressureRank": 27,
+          "pocketTime": 2.41,
+          "dropbacks": 527
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "LAR": {
+        "run": {
+          "expPerAtt": 4.94,
+          "expRank": 2,
+          "ybcPerAtt": 2.59,
+          "ybcRank": 13,
+          "rankGap": 11,
+          "carries": 256
+        },
+        "pass": {
+          "pressurePct": 23.42,
+          "pressureRank": 8,
+          "pocketTime": 2.58,
+          "dropbacks": 568
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "LV": {
+        "run": {
+          "expPerAtt": 4.14,
+          "expRank": 17,
+          "ybcPerAtt": 1.89,
+          "ybcRank": 31,
+          "rankGap": 14,
+          "carries": 262
+        },
+        "pass": {
+          "pressurePct": 27.16,
+          "pressureRank": 17,
+          "pocketTime": 2.3,
+          "dropbacks": 556
+        },
+        "scheme": null,
+        "caller": null
+      }
+    },
+    "2019": {
+      "LAC": {
+        "run": {
+          "expPerAtt": 4.32,
+          "expRank": 9,
+          "ybcPerAtt": 1.92,
+          "ybcRank": 25,
+          "rankGap": 16,
+          "carries": 294
+        },
+        "pass": {
+          "pressurePct": 21.78,
+          "pressureRank": 7,
+          "pocketTime": 2.5,
+          "dropbacks": 597
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "ARI": {
+        "run": {
+          "expPerAtt": 4.48,
+          "expRank": 6,
+          "ybcPerAtt": 3.31,
+          "ybcRank": 1,
+          "rankGap": 5,
+          "carries": 264
+        },
+        "pass": {
+          "pressurePct": 23.29,
+          "pressureRank": 11,
+          "pocketTime": 2.3,
+          "dropbacks": 554
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "JAX": {
+        "run": {
+          "expPerAtt": 3.87,
+          "expRank": 26,
+          "ybcPerAtt": 1.78,
+          "ybcRank": 29,
+          "rankGap": 3,
+          "carries": 265
+        },
+        "pass": {
+          "pressurePct": 23.43,
+          "pressureRank": 12,
+          "pocketTime": 2.37,
+          "dropbacks": 589
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "MIN": {
+        "run": {
+          "expPerAtt": 4.1,
+          "expRank": 17,
+          "ybcPerAtt": 2.24,
+          "ybcRank": 15,
+          "rankGap": 2,
+          "carries": 350
+        },
+        "pass": {
+          "pressurePct": 25.11,
+          "pressureRank": 15,
+          "pocketTime": 2.69,
+          "dropbacks": 466
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CIN": {
+        "run": {
+          "expPerAtt": 4.11,
+          "expRank": 16,
+          "ybcPerAtt": 1.85,
+          "ybcRank": 27,
+          "rankGap": 11,
+          "carries": 278
+        },
+        "pass": {
+          "pressurePct": 21.75,
+          "pressureRank": 6,
+          "pocketTime": 2.36,
+          "dropbacks": 616
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "HOU": {
+        "run": {
+          "expPerAtt": 3.9,
+          "expRank": 24,
+          "ybcPerAtt": 2.64,
+          "ybcRank": 5,
+          "rankGap": 19,
+          "carries": 245
+        },
+        "pass": {
+          "pressurePct": 27.15,
+          "pressureRank": 23,
+          "pocketTime": 2.52,
+          "dropbacks": 534
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CAR": {
+        "run": {
+          "expPerAtt": 4.09,
+          "expRank": 19,
+          "ybcPerAtt": 3.14,
+          "ybcRank": 3,
+          "rankGap": 16,
+          "carries": 287
+        },
+        "pass": {
+          "pressurePct": 26.54,
+          "pressureRank": 22,
+          "pocketTime": 2.37,
+          "dropbacks": 633
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "PIT": {
+        "run": {
+          "expPerAtt": 3.88,
+          "expRank": 25,
+          "ybcPerAtt": 1.45,
+          "ybcRank": 31,
+          "rankGap": 6,
+          "carries": 224
+        },
+        "pass": {
+          "pressurePct": 27.84,
+          "pressureRank": 25,
+          "pocketTime": 2.52,
+          "dropbacks": 510
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "BAL": {
+        "run": {
+          "expPerAtt": 4.75,
+          "expRank": 1,
+          "ybcPerAtt": 3.25,
+          "ybcRank": 2,
+          "rankGap": 1,
+          "carries": 335
+        },
+        "pass": {
+          "pressurePct": 19.09,
+          "pressureRank": 2,
+          "pocketTime": 2.59,
+          "dropbacks": 440
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "IND": {
+        "run": {
+          "expPerAtt": 4.33,
+          "expRank": 8,
+          "ybcPerAtt": 2.52,
+          "ybcRank": 7,
+          "rankGap": 1,
+          "carries": 247
+        },
+        "pass": {
+          "pressurePct": 30.41,
+          "pressureRank": 27,
+          "pocketTime": 2.59,
+          "dropbacks": 513
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "TB": {
+        "run": {
+          "expPerAtt": 3.86,
+          "expRank": 27,
+          "ybcPerAtt": 1.82,
+          "ybcRank": 28,
+          "rankGap": 1,
+          "carries": 326
+        },
+        "pass": {
+          "pressurePct": 25.71,
+          "pressureRank": 20,
+          "pocketTime": 2.5,
+          "dropbacks": 630
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NYJ": {
+        "run": {
+          "expPerAtt": 3.71,
+          "expRank": 31,
+          "ybcPerAtt": 1.4,
+          "ybcRank": 32,
+          "rankGap": 1,
+          "carries": 245
+        },
+        "pass": {
+          "pressurePct": 33.78,
+          "pressureRank": 30,
+          "pocketTime": 2.49,
+          "dropbacks": 521
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NE": {
+        "run": {
+          "expPerAtt": 3.97,
+          "expRank": 23,
+          "ybcPerAtt": 2.21,
+          "ybcRank": 18,
+          "rankGap": 5,
+          "carries": 247
+        },
+        "pass": {
+          "pressurePct": 19.52,
+          "pressureRank": 4,
+          "pocketTime": 2.5,
+          "dropbacks": 620
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NYG": {
+        "run": {
+          "expPerAtt": 4.1,
+          "expRank": 18,
+          "ybcPerAtt": 2.41,
+          "ybcRank": 8,
+          "rankGap": 10,
+          "carries": 217
+        },
+        "pass": {
+          "pressurePct": 28.83,
+          "pressureRank": 26,
+          "pocketTime": 2.48,
+          "dropbacks": 607
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "LV": {
+        "run": {
+          "expPerAtt": 4.2,
+          "expRank": 12,
+          "ybcPerAtt": 2,
+          "ybcRank": 24,
+          "rankGap": 12,
+          "carries": 350
+        },
+        "pass": {
+          "pressurePct": 21.99,
+          "pressureRank": 8,
+          "pocketTime": 2.5,
+          "dropbacks": 523
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "SF": {
+        "run": {
+          "expPerAtt": 4.66,
+          "expRank": 4,
+          "ybcPerAtt": 2.96,
+          "ybcRank": 4,
+          "rankGap": 0,
+          "carries": 397
+        },
+        "pass": {
+          "pressurePct": 22.85,
+          "pressureRank": 10,
+          "pocketTime": 2.4,
+          "dropbacks": 477
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "BUF": {
+        "run": {
+          "expPerAtt": 4.13,
+          "expRank": 15,
+          "ybcPerAtt": 2.22,
+          "ybcRank": 17,
+          "rankGap": 2,
+          "carries": 317
+        },
+        "pass": {
+          "pressurePct": 25.54,
+          "pressureRank": 18,
+          "pocketTime": 2.29,
+          "dropbacks": 513
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "WAS": {
+        "run": {
+          "expPerAtt": 3.76,
+          "expRank": 29,
+          "ybcPerAtt": 1.91,
+          "ybcRank": 26,
+          "rankGap": 3,
+          "carries": 211
+        },
+        "pass": {
+          "pressurePct": 34.66,
+          "pressureRank": 32,
+          "pocketTime": 2.54,
+          "dropbacks": 479
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "KC": {
+        "run": {
+          "expPerAtt": 4.31,
+          "expRank": 10,
+          "ybcPerAtt": 2.15,
+          "ybcRank": 21,
+          "rankGap": 11,
+          "carries": 212
+        },
+        "pass": {
+          "pressurePct": 22.57,
+          "pressureRank": 9,
+          "pocketTime": 2.48,
+          "dropbacks": 576
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "GB": {
+        "run": {
+          "expPerAtt": 4.15,
+          "expRank": 13,
+          "ybcPerAtt": 2.53,
+          "ybcRank": 6,
+          "rankGap": 7,
+          "carries": 343
+        },
+        "pass": {
+          "pressurePct": 24.26,
+          "pressureRank": 14,
+          "pocketTime": 2.59,
+          "dropbacks": 573
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "DAL": {
+        "run": {
+          "expPerAtt": 4.05,
+          "expRank": 20,
+          "ybcPerAtt": 2.32,
+          "ybcRank": 12,
+          "rankGap": 8,
+          "carries": 387
+        },
+        "pass": {
+          "pressurePct": 20.27,
+          "pressureRank": 5,
+          "pocketTime": 2.6,
+          "dropbacks": 597
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CLE": {
+        "run": {
+          "expPerAtt": 4.04,
+          "expRank": 21,
+          "ybcPerAtt": 2.17,
+          "ybcRank": 19,
+          "rankGap": 2,
+          "carries": 298
+        },
+        "pass": {
+          "pressurePct": 23.93,
+          "pressureRank": 13,
+          "pocketTime": 2.3,
+          "dropbacks": 539
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "ATL": {
+        "run": {
+          "expPerAtt": 4.58,
+          "expRank": 5,
+          "ybcPerAtt": 2.23,
+          "ybcRank": 16,
+          "rankGap": 11,
+          "carries": 184
+        },
+        "pass": {
+          "pressurePct": 25.44,
+          "pressureRank": 17,
+          "pocketTime": 2.47,
+          "dropbacks": 684
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "TEN": {
+        "run": {
+          "expPerAtt": 3.73,
+          "expRank": 30,
+          "ybcPerAtt": 2.11,
+          "ybcRank": 23,
+          "rankGap": 7,
+          "carries": 303
+        },
+        "pass": {
+          "pressurePct": 31.25,
+          "pressureRank": 28,
+          "pocketTime": 2.52,
+          "dropbacks": 448
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NO": {
+        "run": {
+          "expPerAtt": 4.39,
+          "expRank": 7,
+          "ybcPerAtt": 2.38,
+          "ybcRank": 9,
+          "rankGap": 2,
+          "carries": 317
+        },
+        "pass": {
+          "pressurePct": 17.21,
+          "pressureRank": 1,
+          "pocketTime": 2.37,
+          "dropbacks": 581
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "DEN": {
+        "run": {
+          "expPerAtt": 4.23,
+          "expRank": 11,
+          "ybcPerAtt": 2.35,
+          "ybcRank": 10,
+          "rankGap": 1,
+          "carries": 356
+        },
+        "pass": {
+          "pressurePct": 27.38,
+          "pressureRank": 24,
+          "pocketTime": 2.45,
+          "dropbacks": 504
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "LAR": {
+        "run": {
+          "expPerAtt": 4.7,
+          "expRank": 2,
+          "ybcPerAtt": 2.16,
+          "ybcRank": 20,
+          "rankGap": 18,
+          "carries": 223
+        },
+        "pass": {
+          "pressurePct": 19.3,
+          "pressureRank": 3,
+          "pocketTime": 2.59,
+          "dropbacks": 632
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "SEA": {
+        "run": {
+          "expPerAtt": 3.99,
+          "expRank": 22,
+          "ybcPerAtt": 2.34,
+          "ybcRank": 11,
+          "rankGap": 11,
+          "carries": 278
+        },
+        "pass": {
+          "pressurePct": 34.11,
+          "pressureRank": 31,
+          "pocketTime": 2.5,
+          "dropbacks": 516
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "DET": {
+        "run": {
+          "expPerAtt": 4.13,
+          "expRank": 14,
+          "ybcPerAtt": 2.12,
+          "ybcRank": 22,
+          "rankGap": 8,
+          "carries": 202
+        },
+        "pass": {
+          "pressurePct": 26.09,
+          "pressureRank": 21,
+          "pocketTime": 2.5,
+          "dropbacks": 571
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "PHI": {
+        "run": {
+          "expPerAtt": 4.68,
+          "expRank": 3,
+          "ybcPerAtt": 2.3,
+          "ybcRank": 13,
+          "rankGap": 10,
+          "carries": 298
+        },
+        "pass": {
+          "pressurePct": 25.61,
+          "pressureRank": 19,
+          "pocketTime": 2.39,
+          "dropbacks": 613
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CHI": {
+        "run": {
+          "expPerAtt": 3.85,
+          "expRank": 28,
+          "ybcPerAtt": 2.28,
+          "ybcRank": 14,
+          "rankGap": 14,
+          "carries": 242
+        },
+        "pass": {
+          "pressurePct": 25.17,
+          "pressureRank": 16,
+          "pocketTime": 2.32,
+          "dropbacks": 580
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "MIA": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 1.7,
+          "ybcRank": 30,
+          "rankGap": null,
+          "carries": null
+        },
+        "pass": {
+          "pressurePct": 32.85,
+          "pressureRank": 29,
+          "pocketTime": 2.31,
+          "dropbacks": 615
+        },
+        "scheme": null,
+        "caller": null
+      }
+    },
+    "2020": {
+      "WAS": {
+        "run": {
+          "expPerAtt": 4.32,
+          "expRank": 8,
+          "ybcPerAtt": 2.25,
+          "ybcRank": 23,
+          "rankGap": 15,
+          "carries": 349
+        },
+        "pass": {
+          "pressurePct": 29.28,
+          "pressureRank": 21,
+          "pocketTime": 2.36,
+          "dropbacks": 601
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NO": {
+        "run": {
+          "expPerAtt": 4.42,
+          "expRank": 6,
+          "ybcPerAtt": 2.79,
+          "ybcRank": 6,
+          "rankGap": 0,
+          "carries": 333
+        },
+        "pass": {
+          "pressurePct": 19.16,
+          "pressureRank": 6,
+          "pocketTime": 2.47,
+          "dropbacks": 522
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CAR": {
+        "run": {
+          "expPerAtt": 3.73,
+          "expRank": 27,
+          "ybcPerAtt": 2.12,
+          "ybcRank": 26,
+          "rankGap": 1,
+          "carries": 165
+        },
+        "pass": {
+          "pressurePct": 22.55,
+          "pressureRank": 10,
+          "pocketTime": 2.3,
+          "dropbacks": 550
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "LAC": {
+        "run": {
+          "expPerAtt": 4.02,
+          "expRank": 19,
+          "ybcPerAtt": 2.26,
+          "ybcRank": 21,
+          "rankGap": 2,
+          "carries": 318
+        },
+        "pass": {
+          "pressurePct": 31.26,
+          "pressureRank": 25,
+          "pocketTime": 2.41,
+          "dropbacks": 627
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "BAL": {
+        "run": {
+          "expPerAtt": 4.27,
+          "expRank": 12,
+          "ybcPerAtt": 3.36,
+          "ybcRank": 1,
+          "rankGap": 11,
+          "carries": 278
+        },
+        "pass": {
+          "pressurePct": 27.34,
+          "pressureRank": 20,
+          "pocketTime": 2.47,
+          "dropbacks": 406
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CLE": {
+        "run": {
+          "expPerAtt": 4,
+          "expRank": 21,
+          "ybcPerAtt": 2.48,
+          "ybcRank": 19,
+          "rankGap": 2,
+          "carries": 388
+        },
+        "pass": {
+          "pressurePct": 21.16,
+          "pressureRank": 8,
+          "pocketTime": 2.69,
+          "dropbacks": 501
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "TEN": {
+        "run": {
+          "expPerAtt": 4.3,
+          "expRank": 11,
+          "ybcPerAtt": 2.66,
+          "ybcRank": 10,
+          "rankGap": 1,
+          "carries": 378
+        },
+        "pass": {
+          "pressurePct": 25.15,
+          "pressureRank": 17,
+          "pocketTime": 2.49,
+          "dropbacks": 485
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "DAL": {
+        "run": {
+          "expPerAtt": 3.97,
+          "expRank": 24,
+          "ybcPerAtt": 2.12,
+          "ybcRank": 27,
+          "rankGap": 3,
+          "carries": 345
+        },
+        "pass": {
+          "pressurePct": 23.79,
+          "pressureRank": 14,
+          "pocketTime": 2.38,
+          "dropbacks": 639
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "DEN": {
+        "run": {
+          "expPerAtt": 4.2,
+          "expRank": 14,
+          "ybcPerAtt": 2.64,
+          "ybcRank": 13,
+          "rankGap": 1,
+          "carries": 333
+        },
+        "pass": {
+          "pressurePct": 30.22,
+          "pressureRank": 24,
+          "pocketTime": 2.58,
+          "dropbacks": 556
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CIN": {
+        "run": {
+          "expPerAtt": 3.97,
+          "expRank": 23,
+          "ybcPerAtt": 2.25,
+          "ybcRank": 22,
+          "rankGap": 1,
+          "carries": 243
+        },
+        "pass": {
+          "pressurePct": 27.02,
+          "pressureRank": 19,
+          "pocketTime": 2.31,
+          "dropbacks": 581
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "KC": {
+        "run": {
+          "expPerAtt": 4.82,
+          "expRank": 2,
+          "ybcPerAtt": 2.84,
+          "ybcRank": 5,
+          "rankGap": 3,
+          "carries": 181
+        },
+        "pass": {
+          "pressurePct": 23.97,
+          "pressureRank": 16,
+          "pocketTime": 2.56,
+          "dropbacks": 630
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "IND": {
+        "run": {
+          "expPerAtt": 4.26,
+          "expRank": 13,
+          "ybcPerAtt": 2.49,
+          "ybcRank": 18,
+          "rankGap": 5,
+          "carries": 321
+        },
+        "pass": {
+          "pressurePct": 17.75,
+          "pressureRank": 2,
+          "pocketTime": 2.31,
+          "dropbacks": 552
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "ARI": {
+        "run": {
+          "expPerAtt": 4.3,
+          "expRank": 10,
+          "ybcPerAtt": 3.14,
+          "ybcRank": 2,
+          "rankGap": 8,
+          "carries": 336
+        },
+        "pass": {
+          "pressurePct": 18.96,
+          "pressureRank": 5,
+          "pocketTime": 2.38,
+          "dropbacks": 575
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "BUF": {
+        "run": {
+          "expPerAtt": 4,
+          "expRank": 22,
+          "ybcPerAtt": 1.93,
+          "ybcRank": 30,
+          "rankGap": 8,
+          "carries": 268
+        },
+        "pass": {
+          "pressurePct": 23.49,
+          "pressureRank": 13,
+          "pocketTime": 2.6,
+          "dropbacks": 596
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "PIT": {
+        "run": {
+          "expPerAtt": 4.02,
+          "expRank": 20,
+          "ybcPerAtt": 1.91,
+          "ybcRank": 31,
+          "rankGap": 11,
+          "carries": 280
+        },
+        "pass": {
+          "pressurePct": 18.75,
+          "pressureRank": 4,
+          "pocketTime": 2.1,
+          "dropbacks": 656
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "GB": {
+        "run": {
+          "expPerAtt": 4.51,
+          "expRank": 4,
+          "ybcPerAtt": 2.5,
+          "ybcRank": 17,
+          "rankGap": 13,
+          "carries": 320
+        },
+        "pass": {
+          "pressurePct": 15.4,
+          "pressureRank": 1,
+          "pocketTime": 2.5,
+          "dropbacks": 526
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "LAR": {
+        "run": {
+          "expPerAtt": 4.49,
+          "expRank": 5,
+          "ybcPerAtt": 2.58,
+          "ybcRank": 15,
+          "rankGap": 10,
+          "carries": 384
+        },
+        "pass": {
+          "pressurePct": 21.69,
+          "pressureRank": 9,
+          "pocketTime": 2.47,
+          "dropbacks": 590
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CHI": {
+        "run": {
+          "expPerAtt": 4.03,
+          "expRank": 18,
+          "ybcPerAtt": 2.2,
+          "ybcRank": 25,
+          "rankGap": 7,
+          "carries": 247
+        },
+        "pass": {
+          "pressurePct": 22.64,
+          "pressureRank": 11,
+          "pocketTime": 2.25,
+          "dropbacks": 614
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "MIN": {
+        "run": {
+          "expPerAtt": 4.31,
+          "expRank": 9,
+          "ybcPerAtt": 2.6,
+          "ybcRank": 14,
+          "rankGap": 5,
+          "carries": 408
+        },
+        "pass": {
+          "pressurePct": 33.53,
+          "pressureRank": 30,
+          "pocketTime": 2.6,
+          "dropbacks": 516
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "JAX": {
+        "run": {
+          "expPerAtt": 4.04,
+          "expRank": 16,
+          "ybcPerAtt": 2.24,
+          "ybcRank": 24,
+          "rankGap": 8,
+          "carries": 240
+        },
+        "pass": {
+          "pressurePct": 22.89,
+          "pressureRank": 12,
+          "pocketTime": 2.35,
+          "dropbacks": 616
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "SF": {
+        "run": {
+          "expPerAtt": 4.55,
+          "expRank": 3,
+          "ybcPerAtt": 2.53,
+          "ybcRank": 16,
+          "rankGap": 13,
+          "carries": 230
+        },
+        "pass": {
+          "pressurePct": 29.3,
+          "pressureRank": 22,
+          "pocketTime": 2.41,
+          "dropbacks": 570
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "DET": {
+        "run": {
+          "expPerAtt": 4.38,
+          "expRank": 7,
+          "ybcPerAtt": 2.67,
+          "ybcRank": 9,
+          "rankGap": 2,
+          "carries": 270
+        },
+        "pass": {
+          "pressurePct": 23.88,
+          "pressureRank": 15,
+          "pocketTime": 2.4,
+          "dropbacks": 582
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "ATL": {
+        "run": {
+          "expPerAtt": 4.18,
+          "expRank": 15,
+          "ybcPerAtt": 2,
+          "ybcRank": 29,
+          "rankGap": 14,
+          "carries": 295
+        },
+        "pass": {
+          "pressurePct": 26.59,
+          "pressureRank": 18,
+          "pocketTime": 2.6,
+          "dropbacks": 628
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NYJ": {
+        "run": {
+          "expPerAtt": 3.93,
+          "expRank": 26,
+          "ybcPerAtt": 2.05,
+          "ybcRank": 28,
+          "rankGap": 2,
+          "carries": 187
+        },
+        "pass": {
+          "pressurePct": 31.86,
+          "pressureRank": 27,
+          "pocketTime": 2.37,
+          "dropbacks": 499
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "TB": {
+        "run": {
+          "expPerAtt": 4.03,
+          "expRank": 17,
+          "ybcPerAtt": 1.82,
+          "ybcRank": 32,
+          "rankGap": 15,
+          "carries": 289
+        },
+        "pass": {
+          "pressurePct": 18.37,
+          "pressureRank": 3,
+          "pocketTime": 2.38,
+          "dropbacks": 626
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "LV": {
+        "run": {
+          "expPerAtt": 3.95,
+          "expRank": 25,
+          "ybcPerAtt": 2.35,
+          "ybcRank": 20,
+          "rankGap": 5,
+          "carries": 366
+        },
+        "pass": {
+          "pressurePct": null,
+          "pressureRank": null,
+          "pocketTime": null,
+          "dropbacks": null
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "PHI": {
+        "run": {
+          "expPerAtt": 5.19,
+          "expRank": 1,
+          "ybcPerAtt": 3.11,
+          "ybcRank": 3,
+          "rankGap": 2,
+          "carries": 164
+        },
+        "pass": {
+          "pressurePct": 33.11,
+          "pressureRank": 29,
+          "pocketTime": 2.52,
+          "dropbacks": 598
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NYG": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 2.65,
+          "ybcRank": 12,
+          "rankGap": null,
+          "carries": 147
+        },
+        "pass": {
+          "pressurePct": 34.04,
+          "pressureRank": 31,
+          "pocketTime": 2.49,
+          "dropbacks": 517
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "HOU": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 2.66,
+          "ybcRank": 11,
+          "rankGap": null,
+          "carries": 147
+        },
+        "pass": {
+          "pressurePct": 31.5,
+          "pressureRank": 26,
+          "pocketTime": 2.5,
+          "dropbacks": 546
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "MIA": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 2.72,
+          "ybcRank": 8,
+          "rankGap": null,
+          "carries": 142
+        },
+        "pass": {
+          "pressurePct": 20.75,
+          "pressureRank": 7,
+          "pocketTime": 2.26,
+          "dropbacks": 559
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "SEA": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 3.1,
+          "ybcRank": 4,
+          "rankGap": null,
+          "carries": 141
+        },
+        "pass": {
+          "pressurePct": 32.15,
+          "pressureRank": 28,
+          "pocketTime": 2.6,
+          "dropbacks": 563
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NE": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 2.78,
+          "ybcRank": 7,
+          "rankGap": null,
+          "carries": 137
+        },
+        "pass": {
+          "pressurePct": 29.55,
+          "pressureRank": 23,
+          "pocketTime": 2.58,
+          "dropbacks": 440
+        },
+        "scheme": null,
+        "caller": null
+      }
+    },
+    "2021": {
+      "ATL": {
+        "run": {
+          "expPerAtt": 4.13,
+          "expRank": 18,
+          "ybcPerAtt": 2.03,
+          "ybcRank": 29,
+          "rankGap": 11,
+          "carries": 291
+        },
+        "pass": {
+          "pressurePct": 30.72,
+          "pressureRank": 27,
+          "pocketTime": 2.4,
+          "dropbacks": 573
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "GB": {
+        "run": {
+          "expPerAtt": 4.2,
+          "expRank": 12,
+          "ybcPerAtt": 2.28,
+          "ybcRank": 24,
+          "rankGap": 12,
+          "carries": 358
+        },
+        "pass": {
+          "pressurePct": 24.96,
+          "pressureRank": 10,
+          "pocketTime": 2.31,
+          "dropbacks": 593
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "DEN": {
+        "run": {
+          "expPerAtt": 4.17,
+          "expRank": 13,
+          "ybcPerAtt": 2.32,
+          "ybcRank": 23,
+          "rankGap": 10,
+          "carries": 406
+        },
+        "pass": {
+          "pressurePct": 31.42,
+          "pressureRank": 30,
+          "pocketTime": 2.5,
+          "dropbacks": 541
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "SEA": {
+        "run": {
+          "expPerAtt": 4.48,
+          "expRank": 4,
+          "ybcPerAtt": 2.9,
+          "ybcRank": 4,
+          "rankGap": 0,
+          "carries": 227
+        },
+        "pass": {
+          "pressurePct": 31.11,
+          "pressureRank": 28,
+          "pocketTime": 2.42,
+          "dropbacks": 495
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "LAC": {
+        "run": {
+          "expPerAtt": 4.45,
+          "expRank": 6,
+          "ybcPerAtt": 2.66,
+          "ybcRank": 8,
+          "rankGap": 2,
+          "carries": 206
+        },
+        "pass": {
+          "pressurePct": 21.22,
+          "pressureRank": 7,
+          "pocketTime": 2.4,
+          "dropbacks": 674
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "MIA": {
+        "run": {
+          "expPerAtt": 4.17,
+          "expRank": 14,
+          "ybcPerAtt": 1.97,
+          "ybcRank": 30,
+          "rankGap": 16,
+          "carries": 173
+        },
+        "pass": {
+          "pressurePct": 25.85,
+          "pressureRank": 14,
+          "pocketTime": 2.27,
+          "dropbacks": 615
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "DAL": {
+        "run": {
+          "expPerAtt": 4.47,
+          "expRank": 5,
+          "ybcPerAtt": 2.66,
+          "ybcRank": 9,
+          "rankGap": 4,
+          "carries": 367
+        },
+        "pass": {
+          "pressurePct": 20.09,
+          "pressureRank": 5,
+          "pocketTime": 2.39,
+          "dropbacks": 647
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "SF": {
+        "run": {
+          "expPerAtt": 4.31,
+          "expRank": 10,
+          "ybcPerAtt": 2.35,
+          "ybcRank": 21,
+          "rankGap": 11,
+          "carries": 207
+        },
+        "pass": {
+          "pressurePct": 21.21,
+          "pressureRank": 6,
+          "pocketTime": 2.41,
+          "dropbacks": 514
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NYG": {
+        "run": {
+          "expPerAtt": 4,
+          "expRank": 20,
+          "ybcPerAtt": 2.48,
+          "ybcRank": 15,
+          "rankGap": 5,
+          "carries": 307
+        },
+        "pass": {
+          "pressurePct": 25.97,
+          "pressureRank": 15,
+          "pocketTime": 2.41,
+          "dropbacks": 593
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NO": {
+        "run": {
+          "expPerAtt": 3.76,
+          "expRank": 23,
+          "ybcPerAtt": 2.47,
+          "ybcRank": 16,
+          "rankGap": 7,
+          "carries": 160
+        },
+        "pass": {
+          "pressurePct": 28.77,
+          "pressureRank": 24,
+          "pocketTime": 2.55,
+          "dropbacks": 504
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "BUF": {
+        "run": {
+          "expPerAtt": 4.45,
+          "expRank": 7,
+          "ybcPerAtt": 2.61,
+          "ybcRank": 10,
+          "rankGap": 3,
+          "carries": 284
+        },
+        "pass": {
+          "pressurePct": 28.4,
+          "pressureRank": 20,
+          "pocketTime": 2.4,
+          "dropbacks": 655
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "LV": {
+        "run": {
+          "expPerAtt": 3.98,
+          "expRank": 21,
+          "ybcPerAtt": 2.23,
+          "ybcRank": 26,
+          "rankGap": 5,
+          "carries": 217
+        },
+        "pass": {
+          "pressurePct": null,
+          "pressureRank": null,
+          "pocketTime": null,
+          "dropbacks": null
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NE": {
+        "run": {
+          "expPerAtt": 3.93,
+          "expRank": 22,
+          "ybcPerAtt": 2.22,
+          "ybcRank": 27,
+          "rankGap": 5,
+          "carries": 335
+        },
+        "pass": {
+          "pressurePct": 19.63,
+          "pressureRank": 4,
+          "pocketTime": 2.39,
+          "dropbacks": 535
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "TB": {
+        "run": {
+          "expPerAtt": 4.28,
+          "expRank": 11,
+          "ybcPerAtt": 2.34,
+          "ybcRank": 22,
+          "rankGap": 11,
+          "carries": 281
+        },
+        "pass": {
+          "pressurePct": 11.63,
+          "pressureRank": 1,
+          "pocketTime": 2.3,
+          "dropbacks": 731
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "DET": {
+        "run": {
+          "expPerAtt": 4.37,
+          "expRank": 9,
+          "ybcPerAtt": 2.7,
+          "ybcRank": 6,
+          "rankGap": 3,
+          "carries": 304
+        },
+        "pass": {
+          "pressurePct": 24.96,
+          "pressureRank": 11,
+          "pocketTime": 2.38,
+          "dropbacks": 593
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CHI": {
+        "run": {
+          "expPerAtt": 4.17,
+          "expRank": 15,
+          "ybcPerAtt": 2.55,
+          "ybcRank": 14,
+          "rankGap": 1,
+          "carries": 328
+        },
+        "pass": {
+          "pressurePct": 29.34,
+          "pressureRank": 25,
+          "pocketTime": 2.42,
+          "dropbacks": 542
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "JAX": {
+        "run": {
+          "expPerAtt": 4.65,
+          "expRank": 1,
+          "ybcPerAtt": 2.87,
+          "ybcRank": 5,
+          "rankGap": 4,
+          "carries": 164
+        },
+        "pass": {
+          "pressurePct": 25.17,
+          "pressureRank": 12,
+          "pocketTime": 2.4,
+          "dropbacks": 604
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "BAL": {
+        "run": {
+          "expPerAtt": 4.42,
+          "expRank": 8,
+          "ybcPerAtt": 3.19,
+          "ybcRank": 2,
+          "rankGap": 6,
+          "carries": 252
+        },
+        "pass": {
+          "pressurePct": 27.32,
+          "pressureRank": 18,
+          "pocketTime": 2.37,
+          "dropbacks": 571
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "LAR": {
+        "run": {
+          "expPerAtt": 4.51,
+          "expRank": 2,
+          "ybcPerAtt": 2.25,
+          "ybcRank": 25,
+          "rankGap": 23,
+          "carries": 357
+        },
+        "pass": {
+          "pressurePct": 17.63,
+          "pressureRank": 2,
+          "pocketTime": 2.5,
+          "dropbacks": 607
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CAR": {
+        "run": {
+          "expPerAtt": 4.13,
+          "expRank": 17,
+          "ybcPerAtt": 2.37,
+          "ybcRank": 20,
+          "rankGap": 3,
+          "carries": 271
+        },
+        "pass": {
+          "pressurePct": 32.22,
+          "pressureRank": 31,
+          "pocketTime": 2.43,
+          "dropbacks": 599
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "KC": {
+        "run": {
+          "expPerAtt": 4.48,
+          "expRank": 3,
+          "ybcPerAtt": 3.11,
+          "ybcRank": 3,
+          "rankGap": 0,
+          "carries": 263
+        },
+        "pass": {
+          "pressurePct": 24.44,
+          "pressureRank": 9,
+          "pocketTime": 2.39,
+          "dropbacks": 675
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "WAS": {
+        "run": {
+          "expPerAtt": 4.01,
+          "expRank": 19,
+          "ybcPerAtt": 2.58,
+          "ybcRank": 13,
+          "rankGap": 6,
+          "carries": 258
+        },
+        "pass": {
+          "pressurePct": 28.73,
+          "pressureRank": 23,
+          "pocketTime": 2.58,
+          "dropbacks": 550
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "TEN": {
+        "run": {
+          "expPerAtt": 4.14,
+          "expRank": 16,
+          "ybcPerAtt": 2.39,
+          "ybcRank": 19,
+          "rankGap": 3,
+          "carries": 352
+        },
+        "pass": {
+          "pressurePct": 26.54,
+          "pressureRank": 16,
+          "pocketTime": 2.29,
+          "dropbacks": 535
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "IND": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 2.69,
+          "ybcRank": 7,
+          "rankGap": null,
+          "carries": null
+        },
+        "pass": {
+          "pressurePct": 28.6,
+          "pressureRank": 21,
+          "pocketTime": 2.51,
+          "dropbacks": 521
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "PIT": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 1.86,
+          "ybcRank": 32,
+          "rankGap": null,
+          "carries": null
+        },
+        "pass": {
+          "pressurePct": 18.22,
+          "pressureRank": 3,
+          "pocketTime": 2.18,
+          "dropbacks": 664
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CIN": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 2.21,
+          "ybcRank": 28,
+          "rankGap": null,
+          "carries": null
+        },
+        "pass": {
+          "pressurePct": 27.57,
+          "pressureRank": 19,
+          "pocketTime": 2.39,
+          "dropbacks": 555
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "MIN": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 2.44,
+          "ybcRank": 18,
+          "rankGap": null,
+          "carries": 134
+        },
+        "pass": {
+          "pressurePct": 28.64,
+          "pressureRank": 22,
+          "pocketTime": 2.4,
+          "dropbacks": 604
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CLE": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 2.59,
+          "ybcRank": 12,
+          "rankGap": null,
+          "carries": 100
+        },
+        "pass": {
+          "pressurePct": 27.12,
+          "pressureRank": 17,
+          "pocketTime": 2.38,
+          "dropbacks": 520
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "ARI": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 2.59,
+          "ybcRank": 11,
+          "rankGap": null,
+          "carries": 116
+        },
+        "pass": {
+          "pressurePct": 23.86,
+          "pressureRank": 8,
+          "pocketTime": 2.27,
+          "dropbacks": 591
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NYJ": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 2.45,
+          "ybcRank": 17,
+          "rankGap": null,
+          "carries": 147
+        },
+        "pass": {
+          "pressurePct": 31.36,
+          "pressureRank": 29,
+          "pocketTime": 2.45,
+          "dropbacks": 558
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "PHI": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 3.28,
+          "ybcRank": 1,
+          "rankGap": null,
+          "carries": 137
+        },
+        "pass": {
+          "pressurePct": 30.57,
+          "pressureRank": 26,
+          "pocketTime": 2.59,
+          "dropbacks": 494
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "HOU": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 1.95,
+          "ybcRank": 31,
+          "rankGap": null,
+          "carries": 122
+        },
+        "pass": {
+          "pressurePct": 25.46,
+          "pressureRank": 13,
+          "pocketTime": 2.3,
+          "dropbacks": 546
+        },
+        "scheme": null,
+        "caller": null
+      }
+    },
+    "2022": {
+      "LAC": {
+        "run": {
+          "expPerAtt": 3.97,
+          "expRank": 30,
+          "ybcPerAtt": 2.23,
+          "ybcRank": 30,
+          "rankGap": 0,
+          "carries": 204
+        },
+        "pass": {
+          "pressurePct": 22.78,
+          "pressureRank": 18,
+          "pocketTime": 2.49,
+          "dropbacks": 711
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "ATL": {
+        "run": {
+          "expPerAtt": 4.02,
+          "expRank": 24,
+          "ybcPerAtt": 3.04,
+          "ybcRank": 9,
+          "rankGap": 15,
+          "carries": 354
+        },
+        "pass": {
+          "pressurePct": 22.17,
+          "pressureRank": 16,
+          "pocketTime": 2.63,
+          "dropbacks": 415
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CLE": {
+        "run": {
+          "expPerAtt": 4.02,
+          "expRank": 25,
+          "ybcPerAtt": 2.67,
+          "ybcRank": 18,
+          "rankGap": 7,
+          "carries": 425
+        },
+        "pass": {
+          "pressurePct": 25.93,
+          "pressureRank": 23,
+          "pocketTime": 2.62,
+          "dropbacks": 540
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "MIN": {
+        "run": {
+          "expPerAtt": 4.31,
+          "expRank": 8,
+          "ybcPerAtt": 2.48,
+          "ybcRank": 25,
+          "rankGap": 17,
+          "carries": 264
+        },
+        "pass": {
+          "pressurePct": 25.3,
+          "pressureRank": 20,
+          "pocketTime": 2.49,
+          "dropbacks": 672
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "HOU": {
+        "run": {
+          "expPerAtt": 4.07,
+          "expRank": 23,
+          "ybcPerAtt": 2.14,
+          "ybcRank": 32,
+          "rankGap": 9,
+          "carries": 220
+        },
+        "pass": {
+          "pressurePct": 24.87,
+          "pressureRank": 19,
+          "pocketTime": 2.24,
+          "dropbacks": 579
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "PIT": {
+        "run": {
+          "expPerAtt": 4.23,
+          "expRank": 14,
+          "ybcPerAtt": 2.62,
+          "ybcRank": 21,
+          "rankGap": 7,
+          "carries": 272
+        },
+        "pass": {
+          "pressurePct": 21.58,
+          "pressureRank": 15,
+          "pocketTime": 2.43,
+          "dropbacks": 570
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "DEN": {
+        "run": {
+          "expPerAtt": 4.47,
+          "expRank": 2,
+          "ybcPerAtt": 2.76,
+          "ybcRank": 15,
+          "rankGap": 13,
+          "carries": 171
+        },
+        "pass": {
+          "pressurePct": 31.7,
+          "pressureRank": 29,
+          "pocketTime": 2.48,
+          "dropbacks": 571
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "TB": {
+        "run": {
+          "expPerAtt": 4.12,
+          "expRank": 19,
+          "ybcPerAtt": 2.14,
+          "ybcRank": 31,
+          "rankGap": 12,
+          "carries": 318
+        },
+        "pass": {
+          "pressurePct": 13.58,
+          "pressureRank": 1,
+          "pocketTime": 2.2,
+          "dropbacks": 751
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NE": {
+        "run": {
+          "expPerAtt": 4.23,
+          "expRank": 13,
+          "ybcPerAtt": 2.68,
+          "ybcRank": 17,
+          "rankGap": 4,
+          "carries": 316
+        },
+        "pass": {
+          "pressurePct": 20.37,
+          "pressureRank": 10,
+          "pocketTime": 2.24,
+          "dropbacks": 540
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "PHI": {
+        "run": {
+          "expPerAtt": 4.43,
+          "expRank": 4,
+          "ybcPerAtt": 3.34,
+          "ybcRank": 5,
+          "rankGap": 1,
+          "carries": 259
+        },
+        "pass": {
+          "pressurePct": 20.71,
+          "pressureRank": 11,
+          "pocketTime": 2.33,
+          "dropbacks": 536
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "MIA": {
+        "run": {
+          "expPerAtt": 4.75,
+          "expRank": 1,
+          "ybcPerAtt": 2.71,
+          "ybcRank": 16,
+          "rankGap": 15,
+          "carries": 357
+        },
+        "pass": {
+          "pressurePct": 27.05,
+          "pressureRank": 24,
+          "pocketTime": 2.41,
+          "dropbacks": 584
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "BAL": {
+        "run": {
+          "expPerAtt": 4.36,
+          "expRank": 6,
+          "ybcPerAtt": 3.55,
+          "ybcRank": 2,
+          "rankGap": 4,
+          "carries": 201
+        },
+        "pass": {
+          "pressurePct": 20.9,
+          "pressureRank": 12,
+          "pocketTime": 2.4,
+          "dropbacks": 488
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CAR": {
+        "run": {
+          "expPerAtt": 4.02,
+          "expRank": 26,
+          "ybcPerAtt": 2.82,
+          "ybcRank": 13,
+          "rankGap": 13,
+          "carries": 298
+        },
+        "pass": {
+          "pressurePct": 19.12,
+          "pressureRank": 5,
+          "pocketTime": 2.48,
+          "dropbacks": 251
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "GB": {
+        "run": {
+          "expPerAtt": 4.45,
+          "expRank": 3,
+          "ybcPerAtt": 2.81,
+          "ybcRank": 14,
+          "rankGap": 11,
+          "carries": 399
+        },
+        "pass": {
+          "pressurePct": 19.18,
+          "pressureRank": 7,
+          "pocketTime": 2.39,
+          "dropbacks": 563
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "WAS": {
+        "run": {
+          "expPerAtt": 3.83,
+          "expRank": 32,
+          "ybcPerAtt": 2.36,
+          "ybcRank": 28,
+          "rankGap": 4,
+          "carries": 354
+        },
+        "pass": {
+          "pressurePct": 27.98,
+          "pressureRank": 26,
+          "pocketTime": 2.41,
+          "dropbacks": 554
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "TEN": {
+        "run": {
+          "expPerAtt": 4,
+          "expRank": 28,
+          "ybcPerAtt": 2.32,
+          "ybcRank": 29,
+          "rankGap": 1,
+          "carries": 349
+        },
+        "pass": {
+          "pressurePct": 32.02,
+          "pressureRank": 30,
+          "pocketTime": 2.52,
+          "dropbacks": 456
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "DET": {
+        "run": {
+          "expPerAtt": 4.31,
+          "expRank": 9,
+          "ybcPerAtt": 2.95,
+          "ybcRank": 12,
+          "rankGap": 3,
+          "carries": 361
+        },
+        "pass": {
+          "pressurePct": 20.24,
+          "pressureRank": 9,
+          "pocketTime": 2.4,
+          "dropbacks": 588
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "KC": {
+        "run": {
+          "expPerAtt": 4.32,
+          "expRank": 7,
+          "ybcPerAtt": 3.13,
+          "ybcRank": 7,
+          "rankGap": 0,
+          "carries": 260
+        },
+        "pass": {
+          "pressurePct": 21.51,
+          "pressureRank": 14,
+          "pocketTime": 2.6,
+          "dropbacks": 651
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "DAL": {
+        "run": {
+          "expPerAtt": 4.08,
+          "expRank": 22,
+          "ybcPerAtt": 2.52,
+          "ybcRank": 23,
+          "rankGap": 1,
+          "carries": 424
+        },
+        "pass": {
+          "pressurePct": 22.3,
+          "pressureRank": 17,
+          "pocketTime": 2.41,
+          "dropbacks": 556
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CHI": {
+        "run": {
+          "expPerAtt": 4.27,
+          "expRank": 12,
+          "ybcPerAtt": 3.4,
+          "ybcRank": 4,
+          "rankGap": 8,
+          "carries": 330
+        },
+        "pass": {
+          "pressurePct": 34.22,
+          "pressureRank": 31,
+          "pocketTime": 2.6,
+          "dropbacks": 377
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "SEA": {
+        "run": {
+          "expPerAtt": 4.15,
+          "expRank": 18,
+          "ybcPerAtt": 3.1,
+          "ybcRank": 8,
+          "rankGap": 10,
+          "carries": 228
+        },
+        "pass": {
+          "pressurePct": 25.65,
+          "pressureRank": 22,
+          "pocketTime": 2.4,
+          "dropbacks": 573
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NYJ": {
+        "run": {
+          "expPerAtt": 4.11,
+          "expRank": 20,
+          "ybcPerAtt": 2.97,
+          "ybcRank": 11,
+          "rankGap": 9,
+          "carries": 224
+        },
+        "pass": {
+          "pressurePct": 25.52,
+          "pressureRank": 21,
+          "pocketTime": 2.41,
+          "dropbacks": 627
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "JAX": {
+        "run": {
+          "expPerAtt": 3.99,
+          "expRank": 29,
+          "ybcPerAtt": 3.48,
+          "ybcRank": 3,
+          "rankGap": 26,
+          "carries": 220
+        },
+        "pass": {
+          "pressurePct": 19.13,
+          "pressureRank": 6,
+          "pocketTime": 2.19,
+          "dropbacks": 596
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "IND": {
+        "run": {
+          "expPerAtt": 4.08,
+          "expRank": 21,
+          "ybcPerAtt": 2.63,
+          "ybcRank": 20,
+          "rankGap": 1,
+          "carries": 285
+        },
+        "pass": {
+          "pressurePct": 27.48,
+          "pressureRank": 25,
+          "pocketTime": 2.34,
+          "dropbacks": 604
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "ARI": {
+        "run": {
+          "expPerAtt": 4.2,
+          "expRank": 16,
+          "ybcPerAtt": 3,
+          "ybcRank": 10,
+          "rankGap": 6,
+          "carries": 183
+        },
+        "pass": {
+          "pressurePct": 21.39,
+          "pressureRank": 13,
+          "pocketTime": 2.18,
+          "dropbacks": 664
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NO": {
+        "run": {
+          "expPerAtt": 4.19,
+          "expRank": 17,
+          "ybcPerAtt": 2.37,
+          "ybcRank": 27,
+          "rankGap": 10,
+          "carries": 223
+        },
+        "pass": {
+          "pressurePct": 18.95,
+          "pressureRank": 4,
+          "pocketTime": 2.35,
+          "dropbacks": 512
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "CIN": {
+        "run": {
+          "expPerAtt": 3.84,
+          "expRank": 31,
+          "ybcPerAtt": 2.48,
+          "ybcRank": 24,
+          "rankGap": 7,
+          "carries": 305
+        },
+        "pass": {
+          "pressurePct": 18.52,
+          "pressureRank": 3,
+          "pocketTime": 2.2,
+          "dropbacks": 610
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "SF": {
+        "run": {
+          "expPerAtt": 4.41,
+          "expRank": 5,
+          "ybcPerAtt": 2.58,
+          "ybcRank": 22,
+          "rankGap": 17,
+          "carries": 244
+        },
+        "pass": {
+          "pressurePct": 17.61,
+          "pressureRank": 2,
+          "pocketTime": 2.32,
+          "dropbacks": 511
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "LAR": {
+        "run": {
+          "expPerAtt": 4.22,
+          "expRank": 15,
+          "ybcPerAtt": 2.37,
+          "ybcRank": 26,
+          "rankGap": 11,
+          "carries": 188
+        },
+        "pass": {
+          "pressurePct": 30.6,
+          "pressureRank": 28,
+          "pocketTime": 2.39,
+          "dropbacks": 402
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "BUF": {
+        "run": {
+          "expPerAtt": 4.29,
+          "expRank": 10,
+          "ybcPerAtt": 3.71,
+          "ybcRank": 1,
+          "rankGap": 9,
+          "carries": 177
+        },
+        "pass": {
+          "pressurePct": 19.86,
+          "pressureRank": 8,
+          "pocketTime": 2.49,
+          "dropbacks": 574
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "NYG": {
+        "run": {
+          "expPerAtt": 4.01,
+          "expRank": 27,
+          "ybcPerAtt": 3.18,
+          "ybcRank": 6,
+          "rankGap": 21,
+          "carries": 295
+        },
+        "pass": {
+          "pressurePct": 30.58,
+          "pressureRank": 27,
+          "pocketTime": 2.45,
+          "dropbacks": 520
+        },
+        "scheme": null,
+        "caller": null
+      },
+      "LV": {
+        "run": {
+          "expPerAtt": 4.29,
+          "expRank": 11,
+          "ybcPerAtt": 2.67,
+          "ybcRank": 19,
+          "rankGap": 8,
+          "carries": 340
+        },
+        "pass": {
+          "pressurePct": null,
+          "pressureRank": null,
+          "pocketTime": null,
+          "dropbacks": null
+        },
+        "scheme": null,
+        "caller": null
+      }
+    },
+    "2023": {
+      "ARI": {
+        "run": {
+          "expPerAtt": 3.95,
+          "expRank": 16,
+          "ybcPerAtt": 3.1,
+          "ybcRank": 2,
+          "rankGap": 14,
+          "carries": 208
+        },
+        "pass": {
+          "pressurePct": 23.53,
+          "pressureRank": 17,
+          "pocketTime": 2.39,
+          "dropbacks": 289
+        },
+        "scheme": {
+          "epaPerPlay": -0.07,
+          "passRate": 60.5,
+          "boxAvg": 6.18,
+          "heavyBoxRate": 33,
+          "explosiveRate": 9.1
+        },
+        "caller": {
+          "headCoach": "Jonathan Gannon",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "DET": {
+        "run": {
+          "expPerAtt": 4.44,
+          "expRank": 2,
+          "ybcPerAtt": 2.47,
+          "ybcRank": 15,
+          "rankGap": 13,
+          "carries": 401
+        },
+        "pass": {
+          "pressurePct": 23.27,
+          "pressureRank": 16,
+          "pocketTime": 2.3,
+          "dropbacks": 606
+        },
+        "scheme": {
+          "epaPerPlay": 0.06,
+          "passRate": 58.9,
+          "boxAvg": 6.37,
+          "heavyBoxRate": 40.5,
+          "explosiveRate": 11.2
+        },
+        "caller": {
+          "headCoach": "Dan Campbell",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "PIT": {
+        "run": {
+          "expPerAtt": 3.78,
+          "expRank": 26,
+          "ybcPerAtt": 2.05,
+          "ybcRank": 32,
+          "rankGap": 6,
+          "carries": 404
+        },
+        "pass": {
+          "pressurePct": 24.9,
+          "pressureRank": 20,
+          "pocketTime": 2.38,
+          "dropbacks": 506
+        },
+        "scheme": {
+          "epaPerPlay": -0.073,
+          "passRate": 57.9,
+          "boxAvg": 6.28,
+          "heavyBoxRate": 39.9,
+          "explosiveRate": 8.7
+        },
+        "caller": {
+          "headCoach": "Mike Tomlin",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "BUF": {
+        "run": {
+          "expPerAtt": 4.25,
+          "expRank": 5,
+          "ybcPerAtt": 2.49,
+          "ybcRank": 14,
+          "rankGap": 9,
+          "carries": 237
+        },
+        "pass": {
+          "pressurePct": 21.76,
+          "pressureRank": 10,
+          "pocketTime": 2.3,
+          "dropbacks": 579
+        },
+        "scheme": {
+          "epaPerPlay": 0.1,
+          "passRate": 60.2,
+          "boxAvg": 6.19,
+          "heavyBoxRate": 32.1,
+          "explosiveRate": 8.2
+        },
+        "caller": {
+          "headCoach": "Sean McDermott",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "CHI": {
+        "run": {
+          "expPerAtt": 4.07,
+          "expRank": 9,
+          "ybcPerAtt": 2.89,
+          "ybcRank": 3,
+          "rankGap": 6,
+          "carries": 241
+        },
+        "pass": {
+          "pressurePct": 28.65,
+          "pressureRank": 26,
+          "pocketTime": 2.74,
+          "dropbacks": 513
+        },
+        "scheme": {
+          "epaPerPlay": -0.061,
+          "passRate": 57.5,
+          "boxAvg": 6.36,
+          "heavyBoxRate": 42.9,
+          "explosiveRate": 9.5
+        },
+        "caller": {
+          "headCoach": "Matt Eberflus",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "TEN": {
+        "run": {
+          "expPerAtt": 3.99,
+          "expRank": 13,
+          "ybcPerAtt": 2.17,
+          "ybcRank": 28,
+          "rankGap": 15,
+          "carries": 380
+        },
+        "pass": {
+          "pressurePct": 32.19,
+          "pressureRank": 30,
+          "pocketTime": 2.46,
+          "dropbacks": 494
+        },
+        "scheme": {
+          "epaPerPlay": -0.044,
+          "passRate": 60,
+          "boxAvg": 6.27,
+          "heavyBoxRate": 39.9,
+          "explosiveRate": 9.1
+        },
+        "caller": {
+          "headCoach": "Mike Vrabel",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "WAS": {
+        "run": {
+          "expPerAtt": 3.88,
+          "expRank": 19,
+          "ybcPerAtt": 2.35,
+          "ybcRank": 18,
+          "rankGap": 1,
+          "carries": 178
+        },
+        "pass": {
+          "pressurePct": 25.63,
+          "pressureRank": 22,
+          "pocketTime": 2.4,
+          "dropbacks": 636
+        },
+        "scheme": {
+          "epaPerPlay": -0.085,
+          "passRate": 70.4,
+          "boxAvg": 6.02,
+          "heavyBoxRate": 24.9,
+          "explosiveRate": 8
+        },
+        "caller": {
+          "headCoach": "Ron Rivera",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "NE": {
+        "run": {
+          "expPerAtt": 3.89,
+          "expRank": 18,
+          "ybcPerAtt": 2.07,
+          "ybcRank": 30,
+          "rankGap": 12,
+          "carries": 340
+        },
+        "pass": {
+          "pressurePct": 22.62,
+          "pressureRank": 14,
+          "pocketTime": 2.28,
+          "dropbacks": 557
+        },
+        "scheme": {
+          "epaPerPlay": -0.197,
+          "passRate": 61.9,
+          "boxAvg": 6.2,
+          "heavyBoxRate": 31.2,
+          "explosiveRate": 5.5
+        },
+        "caller": {
+          "headCoach": "Bill Belichick",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "KC": {
+        "run": {
+          "expPerAtt": 4.04,
+          "expRank": 10,
+          "ybcPerAtt": 2.81,
+          "ybcRank": 5,
+          "rankGap": 5,
+          "carries": 205
+        },
+        "pass": {
+          "pressurePct": 25.83,
+          "pressureRank": 23,
+          "pocketTime": 2.47,
+          "dropbacks": 635
+        },
+        "scheme": {
+          "epaPerPlay": 0.021,
+          "passRate": 67.6,
+          "boxAvg": 6.1,
+          "heavyBoxRate": 28.6,
+          "explosiveRate": 8.2
+        },
+        "caller": {
+          "headCoach": "Andy Reid",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "MIN": {
+        "run": {
+          "expPerAtt": 4.18,
+          "expRank": 6,
+          "ybcPerAtt": 2.28,
+          "ybcRank": 21,
+          "rankGap": 15,
+          "carries": 280
+        },
+        "pass": {
+          "pressurePct": 29.17,
+          "pressureRank": 27,
+          "pocketTime": 2.51,
+          "dropbacks": 480
+        },
+        "scheme": {
+          "epaPerPlay": -0.042,
+          "passRate": 67.5,
+          "boxAvg": 6.37,
+          "heavyBoxRate": 40.6,
+          "explosiveRate": 9.3
+        },
+        "caller": {
+          "headCoach": "Kevin O'Connell",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "LAR": {
+        "run": {
+          "expPerAtt": 4.26,
+          "expRank": 4,
+          "ybcPerAtt": 2.66,
+          "ybcRank": 8,
+          "rankGap": 4,
+          "carries": 228
+        },
+        "pass": {
+          "pressurePct": 19.04,
+          "pressureRank": 5,
+          "pocketTime": 2.49,
+          "dropbacks": 583
+        },
+        "scheme": {
+          "epaPerPlay": 0.048,
+          "passRate": 60.2,
+          "boxAvg": 6.38,
+          "heavyBoxRate": 38.2,
+          "explosiveRate": 9.7
+        },
+        "caller": {
+          "headCoach": "Sean McVay",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "LAC": {
+        "run": {
+          "expPerAtt": 3.76,
+          "expRank": 28,
+          "ybcPerAtt": 2.27,
+          "ybcRank": 22,
+          "rankGap": 6,
+          "carries": 286
+        },
+        "pass": {
+          "pressurePct": 21.84,
+          "pressureRank": 11,
+          "pocketTime": 2.4,
+          "dropbacks": 632
+        },
+        "scheme": {
+          "epaPerPlay": -0.07,
+          "passRate": 66.2,
+          "boxAvg": 6.16,
+          "heavyBoxRate": 30.6,
+          "explosiveRate": 6.9
+        },
+        "caller": {
+          "headCoach": "Brandon Staley",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "IND": {
+        "run": {
+          "expPerAtt": 3.81,
+          "expRank": 24,
+          "ybcPerAtt": 2.31,
+          "ybcRank": 19,
+          "rankGap": 5,
+          "carries": 352
+        },
+        "pass": {
+          "pressurePct": 20.56,
+          "pressureRank": 8,
+          "pocketTime": 2.43,
+          "dropbacks": 574
+        },
+        "scheme": {
+          "epaPerPlay": -0.039,
+          "passRate": 60.3,
+          "boxAvg": 6.15,
+          "heavyBoxRate": 33.1,
+          "explosiveRate": 8.6
+        },
+        "caller": {
+          "headCoach": "Shane Steichen",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "MIA": {
+        "run": {
+          "expPerAtt": 4.43,
+          "expRank": 3,
+          "ybcPerAtt": 2.77,
+          "ybcRank": 7,
+          "rankGap": 4,
+          "carries": 312
+        },
+        "pass": {
+          "pressurePct": 16.78,
+          "pressureRank": 2,
+          "pocketTime": 2.1,
+          "dropbacks": 566
+        },
+        "scheme": {
+          "epaPerPlay": 0.067,
+          "passRate": 59.9,
+          "boxAvg": 6.16,
+          "heavyBoxRate": 34.3,
+          "explosiveRate": 11
+        },
+        "caller": {
+          "headCoach": "Mike McDaniel",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "GB": {
+        "run": {
+          "expPerAtt": 3.96,
+          "expRank": 15,
+          "ybcPerAtt": 2.53,
+          "ybcRank": 12,
+          "rankGap": 3,
+          "carries": 320
+        },
+        "pass": {
+          "pressurePct": 20.48,
+          "pressureRank": 7,
+          "pocketTime": 2.5,
+          "dropbacks": 581
+        },
+        "scheme": {
+          "epaPerPlay": 0.08,
+          "passRate": 60.5,
+          "boxAvg": 6.41,
+          "heavyBoxRate": 44.1,
+          "explosiveRate": 9.4
+        },
+        "caller": {
+          "headCoach": "Matt LaFleur",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "LV": {
+        "run": {
+          "expPerAtt": 3.86,
+          "expRank": 22,
+          "ybcPerAtt": 2.08,
+          "ybcRank": 29,
+          "rankGap": 7,
+          "carries": 337
+        },
+        "pass": {
+          "pressurePct": null,
+          "pressureRank": null,
+          "pocketTime": null,
+          "dropbacks": null
+        },
+        "scheme": {
+          "epaPerPlay": -0.091,
+          "passRate": 61.3,
+          "boxAvg": 6.45,
+          "heavyBoxRate": 44.6,
+          "explosiveRate": 5.8
+        },
+        "caller": {
+          "headCoach": "Antonio Pierce",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "NO": {
+        "run": {
+          "expPerAtt": 4.16,
+          "expRank": 7,
+          "ybcPerAtt": 2.19,
+          "ybcRank": 26,
+          "rankGap": 19,
+          "carries": 286
+        },
+        "pass": {
+          "pressurePct": 16.34,
+          "pressureRank": 1,
+          "pocketTime": 2.29,
+          "dropbacks": 606
+        },
+        "scheme": {
+          "epaPerPlay": -0.023,
+          "passRate": 60.5,
+          "boxAvg": 6.23,
+          "heavyBoxRate": 32.6,
+          "explosiveRate": 8
+        },
+        "caller": {
+          "headCoach": "Dennis Allen",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "CIN": {
+        "run": {
+          "expPerAtt": 3.99,
+          "expRank": 14,
+          "ybcPerAtt": 2.5,
+          "ybcRank": 13,
+          "rankGap": 1,
+          "carries": 257
+        },
+        "pass": {
+          "pressurePct": 24.55,
+          "pressureRank": 19,
+          "pocketTime": 2.32,
+          "dropbacks": 615
+        },
+        "scheme": {
+          "epaPerPlay": -0.002,
+          "passRate": 68.1,
+          "boxAvg": 6.12,
+          "heavyBoxRate": 28.7,
+          "explosiveRate": 7.8
+        },
+        "caller": {
+          "headCoach": "Zac Taylor",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "PHI": {
+        "run": {
+          "expPerAtt": 4.78,
+          "expRank": 1,
+          "ybcPerAtt": 2.84,
+          "ybcRank": 4,
+          "rankGap": 3,
+          "carries": 229
+        },
+        "pass": {
+          "pressurePct": 23.09,
+          "pressureRank": 15,
+          "pocketTime": 2.59,
+          "dropbacks": 563
+        },
+        "scheme": {
+          "epaPerPlay": 0.038,
+          "passRate": 60.4,
+          "boxAvg": 6.36,
+          "heavyBoxRate": 34.1,
+          "explosiveRate": 8.2
+        },
+        "caller": {
+          "headCoach": "Nick Sirianni",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "SF": {
+        "run": {
+          "expPerAtt": 3.8,
+          "expRank": 25,
+          "ybcPerAtt": 2.79,
+          "ybcRank": 6,
+          "rankGap": 19,
+          "carries": 272
+        },
+        "pass": {
+          "pressurePct": 22,
+          "pressureRank": 12,
+          "pocketTime": 2.62,
+          "dropbacks": 491
+        },
+        "scheme": {
+          "epaPerPlay": 0.157,
+          "passRate": 55.9,
+          "boxAvg": 6.59,
+          "heavyBoxRate": 50.6,
+          "explosiveRate": 13
+        },
+        "caller": {
+          "headCoach": "Kyle Shanahan",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "CAR": {
+        "run": {
+          "expPerAtt": 3.62,
+          "expRank": 31,
+          "ybcPerAtt": 2.18,
+          "ybcRank": 27,
+          "rankGap": 4,
+          "carries": 367
+        },
+        "pass": {
+          "pressurePct": 27.3,
+          "pressureRank": 25,
+          "pocketTime": 2.47,
+          "dropbacks": 586
+        },
+        "scheme": {
+          "epaPerPlay": -0.159,
+          "passRate": 63.3,
+          "boxAvg": 6.3,
+          "heavyBoxRate": 34.8,
+          "explosiveRate": 6.3
+        },
+        "caller": {
+          "headCoach": "Frank Reich",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "TB": {
+        "run": {
+          "expPerAtt": 3.88,
+          "expRank": 21,
+          "ybcPerAtt": 2.05,
+          "ybcRank": 31,
+          "rankGap": 10,
+          "carries": 272
+        },
+        "pass": {
+          "pressurePct": 19.72,
+          "pressureRank": 6,
+          "pocketTime": 2.4,
+          "dropbacks": 568
+        },
+        "scheme": {
+          "epaPerPlay": 0.006,
+          "passRate": 63.8,
+          "boxAvg": 5.98,
+          "heavyBoxRate": 22.6,
+          "explosiveRate": 9.1
+        },
+        "caller": {
+          "headCoach": "Todd Bowles",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "HOU": {
+        "run": {
+          "expPerAtt": 3.66,
+          "expRank": 30,
+          "ybcPerAtt": 2.21,
+          "ybcRank": 24,
+          "rankGap": 6,
+          "carries": 361
+        },
+        "pass": {
+          "pressurePct": 23.82,
+          "pressureRank": 18,
+          "pocketTime": 2.49,
+          "dropbacks": 592
+        },
+        "scheme": {
+          "epaPerPlay": -0.029,
+          "passRate": 62.5,
+          "boxAvg": 6.22,
+          "heavyBoxRate": 35.8,
+          "explosiveRate": 10
+        },
+        "caller": {
+          "headCoach": "DeMeco Ryans",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "SEA": {
+        "run": {
+          "expPerAtt": 4.09,
+          "expRank": 8,
+          "ybcPerAtt": 2.63,
+          "ybcRank": 9,
+          "rankGap": 1,
+          "carries": 327
+        },
+        "pass": {
+          "pressurePct": 26.78,
+          "pressureRank": 24,
+          "pocketTime": 2.39,
+          "dropbacks": 575
+        },
+        "scheme": {
+          "epaPerPlay": 0.016,
+          "passRate": 65.6,
+          "boxAvg": 6.19,
+          "heavyBoxRate": 34.8,
+          "explosiveRate": 9.6
+        },
+        "caller": {
+          "headCoach": "Pete Carroll",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "BAL": {
+        "run": {
+          "expPerAtt": 3.77,
+          "expRank": 27,
+          "ybcPerAtt": 3.12,
+          "ybcRank": 1,
+          "rankGap": 26,
+          "carries": 198
+        },
+        "pass": {
+          "pressurePct": 18.83,
+          "pressureRank": 4,
+          "pocketTime": 2.71,
+          "dropbacks": 494
+        },
+        "scheme": {
+          "epaPerPlay": 0.056,
+          "passRate": 58.7,
+          "boxAvg": 6.49,
+          "heavyBoxRate": 45.6,
+          "explosiveRate": 9.8
+        },
+        "caller": {
+          "headCoach": "John Harbaugh",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "NYJ": {
+        "run": {
+          "expPerAtt": 3.75,
+          "expRank": 29,
+          "ybcPerAtt": 2.57,
+          "ybcRank": 11,
+          "rankGap": 18,
+          "carries": 223
+        },
+        "pass": {
+          "pressurePct": 31.28,
+          "pressureRank": 29,
+          "pocketTime": 2.4,
+          "dropbacks": 601
+        },
+        "scheme": {
+          "epaPerPlay": -0.239,
+          "passRate": 66.9,
+          "boxAvg": 6.13,
+          "heavyBoxRate": 31.3,
+          "explosiveRate": 6.2
+        },
+        "caller": {
+          "headCoach": "Robert Saleh",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "DAL": {
+        "run": {
+          "expPerAtt": 3.91,
+          "expRank": 17,
+          "ybcPerAtt": 2.25,
+          "ybcRank": 23,
+          "rankGap": 6,
+          "carries": 252
+        },
+        "pass": {
+          "pressurePct": 18.4,
+          "pressureRank": 3,
+          "pocketTime": 2.38,
+          "dropbacks": 614
+        },
+        "scheme": {
+          "epaPerPlay": 0.108,
+          "passRate": 64,
+          "boxAvg": 6.35,
+          "heavyBoxRate": 37.3,
+          "explosiveRate": 8.5
+        },
+        "caller": {
+          "headCoach": "Mike McCarthy",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "DEN": {
+        "run": {
+          "expPerAtt": 3.88,
+          "expRank": 20,
+          "ybcPerAtt": 2.35,
+          "ybcRank": 17,
+          "rankGap": 3,
+          "carries": 217
+        },
+        "pass": {
+          "pressurePct": 29.82,
+          "pressureRank": 28,
+          "pocketTime": 2.69,
+          "dropbacks": 513
+        },
+        "scheme": {
+          "epaPerPlay": -0.049,
+          "passRate": 61.1,
+          "boxAvg": 6.49,
+          "heavyBoxRate": 45.6,
+          "explosiveRate": 8.6
+        },
+        "caller": {
+          "headCoach": "Sean Payton",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "ATL": {
+        "run": {
+          "expPerAtt": 4.01,
+          "expRank": 11,
+          "ybcPerAtt": 2.43,
+          "ybcRank": 16,
+          "rankGap": 5,
+          "carries": 400
+        },
+        "pass": {
+          "pressurePct": 22.26,
+          "pressureRank": 13,
+          "pocketTime": 2.35,
+          "dropbacks": 530
+        },
+        "scheme": {
+          "epaPerPlay": -0.091,
+          "passRate": 56.3,
+          "boxAvg": 6.38,
+          "heavyBoxRate": 43,
+          "explosiveRate": 8.7
+        },
+        "caller": {
+          "headCoach": "Arthur Smith",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "CLE": {
+        "run": {
+          "expPerAtt": 3.83,
+          "expRank": 23,
+          "ybcPerAtt": 2.19,
+          "ybcRank": 25,
+          "rankGap": 2,
+          "carries": 339
+        },
+        "pass": {
+          "pressurePct": 25.48,
+          "pressureRank": 21,
+          "pocketTime": 2.53,
+          "dropbacks": 624
+        },
+        "scheme": {
+          "epaPerPlay": -0.139,
+          "passRate": 60.6,
+          "boxAvg": 6.38,
+          "heavyBoxRate": 35.9,
+          "explosiveRate": 7.9
+        },
+        "caller": {
+          "headCoach": "Kevin Stefanski",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "JAX": {
+        "run": {
+          "expPerAtt": 4.01,
+          "expRank": 12,
+          "ybcPerAtt": 2.28,
+          "ybcRank": 20,
+          "rankGap": 8,
+          "carries": 267
+        },
+        "pass": {
+          "pressurePct": 20.65,
+          "pressureRank": 9,
+          "pocketTime": 2.2,
+          "dropbacks": 620
+        },
+        "scheme": {
+          "epaPerPlay": -0.046,
+          "passRate": 65.1,
+          "boxAvg": 6,
+          "heavyBoxRate": 24,
+          "explosiveRate": 7.1
+        },
+        "caller": {
+          "headCoach": "Doug Pederson",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "NYG": {
+        "run": {
+          "expPerAtt": 3.44,
+          "expRank": 32,
+          "ybcPerAtt": 2.58,
+          "ybcRank": 10,
+          "rankGap": 22,
+          "carries": 247
+        },
+        "pass": {
+          "pressurePct": 34.17,
+          "pressureRank": 31,
+          "pocketTime": 2.4,
+          "dropbacks": 518
+        },
+        "scheme": {
+          "epaPerPlay": -0.175,
+          "passRate": 64.2,
+          "boxAvg": 6.22,
+          "heavyBoxRate": 31.7,
+          "explosiveRate": 7.6
+        },
+        "caller": {
+          "headCoach": "Brian Daboll",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      }
+    },
+    "2024": {
+      "GB": {
+        "run": {
+          "expPerAtt": 3.78,
+          "expRank": 26,
+          "ybcPerAtt": 2.37,
+          "ybcRank": 19,
+          "rankGap": 7,
+          "carries": 404
+        },
+        "pass": {
+          "pressurePct": 23.38,
+          "pressureRank": 14,
+          "pocketTime": 2.39,
+          "dropbacks": 479
+        },
+        "scheme": {
+          "epaPerPlay": 0.065,
+          "passRate": 52.7,
+          "boxAvg": 6.17,
+          "heavyBoxRate": 34.1,
+          "explosiveRate": 11.4
+        },
+        "caller": {
+          "headCoach": "Matt LaFleur",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "NYJ": {
+        "run": {
+          "expPerAtt": 4.14,
+          "expRank": 11,
+          "ybcPerAtt": 2.14,
+          "ybcRank": 29,
+          "rankGap": 18,
+          "carries": 301
+        },
+        "pass": {
+          "pressurePct": 21.75,
+          "pressureRank": 8,
+          "pocketTime": 2.29,
+          "dropbacks": 607
+        },
+        "scheme": {
+          "epaPerPlay": -0.016,
+          "passRate": 66.9,
+          "boxAvg": 6.02,
+          "heavyBoxRate": 22.8,
+          "explosiveRate": 8.7
+        },
+        "caller": {
+          "headCoach": "Robert Saleh",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "DEN": {
+        "run": {
+          "expPerAtt": 4.47,
+          "expRank": 3,
+          "ybcPerAtt": 2.4,
+          "ybcRank": 17,
+          "rankGap": 14,
+          "carries": 252
+        },
+        "pass": {
+          "pressurePct": 17.89,
+          "pressureRank": 3,
+          "pocketTime": 2.5,
+          "dropbacks": 570
+        },
+        "scheme": {
+          "epaPerPlay": -0.006,
+          "passRate": 62.9,
+          "boxAvg": 6.15,
+          "heavyBoxRate": 30.7,
+          "explosiveRate": 8.8
+        },
+        "caller": {
+          "headCoach": "Sean Payton",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "LAR": {
+        "run": {
+          "expPerAtt": 4.03,
+          "expRank": 17,
+          "ybcPerAtt": 2.24,
+          "ybcRank": 25,
+          "rankGap": 8,
+          "carries": 316
+        },
+        "pass": {
+          "pressurePct": 23.26,
+          "pressureRank": 13,
+          "pocketTime": 2.39,
+          "dropbacks": 559
+        },
+        "scheme": {
+          "epaPerPlay": 0.016,
+          "passRate": 59.6,
+          "boxAvg": 6.23,
+          "heavyBoxRate": 31.2,
+          "explosiveRate": 8.2
+        },
+        "caller": {
+          "headCoach": "Sean McVay",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "CHI": {
+        "run": {
+          "expPerAtt": 4.45,
+          "expRank": 4,
+          "ybcPerAtt": 2.46,
+          "ybcRank": 15,
+          "rankGap": 11,
+          "carries": 253
+        },
+        "pass": {
+          "pressurePct": 28.27,
+          "pressureRank": 27,
+          "pocketTime": 2.4,
+          "dropbacks": 566
+        },
+        "scheme": {
+          "epaPerPlay": -0.085,
+          "passRate": 66.1,
+          "boxAvg": 5.9,
+          "heavyBoxRate": 22,
+          "explosiveRate": 5.8
+        },
+        "caller": {
+          "headCoach": "Matt Eberflus",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "SEA": {
+        "run": {
+          "expPerAtt": 3.69,
+          "expRank": 29,
+          "ybcPerAtt": 2.36,
+          "ybcRank": 20,
+          "rankGap": 9,
+          "carries": 288
+        },
+        "pass": {
+          "pressurePct": 25.46,
+          "pressureRank": 20,
+          "pocketTime": 2.4,
+          "dropbacks": 593
+        },
+        "scheme": {
+          "epaPerPlay": -0.029,
+          "passRate": 66.8,
+          "boxAvg": 5.94,
+          "heavyBoxRate": 17.5,
+          "explosiveRate": 8.2
+        },
+        "caller": {
+          "headCoach": "Mike Macdonald",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "CLE": {
+        "run": {
+          "expPerAtt": 3.9,
+          "expRank": 23,
+          "ybcPerAtt": 2.53,
+          "ybcRank": 11,
+          "rankGap": 12,
+          "carries": 206
+        },
+        "pass": {
+          "pressurePct": 29.2,
+          "pressureRank": 29,
+          "pocketTime": 2.43,
+          "dropbacks": 661
+        },
+        "scheme": {
+          "epaPerPlay": -0.18,
+          "passRate": 69.4,
+          "boxAvg": 6.01,
+          "heavyBoxRate": 20.6,
+          "explosiveRate": 5.8
+        },
+        "caller": {
+          "headCoach": "Kevin Stefanski",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "ATL": {
+        "run": {
+          "expPerAtt": 4.05,
+          "expRank": 15,
+          "ybcPerAtt": 2.17,
+          "ybcRank": 26,
+          "rankGap": 11,
+          "carries": 441
+        },
+        "pass": {
+          "pressurePct": 20.93,
+          "pressureRank": 7,
+          "pocketTime": 2.38,
+          "dropbacks": 559
+        },
+        "scheme": {
+          "epaPerPlay": 0.03,
+          "passRate": 56.5,
+          "boxAvg": 6.03,
+          "heavyBoxRate": 22,
+          "explosiveRate": 9.7
+        },
+        "caller": {
+          "headCoach": "Raheem Morris",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "IND": {
+        "run": {
+          "expPerAtt": 4.05,
+          "expRank": 16,
+          "ybcPerAtt": 2.93,
+          "ybcRank": 4,
+          "rankGap": 12,
+          "carries": 303
+        },
+        "pass": {
+          "pressurePct": 24.95,
+          "pressureRank": 19,
+          "pocketTime": 2.35,
+          "dropbacks": 513
+        },
+        "scheme": {
+          "epaPerPlay": -0.055,
+          "passRate": 56.3,
+          "boxAvg": 6.07,
+          "heavyBoxRate": 29.4,
+          "explosiveRate": 10.2
+        },
+        "caller": {
+          "headCoach": "Shane Steichen",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "TB": {
+        "run": {
+          "expPerAtt": 4.17,
+          "expRank": 10,
+          "ybcPerAtt": 2.78,
+          "ybcRank": 6,
+          "rankGap": 4,
+          "carries": 351
+        },
+        "pass": {
+          "pressurePct": 19.09,
+          "pressureRank": 5,
+          "pocketTime": 2.2,
+          "dropbacks": 571
+        },
+        "scheme": {
+          "epaPerPlay": 0.119,
+          "passRate": 61,
+          "boxAvg": 6.14,
+          "heavyBoxRate": 26.5,
+          "explosiveRate": 10.3
+        },
+        "caller": {
+          "headCoach": "Todd Bowles",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "CAR": {
+        "run": {
+          "expPerAtt": 3.62,
+          "expRank": 30,
+          "ybcPerAtt": 2.73,
+          "ybcRank": 7,
+          "rankGap": 23,
+          "carries": 250
+        },
+        "pass": {
+          "pressurePct": 27.24,
+          "pressureRank": 25,
+          "pocketTime": 2.27,
+          "dropbacks": 547
+        },
+        "scheme": {
+          "epaPerPlay": -0.055,
+          "passRate": 64.6,
+          "boxAvg": 6.01,
+          "heavyBoxRate": 24.1,
+          "explosiveRate": 7.5
+        },
+        "caller": {
+          "headCoach": "Dave Canales",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "PHI": {
+        "run": {
+          "expPerAtt": 4.21,
+          "expRank": 7,
+          "ybcPerAtt": 3.24,
+          "ybcRank": 2,
+          "rankGap": 5,
+          "carries": 345
+        },
+        "pass": {
+          "pressurePct": 24.33,
+          "pressureRank": 17,
+          "pocketTime": 2.63,
+          "dropbacks": 448
+        },
+        "scheme": {
+          "epaPerPlay": 0.109,
+          "passRate": 50.1,
+          "boxAvg": 6.34,
+          "heavyBoxRate": 32,
+          "explosiveRate": 10.2
+        },
+        "caller": {
+          "headCoach": "Nick Sirianni",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "NO": {
+        "run": {
+          "expPerAtt": 4.23,
+          "expRank": 6,
+          "ybcPerAtt": 2.49,
+          "ybcRank": 13,
+          "rankGap": 7,
+          "carries": 228
+        },
+        "pass": {
+          "pressurePct": 26.32,
+          "pressureRank": 23,
+          "pocketTime": 2.4,
+          "dropbacks": 551
+        },
+        "scheme": {
+          "epaPerPlay": -0.067,
+          "passRate": 60.9,
+          "boxAvg": 6.24,
+          "heavyBoxRate": 35.8,
+          "explosiveRate": 8.4
+        },
+        "caller": {
+          "headCoach": "Dennis Allen",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "TEN": {
+        "run": {
+          "expPerAtt": 3.97,
+          "expRank": 21,
+          "ybcPerAtt": 2.15,
+          "ybcRank": 27,
+          "rankGap": 6,
+          "carries": 260
+        },
+        "pass": {
+          "pressurePct": 26.23,
+          "pressureRank": 22,
+          "pocketTime": 2.48,
+          "dropbacks": 530
+        },
+        "scheme": {
+          "epaPerPlay": -0.115,
+          "passRate": 60.2,
+          "boxAvg": 5.98,
+          "heavyBoxRate": 28,
+          "explosiveRate": 8.3
+        },
+        "caller": {
+          "headCoach": "Brian Callahan",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "NYG": {
+        "run": {
+          "expPerAtt": 4.37,
+          "expRank": 5,
+          "ybcPerAtt": 2.53,
+          "ybcRank": 12,
+          "rankGap": 7,
+          "carries": 305
+        },
+        "pass": {
+          "pressurePct": 29.44,
+          "pressureRank": 30,
+          "pocketTime": 2.38,
+          "dropbacks": 591
+        },
+        "scheme": {
+          "epaPerPlay": -0.106,
+          "passRate": 64.9,
+          "boxAvg": 6.07,
+          "heavyBoxRate": 25.7,
+          "explosiveRate": 6.6
+        },
+        "caller": {
+          "headCoach": "Brian Daboll",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "HOU": {
+        "run": {
+          "expPerAtt": 3.76,
+          "expRank": 27,
+          "ybcPerAtt": 2.43,
+          "ybcRank": 16,
+          "rankGap": 11,
+          "carries": 245
+        },
+        "pass": {
+          "pressurePct": 31.58,
+          "pressureRank": 32,
+          "pocketTime": 2.47,
+          "dropbacks": 570
+        },
+        "scheme": {
+          "epaPerPlay": -0.054,
+          "passRate": 63.7,
+          "boxAvg": 6.06,
+          "heavyBoxRate": 32.4,
+          "explosiveRate": 8.4
+        },
+        "caller": {
+          "headCoach": "DeMeco Ryans",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "MIN": {
+        "run": {
+          "expPerAtt": 4.2,
+          "expRank": 8,
+          "ybcPerAtt": 2.3,
+          "ybcRank": 22,
+          "rankGap": 14,
+          "carries": 359
+        },
+        "pass": {
+          "pressurePct": 27.92,
+          "pressureRank": 26,
+          "pocketTime": 2.6,
+          "dropbacks": 548
+        },
+        "scheme": {
+          "epaPerPlay": -0.002,
+          "passRate": 62.5,
+          "boxAvg": 6.1,
+          "heavyBoxRate": 30.5,
+          "explosiveRate": 9.4
+        },
+        "caller": {
+          "headCoach": "Kevin O'Connell",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "MIA": {
+        "run": {
+          "expPerAtt": 4.81,
+          "expRank": 1,
+          "ybcPerAtt": 2.26,
+          "ybcRank": 23,
+          "rankGap": 22,
+          "carries": 203
+        },
+        "pass": {
+          "pressurePct": 19.97,
+          "pressureRank": 6,
+          "pocketTime": 2.12,
+          "dropbacks": 591
+        },
+        "scheme": {
+          "epaPerPlay": -0.045,
+          "passRate": 61.8,
+          "boxAvg": 5.94,
+          "heavyBoxRate": 29.8,
+          "explosiveRate": 7.3
+        },
+        "caller": {
+          "headCoach": "Mike McDaniel",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "CIN": {
+        "run": {
+          "expPerAtt": 3.89,
+          "expRank": 24,
+          "ybcPerAtt": 2.69,
+          "ybcRank": 9,
+          "rankGap": 15,
+          "carries": 229
+        },
+        "pass": {
+          "pressurePct": 23.77,
+          "pressureRank": 16,
+          "pocketTime": 2.2,
+          "dropbacks": 652
+        },
+        "scheme": {
+          "epaPerPlay": 0.097,
+          "passRate": 68.9,
+          "boxAvg": 6.05,
+          "heavyBoxRate": 25.7,
+          "explosiveRate": 7.4
+        },
+        "caller": {
+          "headCoach": "Zac Taylor",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "LAC": {
+        "run": {
+          "expPerAtt": 3.99,
+          "expRank": 20,
+          "ybcPerAtt": 2,
+          "ybcRank": 31,
+          "rankGap": 11,
+          "carries": 296
+        },
+        "pass": {
+          "pressurePct": 24.71,
+          "pressureRank": 18,
+          "pocketTime": 2.5,
+          "dropbacks": 510
+        },
+        "scheme": {
+          "epaPerPlay": 0.016,
+          "passRate": 60.3,
+          "boxAvg": 6.23,
+          "heavyBoxRate": 33.4,
+          "explosiveRate": 8.8
+        },
+        "caller": {
+          "headCoach": "Jim Harbaugh",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "PIT": {
+        "run": {
+          "expPerAtt": 4.02,
+          "expRank": 18,
+          "ybcPerAtt": 2.24,
+          "ybcRank": 24,
+          "rankGap": 6,
+          "carries": 383
+        },
+        "pass": {
+          "pressurePct": 29.66,
+          "pressureRank": 31,
+          "pocketTime": 2.43,
+          "dropbacks": 499
+        },
+        "scheme": {
+          "epaPerPlay": -0.029,
+          "passRate": 56.8,
+          "boxAvg": 6.22,
+          "heavyBoxRate": 33.9,
+          "explosiveRate": 10
+        },
+        "caller": {
+          "headCoach": "Mike Tomlin",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "DAL": {
+        "run": {
+          "expPerAtt": 4.18,
+          "expRank": 9,
+          "ybcPerAtt": 2.14,
+          "ybcRank": 28,
+          "rankGap": 19,
+          "carries": 235
+        },
+        "pass": {
+          "pressurePct": 23.55,
+          "pressureRank": 15,
+          "pocketTime": 2.3,
+          "dropbacks": 637
+        },
+        "scheme": {
+          "epaPerPlay": -0.1,
+          "passRate": 63.8,
+          "boxAvg": 5.95,
+          "heavyBoxRate": 20.1,
+          "explosiveRate": 7.7
+        },
+        "caller": {
+          "headCoach": "Mike McCarthy",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "WAS": {
+        "run": {
+          "expPerAtt": 4,
+          "expRank": 19,
+          "ybcPerAtt": 2.9,
+          "ybcRank": 5,
+          "rankGap": 14,
+          "carries": 187
+        },
+        "pass": {
+          "pressurePct": 23.05,
+          "pressureRank": 11,
+          "pocketTime": 2.41,
+          "dropbacks": 525
+        },
+        "scheme": {
+          "epaPerPlay": 0.123,
+          "passRate": 60.9,
+          "boxAvg": 6.01,
+          "heavyBoxRate": 22.7,
+          "explosiveRate": 8.4
+        },
+        "caller": {
+          "headCoach": "Dan Quinn",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "JAX": {
+        "run": {
+          "expPerAtt": 3.88,
+          "expRank": 25,
+          "ybcPerAtt": 2.02,
+          "ybcRank": 30,
+          "rankGap": 5,
+          "carries": 318
+        },
+        "pass": {
+          "pressurePct": 16.3,
+          "pressureRank": 1,
+          "pocketTime": 2.35,
+          "dropbacks": 546
+        },
+        "scheme": {
+          "epaPerPlay": -0.031,
+          "passRate": 62.2,
+          "boxAvg": 6.05,
+          "heavyBoxRate": 25.2,
+          "explosiveRate": 9.6
+        },
+        "caller": {
+          "headCoach": "Doug Pederson",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "DET": {
+        "run": {
+          "expPerAtt": 4.49,
+          "expRank": 2,
+          "ybcPerAtt": 2.55,
+          "ybcRank": 10,
+          "rankGap": 8,
+          "carries": 435
+        },
+        "pass": {
+          "pressurePct": 22.69,
+          "pressureRank": 10,
+          "pocketTime": 2.29,
+          "dropbacks": 551
+        },
+        "scheme": {
+          "epaPerPlay": 0.141,
+          "passRate": 55.1,
+          "boxAvg": 6.22,
+          "heavyBoxRate": 33.6,
+          "explosiveRate": 11.9
+        },
+        "caller": {
+          "headCoach": "Dan Campbell",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "NE": {
+        "run": {
+          "expPerAtt": 3.57,
+          "expRank": 31,
+          "ybcPerAtt": 2.35,
+          "ybcRank": 21,
+          "rankGap": 10,
+          "carries": 327
+        },
+        "pass": {
+          "pressurePct": 28.54,
+          "pressureRank": 28,
+          "pocketTime": 2.34,
+          "dropbacks": 529
+        },
+        "scheme": {
+          "epaPerPlay": -0.095,
+          "passRate": 63.6,
+          "boxAvg": 6.08,
+          "heavyBoxRate": 23.7,
+          "explosiveRate": 7
+        },
+        "caller": {
+          "headCoach": "Jerod Mayo",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "ARI": {
+        "run": {
+          "expPerAtt": 4.09,
+          "expRank": 13,
+          "ybcPerAtt": 2.99,
+          "ybcRank": 3,
+          "rankGap": 10,
+          "carries": 236
+        },
+        "pass": {
+          "pressurePct": 18.42,
+          "pressureRank": 4,
+          "pocketTime": 2.4,
+          "dropbacks": 543
+        },
+        "scheme": {
+          "epaPerPlay": 0.053,
+          "passRate": 60.3,
+          "boxAvg": 6.01,
+          "heavyBoxRate": 25.8,
+          "explosiveRate": 9.9
+        },
+        "caller": {
+          "headCoach": "Jonathan Gannon",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "BAL": {
+        "run": {
+          "expPerAtt": 4.06,
+          "expRank": 14,
+          "ybcPerAtt": 3.29,
+          "ybcRank": 1,
+          "rankGap": 13,
+          "carries": 325
+        },
+        "pass": {
+          "pressurePct": 23.06,
+          "pressureRank": 12,
+          "pocketTime": 2.5,
+          "dropbacks": 477
+        },
+        "scheme": {
+          "epaPerPlay": 0.182,
+          "passRate": 52.3,
+          "boxAvg": 6.26,
+          "heavyBoxRate": 35.5,
+          "explosiveRate": 12.4
+        },
+        "caller": {
+          "headCoach": "John Harbaugh",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "BUF": {
+        "run": {
+          "expPerAtt": 3.96,
+          "expRank": 22,
+          "ybcPerAtt": 2.47,
+          "ybcRank": 14,
+          "rankGap": 8,
+          "carries": 320
+        },
+        "pass": {
+          "pressurePct": 17.88,
+          "pressureRank": 2,
+          "pocketTime": 2.39,
+          "dropbacks": 520
+        },
+        "scheme": {
+          "epaPerPlay": 0.17,
+          "passRate": 56.8,
+          "boxAvg": 6.14,
+          "heavyBoxRate": 32.5,
+          "explosiveRate": 9.4
+        },
+        "caller": {
+          "headCoach": "Sean McDermott",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "KC": {
+        "run": {
+          "expPerAtt": 4.1,
+          "expRank": 12,
+          "ybcPerAtt": 2.4,
+          "ybcRank": 18,
+          "rankGap": 6,
+          "carries": 200
+        },
+        "pass": {
+          "pressurePct": 27,
+          "pressureRank": 24,
+          "pocketTime": 2.3,
+          "dropbacks": 600
+        },
+        "scheme": {
+          "epaPerPlay": 0.053,
+          "passRate": 65.3,
+          "boxAvg": 6.12,
+          "heavyBoxRate": 24.6,
+          "explosiveRate": 6.3
+        },
+        "caller": {
+          "headCoach": "Andy Reid",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "SF": {
+        "run": {
+          "expPerAtt": 3.71,
+          "expRank": 28,
+          "ybcPerAtt": 2.7,
+          "ybcRank": 8,
+          "rankGap": 20,
+          "carries": 153
+        },
+        "pass": {
+          "pressurePct": 22.14,
+          "pressureRank": 9,
+          "pocketTime": 2.47,
+          "dropbacks": 533
+        },
+        "scheme": {
+          "epaPerPlay": 0.048,
+          "passRate": 60.3,
+          "boxAvg": 6.27,
+          "heavyBoxRate": 35.7,
+          "explosiveRate": 10.4
+        },
+        "caller": {
+          "headCoach": "Kyle Shanahan",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "LV": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 1.92,
+          "ybcRank": 32,
+          "rankGap": null,
+          "carries": 132
+        },
+        "pass": {
+          "pressurePct": 25.51,
+          "pressureRank": 21,
+          "pocketTime": 2.27,
+          "dropbacks": 635
+        },
+        "scheme": {
+          "epaPerPlay": -0.143,
+          "passRate": 67.5,
+          "boxAvg": 5.92,
+          "heavyBoxRate": 21.8,
+          "explosiveRate": 7.1
+        },
+        "caller": {
+          "headCoach": "Antonio Pierce",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      }
+    },
+    "2025": {
+      "ATL": {
+        "run": {
+          "expPerAtt": 4.04,
+          "expRank": 11,
+          "ybcPerAtt": 2.52,
+          "ybcRank": 17,
+          "rankGap": 6,
+          "carries": 430
+        },
+        "pass": {
+          "pressurePct": 20.37,
+          "pressureRank": 5,
+          "pocketTime": 2.4,
+          "dropbacks": 545
+        },
+        "scheme": {
+          "epaPerPlay": -0.024,
+          "passRate": 57.2,
+          "boxAvg": 6.2,
+          "heavyBoxRate": 29.5,
+          "explosiveRate": 9.2
+        },
+        "caller": {
+          "headCoach": "Raheem Morris",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "LAR": {
+        "run": {
+          "expPerAtt": 4.2,
+          "expRank": 5,
+          "ybcPerAtt": 2.81,
+          "ybcRank": 6,
+          "rankGap": 1,
+          "carries": 404
+        },
+        "pass": {
+          "pressurePct": 19.4,
+          "pressureRank": 3,
+          "pocketTime": 2.4,
+          "dropbacks": 598
+        },
+        "scheme": {
+          "epaPerPlay": 0.141,
+          "passRate": 60.1,
+          "boxAvg": 6.32,
+          "heavyBoxRate": 38.4,
+          "explosiveRate": 10.9
+        },
+        "caller": {
+          "headCoach": "Sean McVay",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "DAL": {
+        "run": {
+          "expPerAtt": 4.14,
+          "expRank": 6,
+          "ybcPerAtt": 2.56,
+          "ybcRank": 14,
+          "rankGap": 8,
+          "carries": 252
+        },
+        "pass": {
+          "pressurePct": 23.56,
+          "pressureRank": 15,
+          "pocketTime": 2.4,
+          "dropbacks": 624
+        },
+        "scheme": {
+          "epaPerPlay": 0.094,
+          "passRate": 63.2,
+          "boxAvg": 6.21,
+          "heavyBoxRate": 31.6,
+          "explosiveRate": 8.2
+        },
+        "caller": {
+          "headCoach": "Brian Schottenheimer",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "KC": {
+        "run": {
+          "expPerAtt": 3.89,
+          "expRank": 19,
+          "ybcPerAtt": 2.62,
+          "ybcRank": 9,
+          "rankGap": 10,
+          "carries": 281
+        },
+        "pass": {
+          "pressurePct": 28.77,
+          "pressureRank": 26,
+          "pocketTime": 2.21,
+          "dropbacks": 584
+        },
+        "scheme": {
+          "epaPerPlay": 0.033,
+          "passRate": 66.9,
+          "boxAvg": 6,
+          "heavyBoxRate": 21.3,
+          "explosiveRate": 7.2
+        },
+        "caller": {
+          "headCoach": "Andy Reid",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "DET": {
+        "run": {
+          "expPerAtt": 4.05,
+          "expRank": 10,
+          "ybcPerAtt": 2.84,
+          "ybcRank": 5,
+          "rankGap": 5,
+          "carries": 401
+        },
+        "pass": {
+          "pressurePct": 26.46,
+          "pressureRank": 21,
+          "pocketTime": 2.3,
+          "dropbacks": 582
+        },
+        "scheme": {
+          "epaPerPlay": 0.067,
+          "passRate": 59.8,
+          "boxAvg": 6.25,
+          "heavyBoxRate": 34.3,
+          "explosiveRate": 10.1
+        },
+        "caller": {
+          "headCoach": "Dan Campbell",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "BAL": {
+        "run": {
+          "expPerAtt": 3.92,
+          "expRank": 18,
+          "ybcPerAtt": 3.14,
+          "ybcRank": 1,
+          "rankGap": 17,
+          "carries": 307
+        },
+        "pass": {
+          "pressurePct": 27.25,
+          "pressureRank": 23,
+          "pocketTime": 2.45,
+          "dropbacks": 422
+        },
+        "scheme": {
+          "epaPerPlay": 0.034,
+          "passRate": 53.6,
+          "boxAvg": 6.62,
+          "heavyBoxRate": 50.2,
+          "explosiveRate": 10.4
+        },
+        "caller": {
+          "headCoach": "John Harbaugh",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "CLE": {
+        "run": {
+          "expPerAtt": 3.25,
+          "expRank": 30,
+          "ybcPerAtt": 1.81,
+          "ybcRank": 31,
+          "rankGap": 1,
+          "carries": 230
+        },
+        "pass": {
+          "pressurePct": 34.05,
+          "pressureRank": 31,
+          "pocketTime": 2.44,
+          "dropbacks": 558
+        },
+        "scheme": {
+          "epaPerPlay": -0.198,
+          "passRate": 64.2,
+          "boxAvg": 6.2,
+          "heavyBoxRate": 31.4,
+          "explosiveRate": 6.2
+        },
+        "caller": {
+          "headCoach": "Kevin Stefanski",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "WAS": {
+        "run": {
+          "expPerAtt": 3.79,
+          "expRank": 22,
+          "ybcPerAtt": 2.51,
+          "ybcRank": 18,
+          "rankGap": 4,
+          "carries": 287
+        },
+        "pass": {
+          "pressurePct": 22.17,
+          "pressureRank": 11,
+          "pocketTime": 2.36,
+          "dropbacks": 469
+        },
+        "scheme": {
+          "epaPerPlay": 0.012,
+          "passRate": 59.6,
+          "boxAvg": 6.19,
+          "heavyBoxRate": 28.9,
+          "explosiveRate": 8.5
+        },
+        "caller": {
+          "headCoach": "Dan Quinn",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "NYG": {
+        "run": {
+          "expPerAtt": 3.83,
+          "expRank": 20,
+          "ybcPerAtt": 2.71,
+          "ybcRank": 7,
+          "rankGap": 13,
+          "carries": 396
+        },
+        "pass": {
+          "pressurePct": 29.47,
+          "pressureRank": 27,
+          "pocketTime": 2.39,
+          "dropbacks": 526
+        },
+        "scheme": {
+          "epaPerPlay": 0.033,
+          "passRate": 59.5,
+          "boxAvg": 6.2,
+          "heavyBoxRate": 30,
+          "explosiveRate": 8.6
+        },
+        "caller": {
+          "headCoach": "Brian Daboll",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "CAR": {
+        "run": {
+          "expPerAtt": 3.93,
+          "expRank": 17,
+          "ybcPerAtt": 2.49,
+          "ybcRank": 19,
+          "rankGap": 2,
+          "carries": 370
+        },
+        "pass": {
+          "pressurePct": 27.18,
+          "pressureRank": 22,
+          "pocketTime": 2.4,
+          "dropbacks": 515
+        },
+        "scheme": {
+          "epaPerPlay": -0.034,
+          "passRate": 60.4,
+          "boxAvg": 6.23,
+          "heavyBoxRate": 35.2,
+          "explosiveRate": 7.8
+        },
+        "caller": {
+          "headCoach": "Dave Canales",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "MIN": {
+        "run": {
+          "expPerAtt": 3.78,
+          "expRank": 23,
+          "ybcPerAtt": 2.44,
+          "ybcRank": 21,
+          "rankGap": 2,
+          "carries": 291
+        },
+        "pass": {
+          "pressurePct": 30.37,
+          "pressureRank": 28,
+          "pocketTime": 2.43,
+          "dropbacks": 484
+        },
+        "scheme": {
+          "epaPerPlay": -0.108,
+          "passRate": 61.7,
+          "boxAvg": 6.15,
+          "heavyBoxRate": 28.3,
+          "explosiveRate": 8.4
+        },
+        "caller": {
+          "headCoach": "Kevin O'Connell",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "DEN": {
+        "run": {
+          "expPerAtt": 4,
+          "expRank": 15,
+          "ybcPerAtt": 2.59,
+          "ybcRank": 13,
+          "rankGap": 2,
+          "carries": 299
+        },
+        "pass": {
+          "pressurePct": 20.88,
+          "pressureRank": 6,
+          "pocketTime": 2.4,
+          "dropbacks": 613
+        },
+        "scheme": {
+          "epaPerPlay": 0.02,
+          "passRate": 63.8,
+          "boxAvg": 6.18,
+          "heavyBoxRate": 29.4,
+          "explosiveRate": 7.8
+        },
+        "caller": {
+          "headCoach": "Sean Payton",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "GB": {
+        "run": {
+          "expPerAtt": 4.02,
+          "expRank": 12,
+          "ybcPerAtt": 2.2,
+          "ybcRank": 27,
+          "rankGap": 15,
+          "carries": 359
+        },
+        "pass": {
+          "pressurePct": 24.54,
+          "pressureRank": 17,
+          "pocketTime": 2.41,
+          "dropbacks": 489
+        },
+        "scheme": {
+          "epaPerPlay": 0.139,
+          "passRate": 57.6,
+          "boxAvg": 6.22,
+          "heavyBoxRate": 34.1,
+          "explosiveRate": 10.7
+        },
+        "caller": {
+          "headCoach": "Matt LaFleur",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "BUF": {
+        "run": {
+          "expPerAtt": 4.07,
+          "expRank": 8,
+          "ybcPerAtt": 2.9,
+          "ybcRank": 3,
+          "rankGap": 5,
+          "carries": 309
+        },
+        "pass": {
+          "pressurePct": 20,
+          "pressureRank": 4,
+          "pocketTime": 2.51,
+          "dropbacks": 495
+        },
+        "scheme": {
+          "epaPerPlay": 0.136,
+          "passRate": 56.7,
+          "boxAvg": 6.38,
+          "heavyBoxRate": 41.2,
+          "explosiveRate": 10.9
+        },
+        "caller": {
+          "headCoach": "Sean McDermott",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "HOU": {
+        "run": {
+          "expPerAtt": 3.44,
+          "expRank": 29,
+          "ybcPerAtt": 2.1,
+          "ybcRank": 29,
+          "rankGap": 0,
+          "carries": 318
+        },
+        "pass": {
+          "pressurePct": 22.16,
+          "pressureRank": 10,
+          "pocketTime": 2.35,
+          "dropbacks": 582
+        },
+        "scheme": {
+          "epaPerPlay": -0.038,
+          "passRate": 61.1,
+          "boxAvg": 6.26,
+          "heavyBoxRate": 32.1,
+          "explosiveRate": 7
+        },
+        "caller": {
+          "headCoach": "DeMeco Ryans",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "NE": {
+        "run": {
+          "expPerAtt": 3.77,
+          "expRank": 24,
+          "ybcPerAtt": 2.56,
+          "ybcRank": 15,
+          "rankGap": 9,
+          "carries": 310
+        },
+        "pass": {
+          "pressurePct": 26.1,
+          "pressureRank": 19,
+          "pocketTime": 2.41,
+          "dropbacks": 502
+        },
+        "scheme": {
+          "epaPerPlay": 0.079,
+          "passRate": 62.2,
+          "boxAvg": 6.38,
+          "heavyBoxRate": 39.2,
+          "explosiveRate": 10.1
+        },
+        "caller": {
+          "headCoach": "Mike Vrabel",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "CHI": {
+        "run": {
+          "expPerAtt": 4.25,
+          "expRank": 3,
+          "ybcPerAtt": 3.12,
+          "ybcRank": 2,
+          "rankGap": 1,
+          "carries": 392
+        },
+        "pass": {
+          "pressurePct": 27.87,
+          "pressureRank": 24,
+          "pocketTime": 2.5,
+          "dropbacks": 574
+        },
+        "scheme": {
+          "epaPerPlay": 0.052,
+          "passRate": 60.1,
+          "boxAvg": 6.23,
+          "heavyBoxRate": 33.2,
+          "explosiveRate": 10
+        },
+        "caller": {
+          "headCoach": "Ben Johnson",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "SEA": {
+        "run": {
+          "expPerAtt": 3.97,
+          "expRank": 16,
+          "ybcPerAtt": 2.48,
+          "ybcRank": 20,
+          "rankGap": 4,
+          "carries": 405
+        },
+        "pass": {
+          "pressurePct": 22.66,
+          "pressureRank": 13,
+          "pocketTime": 2.4,
+          "dropbacks": 481
+        },
+        "scheme": {
+          "epaPerPlay": 0.044,
+          "passRate": 52.8,
+          "boxAvg": 6.44,
+          "heavyBoxRate": 43,
+          "explosiveRate": 10.3
+        },
+        "caller": {
+          "headCoach": "Mike Macdonald",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "IND": {
+        "run": {
+          "expPerAtt": 4.24,
+          "expRank": 4,
+          "ybcPerAtt": 2.43,
+          "ybcRank": 22,
+          "rankGap": 18,
+          "carries": 323
+        },
+        "pass": {
+          "pressurePct": 21.21,
+          "pressureRank": 7,
+          "pocketTime": 2.24,
+          "dropbacks": 547
+        },
+        "scheme": {
+          "epaPerPlay": 0.066,
+          "passRate": 60.4,
+          "boxAvg": 6.22,
+          "heavyBoxRate": 30.2,
+          "explosiveRate": 8
+        },
+        "caller": {
+          "headCoach": "Shane Steichen",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "NYJ": {
+        "run": {
+          "expPerAtt": 3.81,
+          "expRank": 21,
+          "ybcPerAtt": 2.9,
+          "ybcRank": 4,
+          "rankGap": 17,
+          "carries": 242
+        },
+        "pass": {
+          "pressurePct": 31.17,
+          "pressureRank": 29,
+          "pocketTime": 2.42,
+          "dropbacks": 494
+        },
+        "scheme": {
+          "epaPerPlay": -0.137,
+          "passRate": 61.3,
+          "boxAvg": 6.32,
+          "heavyBoxRate": 36.3,
+          "explosiveRate": 6.4
+        },
+        "caller": {
+          "headCoach": "Aaron Glenn",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "TB": {
+        "run": {
+          "expPerAtt": 4.1,
+          "expRank": 7,
+          "ybcPerAtt": 2.7,
+          "ybcRank": 8,
+          "rankGap": 1,
+          "carries": 305
+        },
+        "pass": {
+          "pressurePct": 17.2,
+          "pressureRank": 2,
+          "pocketTime": 2.29,
+          "dropbacks": 558
+        },
+        "scheme": {
+          "epaPerPlay": -0.004,
+          "passRate": 61.5,
+          "boxAvg": 6.09,
+          "heavyBoxRate": 25.2,
+          "explosiveRate": 8.4
+        },
+        "caller": {
+          "headCoach": "Todd Bowles",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "TEN": {
+        "run": {
+          "expPerAtt": 4,
+          "expRank": 14,
+          "ybcPerAtt": 2.54,
+          "ybcRank": 16,
+          "rankGap": 2,
+          "carries": 242
+        },
+        "pass": {
+          "pressurePct": 31.75,
+          "pressureRank": 30,
+          "pocketTime": 2.39,
+          "dropbacks": 570
+        },
+        "scheme": {
+          "epaPerPlay": -0.159,
+          "passRate": 65.6,
+          "boxAvg": 6.2,
+          "heavyBoxRate": 28.3,
+          "explosiveRate": 7.3
+        },
+        "caller": {
+          "headCoach": "Brian Callahan",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "PIT": {
+        "run": {
+          "expPerAtt": 3.6,
+          "expRank": 28,
+          "ybcPerAtt": 2.29,
+          "ybcRank": 24,
+          "rankGap": 4,
+          "carries": 325
+        },
+        "pass": {
+          "pressurePct": 16.36,
+          "pressureRank": 1,
+          "pocketTime": 2.21,
+          "dropbacks": 550
+        },
+        "scheme": {
+          "epaPerPlay": -0.008,
+          "passRate": 62.3,
+          "boxAvg": 6.21,
+          "heavyBoxRate": 35.6,
+          "explosiveRate": 8.3
+        },
+        "caller": {
+          "headCoach": "Mike Tomlin",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "PHI": {
+        "run": {
+          "expPerAtt": 3.75,
+          "expRank": 26,
+          "ybcPerAtt": 2.6,
+          "ybcRank": 11,
+          "rankGap": 15,
+          "carries": 280
+        },
+        "pass": {
+          "pressurePct": 23.34,
+          "pressureRank": 14,
+          "pocketTime": 2.49,
+          "dropbacks": 497
+        },
+        "scheme": {
+          "epaPerPlay": 0.016,
+          "passRate": 58.1,
+          "boxAvg": 6.27,
+          "heavyBoxRate": 36.6,
+          "explosiveRate": 8.6
+        },
+        "caller": {
+          "headCoach": "Nick Sirianni",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "CIN": {
+        "run": {
+          "expPerAtt": 4.05,
+          "expRank": 9,
+          "ybcPerAtt": 2.25,
+          "ybcRank": 25,
+          "rankGap": 16,
+          "carries": 232
+        },
+        "pass": {
+          "pressurePct": 22.34,
+          "pressureRank": 12,
+          "pocketTime": 2.22,
+          "dropbacks": 640
+        },
+        "scheme": {
+          "epaPerPlay": 0.003,
+          "passRate": 66.2,
+          "boxAvg": 6.06,
+          "heavyBoxRate": 23.3,
+          "explosiveRate": 7.4
+        },
+        "caller": {
+          "headCoach": "Zac Taylor",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "LV": {
+        "run": {
+          "expPerAtt": 3.76,
+          "expRank": 25,
+          "ybcPerAtt": 1.63,
+          "ybcRank": 32,
+          "rankGap": 7,
+          "carries": 266
+        },
+        "pass": {
+          "pressurePct": 26.41,
+          "pressureRank": 20,
+          "pocketTime": 2.49,
+          "dropbacks": 515
+        },
+        "scheme": {
+          "epaPerPlay": -0.196,
+          "passRate": 64.4,
+          "boxAvg": 6.12,
+          "heavyBoxRate": 25.4,
+          "explosiveRate": 6.7
+        },
+        "caller": {
+          "headCoach": "Pete Carroll",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "MIA": {
+        "run": {
+          "expPerAtt": 4.55,
+          "expRank": 1,
+          "ybcPerAtt": 2.2,
+          "ybcRank": 28,
+          "rankGap": 27,
+          "carries": 238
+        },
+        "pass": {
+          "pressurePct": 24.22,
+          "pressureRank": 16,
+          "pocketTime": 2.29,
+          "dropbacks": 479
+        },
+        "scheme": {
+          "epaPerPlay": -0.035,
+          "passRate": 57.4,
+          "boxAvg": 6.17,
+          "heavyBoxRate": 33.4,
+          "explosiveRate": 10.1
+        },
+        "caller": {
+          "headCoach": "Mike McDaniel",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "SF": {
+        "run": {
+          "expPerAtt": 4.36,
+          "expRank": 2,
+          "ybcPerAtt": 2.35,
+          "ybcRank": 23,
+          "rankGap": 21,
+          "carries": 403
+        },
+        "pass": {
+          "pressurePct": 21.25,
+          "pressureRank": 8,
+          "pocketTime": 2.55,
+          "dropbacks": 574
+        },
+        "scheme": {
+          "epaPerPlay": 0.054,
+          "passRate": 60.2,
+          "boxAvg": 6.19,
+          "heavyBoxRate": 30,
+          "explosiveRate": 7.8
+        },
+        "caller": {
+          "headCoach": "Kyle Shanahan",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "LAC": {
+        "run": {
+          "expPerAtt": 3.65,
+          "expRank": 27,
+          "ybcPerAtt": 2.61,
+          "ybcRank": 10,
+          "rankGap": 17,
+          "carries": 279
+        },
+        "pass": {
+          "pressurePct": 34.27,
+          "pressureRank": 32,
+          "pocketTime": 2.37,
+          "dropbacks": 569
+        },
+        "scheme": {
+          "epaPerPlay": -0.04,
+          "passRate": 63.9,
+          "boxAvg": 6.24,
+          "heavyBoxRate": 33.6,
+          "explosiveRate": 7.2
+        },
+        "caller": {
+          "headCoach": "Jim Harbaugh",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "JAX": {
+        "run": {
+          "expPerAtt": 4.01,
+          "expRank": 13,
+          "ybcPerAtt": 2.22,
+          "ybcRank": 26,
+          "rankGap": 13,
+          "carries": 260
+        },
+        "pass": {
+          "pressurePct": 25.04,
+          "pressureRank": 18,
+          "pocketTime": 2.4,
+          "dropbacks": 563
+        },
+        "scheme": {
+          "epaPerPlay": 0.027,
+          "passRate": 60.9,
+          "boxAvg": 6.15,
+          "heavyBoxRate": 26.9,
+          "explosiveRate": 8.5
+        },
+        "caller": {
+          "headCoach": "Liam Coen",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "NO": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 2.06,
+          "ybcRank": 30,
+          "rankGap": null,
+          "carries": 131
+        },
+        "pass": {
+          "pressurePct": 21.32,
+          "pressureRank": 9,
+          "pocketTime": 2.2,
+          "dropbacks": 591
+        },
+        "scheme": {
+          "epaPerPlay": -0.092,
+          "passRate": 64,
+          "boxAvg": 6.12,
+          "heavyBoxRate": 25.6,
+          "explosiveRate": 5.5
+        },
+        "caller": {
+          "headCoach": "Kellen Moore",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      },
+      "ARI": {
+        "run": {
+          "expPerAtt": null,
+          "expRank": null,
+          "ybcPerAtt": 2.59,
+          "ybcRank": 12,
+          "rankGap": null,
+          "carries": 92
+        },
+        "pass": {
+          "pressurePct": 28.2,
+          "pressureRank": 25,
+          "pocketTime": 2.37,
+          "dropbacks": 649
+        },
+        "scheme": {
+          "epaPerPlay": -0.026,
+          "passRate": 69.8,
+          "boxAvg": 6.13,
+          "heavyBoxRate": 28,
+          "explosiveRate": 6.6
+        },
+        "caller": {
+          "headCoach": "Jonathan Gannon",
+          "playCaller": null,
+          "callerIsHeadCoach": null,
+          "source": null
+        }
+      }
+    }
+  }
+}
