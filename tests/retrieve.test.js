@@ -239,3 +239,63 @@ test('the endpoint never returns the key, whatever goes wrong', () => {
   // echo the request.
   assert.ok(!/json\(\{[^}]*body[^}]*\}\)/.test(src), 'an upstream error body is being returned to the caller');
 });
+
+test('a surname paired with somebody else\'s first name is not a match', () => {
+  // THE BUG THIS EXISTS FOR. "Is Brady Cook any good" answered about James Cook
+  // III. Brady Cook had fallen out of the 350-player pool, the full-name match
+  // found nothing, and the bare surname matched the one Cook left — confidently,
+  // with nothing flagged as ambiguous, about a different man.
+  //
+  // The standing rule is never to guess an ambiguous name match. This is the
+  // same rule from a direction it did not cover: the danger is not only two
+  // players sharing a surname, it is a reader naming one the pool does not hold.
+  const cooks = pool.filter(p => /(^|\s)cook($|\s|\b)/i.test(p.name));
+  if (cooks.length === 1) {
+    const other = 'brady';
+    assert.ok(!new RegExp(`^${other}`, 'i').test(cooks[0].name), 'fixture assumes the pool Cook is not Brady');
+    const m = R.findPlayers(`is ${other} cook any good`, pool);
+    assert.deepStrictEqual(m.players.map(p => p.name), [],
+      `naming a player the pool does not have returned ${m.players.map(p => p.name).join(', ')}`);
+  }
+
+  // The general form, built from whoever is actually in the pool: take a
+  // player, ask about his surname with a first name nobody has, and get nothing.
+  const withSurname = pool.find(p => p.name.split(/\s+/).length >= 2);
+  const surname = withSurname.name.split(/\s+/).filter(w => !/^(jr|sr|ii|iii|iv|v)\.?$/i.test(w)).pop();
+  const sharing = pool.filter(p => p.name.toLowerCase().includes(surname.toLowerCase()));
+  const m2 = R.findPlayers(`how is zebulon ${surname} doing`, pool);
+  assert.deepStrictEqual(m2.players.map(p => p.name), [],
+    `"zebulon ${surname}" should match nobody, got ${m2.players.map(p => p.name).join(', ')} (pool has ${sharing.length} with that surname)`);
+});
+
+test('the guard does not break the questions that should work', () => {
+  // The cost of being wrong here is an engine that cannot answer about real
+  // players, so the ordinary shapes are pinned.
+  const p = pool.find(x => x.name === 'Jonathan Taylor') || pool.find(x => x.name.split(/\s+/).length === 2);
+  const [first, last] = p.name.split(/\s+/);
+  for (const q of [`how is ${last} doing`, `is ${first} ${last} healthy`, `what about ${last}`, `${last} usage`]) {
+    const m = R.findPlayers(q, pool);
+    assert.ok(m.players.some(x => x.name === p.name), `"${q}" no longer finds ${p.name}`);
+  }
+});
+
+test('the guard is exercised directly, including the branch the pool cannot reach', () => {
+  // `own.has(before)` — the case where the word in front of a surname is the
+  // player's OWN first name — is not reachable through findPlayers today,
+  // because a question naming both words full-matches before the surname path
+  // runs. A mutation deleting it therefore changed nothing, which is the
+  // definition of an untested branch. It is called directly instead.
+  const f = R.precededByAnotherFirstName;
+  assert.strictEqual(f(' is brady cook any good ', 'cook', 'james cook iii'), true,
+    'somebody else\'s first name should disqualify the match');
+  assert.strictEqual(f(' how is james cook doing ', 'cook', 'james cook iii'), false,
+    'his own first name must not disqualify him');
+  assert.strictEqual(f(' how is cook doing ', 'cook', 'james cook iii'), false,
+    '"is" is not a first name');
+  assert.strictEqual(f(' cook is good ', 'cook', 'james cook iii'), false,
+    'a surname opening the question has nothing in front of it');
+  assert.strictEqual(f(' rb cook usage ', 'cook', 'james cook iii'), false,
+    'a two-letter word in front is a position, not a name');
+  assert.strictEqual(f(' about cook ', 'cook', 'james cook iii'), false,
+    '"about" is not a first name');
+});

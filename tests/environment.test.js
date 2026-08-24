@@ -124,3 +124,45 @@ test('a missing environment file renders nothing rather than an empty shell', ()
   assert.match(pages, /envPromise = loadJSON\('\/data\/environment\.json'\)\.then\(d => \{ envData = d \|\| \{\}; \}\)/,
     'the environment loader no longer latches on failure, so a failed fetch loops the team page');
 });
+
+test('the card is dated, and says how much of that line still exists', () => {
+  // The measurements are last season's — Next Gen Stats and PFR publish nothing
+  // for a season nobody has played — and a line is five men who may not still
+  // be there. Saying "from 2025" in a subtitle was not enough: the card sat on a
+  // team page and read as a description of the team now.
+  const pages = fs.readFileSync(path.join(ROOT, 'assets', 'app-pages.js'), 'utf8');
+  const card = pages.slice(pages.indexOf('function environmentCard'), pages.indexOf('function renderTeamPage'));
+  assert.match(card, /What they handed a runner in \$\{year\}/,
+    'the card no longer names the season in its own title');
+  assert.match(card, /row\.continuity/, 'the card no longer says how much of the line returns');
+  assert.match(card, /callerSeason/,
+    'the coach is no longer tied to the season he is actually in charge of');
+});
+
+test('continuity is joined on the id, and counts a real five', () => {
+  const withCont = Object.entries(board).filter(([, t]) => t.continuity);
+  assert.ok(withCont.length >= 28, `only ${withCont.length} teams carry line continuity`);
+  for (const [team, t] of withCont) {
+    const c = t.continuity;
+    assert.ok(c.of >= 4 && c.of <= 5, `${team}: ${c.of} line spots, which is not a line`);
+    assert.ok(c.returning >= 0 && c.returning <= c.of, `${team}: ${c.returning} of ${c.of} returning`);
+    assert.strictEqual(c.to, c.from + 1, `${team}: comparing ${c.from} against ${c.to}`);
+  }
+  // An offensive lineman is exactly the player whose name is written three
+  // ways, so the comparison has to be on the id.
+  assert.match(SRC, /r\.gsis_id/, 'line continuity is no longer joined on the GSIS id');
+  // And it must not report the whole league as unchanged, which is what a
+  // broken join looks like.
+  const allSame = withCont.every(([, t]) => t.continuity.returning === t.continuity.of);
+  assert.ok(!allSame, 'every team returns its whole line, which means the comparison matched nothing');
+});
+
+test('the coach named is the one in charge now', () => {
+  // The card showed Mike McDaniel on Miami's page a year after he left, because
+  // the coach was read from the same season as the measurements.
+  const current = Math.max(...Object.values(board).map((t) => t.callerSeason || 0));
+  assert.ok(current > latest,
+    `the newest coaching row is ${current} and the measurements are ${latest} — the card would name last season's coach`);
+  const named = Object.values(board).filter((t) => t.caller && t.caller.headCoach).length;
+  assert.ok(named >= 30, `only ${named} teams have a head coach for ${current}`);
+});

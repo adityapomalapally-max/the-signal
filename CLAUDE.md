@@ -1093,3 +1093,40 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - A cascade worth recognising: the full build failed on those tests, so no fresh data was committed,
   so the following light runs — which correctly no-opped in the preseason — still failed their
   `always()` test step on the now-stale data. One broken assertion reds every run after it.
+
+## Naming a player the pool does not have
+- "Is Brady Cook any good" answered about JAMES Cook III. Brady Cook had fallen out of the 350, the
+  full-name match found nothing, and the bare surname then matched the one Cook left — confidently,
+  with nothing flagged ambiguous, about a different man. "Wan'Dale Robinson" returned Bijan.
+- THE STANDING RULE COVERED THE WRONG HALF. "Never guess an ambiguous name match" was written for two
+  players sharing a surname. The other half is a reader naming a player the pool does not hold, where
+  there is nothing ambiguous to flag and the engine is simply certain and wrong.
+- So the word in front of a surname is checked: if it looks like a first name and is not one of that
+  player's own name words, he is not who was asked about and the answer is that we do not have him.
+  Two-letter words ("rb cook") and a stop list ("is", "about", "start") are not first names.
+- THE CONSERVATIVE DIRECTION IS REFUSAL. The cost of the guard is answering "not in the pool" to a
+  misspelled first name; the cost without it is answering confidently about somebody else.
+- AND FULL NAMES ARE NOT THE FIX. They are not reliably unique across seasons, and every feed writes
+  them differently — "James Cook" against "James Cook III", "Travis Etienne Jr." against "Travis
+  Etienne". Every DATA join here is already id-to-id (gsisId, sleeperId, pfr_id); names survive only
+  where a human types one or a feed publishes no id, and those are the two places this guard lives.
+- `precededByAnotherFirstName` is exported and unit-tested, because its own-first-name branch cannot
+  be reached through findPlayers — a question naming both words full-matches first — so a mutation
+  deleting it changed nothing.
+
+## An environment describes a season that has finished
+- NEXT GEN STATS AND PFR PUBLISH NOTHING FOR A SEASON NOBODY HAS PLAYED, so the environment card is
+  always describing last year. It is titled "What they handed a runner in 2025", in the past tense,
+  because a subtitle saying "from 2025" was not enough — the card sat on a team page and read as now.
+- HOW MUCH OF THAT LINE STILL EXISTS IS A FACT, NOT A FORECAST. The published depth chart names a
+  starter at each of the five spots before a snap is taken, so the two charts are compared directly:
+  Miami returns 4 of 5, Philadelphia 5 of 5, Detroit and Baltimore 3. Joined on the GSIS id — an
+  offensive lineman is exactly the player whose name is written three ways.
+- THE COACH IS THE ONE IN CHARGE NOW, not the one who was there when the numbers were measured. The
+  card named Mike McDaniel on Miami's page a year after he left. build-playcallers scaffolds the
+  current league year from the SCHEDULE feed, which carries every head coach months before kickoff;
+  the play-caller stays blank, and blank stays honest.
+- A play-caller row for a season with no play-by-play is legitimate, and the tests say so: exactly
+  one unplayed season, it must be the year after the newest played one, it must cover the league, and
+  at least one team must have changed coach — otherwise the scaffold is copying last year forward,
+  which is the bug it exists to fix.

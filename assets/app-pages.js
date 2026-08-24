@@ -1733,8 +1733,14 @@ function environmentCard(team) {
       ? `The two disagree sharply here — ${gap} places apart. Tracking reads the picture at the handoff; charting reads how far he got before anyone touched him, and a line can be good at one and not the other.`
       : gap <= 3 ? 'The two readings agree closely here.' : '';
 
-  let h = teamSectionLabel('What they hand a runner',
-    `Two independent readings of the same line, from ${year}. They agree at r = ${measured.vendorAgreement ?? '—'} across ${measured.vendorAgreementPairs ?? '—'} team-seasons, so both are shown.`);
+  // THE MEASUREMENT IS LAST SEASON AND THE READER IS LOOKING AT THIS ONE. Next
+  // Gen Stats and Pro Football Reference publish nothing for a season nobody
+  // has played, so everything here describes the year that finished — and a
+  // line is five men who may not all still be there. Saying "from 2025" in a
+  // subtitle was not enough: the card sat on a team page and read as current.
+  const cont = row.continuity;
+  let h = teamSectionLabel(`What they handed a runner in ${year}`,
+    `Two independent readings of the same line. They agree at r = ${measured.vendorAgreement ?? '—'} across ${measured.vendorAgreementPairs ?? '—'} team-seasons, so both are shown.`);
 
   h += `<div class="medical-card" style="padding:18px;margin-bottom:14px;">
     <div class="env-grid">
@@ -1760,6 +1766,19 @@ function environmentCard(team) {
 
   if (gapNote) h += `<div class="season-state" style="margin-top:14px;"><span class="season-state-tag">${gap >= 10 ? 'They disagree' : 'They agree'}</span><span>${rankEsc(gapNote)}</span></div>`;
 
+  // HOW MUCH OF THAT LINE STILL EXISTS. The published depth chart names a
+  // starter at each of the five spots before a snap is taken, so this is a fact
+  // rather than a projection — and it is the difference between the numbers
+  // above describing this team and describing a team that has left.
+  if (cont) {
+    const gone = cont.of - cont.returning;
+    h += `<div class="season-state" style="margin-top:10px;"><span class="season-state-tag">${cont.to}</span>`
+      + `<span>${rankEsc(`${cont.returning} of ${cont.of} starters on that line are still listed first at their spot for ${cont.to}`)}`
+      + (gone ? rankEsc(`, and ${gone === 1 ? 'one is not' : `${gone} are not`}. Read the figures above as ${gone >= 2 ? 'a different line' : 'that line minus a man'}.`)
+              : rankEsc('. The unit measured above is the unit lining up.'))
+      + `</span></div>`;
+  }
+
   const sc = row.scheme;
   if (sc) {
     h += `<div class="env-scheme">`
@@ -1773,9 +1792,14 @@ function environmentCard(team) {
     const c = row.caller;
     // The play-caller is hand-kept and often blank. A blank row is honest: the
     // page falls back to the head coach rather than guessing who calls it.
+    // Named for the season he is actually in charge of. This card showed Mike
+    // McDaniel on Miami's page a year after he left, because the coach was
+    // being read from the same season as the measurements.
+    const cs = row.callerSeason;
+    const when = cs ? `${cs}: ` : '';
     const who = c.playCaller
-      ? `${c.playCaller} calls the plays${c.callerIsHeadCoach ? ', and is the head coach' : c.headCoach ? ` for ${c.headCoach}` : ''}`
-      : c.headCoach ? `${c.headCoach} is the head coach; who calls the plays is not recorded` : '';
+      ? `${when}${c.playCaller} calls the plays${c.callerIsHeadCoach ? ', and is the head coach' : c.headCoach ? ` for ${c.headCoach}` : ''}`
+      : c.headCoach ? `${when}${c.headCoach} is the head coach; who calls the plays is not recorded` : '';
     if (who) h += `<div class="env-caller">${rankEsc(who)}${c.source ? ` · ${rankEsc(c.source)}` : ''}</div>`;
   }
 

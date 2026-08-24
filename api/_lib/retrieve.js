@@ -62,6 +62,41 @@ function normalize(s) {
  * Players the question refers to. Full-name matches win outright; a bare
  * surname that fits more than one player returns all of them, flagged.
  */
+// Words that can sit in front of a surname without being a first name.
+// Anything else of three letters or more is treated as one, which is the
+// conservative direction: the cost is answering "we do not have him" about a
+// misspelled first name, and the cost the other way is answering about the
+// wrong player.
+const NOT_A_FIRST_NAME = new Set([
+  'is', 'was', 'how', 'the', 'about', 'and', 'for', 'with', 'does', 'did', 'do',
+  'has', 'have', 'will', 'would', 'should', 'can', 'are', 'were', 'what', 'why',
+  'who', 'when', 'where', 'this', 'that', 'his', 'her', 'their', 'our', 'your',
+  'good', 'bad', 'better', 'worse', 'best', 'worst', 'any', 'all', 'more', 'most',
+  'on', 'in', 'at', 'to', 'of', 'from', 'by', 'vs', 'against', 'over', 'under',
+  'me', 'you', 'him', 'them', 'it', 'a', 'an', 'or', 'but', 'if', 'so',
+  'buy', 'sell', 'start', 'sit', 'trade', 'draft', 'rank', 'ranked', 'rankings',
+  'stats', 'usage', 'injury', 'injured', 'healthy', 'targets', 'carries', 'snaps',
+]);
+
+/**
+ * Is the surname in this question preceded by a first name belonging to
+ * somebody else? `nameWords` is the player's own normalised full name.
+ */
+function precededByAnotherFirstName(q, surname, name) {
+  const own = new Set(name.split(' '));
+  const words = q.trim().split(/\s+/);
+  for (let i = 0; i < words.length; i++) {
+    if (words[i] !== surname) continue;
+    const before = words[i - 1];
+    if (!before) continue;                       // surname opened the question
+    if (before.length < 3) continue;             // "rb cook", "at cook"
+    if (NOT_A_FIRST_NAME.has(before)) continue;  // "is cook", "about cook"
+    if (own.has(before)) continue;               // his own first name: a full match
+    return true;                                 // somebody else's first name
+  }
+  return false;
+}
+
 function findPlayers(question, pool) {
   const q = ' ' + normalize(question) + ' ';
   const full = [];
@@ -95,8 +130,24 @@ function findPlayers(question, pool) {
     // engine unable to answer about real players.
     if (surname.length < 3) continue;
     if (q.includes(' ' + surname + ' ')) {
-      if (!bySurname.has(surname)) bySurname.set(surname, []);
-      bySurname.get(surname).push(p);
+      // A SURNAME PRECEDED BY SOMEBODY ELSE'S FIRST NAME IS NOT A MATCH.
+      //
+      // "Is Brady Cook any good" used to answer about James Cook III. Brady
+      // Cook had fallen out of the 350-player pool, the full-name match found
+      // nothing, and the bare surname then matched the one Cook who was left —
+      // confidently, with no ambiguity flagged, about a different man. That is
+      // the failure this repo has a standing rule against, arrived at from a
+      // direction the rule did not cover: the danger is not only two players
+      // sharing a surname, it is a reader naming one the pool does not have.
+      //
+      // So the word in front of the surname is checked. If it looks like a
+      // first name and it is not one of this player's own name words, he is
+      // not who was asked about, and the honest answer is that we do not have
+      // the man in question.
+      if (!precededByAnotherFirstName(q, surname, name)) {
+        if (!bySurname.has(surname)) bySurname.set(surname, []);
+        bySurname.get(surname).push(p);
+      }
     }
   }
 
@@ -163,7 +214,7 @@ function compact(obj) {
   return obj;
 }
 
-module.exports = { load, normalize, findPlayers, detectTopics, latestSeason, round, compact, TOPICS, STOP };
+module.exports = { load, normalize, findPlayers, detectTopics, latestSeason, round, compact, TOPICS, STOP, precededByAnotherFirstName};
 
 /* ═══════════════════════════════════════════════════════════════════════════
    Building the context

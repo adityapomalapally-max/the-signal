@@ -55,6 +55,8 @@ const season = require('./lib/season');
 const DATA = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA, 'environment.json');
 
+const DEPTH = (y) => `https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_${y}.csv`;
+const OL = ['LT', 'LG', 'C', 'RG', 'RT'];
 const NGS_RUSH = 'https://github.com/nflverse/nflverse-data/releases/download/nextgen_stats/ngs_rushing.csv.gz';
 const PFR = 'https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats';
 
@@ -154,6 +156,58 @@ async function main() {
     pressByTeam.get(s).set(team, cur);
   }
 
+  // ---- IS IT STILL THE SAME LINE? -----------------------------------------
+  // Everything above measures a season that has been played. The reader is
+  // looking at a team about to play a different one, and a line is five men who
+  // may or may not still be there — the same problem the matchup board states
+  // about defensive personnel, and it applies here with more force, because a
+  // single replaced tackle changes what a back is handed.
+  //
+  // The published depth chart names a starter at each of the five spots before
+  // a snap is taken, so the two charts can be compared directly. Joined on the
+  // GSIS id, never the name: an offensive lineman is exactly the kind of player
+  // whose name is written three ways.
+  const currentSeason = await season.targetSeason();
+  const startersFor = (rows, team) => {
+    const latest = {};
+    for (const r of rows) {
+      if (teamKey(r.team) !== team) continue;
+      const pos = String(r.pos_abb || '').toUpperCase();
+      if (!OL.includes(pos)) continue;
+      if (String(r.pos_rank) !== '1') continue;
+      if (!latest[pos] || String(r.dt) > String(latest[pos].dt)) latest[pos] = r;
+    }
+    return latest;
+  };
+  let continuity = new Map();
+  try {
+    const measuredSeason = Math.max(...[...expByTeam.keys()]);
+    const [prevRows, nowRows] = await Promise.all([
+      parseCSV(await fetchCSV(DEPTH(measuredSeason))),
+      parseCSV(await fetchCSV(DEPTH(currentSeason))),
+    ]);
+    for (const team of new Set([...prevRows, ...nowRows].map((r) => teamKey(r.team)).filter(isRealTeam))) {
+      const before = startersFor(prevRows, team);
+      const now = startersFor(nowRows, team);
+      const beforeIds = new Set(Object.values(before).map((r) => r.gsis_id).filter(Boolean));
+      const spots = Object.keys(now).length;
+      if (!spots || !beforeIds.size) continue;
+      const returning = Object.values(now).filter((r) => r.gsis_id && beforeIds.has(r.gsis_id));
+      continuity.set(team, {
+        from: measuredSeason,
+        to: Number(currentSeason),
+        returning: returning.length,
+        of: spots,
+        spots: returning.map((r) => String(r.pos_abb).toUpperCase()).sort(),
+      });
+    }
+    log(`line continuity ${measuredSeason} → ${currentSeason}: ${continuity.size} teams compared`);
+  } catch (e) {
+    // A missing chart for a season that has not started is not a failure; the
+    // card simply says nothing about continuity rather than implying none.
+    log(`line continuity unavailable: ${e.message}`);
+  }
+
   // ---- scheme and the person calling it ------------------------------------
   const scheme = readJSON('scheme.json');
   const callers = readJSON('playcallers.json').entries || {};
@@ -211,14 +265,18 @@ async function main() {
           pocketTime: press && press.pocketAtt ? r1(press.pocket / press.pocketAtt) : null,
           dropbacks: press?.att ?? null,
         },
-        scheme: st ? {
+        // WHO IS THERE NOW, not who was there when the numbers were measured. The
+      // card sat on a team page naming a head coach a year after he left.
+      continuity: continuity.get(team) || null,
+      scheme: st ? {
           epaPerPlay: st.epaPerPlay ?? null,
           passRate: st.passRate ?? null,
           boxAvg: st.boxAvg ?? null,
           heavyBoxRate: st.heavyBoxRate ?? null,
           explosiveRate: st.explosiveRate ?? null,
         } : null,
-        caller: callerFor(team, s),
+        caller: callerFor(team, currentSeason) || callerFor(team, s),
+        callerSeason: callerFor(team, currentSeason) ? Number(currentSeason) : Number(s),
       };
       if (eR !== null && yR !== null) agreement.push([expPer.get(team), ybcPer.get(team)]);
     }
