@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-08-24T19:43:05.092Z",
+    "generated": "2026-08-24T19:55:36.767Z",
     "builtBy": "scripts/build-environment.js",
     "seasons": [
       2018,
@@ -20,12 +20,21 @@
       "caller": "data/playcallers.json, hand-kept and sourced"
     },
     "measured": {
+      "identityShiftSameCoach": 11.3,
+      "identityShiftNewCoach": 13.7,
+      "identityShiftPairs": {
+        "sameCoach": 50,
+        "newCoach": 14
+      },
       "vendorAgreement": 0.32,
       "vendorAgreementPairs": 238,
       "expectationPersistence": 0.42,
       "expectationPersistencePairs": 192
     },
     "caveats": [
+      "How far an offence moved is measured in personnel — the share of snaps that changed grouping from one season to the next. It is a fact about snaps, not a judgement about coaching, and nothing free supports the judgement.",
+      "A change of head coach does not predict it. Atlanta moved 71 points of snaps when the coach changed and 42 the following year when he did not, and across the seasons on file the medians are close enough to be the same number.",
+      "Only a HEAD COACH change is visible. The play-caller file is hand-kept and empty, so a coordinator arriving under the same coach — which is where the real explanation usually lives — cannot be seen here at all.",
       "The two readings of a line are not the same measurement and do not agree closely. Expected yards comes from tracking every player at the handoff; yards before contact is charted by watching the play. They are published side by side, and the gap between a team's two ranks is shown rather than averaged away.",
       "The expectation is the picture at the handoff, so blocking that develops after it — second level, downfield — leaks into the back's number rather than the line's.",
       "This describes what a team's carries ran into, not what its five linemen are worth. Personnel, defensive attention and game script are all inside it.",
@@ -63,6 +72,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Sean McDermott",
@@ -99,6 +109,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Robert Saleh",
@@ -135,6 +146,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Kevin O'Connell",
@@ -172,6 +184,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Nick Sirianni",
@@ -208,6 +221,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Todd Monken",
@@ -245,6 +259,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Shane Steichen",
@@ -282,6 +297,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Mike Vrabel",
@@ -318,6 +334,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "John Harbaugh",
@@ -355,6 +372,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jonathan Gannon",
@@ -390,6 +408,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Liam Coen",
@@ -426,6 +445,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jeff Hafley",
@@ -463,6 +483,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Sean Payton",
@@ -499,6 +520,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Raheem Morris",
@@ -534,6 +556,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Dan Campbell",
@@ -571,6 +594,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Dave Canales",
@@ -606,6 +630,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jesse Minter",
@@ -643,6 +668,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Todd Bowles",
@@ -678,6 +704,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jim Harbaugh",
@@ -715,6 +742,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Kellen Moore",
@@ -750,6 +778,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "DeMeco Ryans",
@@ -786,6 +815,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Andy Reid",
@@ -823,6 +853,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Mike Macdonald",
@@ -860,6 +891,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Aaron Glenn",
@@ -896,6 +928,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Dan Quinn",
@@ -932,6 +965,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Kyle Shanahan",
@@ -969,6 +1003,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Zac Taylor",
@@ -1006,6 +1041,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Ben Johnson",
@@ -1042,6 +1078,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Matt LaFleur",
@@ -1078,6 +1115,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Mike McCarthy",
@@ -1114,6 +1152,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Brian Schottenheimer",
@@ -1151,6 +1190,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Sean McVay",
@@ -1187,6 +1227,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Klint Kubliak",
@@ -1224,6 +1265,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jim Harbaugh",
@@ -1261,6 +1303,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jonathan Gannon",
@@ -1296,6 +1339,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Liam Coen",
@@ -1332,6 +1376,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Kevin O'Connell",
@@ -1369,6 +1414,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Zac Taylor",
@@ -1404,6 +1450,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "DeMeco Ryans",
@@ -1441,6 +1488,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Dave Canales",
@@ -1477,6 +1525,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Mike McCarthy",
@@ -1512,6 +1561,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jesse Minter",
@@ -1549,6 +1599,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Shane Steichen",
@@ -1586,6 +1637,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Todd Bowles",
@@ -1623,6 +1675,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Aaron Glenn",
@@ -1660,6 +1713,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Mike Vrabel",
@@ -1696,6 +1750,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "John Harbaugh",
@@ -1732,6 +1787,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Klint Kubliak",
@@ -1768,6 +1824,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Kyle Shanahan",
@@ -1805,6 +1862,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Sean McDermott",
@@ -1841,6 +1899,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Dan Quinn",
@@ -1877,6 +1936,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Andy Reid",
@@ -1913,6 +1973,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Matt LaFleur",
@@ -1949,6 +2010,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Brian Schottenheimer",
@@ -1985,6 +2047,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Todd Monken",
@@ -2021,6 +2084,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Raheem Morris",
@@ -2057,6 +2121,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Robert Saleh",
@@ -2094,6 +2159,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Kellen Moore",
@@ -2131,6 +2197,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Sean Payton",
@@ -2168,6 +2235,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Sean McVay",
@@ -2205,6 +2273,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Mike Macdonald",
@@ -2240,6 +2309,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Dan Campbell",
@@ -2277,6 +2347,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Nick Sirianni",
@@ -2314,6 +2385,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Ben Johnson",
@@ -2350,6 +2422,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jeff Hafley",
@@ -2388,6 +2461,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Dan Quinn",
@@ -2425,6 +2499,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Kellen Moore",
@@ -2462,6 +2537,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Dave Canales",
@@ -2497,6 +2573,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jim Harbaugh",
@@ -2532,6 +2609,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jesse Minter",
@@ -2568,6 +2646,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Todd Monken",
@@ -2604,6 +2683,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Robert Saleh",
@@ -2640,6 +2720,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Brian Schottenheimer",
@@ -2677,6 +2758,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Sean Payton",
@@ -2714,6 +2796,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Zac Taylor",
@@ -2750,6 +2833,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Andy Reid",
@@ -2787,6 +2871,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Shane Steichen",
@@ -2824,6 +2909,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jonathan Gannon",
@@ -2861,6 +2947,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Sean McDermott",
@@ -2897,6 +2984,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Mike McCarthy",
@@ -2933,6 +3021,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Matt LaFleur",
@@ -2970,6 +3059,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Sean McVay",
@@ -3007,6 +3097,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Ben Johnson",
@@ -3043,6 +3134,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Kevin O'Connell",
@@ -3078,6 +3170,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Liam Coen",
@@ -3114,6 +3207,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Kyle Shanahan",
@@ -3149,6 +3243,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Dan Campbell",
@@ -3185,6 +3280,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Raheem Morris",
@@ -3222,6 +3318,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Aaron Glenn",
@@ -3259,6 +3356,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Todd Bowles",
@@ -3295,6 +3393,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Klint Kubliak",
@@ -3332,6 +3431,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Nick Sirianni",
@@ -3368,6 +3468,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "John Harbaugh",
@@ -3403,6 +3504,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "DeMeco Ryans",
@@ -3439,6 +3541,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jeff Hafley",
@@ -3476,6 +3579,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Mike Macdonald",
@@ -3513,6 +3617,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Mike Vrabel",
@@ -3551,6 +3656,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Raheem Morris",
@@ -3587,6 +3693,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Matt LaFleur",
@@ -3624,6 +3731,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Sean Payton",
@@ -3661,6 +3769,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Mike Macdonald",
@@ -3696,6 +3805,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jim Harbaugh",
@@ -3732,6 +3842,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jeff Hafley",
@@ -3768,6 +3879,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Brian Schottenheimer",
@@ -3804,6 +3916,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Kyle Shanahan",
@@ -3840,6 +3953,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "John Harbaugh",
@@ -3877,6 +3991,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Kellen Moore",
@@ -3914,6 +4029,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Sean McDermott",
@@ -3950,6 +4066,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Klint Kubliak",
@@ -3987,6 +4104,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Mike Vrabel",
@@ -4024,6 +4142,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Todd Bowles",
@@ -4059,6 +4178,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Dan Campbell",
@@ -4096,6 +4216,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Ben Johnson",
@@ -4131,6 +4252,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Liam Coen",
@@ -4166,6 +4288,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jesse Minter",
@@ -4203,6 +4326,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Sean McVay",
@@ -4240,6 +4364,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Dave Canales",
@@ -4276,6 +4401,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Andy Reid",
@@ -4312,6 +4438,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Dan Quinn",
@@ -4348,6 +4475,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Robert Saleh",
@@ -4385,6 +4513,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Shane Steichen",
@@ -4421,6 +4550,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Mike McCarthy",
@@ -4458,6 +4588,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Zac Taylor",
@@ -4494,6 +4625,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Kevin O'Connell",
@@ -4530,6 +4662,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Todd Monken",
@@ -4567,6 +4700,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jonathan Gannon",
@@ -4604,6 +4738,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Aaron Glenn",
@@ -4641,6 +4776,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Nick Sirianni",
@@ -4676,6 +4812,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "DeMeco Ryans",
@@ -4713,6 +4850,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jim Harbaugh",
@@ -4749,6 +4887,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Raheem Morris",
@@ -4785,6 +4924,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Todd Monken",
@@ -4821,6 +4961,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Kevin O'Connell",
@@ -4856,6 +4997,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "DeMeco Ryans",
@@ -4892,6 +5034,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Mike McCarthy",
@@ -4929,6 +5072,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Sean Payton",
@@ -4966,6 +5110,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Todd Bowles",
@@ -5003,6 +5148,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Mike Vrabel",
@@ -5040,6 +5186,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Nick Sirianni",
@@ -5076,6 +5223,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jeff Hafley",
@@ -5111,6 +5259,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jesse Minter",
@@ -5148,6 +5297,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Dave Canales",
@@ -5184,6 +5334,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Matt LaFleur",
@@ -5220,6 +5371,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Dan Quinn",
@@ -5256,6 +5408,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Robert Saleh",
@@ -5291,6 +5444,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Dan Campbell",
@@ -5327,6 +5481,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Andy Reid",
@@ -5363,6 +5518,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Brian Schottenheimer",
@@ -5400,6 +5556,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Ben Johnson",
@@ -5437,6 +5594,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Mike Macdonald",
@@ -5474,6 +5632,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Aaron Glenn",
@@ -5509,6 +5668,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Liam Coen",
@@ -5546,6 +5706,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Shane Steichen",
@@ -5583,6 +5744,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Jonathan Gannon",
@@ -5620,6 +5782,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Kellen Moore",
@@ -5657,6 +5820,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Zac Taylor",
@@ -5693,6 +5857,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Kyle Shanahan",
@@ -5730,6 +5895,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Sean McVay",
@@ -5767,6 +5933,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Sean McDermott",
@@ -5803,6 +5970,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "John Harbaugh",
@@ -5839,6 +6007,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": null,
         "caller": {
           "headCoach": "Klint Kubliak",
@@ -5878,6 +6047,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.07,
           "passRate": 60.5,
@@ -5919,6 +6089,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": 0.06,
           "passRate": 58.9,
@@ -5961,6 +6132,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.073,
           "passRate": 57.9,
@@ -6004,6 +6176,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": 0.1,
           "passRate": 60.2,
@@ -6047,6 +6220,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.061,
           "passRate": 57.5,
@@ -6089,6 +6263,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.044,
           "passRate": 60,
@@ -6131,6 +6306,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.085,
           "passRate": 70.4,
@@ -6174,6 +6350,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.197,
           "passRate": 61.9,
@@ -6216,6 +6393,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": 0.021,
           "passRate": 67.6,
@@ -6258,6 +6436,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.042,
           "passRate": 67.5,
@@ -6301,6 +6480,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": 0.048,
           "passRate": 60.2,
@@ -6342,6 +6522,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.07,
           "passRate": 66.2,
@@ -6385,6 +6566,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.039,
           "passRate": 60.3,
@@ -6427,6 +6609,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": 0.067,
           "passRate": 59.9,
@@ -6469,6 +6652,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": 0.08,
           "passRate": 60.5,
@@ -6511,6 +6695,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.091,
           "passRate": 61.3,
@@ -6554,6 +6739,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.023,
           "passRate": 60.5,
@@ -6597,6 +6783,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.002,
           "passRate": 68.1,
@@ -6640,6 +6827,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": 0.038,
           "passRate": 60.4,
@@ -6682,6 +6870,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": 0.157,
           "passRate": 55.9,
@@ -6725,6 +6914,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.159,
           "passRate": 63.3,
@@ -6768,6 +6958,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": 0.006,
           "passRate": 63.8,
@@ -6809,6 +7000,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.029,
           "passRate": 62.5,
@@ -6852,6 +7044,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": 0.016,
           "passRate": 65.6,
@@ -6893,6 +7086,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": 0.056,
           "passRate": 58.7,
@@ -6936,6 +7130,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.239,
           "passRate": 66.9,
@@ -6978,6 +7173,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": 0.108,
           "passRate": 64,
@@ -7021,6 +7217,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.049,
           "passRate": 61.1,
@@ -7063,6 +7260,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.091,
           "passRate": 56.3,
@@ -7105,6 +7303,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.139,
           "passRate": 60.6,
@@ -7146,6 +7345,7 @@
             "RG"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.046,
           "passRate": 65.1,
@@ -7188,6 +7388,7 @@
             "RT"
           ]
         },
+        "identity": null,
         "scheme": {
           "epaPerPlay": -0.175,
           "passRate": 64.2,
@@ -7230,6 +7431,29 @@
             "LG",
             "LT",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 9.5,
+          "coachChanged": false,
+          "fromCoach": "Matt LaFleur",
+          "toCoach": "Matt LaFleur",
+          "passRateMove": -7.8,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": -8.4
+            },
+            {
+              "grouping": "11",
+              "delta": 4.9
+            },
+            {
+              "grouping": "21",
+              "delta": 4.2
+            }
           ]
         },
         "scheme": {
@@ -7275,6 +7499,25 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 9,
+          "coachChanged": false,
+          "fromCoach": "Robert Saleh",
+          "toCoach": "Robert Saleh",
+          "passRateMove": 0,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": 5.4
+            },
+            {
+              "grouping": "13",
+              "delta": -3.7
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.016,
           "passRate": 66.9,
@@ -7316,6 +7559,29 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 11.1,
+          "coachChanged": false,
+          "fromCoach": "Sean Payton",
+          "toCoach": "Sean Payton",
+          "passRateMove": 1.8,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": -6.9
+            },
+            {
+              "grouping": "11",
+              "delta": 4.9
+            },
+            {
+              "grouping": "21",
+              "delta": -3.2
+            }
           ]
         },
         "scheme": {
@@ -7361,6 +7627,25 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 13,
+          "coachChanged": false,
+          "fromCoach": "Sean McVay",
+          "toCoach": "Sean McVay",
+          "passRateMove": -0.6,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": -13
+            },
+            {
+              "grouping": "12",
+              "delta": 10.8
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": 0.016,
           "passRate": 59.6,
@@ -7402,6 +7687,29 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 18.2,
+          "coachChanged": false,
+          "fromCoach": "Matt Eberflus",
+          "toCoach": "Matt Eberflus",
+          "passRateMove": 8.6,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": 15.6
+            },
+            {
+              "grouping": "21",
+              "delta": -10.6
+            },
+            {
+              "grouping": "12",
+              "delta": -4.4
+            }
           ]
         },
         "scheme": {
@@ -7447,6 +7755,29 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 15.4,
+          "coachChanged": true,
+          "fromCoach": "Pete Carroll",
+          "toCoach": "Mike Macdonald",
+          "passRateMove": 1.2,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": 14.9
+            },
+            {
+              "grouping": "12",
+              "delta": -6.6
+            },
+            {
+              "grouping": "13",
+              "delta": -6.3
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.029,
           "passRate": 66.8,
@@ -7489,6 +7820,25 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 6.3,
+          "coachChanged": false,
+          "fromCoach": "Kevin Stefanski",
+          "toCoach": "Kevin Stefanski",
+          "passRateMove": 8.8,
+          "byGroup": [
+            {
+              "grouping": "13",
+              "delta": -3.7
+            },
+            {
+              "grouping": "10",
+              "delta": 3
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.18,
           "passRate": 69.4,
@@ -7529,6 +7879,29 @@
             "LG",
             "LT",
             "RG"
+          ]
+        },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 70.8,
+          "coachChanged": true,
+          "fromCoach": "Arthur Smith",
+          "toCoach": "Raheem Morris",
+          "passRateMove": 0.2,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": 70.8
+            },
+            {
+              "grouping": "12",
+              "delta": -32.5
+            },
+            {
+              "grouping": "21",
+              "delta": -18.2
+            }
           ]
         },
         "scheme": {
@@ -7574,6 +7947,25 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 8,
+          "coachChanged": false,
+          "fromCoach": "Shane Steichen",
+          "toCoach": "Shane Steichen",
+          "passRateMove": -4,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": -7
+            },
+            {
+              "grouping": "12",
+              "delta": 6.6
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.055,
           "passRate": 56.3,
@@ -7615,6 +8007,25 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 7.8,
+          "coachChanged": false,
+          "fromCoach": "Todd Bowles",
+          "toCoach": "Todd Bowles",
+          "passRateMove": -2.8,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": -7.3
+            },
+            {
+              "grouping": "21",
+              "delta": 6.1
+            }
           ]
         },
         "scheme": {
@@ -7660,6 +8071,25 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 10.8,
+          "coachChanged": true,
+          "fromCoach": "Frank Reich",
+          "toCoach": "Dave Canales",
+          "passRateMove": 1.3,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": -9.1
+            },
+            {
+              "grouping": "12",
+              "delta": 7.7
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.055,
           "passRate": 64.6,
@@ -7701,6 +8131,29 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 11.5,
+          "coachChanged": false,
+          "fromCoach": "Nick Sirianni",
+          "toCoach": "Nick Sirianni",
+          "passRateMove": -10.3,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": 11.1
+            },
+            {
+              "grouping": "11",
+              "delta": -7.4
+            },
+            {
+              "grouping": "10",
+              "delta": -3
+            }
           ]
         },
         "scheme": {
@@ -7746,6 +8199,29 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 41.3,
+          "coachChanged": false,
+          "fromCoach": "Dennis Allen",
+          "toCoach": "Dennis Allen",
+          "passRateMove": 0.4,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": -25.7
+            },
+            {
+              "grouping": "10",
+              "delta": -13.4
+            },
+            {
+              "grouping": "21",
+              "delta": 12.4
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.067,
           "passRate": 60.9,
@@ -7786,6 +8262,29 @@
             "LG",
             "LT",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 13.2,
+          "coachChanged": true,
+          "fromCoach": "Mike Vrabel",
+          "toCoach": "Brian Callahan",
+          "passRateMove": 0.2,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": 12.1
+            },
+            {
+              "grouping": "21",
+              "delta": -6.1
+            },
+            {
+              "grouping": "12",
+              "delta": -3.9
+            }
           ]
         },
         "scheme": {
@@ -7830,6 +8329,21 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 5,
+          "coachChanged": false,
+          "fromCoach": "Brian Daboll",
+          "toCoach": "Brian Daboll",
+          "passRateMove": 0.7,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": -4.3
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.106,
           "passRate": 64.9,
@@ -7869,6 +8383,29 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 23,
+          "coachChanged": false,
+          "fromCoach": "DeMeco Ryans",
+          "toCoach": "DeMeco Ryans",
+          "passRateMove": 1.2,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": 19.2
+            },
+            {
+              "grouping": "21",
+              "delta": -18
+            },
+            {
+              "grouping": "22",
+              "delta": -3.1
+            }
           ]
         },
         "scheme": {
@@ -7913,6 +8450,29 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 7.9,
+          "coachChanged": false,
+          "fromCoach": "Kevin O'Connell",
+          "toCoach": "Kevin O'Connell",
+          "passRateMove": -5,
+          "byGroup": [
+            {
+              "grouping": "21",
+              "delta": 6
+            },
+            {
+              "grouping": "11",
+              "delta": -4.9
+            },
+            {
+              "grouping": "13",
+              "delta": -3
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.002,
           "passRate": 62.5,
@@ -7953,6 +8513,29 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 21.3,
+          "coachChanged": false,
+          "fromCoach": "Mike McDaniel",
+          "toCoach": "Mike McDaniel",
+          "passRateMove": 1.9,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": 12.3
+            },
+            {
+              "grouping": "21",
+              "delta": -10.4
+            },
+            {
+              "grouping": "11",
+              "delta": -7.9
+            }
           ]
         },
         "scheme": {
@@ -7998,6 +8581,25 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 19,
+          "coachChanged": false,
+          "fromCoach": "Zac Taylor",
+          "toCoach": "Zac Taylor",
+          "passRateMove": 0.8,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": 17.6
+            },
+            {
+              "grouping": "11",
+              "delta": -12.7
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": 0.097,
           "passRate": 68.9,
@@ -8037,6 +8639,29 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 33.9,
+          "coachChanged": true,
+          "fromCoach": "Brandon Staley",
+          "toCoach": "Jim Harbaugh",
+          "passRateMove": -5.9,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": -17.7
+            },
+            {
+              "grouping": "21",
+              "delta": 17.1
+            },
+            {
+              "grouping": "11",
+              "delta": -11.7
+            }
           ]
         },
         "scheme": {
@@ -8081,6 +8706,29 @@
             "RG"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 21.2,
+          "coachChanged": false,
+          "fromCoach": "Mike Tomlin",
+          "toCoach": "Mike Tomlin",
+          "passRateMove": -1.1,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": -20.1
+            },
+            {
+              "grouping": "13",
+              "delta": 10.5
+            },
+            {
+              "grouping": "12",
+              "delta": 8.8
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.029,
           "passRate": 56.8,
@@ -8121,6 +8769,29 @@
             "LG",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 10.7,
+          "coachChanged": false,
+          "fromCoach": "Mike McCarthy",
+          "toCoach": "Mike McCarthy",
+          "passRateMove": -0.2,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": 7.9
+            },
+            {
+              "grouping": "13",
+              "delta": -3.5
+            },
+            {
+              "grouping": "12",
+              "delta": -3.1
+            }
           ]
         },
         "scheme": {
@@ -8165,6 +8836,25 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 14.1,
+          "coachChanged": true,
+          "fromCoach": "Ron Rivera",
+          "toCoach": "Dan Quinn",
+          "passRateMove": -9.5,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": -13.6
+            },
+            {
+              "grouping": "12",
+              "delta": 6.5
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": 0.123,
           "passRate": 60.9,
@@ -8206,6 +8896,16 @@
             "RG"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 3,
+          "coachChanged": false,
+          "fromCoach": "Doug Pederson",
+          "toCoach": "Doug Pederson",
+          "passRateMove": -2.9,
+          "byGroup": []
+        },
         "scheme": {
           "epaPerPlay": -0.031,
           "passRate": 62.2,
@@ -8245,6 +8945,25 @@
             "LG",
             "LT",
             "RG"
+          ]
+        },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 13.9,
+          "coachChanged": false,
+          "fromCoach": "Dan Campbell",
+          "toCoach": "Dan Campbell",
+          "passRateMove": -3.8,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": 13.9
+            },
+            {
+              "grouping": "11",
+              "delta": -9.1
+            }
           ]
         },
         "scheme": {
@@ -8290,6 +9009,29 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 12.7,
+          "coachChanged": true,
+          "fromCoach": "Bill Belichick",
+          "toCoach": "Jerod Mayo",
+          "passRateMove": 1.7,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": 12.7
+            },
+            {
+              "grouping": "13",
+              "delta": -5.1
+            },
+            {
+              "grouping": "12",
+              "delta": -4.2
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.095,
           "passRate": 63.6,
@@ -8333,6 +9075,29 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 16.6,
+          "coachChanged": false,
+          "fromCoach": "Jonathan Gannon",
+          "toCoach": "Jonathan Gannon",
+          "passRateMove": -0.2,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": -13.9
+            },
+            {
+              "grouping": "12",
+              "delta": 9.9
+            },
+            {
+              "grouping": "13",
+              "delta": 4.9
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": 0.053,
           "passRate": 60.3,
@@ -8372,6 +9137,29 @@
             "LG",
             "LT",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 31.7,
+          "coachChanged": false,
+          "fromCoach": "John Harbaugh",
+          "toCoach": "John Harbaugh",
+          "passRateMove": -6.4,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": -21.4
+            },
+            {
+              "grouping": "12",
+              "delta": 20.9
+            },
+            {
+              "grouping": "22",
+              "delta": 10.1
+            }
           ]
         },
         "scheme": {
@@ -8417,6 +9205,29 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 7.6,
+          "coachChanged": false,
+          "fromCoach": "Sean McDermott",
+          "toCoach": "Sean McDermott",
+          "passRateMove": -3.4,
+          "byGroup": [
+            {
+              "grouping": "10",
+              "delta": -3.9
+            },
+            {
+              "grouping": "12",
+              "delta": -3.7
+            },
+            {
+              "grouping": "21",
+              "delta": 3.2
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": 0.17,
           "passRate": 56.8,
@@ -8457,6 +9268,25 @@
             "LG",
             "LT",
             "RG"
+          ]
+        },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 12.4,
+          "coachChanged": false,
+          "fromCoach": "Andy Reid",
+          "toCoach": "Andy Reid",
+          "passRateMove": -2.3,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": -11.4
+            },
+            {
+              "grouping": "12",
+              "delta": 8.1
+            }
           ]
         },
         "scheme": {
@@ -8501,6 +9331,29 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 12.2,
+          "coachChanged": false,
+          "fromCoach": "Kyle Shanahan",
+          "toCoach": "Kyle Shanahan",
+          "passRateMove": 4.4,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": 9
+            },
+            {
+              "grouping": "12",
+              "delta": -4.7
+            },
+            {
+              "grouping": "22",
+              "delta": -4.2
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": 0.048,
           "passRate": 60.3,
@@ -8541,6 +9394,29 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2023,
+          "to": 2024,
+          "snapsMoved": 29.8,
+          "coachChanged": false,
+          "fromCoach": "Antonio Pierce",
+          "toCoach": "Antonio Pierce",
+          "passRateMove": 6.2,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": 23.5
+            },
+            {
+              "grouping": "21",
+              "delta": -13.5
+            },
+            {
+              "grouping": "11",
+              "delta": -12.9
+            }
           ]
         },
         "scheme": {
@@ -8587,6 +9463,29 @@
             "RG"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 42.5,
+          "coachChanged": false,
+          "fromCoach": "Raheem Morris",
+          "toCoach": "Raheem Morris",
+          "passRateMove": 0.7,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": -42.4
+            },
+            {
+              "grouping": "12",
+              "delta": 28.9
+            },
+            {
+              "grouping": "21",
+              "delta": 6.8
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.024,
           "passRate": 57.2,
@@ -8628,6 +9527,29 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 30.4,
+          "coachChanged": false,
+          "fromCoach": "Sean McVay",
+          "toCoach": "Sean McVay",
+          "passRateMove": 0.5,
+          "byGroup": [
+            {
+              "grouping": "13",
+              "delta": 30.3
+            },
+            {
+              "grouping": "11",
+              "delta": -22.2
+            },
+            {
+              "grouping": "12",
+              "delta": -6.7
+            }
           ]
         },
         "scheme": {
@@ -8672,6 +9594,21 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 6.3,
+          "coachChanged": true,
+          "fromCoach": "Mike McCarthy",
+          "toCoach": "Brian Schottenheimer",
+          "passRateMove": -0.6,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": 5.3
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": 0.094,
           "passRate": 63.2,
@@ -8712,6 +9649,25 @@
             "LG",
             "LT",
             "RG"
+          ]
+        },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 9.7,
+          "coachChanged": false,
+          "fromCoach": "Andy Reid",
+          "toCoach": "Andy Reid",
+          "passRateMove": 1.6,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": 6.8
+            },
+            {
+              "grouping": "12",
+              "delta": -4.4
+            }
           ]
         },
         "scheme": {
@@ -8755,6 +9711,25 @@
             "RG"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 12,
+          "coachChanged": false,
+          "fromCoach": "Dan Campbell",
+          "toCoach": "Dan Campbell",
+          "passRateMove": 4.7,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": -11.8
+            },
+            {
+              "grouping": "11",
+              "delta": 5.4
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": 0.067,
           "passRate": 59.8,
@@ -8794,6 +9769,29 @@
             "LG",
             "LT",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 13.2,
+          "coachChanged": false,
+          "fromCoach": "John Harbaugh",
+          "toCoach": "John Harbaugh",
+          "passRateMove": 1.3,
+          "byGroup": [
+            {
+              "grouping": "22",
+              "delta": -5.9
+            },
+            {
+              "grouping": "13",
+              "delta": 5.6
+            },
+            {
+              "grouping": "20",
+              "delta": -4.7
+            }
           ]
         },
         "scheme": {
@@ -8838,6 +9836,29 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 31.6,
+          "coachChanged": false,
+          "fromCoach": "Kevin Stefanski",
+          "toCoach": "Kevin Stefanski",
+          "passRateMove": -5.2,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": 27.9
+            },
+            {
+              "grouping": "11",
+              "delta": -27.3
+            },
+            {
+              "grouping": "13",
+              "delta": 3.1
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.198,
           "passRate": 64.2,
@@ -8880,6 +9901,25 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 6.3,
+          "coachChanged": false,
+          "fromCoach": "Dan Quinn",
+          "toCoach": "Dan Quinn",
+          "passRateMove": -1.3,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": 5.4
+            },
+            {
+              "grouping": "21",
+              "delta": -4
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": 0.012,
           "passRate": 59.6,
@@ -8920,6 +9960,25 @@
             "LG",
             "LT",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 16,
+          "coachChanged": false,
+          "fromCoach": "Brian Daboll",
+          "toCoach": "Brian Daboll",
+          "passRateMove": -5.4,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": 14.6
+            },
+            {
+              "grouping": "11",
+              "delta": -12.9
+            }
           ]
         },
         "scheme": {
@@ -8965,6 +10024,29 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 13.5,
+          "coachChanged": false,
+          "fromCoach": "Dave Canales",
+          "toCoach": "Dave Canales",
+          "passRateMove": -4.2,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": -12.3
+            },
+            {
+              "grouping": "13",
+              "delta": 7.6
+            },
+            {
+              "grouping": "12",
+              "delta": 4.1
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.034,
           "passRate": 60.4,
@@ -9005,6 +10087,29 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 9.5,
+          "coachChanged": false,
+          "fromCoach": "Kevin O'Connell",
+          "toCoach": "Kevin O'Connell",
+          "passRateMove": -0.8,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": 5.1
+            },
+            {
+              "grouping": "21",
+              "delta": -5
+            },
+            {
+              "grouping": "12",
+              "delta": -4.1
+            }
           ]
         },
         "scheme": {
@@ -9050,6 +10155,21 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 5.8,
+          "coachChanged": false,
+          "fromCoach": "Sean Payton",
+          "toCoach": "Sean Payton",
+          "passRateMove": 0.9,
+          "byGroup": [
+            {
+              "grouping": "22",
+              "delta": 3
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": 0.02,
           "passRate": 63.8,
@@ -9090,6 +10210,25 @@
             "LG",
             "LT",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 10.7,
+          "coachChanged": false,
+          "fromCoach": "Matt LaFleur",
+          "toCoach": "Matt LaFleur",
+          "passRateMove": 4.9,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": 9.4
+            },
+            {
+              "grouping": "11",
+              "delta": -8
+            }
           ]
         },
         "scheme": {
@@ -9135,6 +10274,29 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 12.7,
+          "coachChanged": false,
+          "fromCoach": "Sean McDermott",
+          "toCoach": "Sean McDermott",
+          "passRateMove": -0.1,
+          "byGroup": [
+            {
+              "grouping": "22",
+              "delta": 9
+            },
+            {
+              "grouping": "11",
+              "delta": -4.3
+            },
+            {
+              "grouping": "12",
+              "delta": -4.1
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": 0.136,
           "passRate": 56.7,
@@ -9174,6 +10336,29 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 17.8,
+          "coachChanged": false,
+          "fromCoach": "DeMeco Ryans",
+          "toCoach": "DeMeco Ryans",
+          "passRateMove": -2.6,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": -16.4
+            },
+            {
+              "grouping": "11",
+              "delta": 8.8
+            },
+            {
+              "grouping": "21",
+              "delta": 3.2
+            }
           ]
         },
         "scheme": {
@@ -9219,6 +10404,29 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 25.6,
+          "coachChanged": true,
+          "fromCoach": "Jerod Mayo",
+          "toCoach": "Mike Vrabel",
+          "passRateMove": -1.4,
+          "byGroup": [
+            {
+              "grouping": "21",
+              "delta": 17
+            },
+            {
+              "grouping": "12",
+              "delta": -14.9
+            },
+            {
+              "grouping": "11",
+              "delta": -9.5
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": 0.079,
           "passRate": 62.2,
@@ -9260,6 +10468,29 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 22.5,
+          "coachChanged": true,
+          "fromCoach": "Matt Eberflus",
+          "toCoach": "Ben Johnson",
+          "passRateMove": -6,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": -21
+            },
+            {
+              "grouping": "12",
+              "delta": 15.8
+            },
+            {
+              "grouping": "13",
+              "delta": 4.9
+            }
           ]
         },
         "scheme": {
@@ -9305,6 +10536,29 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 36.5,
+          "coachChanged": false,
+          "fromCoach": "Mike Macdonald",
+          "toCoach": "Mike Macdonald",
+          "passRateMove": -14,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": -36.1
+            },
+            {
+              "grouping": "12",
+              "delta": 12.1
+            },
+            {
+              "grouping": "21",
+              "delta": 11.9
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": 0.044,
           "passRate": 52.8,
@@ -9346,6 +10600,25 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 7.2,
+          "coachChanged": false,
+          "fromCoach": "Shane Steichen",
+          "toCoach": "Shane Steichen",
+          "passRateMove": 4.1,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": -7
+            },
+            {
+              "grouping": "13",
+              "delta": 6.4
+            }
           ]
         },
         "scheme": {
@@ -9391,6 +10664,25 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 6.4,
+          "coachChanged": true,
+          "fromCoach": "Robert Saleh",
+          "toCoach": "Aaron Glenn",
+          "passRateMove": -5.6,
+          "byGroup": [
+            {
+              "grouping": "21",
+              "delta": 4.4
+            },
+            {
+              "grouping": "11",
+              "delta": -3.5
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.137,
           "passRate": 61.3,
@@ -9432,6 +10724,21 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 4.9,
+          "coachChanged": false,
+          "fromCoach": "Todd Bowles",
+          "toCoach": "Todd Bowles",
+          "passRateMove": 0.5,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": 3.3
+            }
           ]
         },
         "scheme": {
@@ -9476,6 +10783,21 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 4,
+          "coachChanged": false,
+          "fromCoach": "Brian Callahan",
+          "toCoach": "Brian Callahan",
+          "passRateMove": 5.4,
+          "byGroup": [
+            {
+              "grouping": "13",
+              "delta": -3.5
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.159,
           "passRate": 65.6,
@@ -9516,6 +10838,21 @@
             "LG",
             "LT",
             "RG"
+          ]
+        },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 6.5,
+          "coachChanged": false,
+          "fromCoach": "Mike Tomlin",
+          "toCoach": "Mike Tomlin",
+          "passRateMove": 5.5,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": 5.1
+            }
           ]
         },
         "scheme": {
@@ -9561,6 +10898,25 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 5.9,
+          "coachChanged": false,
+          "fromCoach": "Nick Sirianni",
+          "toCoach": "Nick Sirianni",
+          "passRateMove": 8,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": -5.6
+            },
+            {
+              "grouping": "13",
+              "delta": 4
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": 0.016,
           "passRate": 58.1,
@@ -9602,6 +10958,21 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 7,
+          "coachChanged": false,
+          "fromCoach": "Zac Taylor",
+          "toCoach": "Zac Taylor",
+          "passRateMove": -2.7,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": 4.4
+            }
           ]
         },
         "scheme": {
@@ -9646,6 +11017,21 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 3.5,
+          "coachChanged": true,
+          "fromCoach": "Antonio Pierce",
+          "toCoach": "Pete Carroll",
+          "passRateMove": -3.1,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": 3.2
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.196,
           "passRate": 64.4,
@@ -9686,6 +11072,29 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 13.2,
+          "coachChanged": false,
+          "fromCoach": "Mike McDaniel",
+          "toCoach": "Mike McDaniel",
+          "passRateMove": -4.4,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": -10.1
+            },
+            {
+              "grouping": "20",
+              "delta": 5.8
+            },
+            {
+              "grouping": "10",
+              "delta": 5.2
+            }
           ]
         },
         "scheme": {
@@ -9730,6 +11139,29 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 8.7,
+          "coachChanged": false,
+          "fromCoach": "Kyle Shanahan",
+          "toCoach": "Kyle Shanahan",
+          "passRateMove": -0.1,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": -5.7
+            },
+            {
+              "grouping": "12",
+              "delta": 3.1
+            },
+            {
+              "grouping": "22",
+              "delta": 3.1
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": 0.054,
           "passRate": 60.2,
@@ -9771,6 +11203,25 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 8.7,
+          "coachChanged": false,
+          "fromCoach": "Jim Harbaugh",
+          "toCoach": "Jim Harbaugh",
+          "passRateMove": 3.6,
+          "byGroup": [
+            {
+              "grouping": "10",
+              "delta": 5.2
+            },
+            {
+              "grouping": "22",
+              "delta": -3.2
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.04,
           "passRate": 63.9,
@@ -9810,6 +11261,29 @@
             "C",
             "LT",
             "RG"
+          ]
+        },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 9.1,
+          "coachChanged": true,
+          "fromCoach": "Doug Pederson",
+          "toCoach": "Liam Coen",
+          "passRateMove": -1.3,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": 5.4
+            },
+            {
+              "grouping": "12",
+              "delta": -4.9
+            },
+            {
+              "grouping": "13",
+              "delta": -3.6
+            }
           ]
         },
         "scheme": {
@@ -9855,6 +11329,29 @@
             "RT"
           ]
         },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 43.5,
+          "coachChanged": true,
+          "fromCoach": "Dennis Allen",
+          "toCoach": "Kellen Moore",
+          "passRateMove": 3.1,
+          "byGroup": [
+            {
+              "grouping": "11",
+              "delta": 40.9
+            },
+            {
+              "grouping": "21",
+              "delta": -15.5
+            },
+            {
+              "grouping": "12",
+              "delta": -14.3
+            }
+          ]
+        },
         "scheme": {
           "epaPerPlay": -0.092,
           "passRate": 64,
@@ -9896,6 +11393,25 @@
             "LT",
             "RG",
             "RT"
+          ]
+        },
+        "identity": {
+          "from": 2024,
+          "to": 2025,
+          "snapsMoved": 8.3,
+          "coachChanged": false,
+          "fromCoach": "Jonathan Gannon",
+          "toCoach": "Jonathan Gannon",
+          "passRateMove": 9.5,
+          "byGroup": [
+            {
+              "grouping": "12",
+              "delta": 6
+            },
+            {
+              "grouping": "13",
+              "delta": -5.2
+            }
           ]
         },
         "scheme": {

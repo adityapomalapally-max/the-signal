@@ -222,6 +222,73 @@ async function main() {
     };
   };
 
+  // ---- DID THE OFFENCE ITSELF CHANGE? --------------------------------------
+  // The one thing about coaching this data can honestly measure. Not whether a
+  // coordinator is good — nothing free supports that — but how far the offence
+  // MOVED, which is a fact about snaps rather than a grade.
+  //
+  // Personnel is the measure because it is the clearest statement of intent a
+  // coach makes: 11 personnel and 12 personnel are different offences. The
+  // number is the share of snaps that moved to a different grouping — half the
+  // summed absolute change across groupings, which is the total variation
+  // between two distributions.
+  //
+  // MEASURED, AND THE RESULT IS A WARNING: a change of head coach does NOT
+  // predict a change of offence. Median shift with a new coach is about 14
+  // points of snaps against about 11 with the same one, on fourteen coaching
+  // changes — a difference well inside the noise. Atlanta moved 71 points of
+  // snaps when Arthur Smith gave way to Raheem Morris, and then another 42 the
+  // following year with Morris still there. So the shift is published per team
+  // and the comparison is published beside it, rather than the site implying
+  // that a new name means a new offence.
+  //
+  // AND THE COORDINATOR IS INVISIBLE HERE. playcallers.json is hand-kept and
+  // currently empty, so only a HEAD COACH change can be seen — which is likely
+  // where the weak signal comes from, because the play-caller is the person who
+  // would actually explain it.
+  const mixOf = (t) => {
+    const out = {};
+    for (const [grp, v] of Object.entries((t && t.personnel) || {})) {
+      if (v && typeof v.rate === 'number') out[grp] = v.rate;
+    }
+    return out;
+  };
+  const identity = new Map();     // `${team}|${season}` -> shift record
+  const shiftsSame = [], shiftsChanged = [];
+  const schemeYears = (scheme.meta.seasons || []).map(Number).sort((a, b) => a - b);
+  for (let i = 1; i < schemeYears.length; i++) {
+    const prev = schemeYears[i - 1], now = schemeYears[i];
+    for (const [team, cur] of Object.entries(scheme.seasons[now] || {})) {
+      const before = (scheme.seasons[prev] || {})[team];
+      if (!before) continue;
+      const a = mixOf(before), b = mixOf(cur);
+      if (!Object.keys(a).length || !Object.keys(b).length) continue;
+      let moved = 0;
+      const byGroup = [];
+      for (const grp of new Set([...Object.keys(a), ...Object.keys(b)])) {
+        const delta = (b[grp] || 0) - (a[grp] || 0);
+        moved += Math.abs(delta);
+        if (Math.abs(delta) >= 3) byGroup.push({ grouping: grp, delta: Math.round(delta * 10) / 10 });
+      }
+      moved = Math.round((moved / 2) * 10) / 10;
+      const coachChanged = Boolean(before.coach && cur.coach && before.coach !== cur.coach);
+      (coachChanged ? shiftsChanged : shiftsSame).push(moved);
+      identity.set(`${team}|${now}`, {
+        from: prev, to: now, snapsMoved: moved, coachChanged,
+        fromCoach: before.coach || null, toCoach: cur.coach || null,
+        passRateMove: typeof cur.passRate === 'number' && typeof before.passRate === 'number'
+          ? Math.round((cur.passRate - before.passRate) * 10) / 10 : null,
+        byGroup: byGroup.sort((x, y) => Math.abs(y.delta) - Math.abs(x.delta)).slice(0, 3),
+      });
+    }
+  }
+  const median = (arr) => {
+    if (!arr.length) return null;
+    const s2 = [...arr].sort((x, y) => x - y);
+    const mid = Math.floor(s2.length / 2);
+    return Math.round((s2.length % 2 ? s2[mid] : (s2[mid - 1] + s2[mid]) / 2) * 10) / 10;
+  };
+
   // ---- assemble ------------------------------------------------------------
   const seasons = {};
   const agreement = [];
@@ -268,6 +335,7 @@ async function main() {
         // WHO IS THERE NOW, not who was there when the numbers were measured. The
       // card sat on a team page naming a head coach a year after he left.
       continuity: continuity.get(team) || null,
+      identity: identity.get(`${team}|${s}`) || null,
       scheme: st ? {
           epaPerPlay: st.epaPerPlay ?? null,
           passRate: st.passRate ?? null,
@@ -314,12 +382,20 @@ async function main() {
         caller: 'data/playcallers.json, hand-kept and sourced',
       },
       measured: {
+        // What a change of head coach is worth as a predictor of a change of
+        // offence: on this evidence, very little.
+        identityShiftSameCoach: median(shiftsSame),
+        identityShiftNewCoach: median(shiftsChanged),
+        identityShiftPairs: { sameCoach: shiftsSame.length, newCoach: shiftsChanged.length },
         vendorAgreement: correlation(agreement),
         vendorAgreementPairs: agreement.length,
         expectationPersistence: correlation(persistence),
         expectationPersistencePairs: persistence.length,
       },
       caveats: [
+        'How far an offence moved is measured in personnel — the share of snaps that changed grouping from one season to the next. It is a fact about snaps, not a judgement about coaching, and nothing free supports the judgement.',
+        'A change of head coach does not predict it. Atlanta moved 71 points of snaps when the coach changed and 42 the following year when he did not, and across the seasons on file the medians are close enough to be the same number.',
+        'Only a HEAD COACH change is visible. The play-caller file is hand-kept and empty, so a coordinator arriving under the same coach — which is where the real explanation usually lives — cannot be seen here at all.',
         'The two readings of a line are not the same measurement and do not agree closely. Expected yards comes from tracking every player at the handoff; yards before contact is charted by watching the play. They are published side by side, and the gap between a team\'s two ranks is shown rather than averaged away.',
         'The expectation is the picture at the handoff, so blocking that develops after it — second level, downfield — leaks into the back\'s number rather than the line\'s.',
         'This describes what a team\'s carries ran into, not what its five linemen are worth. Personnel, defensive attention and game script are all inside it.',

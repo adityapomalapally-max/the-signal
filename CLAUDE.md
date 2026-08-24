@@ -1130,3 +1130,26 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   one unplayed season, it must be the year after the newest played one, it must cover the league, and
   at least one team must have changed coach — otherwise the scaffold is copying last year forward,
   which is the bug it exists to fix.
+
+## Coaching: what this data can and cannot say
+- IT CANNOT GRADE A COACH and nothing here tries. What it can measure is how far an offence MOVED:
+  the share of snaps that changed personnel grouping from one season to the next, which is half the
+  summed absolute change across groupings. Personnel is the measure because 11 and 12 personnel are
+  different offences, and the grouping is the clearest statement of intent a coach makes.
+- AND A CHANGE OF HEAD COACH DOES NOT PREDICT IT. Measured across the seasons on file: the median
+  move is about 14 points of snaps with a new coach against about 11 with the same one, on fourteen
+  coaching changes — a difference well inside the noise. Atlanta moved 71 points of snaps when Arthur
+  Smith gave way to Raheem Morris (41.6% 12-personnel became 87.7% 11-personnel) and then another 42
+  the following year with Morris still there. The shift is published per team WITH that comparison
+  beside it, so the page never implies a new name means a new offence.
+- THE COORDINATOR IS INVISIBLE, and that is probably where the signal is. playcallers.json is
+  hand-kept and currently has 0 of 128 rows filled, so only a head-coach change can be seen. Filling
+  that file in is the single change that would make this measurement worth more.
+- THE CARD LEADS WITH CONTINUITY, not with the figures. Everything measurable describes a season that
+  has finished; how many of the five starters are still listed first decides whether those figures
+  describe this team at all. Miami 4 of 5, Philadelphia 5 of 5, Detroit and Baltimore 3 — and a team
+  that lost two is told to read the numbers as history rather than as a forecast.
+- The agreement figure lives ON the card, not only in the caveats. Restructuring it once already left
+  two columns standing with nothing saying why there were two — and a mutation replacing "the two
+  readings agree at r = 0.32" with "a single line score of 0.32" kept every token the test was
+  checking for. Assert the framing, not the variable.

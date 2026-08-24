@@ -3007,3 +3007,26 @@ a.wire-name:hover { color: var(--gold); }
 /* The caveats are long and every one of them is load-bearing, so they are
    readable rather than tucked under the fold at 9px. */
 .env-caveat { font-size: 11.5px; margin-top: 10px; }
+
+/* The continuity headline. It leads because it decides whether the numbers
+   under it describe this team at all: a line that lost two starters did not
+   produce last season's figures, whatever the figures say. */
+.env-headline {
+  display: flex; align-items: center; gap: 16px;
+  padding-bottom: 16px; margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.env-headline-value {
+  font-family: var(--serif); font-size: 42px; font-weight: 700;
+  line-height: 1; color: var(--gold); white-space: nowrap;
+}
+.env-headline-value span { font-size: 24px; color: var(--text-muted); }
+.env-headline-label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1.4px;
+  text-transform: uppercase; color: var(--text-muted);
+}
+.env-headline-note { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-top: 4px; }
+.env-sub {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 1.4px;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px;
+}

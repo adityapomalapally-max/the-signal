@@ -1738,11 +1738,42 @@ function environmentCard(team) {
   // has played, so everything here describes the year that finished — and a
   // line is five men who may not all still be there. Saying "from 2025" in a
   // subtitle was not enough: the card sat on a team page and read as current.
+  // CONTINUITY LEADS, because it decides whether the rest of the card is about
+  // this team at all. The measurements can only ever describe the season that
+  // finished; how much of that line is still standing is what says whether they
+  // still apply, and in August that is the more useful headline.
   const cont = row.continuity;
-  let h = teamSectionLabel(`What they handed a runner in ${year}`,
-    `Two independent readings of the same line. They agree at r = ${measured.vendorAgreement ?? '—'} across ${measured.vendorAgreementPairs ?? '—'} team-seasons, so both are shown.`);
+  const ident = row.identity;
+  let h = teamSectionLabel('What they hand a runner',
+    `How much of last season's line is still here, and what that line produced while it was.`);
 
-  h += `<div class="medical-card" style="padding:18px;margin-bottom:14px;">
+  h += `<div class="medical-card" style="padding:18px;margin-bottom:14px;">`;
+
+  if (cont) {
+    const gone = cont.of - cont.returning;
+    const tone = cont.returning === cont.of ? 'intact' : gone >= 2 ? 'rebuilt' : 'changed';
+    h += `<div class="env-headline">
+      <div class="env-headline-value">${cont.returning}<span>/${cont.of}</span></div>
+      <div>
+        <div class="env-headline-label">${rankEsc(`starters back for ${cont.to}`)}</div>
+        <div class="env-headline-note">${rankEsc(
+          tone === 'intact'
+            ? `The line measured below is the line lining up. Whatever it did in ${cont.from}, it is the same five men.`
+            : tone === 'rebuilt'
+              ? `${gone} of the five are gone. Read everything below as a description of ${cont.from}, not a forecast for ${cont.to}.`
+              : `One is gone. The figures below still mostly describe this unit, minus a man.`)}</div>
+      </div>
+    </div>`;
+  } else {
+    h += `<div class="env-headline-note" style="margin-bottom:14px;">${rankEsc(
+      'No published depth chart for this team yet, so there is no way to say how much of the line returns. The figures below describe ' + year + ' and nothing else.')}</div>`;
+  }
+
+  // The agreement figure belongs ON the card, not only in the caveats. It is the
+  // reason there are two columns instead of one, and restructuring this card
+  // once already left it printing two readings with nothing saying why.
+  h += `<div class="env-sub">${rankEsc(`What that line produced in ${year}`)} · ${rankEsc(
+    `the two readings agree at r = ${measured.vendorAgreement ?? '—'} across ${measured.vendorAgreementPairs ?? '—'} team-seasons, so both are shown`)}</div>
     <div class="env-grid">
       <div class="env-cell">
         <div class="env-label">Expected yards per carry</div>
@@ -1766,17 +1797,15 @@ function environmentCard(team) {
 
   if (gapNote) h += `<div class="season-state" style="margin-top:14px;"><span class="season-state-tag">${gap >= 10 ? 'They disagree' : 'They agree'}</span><span>${rankEsc(gapNote)}</span></div>`;
 
-  // HOW MUCH OF THAT LINE STILL EXISTS. The published depth chart names a
-  // starter at each of the five spots before a snap is taken, so this is a fact
-  // rather than a projection — and it is the difference between the numbers
-  // above describing this team and describing a team that has left.
-  if (cont) {
-    const gone = cont.of - cont.returning;
-    h += `<div class="season-state" style="margin-top:10px;"><span class="season-state-tag">${cont.to}</span>`
-      + `<span>${rankEsc(`${cont.returning} of ${cont.of} starters on that line are still listed first at their spot for ${cont.to}`)}`
-      + (gone ? rankEsc(`, and ${gone === 1 ? 'one is not' : `${gone} are not`}. Read the figures above as ${gone >= 2 ? 'a different line' : 'that line minus a man'}.`)
-              : rankEsc('. The unit measured above is the unit lining up.'))
-      + `</span></div>`;
+  // HOW FAR THE OFFENCE ITSELF MOVED — the one thing about coaching this data
+  // can honestly measure, and it is a fact about snaps rather than a grade.
+  if (ident && ident.snapsMoved >= 8) {
+    const groups = (ident.byGroup || []).map(g => `${g.grouping} ${g.delta > 0 ? '+' : ''}${g.delta}`).join(', ');
+    h += `<div class="season-state" style="margin-top:10px;"><span class="season-state-tag">Identity</span>`
+      + `<span>${rankEsc(`${ident.snapsMoved} points of snaps moved to a different personnel grouping between ${ident.from} and ${ident.to}`)}`
+      + (groups ? rankEsc(` (${groups})`) : '')
+      + rankEsc(ident.coachChanged ? `, with a new head coach.` : `, under the same head coach.`)
+      + ` ${rankEsc(`A change of coach does not predict this: the median move is ${measured.identityShiftNewCoach ?? '—'} points with a new one against ${measured.identityShiftSameCoach ?? '—'} with the same, over ${(measured.identityShiftPairs || {}).newCoach ?? '—'} changes. Who calls the plays would explain more, and that is not recorded.`)}</span></div>`;
   }
 
   const sc = row.scheme;

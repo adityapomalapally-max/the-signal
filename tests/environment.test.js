@@ -109,7 +109,14 @@ test('the team card shows both readings and never a single blended score', () =>
   assert.match(card, /Expected yards per carry/, 'the tracking reading is no longer shown');
   assert.match(card, /Yards before contact/, 'the charted reading is no longer shown');
   assert.match(card, /Pressure faced/, 'pass protection is no longer shown');
-  assert.match(card, /vendorAgreement/, 'the card no longer prints how far apart the two readings are');
+  // NOT just the variable name. A mutation that changed the wording to "a
+  // single line score of ${measured.vendorAgreement}" kept the token and
+  // inverted the meaning — the number would have been presented as the thing
+  // the card exists to refuse.
+  assert.match(card, /the two readings agree at r = \$\{measured\.vendorAgreement/,
+    'the card no longer frames the correlation as agreement between two readings');
+  assert.ok(!/single .*score|line score|overall score/i.test(card.replace(/\/\*[\s\S]*?\*\//g, '')),
+    'the card is presenting a single score for the line, which is the thing two columns exist to avoid');
   assert.match(card, /rankGap/, 'the gap between a team\'s two ranks is no longer surfaced');
   // The caveats have to travel onto the page, not sit in the file unread.
   assert.match(card, /caveatHtml\(m\.caveats\)/, 'the caveats no longer render with the card');
@@ -132,8 +139,14 @@ test('the card is dated, and says how much of that line still exists', () => {
   // team page and read as a description of the team now.
   const pages = fs.readFileSync(path.join(ROOT, 'assets', 'app-pages.js'), 'utf8');
   const card = pages.slice(pages.indexOf('function environmentCard'), pages.indexOf('function renderTeamPage'));
-  assert.match(card, /What they handed a runner in \$\{year\}/,
-    'the card no longer names the season in its own title');
+  // The season has to be named ON the card. It was in the title; it now sits on
+  // the line above the figures, because continuity took the headline. Either is
+  // fine — what is not fine is a card of last season's numbers with no year on
+  // it, which is what it shipped as the first time.
+  assert.match(card, /What that line produced in \$\{year\}/,
+    'the figures are no longer labelled with the season they come from');
+  assert.match(card, /starters back for/,
+    'continuity no longer leads the card');
   assert.match(card, /row\.continuity/, 'the card no longer says how much of the line returns');
   assert.match(card, /callerSeason/,
     'the coach is no longer tied to the season he is actually in charge of');
@@ -165,4 +178,39 @@ test('the coach named is the one in charge now', () => {
     `the newest coaching row is ${current} and the measurements are ${latest} — the card would name last season's coach`);
   const named = Object.values(board).filter((t) => t.caller && t.caller.headCoach).length;
   assert.ok(named >= 30, `only ${named} teams have a head coach for ${current}`);
+});
+
+test('how far an offence moved is measured, and not sold as a coaching grade', () => {
+  // The only thing about coaching this data can honestly carry: the share of
+  // snaps that changed personnel grouping. A fact about snaps, not a judgement.
+  const withIdentity = Object.entries(board).filter(([, t]) => t.identity);
+  assert.ok(withIdentity.length >= 25, `only ${withIdentity.length} teams carry an identity shift`);
+  for (const [team, t] of withIdentity) {
+    const i = t.identity;
+    assert.ok(i.snapsMoved >= 0 && i.snapsMoved <= 100, `${team}: ${i.snapsMoved} points of snaps moved`);
+    assert.strictEqual(i.to, i.from + 1, `${team}: comparing ${i.from} with ${i.to}`);
+    assert.strictEqual(typeof i.coachChanged, 'boolean', `${team}: coachChanged unanswered`);
+  }
+  // Nothing here may read as a rating.
+  const src = SRC.replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.ok(!/coachingScore|coachGrade|schemeScore|callerRating/i.test(src),
+    'something is grading coaching, which this data cannot support');
+});
+
+test('the site states that a new coach does not predict a new offence', () => {
+  // The measurement that stops the number being over-read: the medians are
+  // close enough to be the same, on fourteen coaching changes.
+  const m = env.meta.measured;
+  assert.ok(typeof m.identityShiftSameCoach === 'number' && typeof m.identityShiftNewCoach === 'number',
+    'the comparison between a new coach and the same one is no longer computed');
+  assert.ok(m.identityShiftPairs.newCoach >= 5, `only ${m.identityShiftPairs.newCoach} coaching changes behind the claim`);
+  const gap = Math.abs(m.identityShiftNewCoach - m.identityShiftSameCoach);
+  assert.ok(gap < m.identityShiftSameCoach,
+    `a new coach now moves the offence ${m.identityShiftNewCoach} against ${m.identityShiftSameCoach} — `
+    + 'if that gap has become large, the page must stop saying a coaching change does not predict this');
+
+  const c = JSON.stringify(env.meta.caveats);
+  assert.match(c, /does not predict/i, 'the caveat that a coaching change does not predict the shift is gone');
+  assert.match(c, /play-caller file is hand-kept and empty|coordinator/i,
+    'nothing says a coordinator change is invisible, which is where the explanation probably lives');
 });
