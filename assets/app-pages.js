@@ -141,17 +141,13 @@ function rushDisagreement() {
   if (!gaps.length || gaps[0].gap < 5) return '';
 
   const of = both.length;
-  const say = (g) => `${g.name} is ${ordinalish(g.ryoe)} in RYOE and ${ordinalish(g.epa)} of ${of} in EPA per carry`;
+  const say = (g) => `${g.name} is ${ordinalWord(g.ryoe)} in RYOE and ${ordinalWord(g.epa)} of ${of} in EPA per carry`;
   return `<div class="season-state" style="margin:14px 0 0;"><span class="season-state-tag">Read together</span>`
     + `<span>${rankEsc(say(gaps[0]))}${gaps[1] ? `, and ${rankEsc(say(gaps[1]))}` : ''}. `
     + `The two are not measuring the same thing: one asks how much of the run was the runner rather than the blocking, `
     + `the other what the run was worth in the situation it happened in. A board showing either alone names a different back.</span></div>`;
 }
 
-function ordinalish(n) {
-  const s = ['th', 'st', 'nd', 'rd'], v = n % 100;
-  return n + (s[(v - 20) % 10] || s[v] || s[0]);
-}
 
 function rushRows(m) {
   const rows = [];
@@ -1553,6 +1549,7 @@ function renderLabPage() {
 // the numbers he earned elsewhere, and every one of those is marked — the
 // alternative is a page quietly claiming a receiver did that here.
 let teamsData = null, currentTeam = null, sosData = null, sosPos = 'WR';
+let envData = null, envPromise = null;
 let teamsPromise = null;
 // Scheme is 216KB and only the Teams page reads it, so it is fetched when that
 // page opens and never on first paint.
@@ -1578,6 +1575,14 @@ function ensureScheme() {
 function playCaller(team, season) {
   const e = callerData && callerData.entries && callerData.entries[`${season}|${team}`];
   return e && e.playCaller ? e : null;
+}
+
+function ensureEnvironment() {
+  // Unconditional assignment latches: loadJSON resolves with null on a failed
+  // fetch, so a guard on envData being falsy would be true again on the second
+  // pass and re-enter the render that scheduled it.
+  if (!envPromise) envPromise = loadJSON('/data/environment.json').then(d => { envData = d || {}; });
+  return envPromise;
 }
 
 function ensureTeams() {
@@ -1694,6 +1699,91 @@ function renderTeamPicker() {
   </div>`).join('');
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   WHAT THIS TEAM HANDS A SKILL PLAYER
+   ═══════════════════════════════════════════════════════════════════════════
+   Every other card on a team page describes what the team DID. This one
+   describes what it gave the people doing it, and its whole design problem is
+   that the two available readings of a line disagree.
+
+   Next Gen Stats prices the blocking into an EXPECTED yards figure computed at
+   the handoff from all 22 players. Pro Football Reference charts YARDS BEFORE
+   CONTACT by watching the play. Measured across 238 team-seasons they agree at
+   r = 0.32 — so both ranks are printed, side by side, and the gap between them
+   is a third number rather than something averaged away. In 2025 Miami is 1st
+   by tracking and 28th by charting; a single "O-line score" would have split
+   the difference and told the reader nothing about why. */
+function environmentCard(team) {
+  const env = envData && envData.seasons;
+  if (!env) return '';
+  const years = Object.keys(env).sort();
+  const year = years[years.length - 1];
+  const row = year && env[year] && env[year][team];
+  if (!row) return '';
+
+  const m = envData.meta || {};
+  const measured = m.measured || {};
+  const rank = (n) => (typeof n === 'number' ? ordinalWord(n) : '—');
+  const val = (v, unit) => (typeof v === 'number' ? v + (unit || '') : '—');
+
+  // The two readings, and how far apart they put this line.
+  const gap = row.run.rankGap;
+  const gapNote = gap === null ? ''
+    : gap >= 10
+      ? `The two disagree sharply here — ${gap} places apart. Tracking reads the picture at the handoff; charting reads how far he got before anyone touched him, and a line can be good at one and not the other.`
+      : gap <= 3 ? 'The two readings agree closely here.' : '';
+
+  let h = teamSectionLabel('What they hand a runner',
+    `Two independent readings of the same line, from ${year}. They agree at r = ${measured.vendorAgreement ?? '—'} across ${measured.vendorAgreementPairs ?? '—'} team-seasons, so both are shown.`);
+
+  h += `<div class="medical-card" style="padding:18px;margin-bottom:14px;">
+    <div class="env-grid">
+      <div class="env-cell">
+        <div class="env-label">Expected yards per carry</div>
+        <div class="env-value">${val(row.run.expPerAtt)}</div>
+        <div class="env-rank">${rank(row.run.expRank)} in the league</div>
+        <div class="env-note">What an average back gains from the pictures this line created, from player tracking at the handoff. The half that repeats: r = ${measured.expectationPersistence ?? '—'} year over year.</div>
+      </div>
+      <div class="env-cell">
+        <div class="env-label">Yards before contact</div>
+        <div class="env-value">${val(row.run.ybcPerAtt)}</div>
+        <div class="env-rank">${rank(row.run.ybcRank)} in the league</div>
+        <div class="env-note">How far a carry got before anyone touched him, charted by Pro Football Reference. Cruder, and it splits the line from the back at the point of contact.</div>
+      </div>
+      <div class="env-cell">
+        <div class="env-label">Pressure faced</div>
+        <div class="env-value">${val(row.pass.pressurePct, '%')}</div>
+        <div class="env-rank">${rank(row.pass.pressureRank)} fewest</div>
+        <div class="env-note">Share of dropbacks under duress${row.pass.pocketTime ? `, with ${row.pass.pocketTime}s in the pocket` : ''}. Not the line alone — a quarterback who holds the ball makes some of it.</div>
+      </div>
+    </div>`;
+
+  if (gapNote) h += `<div class="season-state" style="margin-top:14px;"><span class="season-state-tag">${gap >= 10 ? 'They disagree' : 'They agree'}</span><span>${rankEsc(gapNote)}</span></div>`;
+
+  const sc = row.scheme;
+  if (sc) {
+    h += `<div class="env-scheme">`
+      + [['EPA per play', sc.epaPerPlay], ['Pass rate', sc.passRate === null ? null : sc.passRate + '%'],
+         ['Defenders in the box', sc.boxAvg], ['Explosive rate', sc.explosiveRate === null ? null : sc.explosiveRate + '%']]
+        .filter(([, v]) => v !== null && v !== undefined)
+        .map(([k, v]) => `<span><b>${rankEsc(String(v))}</b> ${rankEsc(k.toLowerCase())}</span>`).join('')
+      + `</div>`;
+  }
+  if (row.caller) {
+    const c = row.caller;
+    // The play-caller is hand-kept and often blank. A blank row is honest: the
+    // page falls back to the head coach rather than guessing who calls it.
+    const who = c.playCaller
+      ? `${c.playCaller} calls the plays${c.callerIsHeadCoach ? ', and is the head coach' : c.headCoach ? ` for ${c.headCoach}` : ''}`
+      : c.headCoach ? `${c.headCoach} is the head coach; who calls the plays is not recorded` : '';
+    if (who) h += `<div class="env-caller">${rankEsc(who)}${c.source ? ` · ${rankEsc(c.source)}` : ''}</div>`;
+  }
+
+  h += caveatHtml(m.caveats).replace(/class="caveat-p"/g, 'class="caveat-p env-caveat"');
+  h += `</div>`;
+  return h;
+}
+
 function renderTeamPage() {
   const body = document.getElementById('teamBody');
   if (!body) return;
@@ -1765,7 +1855,9 @@ function renderTeamPage() {
 
   // Full schedule strip — the bye shows as a gap, which is the point.
   const scheme = schemeHtml(currentTeam);
+  if (!envData) ensureEnvironment().then(() => { if (currentTeam) renderTeamPage(); });
   h = h
+    + environmentCard(currentTeam)
     + (scheme ? teamSectionLabel('How they line up', 'Personnel, what it draws from the defence, and what their own defence plays') + scheme : '')
     + teamSectionLabel('The season ahead', 'Every week, shaded by what that defence conceded to the position you pick');
 

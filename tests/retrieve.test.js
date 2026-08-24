@@ -71,9 +71,34 @@ test('a first name that is also a surname does not pull in a stranger', () => {
 });
 
 test('the bare surname is still ambiguous once the first name is gone', () => {
-  // The fix above must not over-correct: "cook" alone genuinely is ambiguous.
-  const m = R.findPlayers('how is cook doing this year', pool);
-  assert.ok(m.players.length > 1, `expected several Cooks, got ${m.players.map(p => p.name).join(', ')}`);
+  // The fix above must not over-correct: a surname shared by two players
+  // genuinely is ambiguous and must come back as several.
+  //
+  // THE SURNAME IS TAKEN FROM THE POOL RATHER THAN NAMED HERE. This test used
+  // to ask about "cook" and assert several came back, which was true until the
+  // morning Brady Cook fell out of the 350 — the pool is deliberately
+  // hysteretic but it does churn, and the daily bot's commit failed on a test
+  // that was really asserting who was rostered. What is being checked is the
+  // RULE, so the fixture comes from whatever the data currently contains.
+  const bySurname = new Map();
+  for (const p of pool) {
+    const parts = p.name.split(/\s+/);
+    if (parts.length < 2) continue;
+    // Skip generational suffixes: "III" is not a surname, and a pair sharing
+    // one would be a different test.
+    const last = parts[parts.length - 1].replace(/[.,]/g, '');
+    const surname = /^(jr|sr|ii|iii|iv|v)$/i.test(last) ? parts[parts.length - 2] : last;
+    const key = surname.toLowerCase().replace(/[^a-z]/g, '');
+    if (key.length < 4) continue;   // a very short surname is its own test below
+    bySurname.set(key, (bySurname.get(key) || []).concat(p.name));
+  }
+  const shared = [...bySurname.entries()].filter(([, names]) => names.length > 1);
+  assert.ok(shared.length, 'no surname in the pool is shared by two players, which cannot be right for 350 of them');
+
+  const [surname, names] = shared[0];
+  const m = R.findPlayers(`how is ${surname} doing this year`, pool);
+  assert.ok(m.players.length > 1,
+    `"${surname}" is shared by ${names.join(', ')} but came back as ${m.players.map(p => p.name).join(', ') || 'nothing'}`);
   assert.strictEqual(m.ambiguous.length, 1);
 });
 

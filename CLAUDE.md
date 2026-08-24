@@ -1070,3 +1070,26 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - A CONSTANT NAMED `FIRST_<x>_SEASON` IS EXEMPT from the no-hand-typed-seasons rule and the rollover
   test says so. NGS has no expected-yards figure before 2018 — the columns exist and are empty. That
   is a fact about history, not a boundary that moves with the calendar.
+
+## The environment card, and the two bugs the daily bot found
+- The team page carries "What they hand a runner": the two line readings side by side with their
+  ranks, the gap between them, pressure faced, the scheme strip and the play-caller. THE GAP IS A
+  NUMBER ON THE PAGE, not something averaged away — Miami is 1st by tracking and 28th by charting,
+  and a single score would have split the difference and explained nothing.
+- The card bows out rather than rendering an empty shell when the file or the team row is absent,
+  and `ensureEnvironment` latches with an unconditional assignment (`envData = d || {}`), because
+  loadJSON resolves with null on a failed fetch and a guard on `envData` being falsy would re-enter
+  the render that scheduled it.
+- THE DAILY BOT'S COMMIT IS THE ONE MOST LIKELY TO BREAK A TEST, and on 2026-08-23 it broke two —
+  four failed runs before anyone looked. Both were assertions about DATA that had moved, not about
+  rules:
+  - `tests/retrieve.test.js` asked whether "cook" was ambiguous and asserted several came back. True
+    until Brady Cook fell out of the 350. The pool is hysteretic but it churns, so the test now
+    finds a shared surname IN THE POOL and asks about that one. A fixture named in the test is a
+    fixture that will be wrong eventually.
+  - `tests/wire.test.js` asserted a player's depth rank equalled the number of names ahead of him.
+    Atlanta listed two quarterbacks at QB3, so the man published as QB4 genuinely has four ahead.
+    Ranks TIE; the rank and the count are different facts and both are true.
+- A cascade worth recognising: the full build failed on those tests, so no fresh data was committed,
+  so the following light runs — which correctly no-opped in the preseason — still failed their
+  `always()` test step on the now-stale data. One broken assertion reds every run after it.

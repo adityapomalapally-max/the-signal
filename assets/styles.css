@@ -2797,6 +2797,11 @@ a { color: inherit; text-decoration: none; }
     align-items: center;
     min-height: 44px;
   }
+  /* Seventeen roster rows stacked at 27px is the same mis-tap column the footer
+     links were: the rows sit closer together than a fingertip is wide, and each
+     one is the way into a player's page. The grid keeps its columns; only the
+     row height moves, so the layout is unchanged on a mouse. */
+  .tm-row { height: auto; min-height: 44px; }
 }
 
 /* ── A wide table needs an anchor, not a smaller table ──────────────────────
@@ -2963,3 +2968,42 @@ a.wire-name:hover { color: var(--gold); }
   .wire-n-label { display: inline; margin-top: 0; }
   .wire-dir { margin-left: 0; }
 }
+
+/* ═══ WHAT A TEAM HANDS A RUNNER ════════════════════════════════════════════
+   Three readings side by side, and the layout is the argument: two of them
+   measure the same thing and disagree, so they sit as equals rather than one
+   above the other with the second presented as a footnote. */
+.env-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 18px;
+}
+.env-cell { min-width: 0; }
+.env-label {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 1.4px;
+  text-transform: uppercase; color: var(--text-muted);
+}
+.env-value {
+  font-family: var(--serif); font-size: 30px; font-weight: 700;
+  line-height: 1.1; margin-top: 4px;
+}
+.env-rank {
+  font-family: var(--mono); font-size: 11px; color: var(--gold);
+  letter-spacing: 0.5px; margin-top: 2px;
+}
+.env-note {
+  font-size: 12.5px; color: var(--text-secondary);
+  line-height: 1.65; margin-top: 8px;
+}
+.env-scheme {
+  display: flex; flex-wrap: wrap; gap: 14px;
+  margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border);
+  font-family: var(--mono); font-size: 11px; color: var(--text-muted);
+}
+.env-scheme b { color: var(--text); font-weight: 500; }
+.env-caller {
+  margin-top: 10px; font-size: 12.5px; color: var(--text-secondary);
+}
+/* The caveats are long and every one of them is load-bearing, so they are
+   readable rather than tucked under the fold at 9px. */
+.env-caveat { font-size: 11.5px; margin-top: 10px; }

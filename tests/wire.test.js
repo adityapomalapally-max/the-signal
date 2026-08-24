@@ -117,9 +117,15 @@ test('a depth line is absent rather than invented', () => {
   for (const row of wire.adds) {
     if (!row.depth) continue;
     assert.ok(row.depth.reading, `${row.name} has a depth object with nothing in it`);
-    // The names ahead of him have to match the rank claimed.
-    assert.strictEqual(row.depth.behind.length, Math.max(0, (row.depth.rank || 1) - 1),
-      `${row.name}: listed ${row.depth.rank} but ${row.depth.behind.length} names are shown ahead of him`);
+    // TIES ARE REAL AND THE FIRST VERSION OF THIS DID NOT ALLOW FOR THEM.
+    // Atlanta listed Cooper Rush and Trevor Siemian both at QB3, so the man
+    // published as QB4 genuinely has four names ahead of him. The published
+    // rank and the number of players ahead are different facts and both are
+    // true; the invariant is that the names cannot UNDERSTATE the rank.
+    assert.ok(row.depth.behind.length >= Math.max(0, (row.depth.rank || 1) - 1),
+      `${row.name}: listed ${row.depth.rank} with only ${row.depth.behind.length} names ahead of him`);
+    assert.ok(row.depth.behind.every((n) => typeof n === 'string' && n.length),
+      `${row.name}: a name ahead of him is not a name`);
   }
   assert.ok(!/behind (undefined|null)/.test(JSON.stringify(wire.adds)), 'a depth line names a player that is not there');
 });

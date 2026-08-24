@@ -99,3 +99,28 @@ test('the file says what it is not', () => {
   assert.match(c, /not what its five linemen are worth/i,
     'nothing says this describes what the carries ran into rather than the linemen themselves');
 });
+
+test('the team card shows both readings and never a single blended score', () => {
+  // The card is the reason the disagreement is published at all. If it ever
+  // renders one number for "the line", the file behind it stops mattering.
+  const pages = fs.readFileSync(path.join(ROOT, 'assets', 'app-pages.js'), 'utf8');
+  const card = pages.slice(pages.indexOf('function environmentCard'), pages.indexOf('function renderTeamPage'));
+  assert.ok(card.length > 500, 'environmentCard is gone');
+  assert.match(card, /Expected yards per carry/, 'the tracking reading is no longer shown');
+  assert.match(card, /Yards before contact/, 'the charted reading is no longer shown');
+  assert.match(card, /Pressure faced/, 'pass protection is no longer shown');
+  assert.match(card, /vendorAgreement/, 'the card no longer prints how far apart the two readings are');
+  assert.match(card, /rankGap/, 'the gap between a team\'s two ranks is no longer surfaced');
+  // The caveats have to travel onto the page, not sit in the file unread.
+  assert.match(card, /caveatHtml\(m\.caveats\)/, 'the caveats no longer render with the card');
+});
+
+test('a missing environment file renders nothing rather than an empty shell', () => {
+  const pages = fs.readFileSync(path.join(ROOT, 'assets', 'app-pages.js'), 'utf8');
+  const card = pages.slice(pages.indexOf('function environmentCard'), pages.indexOf('function renderTeamPage'));
+  assert.match(card, /if \(!env\) return '';/, 'the card no longer bows out when the file is absent');
+  assert.match(card, /if \(!row\) return '';/, 'a team with no environment row would render an empty card');
+  // And the loader latches, or the re-render it schedules re-enters itself.
+  assert.match(pages, /envPromise = loadJSON\('\/data\/environment\.json'\)\.then\(d => \{ envData = d \|\| \{\}; \}\)/,
+    'the environment loader no longer latches on failure, so a failed fetch loops the team page');
+});
