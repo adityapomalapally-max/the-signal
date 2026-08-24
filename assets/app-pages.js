@@ -108,6 +108,72 @@ function labQualText(m) {
 }
 
 // Joins pool + season stats + tracking data for the active position/season.
+/* The rushing board's rows. Two sources, joined ID TO ID on the GSIS key —
+   Next Gen Stats for the expectation and what he beat it by, play-by-play for
+   what the carries were worth. A back missing from either side is left out
+   rather than shown with half a row: the whole point of the board is the
+   comparison between the legs, and half of it compares nothing. */
+/* WHERE THE THREE LEGS DISAGREE, named rather than left for the reader to find
+   by flipping between boards.
+
+   This is the whole argument for publishing three numbers instead of the one
+   everybody quotes. RYOE asks how much of the run was the back rather than the
+   blocking; EPA per carry asks what the run was worth in the situation it
+   happened in. A back can lead the first and lose the second — his good runs
+   came on early downs with a lead, where the same yardage is worth less — and
+   in 2025 that is not a hypothetical, it is the top of the board.
+
+   Computed from the data on screen, so it stays true as the seasons move. */
+function rushDisagreement() {
+  const byRyoe = rushRows({ key: 'ryoePct', get: r => r.ryoePct, minAtt: 100 });
+  const byEpa = rushRows({ key: 'epaPerCarry', get: r => r.epaPerCarry, minAtt: 100 });
+  const epaRank = new Map([...byEpa].sort((a, b) => b.value - a.value).map((r, i) => [r.id, i + 1]));
+  const ryoeRank = new Map([...byRyoe].sort((a, b) => b.value - a.value).map((r, i) => [r.id, i + 1]));
+  const both = byRyoe.filter(r => epaRank.has(r.id));
+  if (both.length < 12) return '';
+
+  const gaps = both.map(r => ({
+    name: r.name,
+    ryoe: ryoeRank.get(r.id),
+    epa: epaRank.get(r.id),
+    gap: Math.abs(ryoeRank.get(r.id) - epaRank.get(r.id)),
+  })).sort((a, b) => b.gap - a.gap).slice(0, 2);
+  if (!gaps.length || gaps[0].gap < 5) return '';
+
+  const of = both.length;
+  const say = (g) => `${g.name} is ${ordinalish(g.ryoe)} in RYOE and ${ordinalish(g.epa)} of ${of} in EPA per carry`;
+  return `<div class="season-state" style="margin:14px 0 0;"><span class="season-state-tag">Read together</span>`
+    + `<span>${rankEsc(say(gaps[0]))}${gaps[1] ? `, and ${rankEsc(say(gaps[1]))}` : ''}. `
+    + `The two are not measuring the same thing: one asks how much of the run was the runner rather than the blocking, `
+    + `the other what the run was worth in the situation it happened in. A board showing either alone names a different back.</span></div>`;
+}
+
+function ordinalish(n) {
+  const s = ['th', 'st', 'nd', 'rd'], v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+function rushRows(m) {
+  const rows = [];
+  const byGsis = (labRushing && labRushing.seasons && labRushing.seasons[labSeason]) || {};
+  for (const p of playersDB) {
+    if (p.pos !== 'RB') continue;                       // backs only
+    const ngsRow = ((labNgs[p.id] || {})[labSeason] || {}).rush || null;
+    const epaRow = p.gsisId ? byGsis[p.gsisId] : null;
+    if (!ngsRow) continue;
+    // The attempt floor is on the NGS side, which is where the expectation
+    // lives. Below it a season is a handful of runs and RYOE is mostly one of
+    // them — the metric is explosion-driven and the small sample is not a
+    // small measurement, it is a different one.
+    if (!ngsRow.attempts || ngsRow.attempts < (m.minAtt || 60)) continue;
+    const merged = { ...ngsRow, ...(epaRow || {}) };
+    const v = m.get(merged);
+    if (typeof v !== 'number' || isNaN(v)) continue;
+    rows.push({ id: p.id, name: p.name, team: p.team, value: v });
+  }
+  return rows;
+}
+
 function labRows(valueOf, m) {
   const rows = [];
   for (const p of playersDB) {
@@ -373,7 +439,7 @@ const CHART_METRICS = {
   ],
 };
 
-let labCharting = null, labAdvstats = null, labContext = null;
+let labCharting = null, labAdvstats = null, labContext = null, labRushing = null;
 let chartsPromise = null;
 function ensureChartData() {
   if (!chartsPromise) {
@@ -382,6 +448,7 @@ function ensureChartData() {
       loadJSON('/data/advstats.json').then(d => (labAdvstats = d)),
       loadJSON('/data/context.json').then(d => (labContext = d)),
       loadJSON('/data/fieldmap.json').then(d => (labFieldmap = d)),
+      loadJSON('/data/rushing.json').then(d => (labRushing = d)),
     ]);
   }
   return chartsPromise;
@@ -409,6 +476,45 @@ function labSeasons() {
   return (labCharting.meta.seasons || []).map(String);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   RUSHING — THREE READINGS OF THE SAME CARRY
+   ═══════════════════════════════════════════════════════════════════════════
+   Rush yards over expected is the most quoted rushing number and the one most
+   likely to be over-read. Next Gen Stats prices the blocking INTO the bar: at
+   the handoff it reads the position, speed and direction of all 22 players and
+   says what an average back gains from that picture, so beating it is the part
+   that was the runner. That is the appeal, and it is real.
+
+   What it is not is repeatable. Measured on 2018-2025, a back's RYOE per
+   attempt correlates with his next season at r = 0.22, and the PERCENTAGE form
+   — the way it is usually quoted — at 0.09. Yards per carry does better at
+   0.29. The distribution is right-skewed and explosion-driven: a handful of
+   long runs carry a season.
+
+   So the board publishes three legs and lets them disagree, because that is
+   where the information is. 2025 makes the case on its own: Rhamondre Stevenson
+   is FIRST in RYOE percentage and 41st of 46 in EPA per carry. He beat the
+   tracking expectation by more than anyone in football and his carries were
+   still worth less than almost everybody's — the runs came on early downs with
+   a lead, where the same yardage is worth less. A board showing either number
+   alone names the wrong back. */
+const RUSH_METRICS = [
+  { key: 'ryoePct', label: 'RYOE %', get: r => r.ryoePct, unit: '%', minAtt: 60,
+    note: 'How far above the expectation he ran, as a share of it. The percentage travels across workloads in a way a per-carry figure does not — a 300-carry back and a 150-carry back can be read on the same scale. Repeats year to year at r = 0.09, so it describes the season that happened and forecasts almost nothing.' },
+  { key: 'ryoePerAtt', label: 'RYOE per Carry', get: r => r.ryoePerAtt, unit: '', minAtt: 60,
+    note: 'The same number in yards rather than as a share. Repeats at r = 0.22 — better than the percentage form and still not a projection.' },
+  { key: 'epaPerCarry', label: 'EPA per Carry', get: r => r.epaPerCarry, unit: '', minAtt: 60,
+    note: 'What the carries were worth in the situations they happened in. Eight yards on third and six is worth more than eight on first and ten with a lead, and this is the only leg that knows the difference.' },
+  { key: 'successRate', label: 'Success Rate', get: r => r.successRate, unit: '%', minAtt: 60,
+    note: 'The share of carries with positive EPA. EPA per carry is an average over a skewed distribution and one long touchdown moves it; this asks the same question in a way a single run cannot dominate.' },
+  { key: 'ypc', label: 'Yards per Carry', get: r => r.ypc, unit: '', minAtt: 60,
+    note: 'The raw check. It knows nothing about blocking or situation, which is exactly why it belongs beside two numbers that claim to.' },
+  { key: 'beatRate', label: 'Carries Beating Expectation', get: r => (r.beatRate === null || r.beatRate === undefined ? null : Math.round(r.beatRate * 1000) / 10), unit: '%', minAtt: 60,
+    note: 'How often he got more than the picture predicted, rather than how much. A back can lead in RYOE on four long runs while losing this one — it is the consistency half of the same question.' },
+  { key: 'expPerAtt', label: 'Expected Yards per Carry', get: r => (r.expYards && r.attempts ? Math.round((r.expYards / r.attempts) * 100) / 100 : null), unit: '', minAtt: 60,
+    note: 'The bar itself: what an average back gains from the pictures this one was handed. Read as an environment rather than a skill — it is the closest thing here to a blocking rating, and the team board publishes it beside a second, disagreeing reading.' },
+];
+
 const LAB_TABLES = {
   stats: () => LAB_METRICS,
   charts: () => CHART_METRICS,
@@ -416,6 +522,9 @@ const LAB_TABLES = {
   // Team-scoped, so every position resolves to the same board.
   defense: () => ({ QB: DEFENSE_METRICS, RB: DEFENSE_METRICS, WR: DEFENSE_METRICS, TE: DEFENSE_METRICS }),
   field: () => FIELD_METRICS,
+  // Backs only. A rushing board offered for receivers is a control that
+  // reaches nothing, so the position picker hides in this mode.
+  rushing: () => ({ QB: RUSH_METRICS, RB: RUSH_METRICS, WR: RUSH_METRICS, TE: RUSH_METRICS }),
 };
 
 function chartRowFor(id, season) {
@@ -1163,6 +1272,7 @@ function defenseRows(m) {
 // finding all of them.
 function labQualFor(m) {
   if (labMode === 'charts') return chartQualText(m);
+  if (labMode === 'rushing') return `QUALIFIER: ${m.minAtt || 60}+ carries — below that a season is a handful of runs and this metric is mostly one of them`;
   if (labMode === 'athletic') return 'QUALIFIER: PERCENTILES ARE AGAINST EVERY PLAYER ON RECORD AT THIS POSITION';
   if (labMode === 'defense') return m.minTargets ? `QUALIFIER: ${m.minTargets}+ charted targets faced` : '';
   return labQualText(m);
@@ -1170,6 +1280,7 @@ function labQualFor(m) {
 
 function labSourceText(m) {
   if (labMode === 'charts') return `${chartQualText(m)} · ${m.chart ? 'FTN charting' : 'Pro Football Reference'}`;
+  if (labMode === 'rushing') return 'Next Gen Stats player tracking (the expectation) and nflverse play-by-play (EPA) · joined on the GSIS id';
   if (labMode === 'athletic') return 'NFL Scouting Combine via nflverse · percentiles against every tested player at the position';
   if (labMode === 'defense') return 'Pro Football Reference advanced defensive splits, aggregated across every charted defender';
   return `${labQualText(m)} · nflverse${m.ngs ? ' · NFL Next Gen Stats' : ''}`;
@@ -1257,7 +1368,7 @@ function renderLabPage() {
   // happened, out of the two layers a box score cannot produce.
   const modeRow = document.getElementById('labModeToggle');
   if (modeRow) {
-    modeRow.innerHTML = [['stats', 'Stats'], ['charts', 'Charts'], ['field', 'Field Map'], ['athletic', 'Athletic'], ['defense', 'Defense']].map(([k, label]) =>
+    modeRow.innerHTML = [['stats', 'Stats'], ['charts', 'Charts'], ['field', 'Field Map'], ['rushing', 'Rushing'], ['athletic', 'Athletic'], ['defense', 'Defense']].map(([k, label]) =>
       `<button class="pos-btn${labMode === k ? ' active' : ''}" onclick="setLabMode('${k}')">${label}</button>`).join('');
   }
 
@@ -1278,7 +1389,7 @@ function renderLabPage() {
   if (seasonGroup) seasonGroup.style.display = seasons.length ? '' : 'none';
   const posGroup = document.getElementById('labPosFilter');
   const posWrap = posGroup && posGroup.closest('.lab-control');
-  if (posWrap) posWrap.style.display = labMode === 'defense' ? 'none' : '';
+  if (posWrap) posWrap.style.display = (labMode === 'defense' || labMode === 'rushing') ? 'none' : '';
   // The Field Map is a matrix and has no second rendering — there is no bar
   // chart to switch to and no plainer table underneath, because the table IS
   // the chart. Left on screen the Chart/Table pair invites a click that changes
@@ -1339,7 +1450,7 @@ function renderLabPage() {
   }
 
   const valueOf = m.ngs ? ((s, n) => m.ngs(n)) : ((s) => m.stat(s));
-  const rowsFor = { charts: () => chartRows(m), athletic: () => athleticRows(m), defense: () => defenseRows(m) };
+  const rowsFor = { charts: () => chartRows(m), athletic: () => athleticRows(m), defense: () => defenseRows(m), rushing: () => rushRows(m) };
   const rows = (rowsFor[labMode] ? rowsFor[labMode]() : labRows(valueOf, m))
     .sort((a, b) => m.lower ? a.value - b.value : b.value - a.value)
     .slice(0, labMode === 'defense' ? 32 : 20);
@@ -1348,6 +1459,7 @@ function renderLabPage() {
   // both would claim two things the board does not have.
   const boardTitle = labMode === 'athletic' ? `${m.label} — ${labPos}, all-time`
     : labMode === 'defense' ? `${m.label} — team defence, ${labSeason}`
+    : labMode === 'rushing' ? `${m.label} — RB, ${labSeason}`
     : `${m.label} — ${labPos}, ${labSeason}`;
   labExportBoard = rows.length ? {
     title: boardTitle,
@@ -1370,6 +1482,7 @@ function renderLabPage() {
   } else {
     h += labView === 'chart' ? labBarBoard(rows, m) : labTable(rows, m);
     h += `<div class="rank-note">${rankEsc(labFooterText(m, rows.length))}</div>`;
+    if (labMode === 'rushing') h += rushDisagreement();
   }
   // The findings render in BOTH halves. They were behind the Charts toggle,
   // which defaults off — so a reader landing on /lab saw no fun stats at all,

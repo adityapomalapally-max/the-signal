@@ -785,7 +785,7 @@ function handleRoute() {
   // those links always meant.
   if (parts[0] === 'lab') {
     let i = 1;
-    const MODES = ['stats', 'charts', 'field', 'athletic', 'defense'];
+    const MODES = ['stats', 'charts', 'field', 'rushing', 'athletic', 'defense'];
     if (MODES.includes(parts[1])) { labMode = parts[1]; i = 2; }
     else if (parts[1] && LAB_METRICS[parts[1].toUpperCase()]) labMode = 'stats';
     const table = (LAB_TABLES[labMode] || LAB_TABLES.stats)();
@@ -1015,11 +1015,17 @@ function metaForRoute(route) {
   }
 
   if (parts[0] === 'lab') {
-    const known = ['stats', 'charts', 'field', 'athletic', 'defense'];
+    const known = ['stats', 'charts', 'field', 'rushing', 'athletic', 'defense'];
     const hasMode = known.includes(parts[1]);
     const mode = hasMode ? parts[1] : 'stats';
     const posPart = hasMode ? parts[2] : parts[1];
     const seasonPart = hasMode ? parts[3] : parts[2];
+    if (mode === 'rushing') {
+      return {
+        title: `Rushing — RYOE, EPA and yards per carry${seasonPart ? ' — ' + seasonPart : ''} | The Signal`,
+        description: 'Rush yards over expected, EPA per carry and yards per carry side by side, because they disagree — and the disagreement is the finding.',
+      };
+    }
     if (mode === 'defense') {
       return {
         title: `Team Defence${seasonPart ? ' — ' + seasonPart : ''} | The Signal`,

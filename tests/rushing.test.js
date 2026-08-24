@@ -106,3 +106,27 @@ test('the file states what EPA per carry is and is not', () => {
   assert.match(c, /kneel/i, 'nothing records that kneels are excluded');
   assert.match(c, /not the one that employs him now/i, 'nothing says which team a season belongs to');
 });
+
+test('the rushing board is registered everywhere a mode has to be', () => {
+  // A lab mode lives in three places: the toggle that draws it, the router that
+  // parses its URL, and the metadata that titles it. Adding it to two of the
+  // three is a board that renders and cannot be linked to.
+  const pages = fs.readFileSync(path.join(ROOT, 'assets', 'app-pages.js'), 'utf8');
+  const feeds = fs.readFileSync(path.join(ROOT, 'assets', 'app-feeds.js'), 'utf8');
+  assert.match(pages, /\['rushing', 'Rushing'\]/, 'the Rushing pill is gone from the mode toggle');
+  const modeLists = [...feeds.matchAll(/\['stats', 'charts', 'field'[^\]]*\]/g)].map((m) => m[0]);
+  assert.ok(modeLists.length >= 2, 'the router no longer keeps a mode list');
+  for (const list of modeLists) {
+    assert.match(list, /'rushing'/, `a router mode list is missing rushing: ${list}`);
+  }
+  assert.match(feeds, /mode === 'rushing'/, 'the rushing board has no route metadata, so a shared link is titled as something else');
+});
+
+test('the board is backs only, and says so by hiding the position picker', () => {
+  const pages = fs.readFileSync(path.join(ROOT, 'assets', 'app-pages.js'), 'utf8');
+  assert.match(pages, /labMode === 'defense' \|\| labMode === 'rushing'/,
+    'the position picker is shown on the rushing board, where it reaches nothing');
+  const fn = pages.slice(pages.indexOf('function rushRows'), pages.indexOf('function rushRows') + 1200);
+  assert.match(fn, /p\.pos !== 'RB'/, 'the rushing board is no longer restricted to backs');
+  assert.match(fn, /m\.minAtt \|\| 60/, 'the carry floor is gone — a season of eight runs would rank');
+});
