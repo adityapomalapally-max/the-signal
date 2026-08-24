@@ -30,7 +30,17 @@ function main() {
   for (const [key, e] of Object.entries(entries)) {
     const label = `${e.season} ${e.team}`;
     if (key !== `${e.season}|${e.team}`) errors.push(`${label}: key "${key}" disagrees with its own season/team`);
-    if (scheme && !(scheme.seasons[e.season] && scheme.seasons[e.season][e.team])) {
+    // THE CURRENT LEAGUE YEAR HAS ROWS BEFORE IT HAS PLAYS. build-playcallers
+    // scaffolds it from the schedule feed, which names every head coach months
+    // before kickoff — without those rows the site went on naming last season's
+    // coach. So scheme is not the only legitimate source of a season here.
+    //
+    // This rule lived in two places and only one of them was updated: the test
+    // suite passed locally while this script red the push. A rule worth
+    // enforcing twice is worth writing once, but at minimum both copies have to
+    // learn the same thing.
+    const scaffolded = scheme && Number(e.season) === Math.max(...scheme.meta.seasons.map(Number)) + 1;
+    if (scheme && !scaffolded && !(scheme.seasons[e.season] && scheme.seasons[e.season][e.team])) {
       errors.push(`${label}: no such team-season in scheme.json`);
     }
     if (!e.playCaller) { (blankBySeason[e.season] ||= []).push(e.team); continue; }
