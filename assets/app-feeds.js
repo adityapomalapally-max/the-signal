@@ -342,23 +342,60 @@ function searchInjuryPlayer(query) {
 // ===== SLEEPER PLAYER DB (cached) =====
 let sleeperPlayers = {};
 
+// THE PAYLOAD IS 14.6MB AND THE CACHE HOLDS 5. Measured, not estimated — the
+// comment at the call site said "~5MB" and the endpoint has grown well past it.
+// So `localStorage.setItem` threw QuotaExceededError every single time, the
+// cache never populated, and the ONLY visible symptom was that this fetch
+// happened again on the next page load, and the one after that, forever. A
+// cache that silently never caches looks exactly like a cache that works.
+//
+// Six fields are read out of this object anywhere on the site (player_id and
+// the five below). Slimming it before storing takes it to a few hundred KB —
+// comfortably under the quota — so the cache does what it always claimed to.
+const SLEEPER_FIELDS = ['first_name', 'last_name', 'position', 'team', 'injury_status'];
+
+function slimSleeperDB(data) {
+  const out = {};
+  for (const [id, p] of Object.entries(data || {})) {
+    if (!p || !p.first_name) continue;   // team defences and the like
+    const row = { player_id: p.player_id || id };
+    for (const f of SLEEPER_FIELDS) if (p[f]) row[f] = p[f];
+    out[id] = row;
+  }
+  return out;
+}
+
 async function loadSleeperPlayerDB() {
   const cacheKey = 'signal_sleeper_players';
   const cacheExpiry = 'signal_sleeper_expiry';
-  const cached = localStorage.getItem(cacheKey);
-  const expiry = localStorage.getItem(cacheExpiry);
 
-  if (cached && expiry && Date.now() < parseInt(expiry)) {
-    sleeperPlayers = JSON.parse(cached);
-    return;
+  // EVERY localStorage READ IS A THROW WAITING TO HAPPEN. Access itself raises
+  // in a browser set to block site data, and a half-written or truncated value
+  // makes JSON.parse raise — either one rejected this promise and took the
+  // callers down with it. A cache that cannot be read is a cache miss, which is
+  // a state this function already knows how to handle.
+  try {
+    const cached = localStorage.getItem(cacheKey);
+    const expiry = localStorage.getItem(cacheExpiry);
+    if (cached && expiry && Date.now() < parseInt(expiry)) {
+      sleeperPlayers = JSON.parse(cached);
+      return;
+    }
+  } catch (e) {
+    try { localStorage.removeItem(cacheKey); localStorage.removeItem(cacheExpiry); } catch (e2) {}
   }
 
   try {
     const res = await fetch('https://api.sleeper.app/v1/players/nfl');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    sleeperPlayers = data;
-    localStorage.setItem(cacheKey, JSON.stringify(data));
-    localStorage.setItem(cacheExpiry, String(Date.now() + 86400000)); // 24hr
+    sleeperPlayers = slimSleeperDB(data);
+    // The write is its own try: a full disk or a private window must not lose
+    // the data we already have in hand.
+    try {
+      localStorage.setItem(cacheKey, JSON.stringify(sleeperPlayers));
+      localStorage.setItem(cacheExpiry, String(Date.now() + 86400000)); // 24hr
+    } catch (e) { console.warn('Sleeper DB fetched but not cached:', e && e.name); }
   } catch (e) { console.warn('Sleeper player DB failed:', e); }
 }
 
@@ -377,13 +414,13 @@ async function loadSleeperTrending() {
     if (trending && trending.adds && trending.adds.length > 0 && trending.adds[0].name) {
       container.innerHTML = trending.adds.slice(0, 10).map((t, i) => {
         const ourPlayer = playersDB.find(x => t.name.toLowerCase().includes(x.name.split(' ').pop().toLowerCase()) && x.pos === t.position);
-        const clickHandler = ourPlayer ? `onclick="openProfile('${ourPlayer.id}')"` : '';
-        const statusHtml = t.injury_status ? `<span style="font-family:var(--mono);font-size:8px;padding:2px 5px;border-radius:3px;background:var(--red-muted);color:var(--red);text-transform:uppercase;">${t.injury_status}</span>` : '';
+        const clickHandler = ourPlayer ? `onclick="openProfile('${jsAttr(ourPlayer.id)}')"` : '';
+        const statusHtml = t.injury_status ? `<span style="font-family:var(--mono);font-size:8px;padding:2px 5px;border-radius:3px;background:var(--red-muted);color:var(--red);text-transform:uppercase;">${rankEsc(t.injury_status)}</span>` : '';
         return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-subtle);cursor:${ourPlayer ? 'pointer' : 'default'};" ${clickHandler}>
           <span style="font-family:var(--mono);font-size:10px;color:var(--gold);font-weight:600;min-width:18px;">${i + 1}</span>
           <div style="flex:1;min-width:0;">
-            <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.name}</div>
-            <div style="font-size:10px;color:var(--text-muted);">${t.position} · ${t.team} · +${t.count.toLocaleString()} adds</div>
+            <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rankEsc(t.name)}</div>
+            <div style="font-size:10px;color:var(--text-muted);">${rankEsc(t.position)} · ${rankEsc(t.team)} · +${Number(t.count || 0).toLocaleString()} adds</div>
           </div>
           ${statusHtml}
         </div>`;
@@ -411,14 +448,14 @@ async function loadSleeperTrending() {
       const team = p.team || 'FA';
       const injStatus = p.injury_status || '';
       const ourPlayer = playersDB.find(x => x.name.toLowerCase().includes(p.last_name.toLowerCase()) && x.pos === pos);
-      const clickHandler = ourPlayer ? `onclick="openProfile('${ourPlayer.id}')"` : '';
-      const statusHtml = injStatus ? `<span style="font-family:var(--mono);font-size:8px;padding:2px 5px;border-radius:3px;background:var(--red-muted);color:var(--red);text-transform:uppercase;">${injStatus}</span>` : '';
+      const clickHandler = ourPlayer ? `onclick="openProfile('${jsAttr(ourPlayer.id)}')"` : '';
+      const statusHtml = injStatus ? `<span style="font-family:var(--mono);font-size:8px;padding:2px 5px;border-radius:3px;background:var(--red-muted);color:var(--red);text-transform:uppercase;">${rankEsc(injStatus)}</span>` : '';
 
       return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-subtle);cursor:${ourPlayer ? 'pointer' : 'default'};" ${clickHandler}>
         <span style="font-family:var(--mono);font-size:10px;color:var(--gold);font-weight:600;min-width:18px;">${i + 1}</span>
         <div style="flex:1;min-width:0;">
-          <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${name}</div>
-          <div style="font-size:10px;color:var(--text-muted);">${pos} · ${team} · +${t.count.toLocaleString()} adds</div>
+          <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rankEsc(name)}</div>
+          <div style="font-size:10px;color:var(--text-muted);">${rankEsc(pos)} · ${rankEsc(team)} · +${Number(t.count || 0).toLocaleString()} adds</div>
         </div>
         ${statusHtml}
       </div>`;
@@ -457,13 +494,19 @@ function renderNewsCards() {
     const tagMap = { injury: { label: 'Injury', cls: 'tag-injury' }, fantasy: { label: 'Fantasy Impact', cls: 'tag-fantasy' }, news: { label: 'NFL News', cls: 'tag-news' } };
     const tag = tagMap[article.category] || tagMap.news;
     const dotHtml = i === 0 && currentNewsFilter === 'all' ? '<span class="live-dot"></span>' : '';
-    return `<a class="news-card" href="${article.link}" target="_blank" style="text-decoration:none;color:var(--text);">
+    // ESPN'S PAYLOAD IS SOMEBODY ELSE'S MARKUP UNTIL IT IS ESCAPED. This is
+    // fetched live from site.api.espn.com on every page load, so whatever that
+    // endpoint returns is rendered in this origin, with the access to the page
+    // that implies. It sends plain text today — checked, no entities and no
+    // angle brackets — and the escaping is what makes that a property of this
+    // code rather than a standing bet on a third party.
+    return `<a class="news-card" href="${safeUrl(article.link)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:var(--text);">
       <div class="news-card-tag ${tag.cls}">${dotHtml} ${tag.label}</div>
-      <h3>${article.headline}</h3>
-      <p>${article.description}</p>
+      <h3>${rankEsc(article.headline)}</h3>
+      <p>${rankEsc(article.description)}</p>
       <div class="news-card-footer">
         <span>Via <span class="author">ESPN</span></span>
-        <span class="read-time">${article.date}</span>
+        <span class="read-time">${rankEsc(article.date)}</span>
       </div>
     </a>`;
   }).join('');
@@ -586,28 +629,37 @@ async function loadSubstack() {
     } catch (e) { continue; }
   }
 
+  // THE GUARD BELOW WAS APPLIED TO SLOT 5 ONLY, and the reason it was needed
+  // there applies identically to every write in this function: an element the
+  // markup no longer carries makes this throw, and everything after it in the
+  // function never runs. `setText` and `setHref` make "the element is gone" a
+  // no-op rather than the end of the render.
+  const setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  const setHref = (id, v) => { const el = document.getElementById(id); const u = String(v == null ? '' : v).trim(); if (el) el.href = /^https?:\/\//i.test(u) ? u : '#'; };
+  const setClick = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
+
   if (data && data.items && data.items.length > 0) {
     // Hero — latest post
     const latest = data.items[0];
-    document.getElementById('heroTitle').textContent = latest.title;
+    setText('heroTitle', latest.title);
     const excerpt = latest.description ? latest.description.replace(/<[^>]+>/g, '').substring(0, 200) + '...' : '';
-    document.getElementById('heroExcerpt').textContent = excerpt;
-    document.getElementById('heroDate').textContent = new Date(latest.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    document.getElementById('heroLink').href = latest.link;
+    setText('heroExcerpt', excerpt);
+    setText('heroDate', new Date(latest.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
+    setHref('heroLink', latest.link);
     setHeroImage(substackImage(latest));
 
     // Analysis section — 2nd post (or 1st if only 1)
     if (data.items.length > 1) {
       const second = data.items[1];
-      document.getElementById('substackAnalysisTitle').textContent = second.title;
+      setText('substackAnalysisTitle', second.title);
       const excerpt2 = second.description ? second.description.replace(/<[^>]+>/g, '').substring(0, 180) + '...' : '';
-      document.getElementById('substackAnalysisExcerpt').textContent = excerpt2;
-      document.getElementById('substackAnalysisDate').textContent = new Date(second.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      document.getElementById('substackAnalysis').onclick = () => window.open(second.link, '_blank');
+      setText('substackAnalysisExcerpt', excerpt2);
+      setText('substackAnalysisDate', new Date(second.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+      setClick('substackAnalysis', () => openExternal(second.link));
     } else {
-      document.getElementById('substackAnalysisTitle').textContent = latest.title;
-      document.getElementById('substackAnalysisExcerpt').textContent = excerpt;
-      document.getElementById('substackAnalysis').onclick = () => window.open(latest.link, '_blank');
+      setText('substackAnalysisTitle', latest.title);
+      setText('substackAnalysisExcerpt', excerpt);
+      setClick('substackAnalysis', () => openExternal(latest.link));
     }
 
     // Top stories sidebar — slot 5. These elements were removed in a past
@@ -619,25 +671,31 @@ async function loadSubstack() {
     const sbStory = document.getElementById('substackSidebarStory');
     if (sbTitle) sbTitle.textContent = thirdPost.title;
     if (sbMeta) sbMeta.innerHTML = `<span>Adi</span> · ${new Date(thirdPost.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
-    if (sbStory) sbStory.onclick = () => window.open(thirdPost.link, '_blank');
+    if (sbStory) sbStory.onclick = () => openExternal(thirdPost.link);
 
     // Right sidebar — remaining posts
     const sidebar = document.getElementById('substackSidebar');
+    if (!sidebar) return;
+    // api.rss2json.com IS THE WEAKEST TRUST LINK ON THIS SITE — a free proxy,
+    // not Substack itself, standing between the feed and this page. Whatever it
+    // returns is text here, never markup, and its links are checked before they
+    // become hrefs.
     sidebar.innerHTML = data.items.slice(0, 5).map(item => `
-      <a href="${item.link}" target="_blank" style="display:block;padding:10px 0;border-bottom:1px solid var(--border-subtle);text-decoration:none;color:var(--text);transition:opacity 0.2s;">
-        <div style="font-family:var(--serif);font-size:14px;font-weight:600;line-height:1.35;margin-bottom:4px;">${item.title}</div>
+      <a href="${safeUrl(item.link)}" target="_blank" rel="noopener noreferrer" style="display:block;padding:10px 0;border-bottom:1px solid var(--border-subtle);text-decoration:none;color:var(--text);transition:opacity 0.2s;">
+        <div style="font-family:var(--serif);font-size:14px;font-weight:600;line-height:1.35;margin-bottom:4px;">${rankEsc(item.title)}</div>
         <div style="font-size:11px;color:var(--text-muted);">${new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
       </a>
     `).join('');
   } else {
     // RSS failed — graceful fallback linking to profile
-    document.getElementById('heroTitle').textContent = "mlam's cookbook — Latest Analysis";
-    document.getElementById('heroExcerpt').textContent = 'Scouting reports, player evaluations, and NFL analytics. Read the latest on Substack.';
-    document.getElementById('heroLink').href = substackProfile;
-    document.getElementById('substackAnalysisTitle').textContent = 'Read more on Substack →';
-    document.getElementById('substackAnalysisExcerpt').textContent = 'Head to Substack for the latest posts from Adi.';
-    document.getElementById('substackAnalysis').onclick = () => window.open(substackProfile, '_blank');
-    document.getElementById('substackSidebar').innerHTML = `<a href="${substackProfile}" target="_blank" style="display:block;padding:10px 0;color:var(--gold);font-size:13px;">Visit Substack profile →</a>`;
+    setText('heroTitle', "mlam's cookbook — Latest Analysis");
+    setText('heroExcerpt', 'Scouting reports, player evaluations, and NFL analytics. Read the latest on Substack.');
+    setHref('heroLink', substackProfile);
+    setText('substackAnalysisTitle', 'Read more on Substack →');
+    setText('substackAnalysisExcerpt', 'Head to Substack for the latest posts from Adi.');
+    setClick('substackAnalysis', () => openExternal(substackProfile));
+    const sidebar = document.getElementById('substackSidebar');
+    if (sidebar) sidebar.innerHTML = `<a href="${safeUrl(substackProfile)}" target="_blank" rel="noopener noreferrer" style="display:block;padding:10px 0;color:var(--gold);font-size:13px;">Visit Substack profile →</a>`;
   }
 }
 

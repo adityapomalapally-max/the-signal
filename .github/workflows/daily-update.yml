@@ -55,9 +55,18 @@ jobs:
       # from the clock, because GitHub delays scheduled runs and a late daily
       # build read off the wall clock would silently demote itself to a status
       # refresh and skip the day's real work.
+      # The two values reach the shell as ENVIRONMENT, not as text pasted into
+      # the command. Both are safe today — the schedule is one of this file's
+      # own crons and `tier` is a `choice` constrained to full|light — but
+      # `${{ }}` interpolated into a `run:` is substituted before the shell ever
+      # sees it, so the safety is a property of the inputs rather than of the
+      # step. When that stops being true it stops being visible here.
       - name: Decide what this run is
         id: plan
-        run: node scripts/lib/cadence.js --schedule "${{ github.event.schedule }}" --tier "${{ inputs.tier }}" >> "$GITHUB_OUTPUT"
+        env:
+          RUN_SCHEDULE: ${{ github.event.schedule }}
+          RUN_TIER: ${{ inputs.tier }}
+        run: node scripts/lib/cadence.js --schedule "$RUN_SCHEDULE" --tier "$RUN_TIER" >> "$GITHUB_OUTPUT"
 
       # FULL BUILD ONLY, even though it runs first and everything reads it. It
       # downloads the nflverse rosters for the GSIS crosswalk, which makes it a

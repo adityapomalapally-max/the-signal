@@ -11,6 +11,13 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    # This job reads and never writes. Stated explicitly because the DEFAULT is
+    # whatever the repository is set to, which for an older repo is read-write —
+    # so a compromised step in a test run would have had a token that could push.
+    permissions:
+      contents: read
+
     steps:
       - uses: actions/checkout@v4
 

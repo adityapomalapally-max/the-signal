@@ -99,7 +99,9 @@ async function initData() {
     else ensureStats();
   }
 
-  // The Sleeper player DB is ~5MB. Headshots normally come from the sleeperId
+  // The Sleeper player DB is 14.6MB on the wire (measured 2026-08-28; it was
+  // ~5MB when this was written, which is why the cache behind it was sized
+  // wrong for a year). Headshots normally come from the sleeperId
   // baked into players.json by the daily Action, so we only pay for this fetch
   // when some player is missing an ID — and never block first paint on it.
   if (playersDB.some(p => !p.sleeperId)) {
@@ -277,6 +279,36 @@ function caveatHtml(caveats, cls) {
 function rankEsc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// A URL THAT CAME FROM A FEED IS NOT A URL UNTIL IT HAS BEEN CHECKED.
+//
+// Three links on this site are chosen by somebody else: ESPN's news payload,
+// the Substack RSS proxy, and whatever either of them is standing in front of.
+// An href beginning `javascript:` executes in THIS origin, with the same
+// access to the page as the code that wrote it, and nothing about the string
+// looks wrong until it is clicked.
+//
+// So a link is either plainly http(s) or it is '#'. A dead link is a visible
+// nuisance; a live one pointing somewhere we did not choose is not visible at
+// all, which is the whole problem. The escaping afterwards is the same bargain
+// as rankEsc: the value lands inside a double-quoted attribute and must not be
+// able to leave it.
+function safeUrl(u) {
+  const s = String(u == null ? '' : u).trim();
+  if (!/^https?:\/\//i.test(s)) return '#';
+  return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// The same check for a link opened from script rather than written into an
+// href. `noopener` is explicit here because window.open does NOT imply it the
+// way a target="_blank" anchor now does — the opened page would keep a handle
+// on this one.
+function openExternal(u) {
+  const s = String(u == null ? '' : u).trim();
+  if (!/^https?:\/\//i.test(s)) return;
+  window.open(s, '_blank', 'noopener,noreferrer');
 }
 
 function setRankTab(tab, btn) {

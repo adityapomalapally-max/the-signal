@@ -1,0 +1,21 @@
+# There was no .gitignore here at all, which mattered for exactly one reason:
+# `vercel env pull` writes .env.local into the repo root, and GEMINI_API_KEY is
+# in it. Nothing stood between that file and a `git add .`.
+.env
+.env.*
+!.env.example
+
+# Vercel
+.vercel
+
+# Editors and OS
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Node — there is no package.json here by design (the test runner is built in),
+# so these should never appear. Listed so that a stray `npm i` while debugging
+# cannot commit 40MB.
+node_modules/
+npm-debug.log*

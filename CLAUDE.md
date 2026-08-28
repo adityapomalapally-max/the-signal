@@ -1153,3 +1153,70 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   two columns standing with nothing saying why there were two — and a mutation replacing "the two
   readings agree at r = 0.32" with "a single line score of 0.32" kept every token the test was
   checking for. Assert the framing, not the variable.
+
+## Text from a feed is text, never markup
+- THREE THINGS ON THIS SITE ARE WRITTEN BY SOMEBODY ELSE and were rendered into the page raw:
+  ESPN's news payload (fetched live client-side on every page load), the Substack feed as relayed
+  by `api.rss2json.com` — a free proxy, not Substack — and Sleeper's trending board. Their `link`
+  fields became hrefs unchecked. VERIFIED IN A BROWSER against the template as it stood: a headline
+  of `<img src=x onerror=…>` EXECUTED, and a `javascript:` url survived into the href. A live hole,
+  not a theoretical one.
+- THE CSP DOES NOT COVER THIS AND CANNOT. The markup carries ~108 inline onclick handlers, so
+  `script-src` needs `'unsafe-inline'` — which is exactly what an injected `onerror` needs too.
+  Confirmed: the payload ran with the CSP enforced. Escaping at the render site is the whole
+  defence and there is no second layer behind it. The CSP is still worth having for what it DOES
+  stop: an injected `<script src=elsewhere>`, `base-uri` hijacking, `object-src`, and exfiltration
+  to a host not in `connect-src`.
+- `rankEsc` for anything that becomes text, `safeUrl` for anything that becomes an href, and
+  `openExternal` for a link opened from script — `window.open` does NOT imply `noopener` the way a
+  `target="_blank"` anchor now does.
+- `jsAttr` ESCAPED ONLY `\` AND `'` — enough for the JS string it names and nothing for the
+  double-quoted attribute wrapped around it. Every caller passes an internal slug, which is why it
+  was never reachable; a function named like a general escaper gets used like one eventually.
+- `tests/feed-escaping.test.js` asserts both halves — that the escapers work, and that the render
+  sites still call them. The second is the one that rots: a new field added to a card is the shape
+  this comes back in. It reads the WHOLE function, not a fixed window, because a window sized to
+  today's code stops covering the lines appended to the end of it.
+
+## The cache that could never have worked
+- The Sleeper player DB is **14.6MB on the wire** — measured 2026-08-28; the comment beside it said
+  "~5MB", which is what it was when the code was written. `localStorage` holds about 5MB per origin,
+  so `setItem` threw QuotaExceededError EVERY time, the cache never populated once, and the only
+  symptom was that the 14.6MB was refetched on the next page load, and the one after that, forever.
+  A cache that silently never caches looks exactly like a cache that works.
+- Six fields are read out of that object anywhere on the site. `slimSleeperDB` keeps those and
+  drops the rest, which fits the quota and makes the daily cache real.
+- IT IS DORMANT, NOT DEAD. `app-core.js` only fetches when a pooled player has no `sleeperId`, and
+  today none do — so this was a landmine waiting on one bad crosswalk day, not a live cost.
+- A NUMBER IN A COMMENT IS A MEASUREMENT WITH AN EXPIRY DATE. This one was off by 3x and the code
+  sized around it was wrong for a year. Re-measure rather than trusting the prose.
+- Every `localStorage` read is a throw waiting to happen — access itself raises in a browser set to
+  block site data, and a truncated value makes `JSON.parse` raise. `JSON.parse(cached)` sat outside
+  the try, so corrupt storage rejected the promise and took its callers with it. A cache that cannot
+  be read is a cache MISS, which is a state the function already knew how to handle.
+
+## Who is allowed to spend the key
+- `/api/ask` is the only thing here that costs money per request and it had no caller check at all.
+  The response carries no CORS header, so another site's browser cannot READ the answer — but it
+  could always cause the request, and curl was never constrained. MEASURED against production:
+  twelve rapid POSTs from one IP got five 200s then seven 429s, so the in-memory limiter is real for
+  a single sequential client and nothing at all across instances or IPs.
+- THE ORIGIN CHECK IS NOT A WALL AND IS NOT SOLD AS ONE. A script setting its own headers walks
+  through it. It stops the cheap version — the endpoint embedded in somebody else's page — for one
+  string comparison. The wall is an EDGE rate limit (Vercel Firewall), the only thing that can count
+  requests across serverless instances. That is still not configured.
+- IT COMPARES AGAINST THE REQUEST'S OWN HOST, not a configured allowlist. A list has to be edited
+  the day the domain changes, and the failure when somebody forgets is the answer engine 403ing on
+  the new domain while working perfectly on the old one. Same-origin needs no environment variable
+  and is already true on whatever domain the site is served from next. `ALLOWED_ORIGINS` is an
+  override for anywhere that is legitimately cross-host.
+- THE QUESTION IS FENCED, NOT CONCATENATED. Run onto the end of the context it reads as a
+  continuation of the instructions above it, which is the whole mechanism an injection uses. Between
+  markers it is plainly a quoted string somebody typed, and a question cannot close its own fence.
+
+## The domain lives in three constants
+- `build-page-shells.js`, `build-sitemap.js` and `build-og-image.js` each hold the origin. Every
+  canonical tag, `og:url`, and all 666 sitemap URLs are GENERATED from them, so moving domain is
+  those three strings plus a re-run of the three builders — not an edit across nine HTML files.
+- The `.vercel.app` address must keep serving and 301 to the new one. Links to a five-month-old
+  analytics site do not get resent.

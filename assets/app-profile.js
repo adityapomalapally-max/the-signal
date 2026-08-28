@@ -615,7 +615,7 @@ function renderAvatar(player, size, fontSize) {
     // lazy + async: the pool is 350 players and several pages render an avatar
     // per row, so the document holds ~770 of these. Eager decoding meant every
     // one of them was requested on load, including the pages nobody opened.
-    return `<img class="player-headshot" src="${url}" alt="${player.name}" width="${size}" height="${size}" loading="lazy" decoding="async" style="width:${size}px;height:${size}px;border-radius:${size <= 36 ? 8 : 12}px;" onerror="this.outerHTML='<div class=\\'player-initials\\' style=\\'background:${playerColor(player)};width:${size}px;height:${size}px;font-size:${fontSize}px;\\'>${playerInitials(player)}</div>'">`;
+    return `<img class="player-headshot" src="${rankEsc(url)}" alt="${rankEsc(player.name)}" width="${size}" height="${size}" loading="lazy" decoding="async" style="width:${size}px;height:${size}px;border-radius:${size <= 36 ? 8 : 12}px;" onerror="this.outerHTML='<div class=\\'player-initials\\' style=\\'background:${playerColor(player)};width:${size}px;height:${size}px;font-size:${fontSize}px;\\'>${playerInitials(player)}</div>'">`;
   }
   return `<div class="player-initials" style="background:${playerColor(player)};width:${size}px;height:${size}px;font-size:${fontSize}px;">${playerInitials(player)}</div>`;
 }
@@ -623,8 +623,19 @@ function renderAvatar(player, size, fontSize) {
 // Escapes a string for safe embedding inside a single-quoted JS string
 // that itself sits inside a double-quoted HTML attribute.
 // Without this, "Ja'Marr Chase" terminates the JS string and the handler dies.
+//
+// IT HAS TO CLOSE BOTH LAYERS, NOT ONE. The original escaped the backslash and
+// the apostrophe — enough for the JS string, and nothing at all for the
+// attribute wrapped around it, so a value containing a double quote walked out
+// of the attribute and a `<` opened a tag. Every caller passes an internal slug
+// today, which is why this was never reachable; a function named like a general
+// escaper gets used like one eventually, and by then the caller is somewhere
+// else in the file.
 function jsAttr(str) {
-  return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  return String(str)
+    .replace(/\\/g, '\\\\').replace(/'/g, "\\'")
+    .replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 // ===== WEEKLY CONSISTENCY =====
