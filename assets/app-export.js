@@ -116,7 +116,10 @@ function exDrawFrame(ctx, o, height) {
   ctx.fillText(exTruncate(ctx, o.source || '', EXPORT_W - EXPORT_PAD * 2 - 300), EXPORT_PAD, fy);
   ctx.fillStyle = EX_GOLD;
   ctx.textAlign = 'right';
-  ctx.fillText('the-signal-gamma.vercel.app', EXPORT_W - EXPORT_PAD, fy);
+  // SITE_HOST comes from app-core.js, which parses first. An exported chart
+  // travels further than any page on this site and is the one artefact that
+  // has to say where it came from.
+  ctx.fillText(SITE_HOST, EXPORT_W - EXPORT_PAD, fy);
   ctx.textAlign = 'left';
   return y + 34;
 }

@@ -51,7 +51,7 @@ const SECTIONS = {
   season:   { tagline: 'In Season', blurb: 'Which defences actually cost you points, weekly usage measured against a player\'s own recent weeks, and the waiver wire.' },
 };
 const W = 1200, H = 630;
-const SITE_HOST = 'the-signal-gamma.vercel.app';
+const { HOST: SITE_HOST } = require('./lib/site.js');
 
 const CHROME_CANDIDATES = [
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',

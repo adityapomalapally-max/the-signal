@@ -276,6 +276,22 @@ function caveatHtml(caveats, cls) {
   return parts.filter(Boolean).map(c => `<p class="caveat-p">${rankEsc(c)}</p>`).join('');
 }
 
+// WHERE THIS SITE LIVES, for the browser side. It sits in app-core.js because
+// that is the first script in index.html and two later files need it:
+// app-feeds.js builds the per-route canonical and JSON-LD from it, and
+// app-export.js paints the host onto every exported chart.
+//
+// It is a HARDCODED PRIMARY ORIGIN and deliberately not location.origin. A
+// reader arriving on the old host after a domain move must still be handed a
+// canonical pointing at the new one — that is the entire job of the tag, and
+// deriving it from the address bar would make every canonical agree with
+// whatever host was used to reach it, which is the same as having none.
+//
+// The node side reads scripts/lib/site.js; tests/site-origin.test.js fails if
+// this copy, that one, and index.html's head stop agreeing.
+const SITE_ORIGIN = 'https://the-signal-gamma.vercel.app';
+const SITE_HOST = SITE_ORIGIN.replace(/^https?:\/\//, '');
+
 function rankEsc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');

@@ -939,9 +939,10 @@ window.addEventListener('popstate', handleRoute);
 // Distinct URLs are worth nothing if they all claim to be the same document.
 // Every route gets its own title, description and canonical, so a search result
 // says what the page actually holds and a shared link unfurls as itself.
-// Keep SITE_ORIGIN in step with the canonical tag in index.html and with
-// scripts/build-sitemap.js — three places, one host.
-const SITE_ORIGIN = 'https://the-signal-gamma.vercel.app';
+// SITE_ORIGIN lives in app-core.js, which loads first — app-export.js paints
+// the same host onto every exported chart and needs it too. The comment that
+// used to sit here said "three places, one host" and the count was already
+// wrong by three. See scripts/lib/site.js.
 
 const ROUTE_META = {
   '': {

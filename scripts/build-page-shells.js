@@ -27,7 +27,7 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const SRC = path.join(ROOT, 'index.html');
-const ORIGIN = 'https://the-signal-gamma.vercel.app';
+const { ORIGIN } = require('./lib/site.js');
 
 // Must match ROUTE_META in assets/app-feeds.js — the shell is what a scraper
 // sees and the runtime meta is what a reader sees, so they have to agree.

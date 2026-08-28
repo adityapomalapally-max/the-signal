@@ -15,8 +15,9 @@
 const fs = require('fs');
 const path = require('path');
 
-// Must match the canonical in index.html and SITE_ORIGIN in assets/app-feeds.js.
-const ORIGIN = 'https://the-signal-gamma.vercel.app';
+// One host, one place. See scripts/lib/site.js; tests/site-origin.test.js
+// fails if the browser-side copies drift from it.
+const { ORIGIN } = require('./lib/site.js');
 
 const ROOT = path.join(__dirname, '..');
 const DATA_DIR = path.join(ROOT, 'data');
