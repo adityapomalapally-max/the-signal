@@ -134,7 +134,7 @@
       "caveats": "Three seasons of game logs, and only players who played 8+ games in consecutive seasons. That is survivorship: a player who lost his job or his season entirely leaves the sample, so the real downside is likely worse than the floor shown."
     },
     "builtBy": "scripts/build-rankings.js",
-    "builtAt": "2026-08-27T21:00:33.297Z",
+    "builtAt": "2026-08-30T19:22:45.514Z",
     "overallMethod": "Derived from the hand-ordered positional tabs. Each player inherits the projected median of the slot he was ranked into, then VORP is taken against replacement level. Ordering is the analyst's; the replacement math is the model's.",
     "availabilityMethod": "The missed-time case is a different downside from the floor beside it. The floor is a cold season played out in full; this is a normal season cut short. It holds the projected per-game rate flat and applies it to a low-availability year. League-wide that year is 11 of 17 games — the 15th percentile of 293 player-seasons across 2023–2025, the same percentile the projection set uses for its floor — then scaled by how available the player himself has been against the league average of 86%. It counts every missed game regardless of cause, suspensions included, because the question is how often he was not in your lineup. The per-game rate is deliberately NOT reduced: this prices availability only, never diminished play on return. Ordering is untouched — it moves the downside, never the rank.",
     "availabilityCaveat": "A record of one or two seasons is too short to read a player-specific floor from, so those fall back to the league figure. A player who is not currently healthy is flagged, not adjusted: history cannot see the knock he is carrying now, and a games-missed number inferred from a one-word status would be invented.",
@@ -1087,7 +1087,7 @@
         "floorGames": 11,
         "basis": "league",
         "floor": 155,
-        "statusFlag": "Questionable (Groin)"
+        "statusFlag": null
       }
     },
     {
