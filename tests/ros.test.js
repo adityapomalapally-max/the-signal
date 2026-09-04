@@ -70,9 +70,14 @@ test('the file says what the prior actually is', () => {
   assert.match(weights.meta.caveats.join(' '), /in-sample/i);
 });
 
-test('in the preseason it writes nothing rather than restating the projection', () => {
+test('before any games are played it writes nothing rather than restating the projection', () => {
   const out = execFileSync('node', ['scripts/build-ros.js'], { cwd: ROOT }).toString();
-  assert.match(out, /not in season/i);
+  // TWO HONEST NO-OPS, NOT ONE. Before the season flips this says "not in
+  // season"; in the days between the flip and Week 1 it says the season is
+  // under way with no games on file. Pinning only the first phrasing made this
+  // test go red every year for the week in between, over a script doing exactly
+  // the right thing. What matters is that it explains itself and writes nothing.
+  assert.match(out, /not in season|no games are on file/i);
   assert.ok(!fs.existsSync(path.join(ROOT, 'data', 'ros.json')),
     'a rest-of-season file before any football has been played would imply an update that never happened');
 });

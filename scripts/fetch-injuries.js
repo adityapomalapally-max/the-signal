@@ -88,6 +88,7 @@ function buildEpisodes(weeks) {
 
 async function main() {
   SEASONS = await seasonLib.dataSeasons(3);
+  const lastCompleted = await seasonLib.lastCompletedSeason();
   console.log(`[seasons] ${SEASONS.join(', ')} — league is in ${await seasonLib.describe()}`);
 
   log('=== Injury Report Pipeline Start ===');
@@ -108,6 +109,17 @@ async function main() {
     } catch (e) {
       // A season that vanishes must fail the run. A per-season catch here is
       // exactly how the 2025 stats file stayed a year stale for months.
+      //
+      // A 404 FOR THE SEASON IN PROGRESS IS NOT THE SAME EVENT. nflverse
+      // publishes a season's file after its first games are played, so between
+      // kickoff and that first build the file legitimately does not exist. The
+      // emergency this abort was written for is a COMPLETED season going
+      // missing — that is the 2025 release move, and it still exits 1.
+      if (season > lastCompleted) {
+        log(`NOTE: ${season} is not published yet (${e.message}). That season is `
+            + `in progress; continuing without it.`);
+        continue;
+      }
       log(`ABORT: ${season} fetch failed (${e.message}). Keeping existing injuries.json.`);
       process.exit(1);
     }
@@ -135,7 +147,10 @@ async function main() {
     // Per-season, not just in total: a whole season matching nothing is a
     // schema change, and a total-only check happily passes while two thirds
     // of the history is missing.
-    if (used < SEASON_MATCH_FLOOR) {
+    // The floor measures VOLUME to detect a schema change, so it only means
+    // anything for a season that has been fully played. One week into a new
+    // season a low count is the honest count, not a moved column.
+    if (used < SEASON_MATCH_FLOOR && season <= lastCompleted) {
       log(`ABORT: ${season} matched only ${used} rows (expected at least ${SEASON_MATCH_FLOOR}). ` +
           `The schema for that season has moved. Keeping existing injuries.json.`);
       process.exit(1);

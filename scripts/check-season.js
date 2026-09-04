@@ -47,7 +47,17 @@ async function main() {
   // ---- Do the stat layers contain the season being played? ----------------
   // Only meaningful once real games exist. In August, 2026 stats SHOULD be
   // missing and their absence is not a fault.
-  if (inSeason) {
+  //
+  // NOR IS IT ONE IN WEEK 1. The ros.json check below has always known that the
+  // season flips over days before anyone kicks off; this block did not, and
+  // asked for stat rows that could not exist yet. nflverse builds a season's
+  // file only after its first games are played, so through Week 1 the absence
+  // of this season's rows is the honest state of the world. From Week 2 the
+  // games are on file, and their absence IS the year-stale failure this alarm
+  // was written for — which is still caught, one week later than the ideal and
+  // eleven weeks earlier than a human would have noticed.
+  const dataIsDue = inSeason && (st.week || 0) > 1;
+  if (dataIsDue) {
     const checks = [
       { file: 'stats.json', label: 'season stats', seasons: (j) => collect(j, p => Object.keys(p.seasons || {})) },
       { file: 'ngs.json', label: 'Next Gen Stats', seasons: (j) => collect(j, p => Object.keys(p).filter(k => /^\d{4}$/.test(k))) },
@@ -84,11 +94,16 @@ async function main() {
           + `${years[years.length - 1] || 'nothing'}.`);
       }
     }
+  } else if (inSeason) {
+    notes.push(`week ${st.week || 0}: ${target} stat rows are not published yet, which is correct this early`);
   } else {
     notes.push(`not in season yet, so ${target} stat rows are correctly absent`);
   }
 
   // ---- Are the preseason-built products still claiming to be current? -----
+  // This one IS keyed to kickoff rather than to Week 2: drafts close when the
+  // season starts, so an unfrozen ADP is wrong from the first game, not from
+  // the second week.
   if (inSeason) {
     if (has('adp.json')) {
       const adp = read('adp.json');

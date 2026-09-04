@@ -92,6 +92,7 @@ function fromEnv() {
     previousSeason: Number(s.previousSeason || Number(s.season) - 1),
     week: Number(s.week || 0),
     phase: normalizePhase(s.phase || s.season_type),
+    seasonStartDate: s.seasonStartDate || s.season_start_date || null,
     source: 'SIMULATED via SIGNAL_SEASON_STATE',
   };
   console.error(`[season] *** SIMULATED CALENDAR: ${out.season} ${out.phase} week ${out.week} — nothing built under this may be committed ***`);
@@ -113,6 +114,9 @@ async function state() {
       previousSeason: Number(s.previous_season || Number(s.season) - 1),
       week: Number(s.week || 0),
       phase: normalizePhase(s.season_type),
+      // THE FIELD THAT SAYS WHETHER ANY OF THIS HAS BEEN PLAYED. It was in the
+      // payload all along and thrown away here; gamesHaveStarted() reads it.
+      seasonStartDate: s.season_start_date || null,
       source: 'sleeper/state/nfl',
     };
     return cached;
@@ -147,6 +151,39 @@ function fromDate(now) {
 }
 
 /**
+ * Has the league actually played any of this season yet?
+ *
+ * SLEEPER SAYS "regular" BEFORE ANYBODY HAS PLAYED. On 2026-08-29 /state/nfl
+ * began reporting season_type "regular", week 1 — while the same payload said
+ * season_start_date 2026-09-09, eleven days out. Everything downstream believed
+ * the flag: the fetch window opened to include 2026, nflverse 404'd
+ * stats_player_week_2026.csv because no 2026 game had been played, fetch-stats
+ * exited 1, and every step after it in the daily Action — the commit included —
+ * was skipped. Eleven consecutive daily runs pushed nothing, and the history
+ * series lost eleven days of ADP, depth-chart and ranking snapshots that cannot
+ * be backfilled from anywhere.
+ *
+ * `phase` answers "which part of the calendar is it", which is NOT the question
+ * the fetches are asking. This is that question, asked in one place.
+ */
+function gamesHaveStarted(s, now = new Date()) {
+  if (s.phase === 'post') return true;
+  if (s.phase !== 'regular') return false;
+
+  // Sleeper publishes the date of the first game. Before it, "regular" is a
+  // label on a season nobody has played.
+  const start = s.seasonStartDate ? new Date(`${s.seasonStartDate}T00:00:00Z`) : null;
+  if (start && !Number.isNaN(start.getTime())) return now >= start;
+
+  // No start date — the feed's schema moved, or this is the date fallback.
+  // TWO INDEPENDENT CORROBORATORS, because the failure to avoid here is the
+  // silent one: one missing field must never leave the pipeline quietly a year
+  // stale in November. Week 2 means week 1 was played, and the NFL has never
+  // opened a season later than the second week of September.
+  return (s.week || 0) >= 2 || now >= new Date(Date.UTC(s.season, 8, 11));
+}
+
+/**
  * The most recent season that has actual game data in it.
  *
  * This is the distinction every one of those hand-typed constants was really
@@ -156,7 +193,7 @@ function fromDate(now) {
  */
 async function latestDataSeason() {
   const s = await state();
-  return s.phase === 'regular' || s.phase === 'post' ? s.season : s.previousSeason;
+  return gamesHaveStarted(s) ? s.season : s.previousSeason;
 }
 
 /** The most recent COMPLETED season — never the one in progress. */
@@ -183,10 +220,13 @@ async function targetSeason() {
   return s.season;
 }
 
-/** True once real games count, which is when preseason-built data starts aging. */
+/**
+ * True once real games count, which is when preseason-built data starts aging.
+ * This always MEANT "games have been played" — it just asked `phase`, which
+ * turns true up to eleven days early. See gamesHaveStarted().
+ */
 async function isInSeason() {
-  const s = await state();
-  return s.phase === 'regular' || s.phase === 'post';
+  return gamesHaveStarted(await state());
 }
 
 /** For logging. Every script that reads a season should say which one it read. */
@@ -201,6 +241,6 @@ function __reset() { cached = null; }
 
 module.exports = {
   state, dataSeasons, latestDataSeason, lastCompletedSeason,
-  targetSeason, isInSeason, describe, fromDate,
+  targetSeason, isInSeason, describe, fromDate, gamesHaveStarted,
   __setState, __reset,
 };

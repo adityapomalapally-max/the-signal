@@ -310,6 +310,7 @@ function computeVolatility(weeklyLog, pos, season, weeklyRanks) {
 // ===== MAIN =====
 async function main() {
   SEASONS = await seasonLib.dataSeasons(3);
+  const lastCompleted = await seasonLib.lastCompletedSeason();
   console.log(`[seasons] ${SEASONS.join(', ')} — league is in ${await seasonLib.describe()}`);
 
   log('=== Stats Pipeline Start ===');
@@ -353,6 +354,18 @@ async function main() {
       // A season that fails must fail the RUN, not just log. The 2025 season
       // 404'd quietly for months after nflverse moved the release — every
       // profile silently showed a year-old picture and nothing said so.
+      //
+      // A 404 FOR THE SEASON IN PROGRESS IS NOT THE SAME EVENT. nflverse
+      // publishes a season's file after its first games are played, so between
+      // kickoff and that first build the file legitimately does not exist. The
+      // emergency this abort was written for is a COMPLETED season going
+      // missing — that is the 2025 release move, and it still exits 1.
+      if (season > lastCompleted) {
+        log(`NOTE: ${season} is not published yet (${e.message}). That season is `
+            + `in progress and nflverse builds its file after the first games; `
+            + `continuing on ${SEASONS.filter(s => s <= lastCompleted).join(', ')}.`);
+        continue;
+      }
       log(`ABORT: ${season} fetch failed (${e.message}). Keeping existing files.`);
       process.exit(1);
     }

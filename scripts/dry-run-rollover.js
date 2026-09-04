@@ -46,7 +46,12 @@ const { execFileSync } = require('child_process');
 const ROOT = path.join(__dirname, '..');
 const args = process.argv.slice(2);
 const KEEP = args.includes('--keep');
-const WEEK = Number((args[args.indexOf('--week') + 1] || 1)) || 1;
+// WEEK 2, NOT WEEK 1, is the default rehearsal. A season is "regular" for days
+// before anyone kicks off and nflverse publishes a season's file only after its
+// first games, so in Week 1 a pipeline that has NOT rolled over is
+// indistinguishable from one that has nothing to roll over to yet. Week 2 is
+// the first week where staying on last season is unambiguously the bug.
+const WEEK = Number((args[args.indexOf('--week') + 1] || 2)) || 2;
 
 // The season the simulated calendar claims to be in. Derived from the repo's
 // own idea of the target season so this does not become another hand-typed
@@ -97,7 +102,13 @@ function snapshotSeasons(dataDir) {
 
 async function main() {
   const target = await season.targetSeason();
-  const state = JSON.stringify({ season: target, week: WEEK, phase: 'regular' });
+  // seasonStartDate has to be in the PAST or lib/season.js correctly reports
+  // that nobody has played yet — and the rehearsal would quietly stop being a
+  // rehearsal, which is the exact class of failure this script exists to find.
+  const state = JSON.stringify({
+    season: target, week: WEEK, phase: 'regular',
+    seasonStartDate: `${target}-09-01`,
+  });
 
   const sandbox = fs.mkdtempSync(path.join(os.tmpdir(), 'signal-rollover-'));
   console.log(`[dry-run] sandbox: ${sandbox}`);
