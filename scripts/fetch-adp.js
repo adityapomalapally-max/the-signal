@@ -63,7 +63,13 @@ function fetchJSON(url) {
 async function main() {
   const st = await seasonLib.state();
   SEASON = st.season;
-  if (st.phase === 'regular' || st.phase === 'post') {
+  // THE MARKET CLOSES AT KICKOFF, NOT AT THE CALENDAR FLAG. `phase` turns
+  // "regular" up to eleven days before anyone plays, and people draft right up
+  // to the first game — freezing on the flag threw away the most active week of
+  // the mock-draft market and stamped the board "drafts are over" while they
+  // were still going on. This was the last script reading the flag directly;
+  // see gamesHaveStarted() in lib/season.js for what the rest of them ask.
+  if (await seasonLib.isInSeason()) {
     const existing = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, 'utf8')) : null;
     if (existing) {
       existing.meta.historical = true;
