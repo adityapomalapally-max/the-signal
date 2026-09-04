@@ -1,18 +1,18 @@
 {
   "meta": {
-    "generated": "2026-09-04T00:51:57.403Z",
-    "window": "2026-09-04T00:51:56.771Z",
+    "generated": "2026-09-04T22:34:10.703Z",
+    "window": "2026-09-04T22:27:52.760Z",
     "source": "Sleeper adds and drops over the last 24 hours, across every Sleeper league",
-    "daysOnFile": 9,
+    "daysOnFile": 10,
     "seriesFrom": "2026-08-20",
-    "seriesTo": "2026-08-28",
-    "countedAt": "2026-09-04T00:51:56.771Z",
+    "seriesTo": "2026-09-04",
+    "countedAt": "2026-09-04T22:27:52.760Z",
     "liveDate": "2026-09-04",
     "comparedWith": "2026-09-03",
     "moveWindowDays": 21,
     "caveats": [
       "Add counts are Sleeper-wide. They say what the rooms are doing, not what your room is doing, and a player already rostered in your league cannot be added out of them.",
-      "Direction compares this morning against yesterday, over 9 mornings on file. A move under 15% reads as steady.",
+      "Direction compares this morning against yesterday, over 10 mornings on file. A move under 15% reads as steady.",
       "A depth chart is what a team published, not what it does. It is a claim about intent, and a coach who lists a rookie second is not obliged to play him second.",
       "A player outside the 350-player pool carries a count and a depth line and nothing else. The rest of this site is about the players already rostered.",
       "Before the roster cutdown a published chart lists the whole camp roster, so a low rank is competing with players who will not be on the team in September."
@@ -20,39 +20,10 @@
   },
   "adds": [
     {
-      "name": "Jacob Saylors",
-      "team": "DET",
-      "pos": "RB",
-      "count": 328120,
-      "id": null,
-      "inPool": false,
-      "rank": null,
-      "status": null,
-      "depth": {
-        "position": "RB",
-        "rank": 4,
-        "of": 8,
-        "behind": [
-          "Jahmyr Gibbs",
-          "Isiah Pacheco",
-          "Sione Vaki"
-        ],
-        "reading": "listed 4th at RB, behind Jahmyr Gibbs, Isiah Pacheco and Sione Vaki"
-      },
-      "series": [
-        {
-          "date": "2026-09-04",
-          "count": 328120
-        }
-      ],
-      "direction": null,
-      "newToday": false
-    },
-    {
       "name": "Roschon Johnson",
       "team": "CHI",
       "pos": "RB",
-      "count": 299248,
+      "count": 685592,
       "id": null,
       "inPool": false,
       "rank": null,
@@ -78,59 +49,35 @@
         },
         {
           "date": "2026-09-04",
-          "count": 299248
+          "count": 685592
         }
       ],
       "direction": null,
       "newToday": false
     },
     {
-      "name": "Malik Davis",
-      "team": "DAL",
+      "name": "Jacob Saylors",
+      "team": "DET",
       "pos": "RB",
-      "count": 201645,
-      "id": null,
-      "inPool": false,
+      "count": 180460,
+      "id": "saylors",
+      "inPool": true,
       "rank": null,
-      "status": null,
+      "status": "Healthy",
       "depth": {
         "position": "RB",
         "rank": 3,
-        "of": 7,
+        "of": 8,
         "behind": [
-          "Javonte Williams",
-          "Jaydon Blue"
+          "Jahmyr Gibbs",
+          "Sione Vaki"
         ],
-        "reading": "listed 3rd at RB, behind Javonte Williams and Jaydon Blue"
+        "reading": "listed 3rd at RB, behind Jahmyr Gibbs and Sione Vaki"
       },
       "series": [
         {
-          "date": "2026-08-23",
-          "count": 22662
-        },
-        {
-          "date": "2026-08-24",
-          "count": 91665
-        },
-        {
-          "date": "2026-08-25",
-          "count": 198009
-        },
-        {
-          "date": "2026-08-26",
-          "count": 242568
-        },
-        {
-          "date": "2026-08-27",
-          "count": 150165
-        },
-        {
-          "date": "2026-08-28",
-          "count": 74844
-        },
-        {
           "date": "2026-09-04",
-          "count": 201645
+          "count": 180460
         }
       ],
       "direction": null,
@@ -140,20 +87,19 @@
       "name": "Devaughn Vele",
       "team": "NO",
       "pos": "WR",
-      "count": 147546,
+      "count": 125916,
       "id": "vele",
       "inPool": true,
       "rank": null,
       "status": "Healthy",
       "depth": {
         "position": "WR",
-        "rank": 3,
+        "rank": 2,
         "of": 16,
         "behind": [
-          "Chris Olave",
-          "Jordyn Tyson"
+          "Chris Olave"
         ],
-        "reading": "listed 3rd at WR, behind Chris Olave and Jordyn Tyson"
+        "reading": "listed 2nd at WR, behind Chris Olave"
       },
       "series": [
         {
@@ -194,7 +140,58 @@
         },
         {
           "date": "2026-09-04",
-          "count": 147546
+          "count": 125916
+        }
+      ],
+      "direction": null,
+      "newToday": false
+    },
+    {
+      "name": "Malik Davis",
+      "team": "DAL",
+      "pos": "RB",
+      "count": 116388,
+      "id": "davis-m",
+      "inPool": true,
+      "rank": null,
+      "status": "Healthy",
+      "depth": {
+        "position": "RB",
+        "rank": 2,
+        "of": 8,
+        "behind": [
+          "Javonte Williams"
+        ],
+        "reading": "listed 2nd at RB, behind Javonte Williams"
+      },
+      "series": [
+        {
+          "date": "2026-08-23",
+          "count": 22662
+        },
+        {
+          "date": "2026-08-24",
+          "count": 91665
+        },
+        {
+          "date": "2026-08-25",
+          "count": 198009
+        },
+        {
+          "date": "2026-08-26",
+          "count": 242568
+        },
+        {
+          "date": "2026-08-27",
+          "count": 150165
+        },
+        {
+          "date": "2026-08-28",
+          "count": 74844
+        },
+        {
+          "date": "2026-09-04",
+          "count": 116388
         }
       ],
       "direction": null,
@@ -204,19 +201,17 @@
       "name": "MarShawn Lloyd",
       "team": "GB",
       "pos": "RB",
-      "count": 118170,
+      "count": 86454,
       "id": "lloyd",
       "inPool": true,
       "rank": null,
       "status": "Healthy",
       "depth": {
         "position": "RB",
-        "rank": 2,
-        "of": 6,
-        "behind": [
-          "Josh Jacobs"
-        ],
-        "reading": "listed 2nd at RB, behind Josh Jacobs"
+        "rank": 1,
+        "of": 7,
+        "behind": [],
+        "reading": "listed first at RB on the published chart"
       },
       "series": [
         {
@@ -253,35 +248,7 @@
         },
         {
           "date": "2026-09-04",
-          "count": 118170
-        }
-      ],
-      "direction": null,
-      "newToday": false
-    },
-    {
-      "name": "Sione Vaki",
-      "team": "DET",
-      "pos": "RB",
-      "count": 89376,
-      "id": null,
-      "inPool": false,
-      "rank": null,
-      "status": null,
-      "depth": {
-        "position": "RB",
-        "rank": 3,
-        "of": 8,
-        "behind": [
-          "Jahmyr Gibbs",
-          "Isiah Pacheco"
-        ],
-        "reading": "listed 3rd at RB, behind Jahmyr Gibbs and Isiah Pacheco"
-      },
-      "series": [
-        {
-          "date": "2026-09-04",
-          "count": 89376
+          "count": 86454
         }
       ],
       "direction": null,
@@ -291,19 +258,20 @@
       "name": "Darren Waller",
       "team": "CAR",
       "pos": "TE",
-      "count": 88002,
+      "count": 75942,
       "id": "waller",
       "inPool": true,
       "rank": null,
       "status": "Healthy",
       "depth": {
         "position": "TE",
-        "rank": 2,
+        "rank": 3,
         "of": 10,
         "behind": [
-          "Tommy Tremble"
+          "Tommy Tremble",
+          "Mitchell Evans"
         ],
-        "reading": "listed 2nd at TE, behind Tommy Tremble"
+        "reading": "listed 3rd at TE, behind Tommy Tremble and Mitchell Evans"
       },
       "series": [
         {
@@ -344,7 +312,7 @@
         },
         {
           "date": "2026-09-04",
-          "count": 88002
+          "count": 75942
         }
       ],
       "direction": null,
@@ -354,7 +322,7 @@
       "name": "Tre Tucker",
       "team": "LV",
       "pos": "WR",
-      "count": 81390,
+      "count": 69330,
       "id": "tucker-t",
       "inPool": true,
       "rank": null,
@@ -373,78 +341,136 @@
         },
         {
           "date": "2026-09-04",
-          "count": 81390
+          "count": 69330
         }
       ],
       "direction": null,
       "newToday": false
     },
     {
-      "name": "Dohnte Meyers",
-      "team": "CIN",
-      "pos": "WR",
-      "count": 79056,
+      "name": "Las Vegas Raiders",
+      "team": "LV",
+      "pos": "DEF",
+      "count": 65082,
+      "id": null,
+      "inPool": false,
+      "rank": null,
+      "status": null,
+      "depth": null,
+      "series": [
+        {
+          "date": "2026-09-04",
+          "count": 65082
+        }
+      ],
+      "direction": null,
+      "newToday": false
+    },
+    {
+      "name": "Sione Vaki",
+      "team": "DET",
+      "pos": "RB",
+      "count": 59465,
       "id": null,
       "inPool": false,
       "rank": null,
       "status": null,
       "depth": {
-        "position": "WR",
-        "rank": 12,
-        "of": 12,
+        "position": "RB",
+        "rank": 2,
+        "of": 8,
         "behind": [
-          "Ja'Marr Chase",
-          "Tee Higgins",
-          "Andrei Iosivas",
-          "Colbie Young",
-          "Mitchell Tinsley",
-          "Charlie Jones",
-          "Ke'Shawn Williams",
-          "Kendric Pryor",
-          "Noah Thomas",
-          "Jordan Moore",
-          "Xavier Johnson"
+          "Jahmyr Gibbs"
         ],
-        "reading": "listed 12th at WR, behind Ja'Marr Chase, Tee Higgins, Andrei Iosivas, Colbie Young, Mitchell Tinsley, Charlie Jones, Ke'Shawn Williams, Kendric Pryor, Noah Thomas, Jordan Moore and Xavier Johnson"
+        "reading": "listed 2nd at RB, behind Jahmyr Gibbs"
       },
       "series": [
         {
-          "date": "2026-08-28",
-          "count": 51579
-        },
-        {
           "date": "2026-09-04",
-          "count": 79056
+          "count": 59465
         }
       ],
       "direction": null,
       "newToday": false
     },
     {
-      "name": "Zavion Thomas",
-      "team": "CHI",
+      "name": "Tank Dell",
+      "team": "HOU",
       "pos": "WR",
-      "count": 65475,
-      "id": "thomas-z",
+      "count": 58328,
+      "id": "dell",
       "inPool": true,
       "rank": null,
-      "status": "Healthy",
+      "status": "IR (Knee - ACL + MCL)",
       "depth": {
         "position": "WR",
-        "rank": 5,
-        "of": 13,
+        "rank": 6,
+        "of": 19,
         "behind": [
-          "Rome Odunze",
-          "Luther Burden III",
-          "Kalif Raymond",
-          "Jahdae Walker"
+          "Nico Collins",
+          "Xavier Hutchinson",
+          "Jaylin Noel",
+          "Kayshon Boutte",
+          "Jared Wayne",
+          "Lewis Bond"
         ],
-        "reading": "listed 5th at WR, behind Rome Odunze, Luther Burden III, Kalif Raymond and Jahdae Walker"
+        "reading": "listed 6th at WR, behind Nico Collins, Xavier Hutchinson, Jaylin Noel, Kayshon Boutte, Jared Wayne and Lewis Bond"
       },
       "series": [
         {
+          "date": "2026-08-20",
+          "count": 47296
+        },
+        {
+          "date": "2026-08-21",
+          "count": 59552
+        },
+        {
+          "date": "2026-08-22",
+          "count": 21840
+        },
+        {
           "date": "2026-09-04",
-          "count": 65475
+          "count": 58328
+        }
+      ],
+      "direction": null,
+      "newToday": false
+    },
+    {
+      "name": "Jacksonville Jaguars",
+      "team": "JAX",
+      "pos": "DEF",
+      "count": 58050,
+      "id": null,
+      "inPool": false,
+      "rank": null,
+      "status": null,
+      "depth": null,
+      "series": [
+        {
+          "date": "2026-08-23",
+          "count": 18396
+        },
+        {
+          "date": "2026-08-24",
+          "count": 33168
+        },
+        {
+          "date": "2026-08-25",
+          "count": 35952
+        },
+        {
+          "date": "2026-08-26",
+          "count": 26328
+        },
+        {
+          "date": "2026-08-28",
+          "count": 21852
+        },
+        {
+          "date": "2026-09-04",
+          "count": 58050
         }
       ],
       "direction": null,
@@ -454,7 +480,7 @@
       "name": "Caleb Douglas",
       "team": "MIA",
       "pos": "WR",
-      "count": 64560,
+      "count": 55552,
       "id": "douglas",
       "inPool": true,
       "rank": null,
@@ -508,107 +534,41 @@
         },
         {
           "date": "2026-09-04",
-          "count": 64560
+          "count": 55552
         }
       ],
       "direction": null,
       "newToday": false
     },
     {
-      "name": "Jacksonville Jaguars",
-      "team": "JAX",
-      "pos": "DEF",
-      "count": 62712,
+      "name": "Dohnte Meyers",
+      "team": "CIN",
+      "pos": "WR",
+      "count": 50742,
       "id": null,
       "inPool": false,
       "rank": null,
       "status": null,
-      "depth": null,
-      "series": [
-        {
-          "date": "2026-08-23",
-          "count": 18396
-        },
-        {
-          "date": "2026-08-24",
-          "count": 33168
-        },
-        {
-          "date": "2026-08-25",
-          "count": 35952
-        },
-        {
-          "date": "2026-08-26",
-          "count": 26328
-        },
-        {
-          "date": "2026-08-28",
-          "count": 21852
-        },
-        {
-          "date": "2026-09-04",
-          "count": 62712
-        }
-      ],
-      "direction": null,
-      "newToday": false
-    },
-    {
-      "name": "Tank Dell",
-      "team": "HOU",
-      "pos": "WR",
-      "count": 53352,
-      "id": "dell",
-      "inPool": true,
-      "rank": null,
-      "status": "IR (Knee - ACL + MCL)",
       "depth": {
         "position": "WR",
         "rank": 5,
-        "of": 19,
+        "of": 12,
         "behind": [
-          "Nico Collins",
-          "Xavier Hutchinson",
-          "Jaylin Noel",
-          "Kayshon Boutte"
+          "Ja'Marr Chase",
+          "Tee Higgins",
+          "Andrei Iosivas",
+          "Colbie Young"
         ],
-        "reading": "listed 5th at WR, behind Nico Collins, Xavier Hutchinson, Jaylin Noel and Kayshon Boutte"
+        "reading": "listed 5th at WR, behind Ja'Marr Chase, Tee Higgins, Andrei Iosivas and Colbie Young"
       },
       "series": [
         {
-          "date": "2026-08-20",
-          "count": 47296
-        },
-        {
-          "date": "2026-08-21",
-          "count": 59552
-        },
-        {
-          "date": "2026-08-22",
-          "count": 21840
+          "date": "2026-08-28",
+          "count": 51579
         },
         {
           "date": "2026-09-04",
-          "count": 53352
-        }
-      ],
-      "direction": null,
-      "newToday": false
-    },
-    {
-      "name": "Las Vegas Raiders",
-      "team": "LV",
-      "pos": "DEF",
-      "count": 53112,
-      "id": null,
-      "inPool": false,
-      "rank": null,
-      "status": null,
-      "depth": null,
-      "series": [
-        {
-          "date": "2026-09-04",
-          "count": 53112
+          "count": 50742
         }
       ],
       "direction": null,
@@ -618,7 +578,7 @@
       "name": "Kaelon Black",
       "team": "SF",
       "pos": "RB",
-      "count": 50764,
+      "count": 45472,
       "id": "black",
       "inPool": true,
       "rank": null,
@@ -651,7 +611,38 @@
         },
         {
           "date": "2026-09-04",
-          "count": 50764
+          "count": 45472
+        }
+      ],
+      "direction": null,
+      "newToday": false
+    },
+    {
+      "name": "Justice Hill",
+      "team": "BAL",
+      "pos": "RB",
+      "count": 39708,
+      "id": "hill",
+      "inPool": true,
+      "rank": null,
+      "status": "Healthy",
+      "depth": {
+        "position": "RB",
+        "rank": 2,
+        "of": 7,
+        "behind": [
+          "Derrick Henry"
+        ],
+        "reading": "listed 2nd at RB, behind Derrick Henry"
+      },
+      "series": [
+        {
+          "date": "2026-08-27",
+          "count": 23922
+        },
+        {
+          "date": "2026-09-04",
+          "count": 39708
         }
       ],
       "direction": null,
@@ -663,16 +654,104 @@
       "name": "Jaydon Blue",
       "team": "PHI",
       "pos": "RB",
-      "count": 88784,
-      "id": "blue",
-      "inPool": true,
+      "count": 69120,
+      "id": null,
+      "inPool": false,
       "rank": null,
-      "status": "Healthy",
+      "status": null,
       "depth": null,
       "series": [
         {
           "date": "2026-09-04",
-          "count": 88784
+          "count": 69120
+        }
+      ],
+      "direction": null,
+      "newToday": false
+    },
+    {
+      "name": "Roschon Johnson",
+      "team": "CHI",
+      "pos": "RB",
+      "count": 50080,
+      "id": null,
+      "inPool": false,
+      "rank": null,
+      "status": null,
+      "depth": {
+        "position": "RB",
+        "rank": 3,
+        "of": 7,
+        "behind": [
+          "D'Andre Swift",
+          "Kyle Monangai"
+        ],
+        "reading": "listed 3rd at RB, behind D'Andre Swift and Kyle Monangai"
+      },
+      "series": [
+        {
+          "date": "2026-08-20",
+          "count": 36696
+        },
+        {
+          "date": "2026-08-21",
+          "count": 24104
+        },
+        {
+          "date": "2026-09-04",
+          "count": 50080
+        }
+      ],
+      "direction": null,
+      "newToday": false
+    },
+    {
+      "name": "Alvin Kamara",
+      "team": "NO",
+      "pos": "RB",
+      "count": 42864,
+      "id": "kamara",
+      "inPool": true,
+      "rank": null,
+      "status": "Questionable (Knee)",
+      "depth": {
+        "position": "RB",
+        "rank": 2,
+        "of": 9,
+        "behind": [
+          "Travis Etienne Jr."
+        ],
+        "reading": "listed 2nd at RB, behind Travis Etienne Jr."
+      },
+      "series": [
+        {
+          "date": "2026-09-04",
+          "count": 42864
+        }
+      ],
+      "direction": null,
+      "newToday": false
+    },
+    {
+      "name": "Brenton Strange",
+      "team": "JAX",
+      "pos": "TE",
+      "count": 41301,
+      "id": "strange",
+      "inPool": true,
+      "rank": "TE13",
+      "status": "Healthy",
+      "depth": {
+        "position": "TE",
+        "rank": 1,
+        "of": 7,
+        "behind": [],
+        "reading": "listed first at TE on the published chart"
+      },
+      "series": [
+        {
+          "date": "2026-09-04",
+          "count": 41301
         }
       ],
       "direction": null,
@@ -682,7 +761,7 @@
       "name": "Oronde Gadsden",
       "team": "LAC",
       "pos": "TE",
-      "count": 45965,
+      "count": 41185,
       "id": "gadsden",
       "inPool": true,
       "rank": null,
@@ -700,115 +779,7 @@
       "series": [
         {
           "date": "2026-09-04",
-          "count": 45965
-        }
-      ],
-      "direction": null,
-      "newToday": false
-    },
-    {
-      "name": "Alvin Kamara",
-      "team": "NO",
-      "pos": "RB",
-      "count": 44672,
-      "id": "kamara",
-      "inPool": true,
-      "rank": null,
-      "status": "Questionable (Knee)",
-      "depth": {
-        "position": "RB",
-        "rank": 2,
-        "of": 9,
-        "behind": [
-          "Travis Etienne Jr."
-        ],
-        "reading": "listed 2nd at RB, behind Travis Etienne Jr."
-      },
-      "series": [
-        {
-          "date": "2026-09-04",
-          "count": 44672
-        }
-      ],
-      "direction": null,
-      "newToday": false
-    },
-    {
-      "name": "Isiah Pacheco",
-      "team": "DET",
-      "pos": "RB",
-      "count": 43968,
-      "id": "pacheco",
-      "inPool": true,
-      "rank": null,
-      "status": "IR (Back)",
-      "depth": {
-        "position": "RB",
-        "rank": 2,
-        "of": 8,
-        "behind": [
-          "Jahmyr Gibbs"
-        ],
-        "reading": "listed 2nd at RB, behind Jahmyr Gibbs"
-      },
-      "series": [
-        {
-          "date": "2026-09-04",
-          "count": 43968
-        }
-      ],
-      "direction": null,
-      "newToday": false
-    },
-    {
-      "name": "Brenton Strange",
-      "team": "JAX",
-      "pos": "TE",
-      "count": 43290,
-      "id": "strange",
-      "inPool": true,
-      "rank": "TE13",
-      "status": "Healthy",
-      "depth": {
-        "position": "TE",
-        "rank": 1,
-        "of": 7,
-        "behind": [],
-        "reading": "listed first at TE on the published chart"
-      },
-      "series": [
-        {
-          "date": "2026-09-04",
-          "count": 43290
-        }
-      ],
-      "direction": null,
-      "newToday": false
-    },
-    {
-      "name": "Emanuel Wilson",
-      "team": "SEA",
-      "pos": "RB",
-      "count": 41526,
-      "id": "wilson-e",
-      "inPool": true,
-      "rank": null,
-      "status": "Questionable (Hamstring)",
-      "depth": {
-        "position": "RB",
-        "rank": 4,
-        "of": 10,
-        "behind": [
-          "Zach Charbonnet",
-          "Jadarian Price",
-          "George Holani"
-        ],
-        "reading": "listed 4th at RB, behind Zach Charbonnet, Jadarian Price and George Holani"
-      },
-      "series": [
-        {
-          "date": "2026-09-04",
-          "count": 41526
+          "count": 41185
         }
       ],
       "direction": null,
@@ -818,20 +789,19 @@
       "name": "Malik Davis",
       "team": "DAL",
       "pos": "RB",
-      "count": 40473,
-      "id": null,
-      "inPool": false,
+      "count": 38754,
+      "id": "davis-m",
+      "inPool": true,
       "rank": null,
-      "status": null,
+      "status": "Healthy",
       "depth": {
         "position": "RB",
-        "rank": 3,
-        "of": 7,
+        "rank": 2,
+        "of": 8,
         "behind": [
-          "Javonte Williams",
-          "Jaydon Blue"
+          "Javonte Williams"
         ],
-        "reading": "listed 3rd at RB, behind Javonte Williams and Jaydon Blue"
+        "reading": "listed 2nd at RB, behind Javonte Williams"
       },
       "series": [
         {
@@ -860,77 +830,54 @@
         },
         {
           "date": "2026-09-04",
-          "count": 40473
+          "count": 38754
         }
       ],
       "direction": null,
       "newToday": false
     },
     {
-      "name": "Jam Miller",
-      "team": "FA",
+      "name": "Emanuel Wilson",
+      "team": "SEA",
       "pos": "RB",
-      "count": 38601,
-      "id": null,
-      "inPool": false,
+      "count": 36243,
+      "id": "wilson-e",
+      "inPool": true,
       "rank": null,
-      "status": "Questionable",
-      "depth": null,
-      "series": [
-        {
-          "date": "2026-09-04",
-          "count": 38601
-        }
-      ],
-      "direction": null,
-      "newToday": false
-    },
-    {
-      "name": "J'Mari Taylor",
-      "team": "JAX",
-      "pos": "RB",
-      "count": 37881,
-      "id": null,
-      "inPool": false,
-      "rank": null,
-      "status": null,
+      "status": "Questionable (Hamstring)",
       "depth": {
         "position": "RB",
-        "rank": 6,
-        "of": 7,
+        "rank": 3,
+        "of": 10,
         "behind": [
-          "Bhayshul Tuten",
-          "Chris Rodriguez Jr.",
-          "LeQuint Allen Jr.",
-          "Ameer Abdullah",
-          "DeeJay Dallas",
-          "Ja'Quinden Jackson"
+          "Jadarian Price",
+          "George Holani"
         ],
-        "reading": "listed 6th at RB, behind Bhayshul Tuten, Chris Rodriguez Jr., LeQuint Allen Jr., Ameer Abdullah, DeeJay Dallas and Ja'Quinden Jackson"
+        "reading": "listed 3rd at RB, behind Jadarian Price and George Holani"
       },
       "series": [
         {
           "date": "2026-09-04",
-          "count": 37881
+          "count": 36243
         }
       ],
       "direction": null,
       "newToday": false
     },
     {
-      "name": "Tyreek Hill",
-      "team": "FA",
-      "pos": "WR",
-      "count": 36760,
+      "name": "New England Patriots",
+      "team": "NE",
+      "pos": "DEF",
+      "count": 34783,
       "id": null,
       "inPool": false,
       "rank": null,
-      "status": "Questionable",
+      "status": null,
       "depth": null,
       "series": [
         {
           "date": "2026-09-04",
-          "count": 36760
+          "count": 34783
         }
       ],
       "direction": null,
@@ -940,7 +887,7 @@
       "name": "Kenyon Sadiq",
       "team": "NYJ",
       "pos": "TE",
-      "count": 35811,
+      "count": 34119,
       "id": "sadiq",
       "inPool": true,
       "rank": null,
@@ -957,26 +904,156 @@
       "series": [
         {
           "date": "2026-09-04",
-          "count": 35811
+          "count": 34119
         }
       ],
       "direction": null,
       "newToday": false
     },
     {
-      "name": "New England Patriots",
-      "team": "NE",
-      "pos": "DEF",
-      "count": 32774,
+      "name": "Tyreek Hill",
+      "team": "FA",
+      "pos": "WR",
+      "count": 34048,
       "id": null,
       "inPool": false,
       "rank": null,
-      "status": null,
+      "status": "Questionable",
       "depth": null,
       "series": [
         {
           "date": "2026-09-04",
-          "count": 32774
+          "count": 34048
+        }
+      ],
+      "direction": null,
+      "newToday": false
+    },
+    {
+      "name": "Isiah Pacheco",
+      "team": "DET",
+      "pos": "RB",
+      "count": 31776,
+      "id": "pacheco",
+      "inPool": true,
+      "rank": null,
+      "status": "IR (Back)",
+      "depth": {
+        "position": "RB",
+        "rank": 4,
+        "of": 8,
+        "behind": [
+          "Jahmyr Gibbs",
+          "Sione Vaki",
+          "Jacob Saylors"
+        ],
+        "reading": "listed 4th at RB, behind Jahmyr Gibbs, Sione Vaki and Jacob Saylors"
+      },
+      "series": [
+        {
+          "date": "2026-09-04",
+          "count": 31776
+        }
+      ],
+      "direction": null,
+      "newToday": false
+    },
+    {
+      "name": "Keaton Mitchell",
+      "team": "LAC",
+      "pos": "RB",
+      "count": 30474,
+      "id": "mitchell",
+      "inPool": true,
+      "rank": null,
+      "status": "Questionable",
+      "depth": {
+        "position": "RB",
+        "rank": 2,
+        "of": 6,
+        "behind": [
+          "Omarion Hampton"
+        ],
+        "reading": "listed 2nd at RB, behind Omarion Hampton"
+      },
+      "series": [
+        {
+          "date": "2026-09-04",
+          "count": 30474
+        }
+      ],
+      "direction": null,
+      "newToday": false
+    },
+    {
+      "name": "Jam Miller",
+      "team": "FA",
+      "pos": "RB",
+      "count": 29925,
+      "id": null,
+      "inPool": false,
+      "rank": null,
+      "status": "Questionable",
+      "depth": null,
+      "series": [
+        {
+          "date": "2026-09-04",
+          "count": 29925
+        }
+      ],
+      "direction": null,
+      "newToday": false
+    },
+    {
+      "name": "Jalen Nailor",
+      "team": "LV",
+      "pos": "WR",
+      "count": 28278,
+      "id": "nailor",
+      "inPool": true,
+      "rank": null,
+      "status": "Healthy",
+      "depth": {
+        "position": "WR",
+        "rank": 2,
+        "of": 17,
+        "behind": [
+          "Tre Tucker"
+        ],
+        "reading": "listed 2nd at WR, behind Tre Tucker"
+      },
+      "series": [
+        {
+          "date": "2026-08-20",
+          "count": 26325
+        },
+        {
+          "date": "2026-08-23",
+          "count": 19161
+        },
+        {
+          "date": "2026-08-24",
+          "count": 32976
+        },
+        {
+          "date": "2026-08-25",
+          "count": 37098
+        },
+        {
+          "date": "2026-08-26",
+          "count": 28737
+        },
+        {
+          "date": "2026-08-27",
+          "count": 22590
+        },
+        {
+          "date": "2026-08-28",
+          "count": 23427
+        },
+        {
+          "date": "2026-09-04",
+          "count": 28278
         }
       ],
       "direction": null,
@@ -986,7 +1063,7 @@
       "name": "Cyrus Allen",
       "team": "KC",
       "pos": "WR",
-      "count": 30558,
+      "count": 27696,
       "id": "allen-c",
       "inPool": true,
       "rank": null,
@@ -1022,53 +1099,7 @@
         },
         {
           "date": "2026-09-04",
-          "count": 30558
-        }
-      ],
-      "direction": null,
-      "newToday": false
-    },
-    {
-      "name": "Justin Joly",
-      "team": "FA",
-      "pos": "TE",
-      "count": 29670,
-      "id": null,
-      "inPool": false,
-      "rank": null,
-      "status": null,
-      "depth": null,
-      "series": [
-        {
-          "date": "2026-09-04",
-          "count": 29670
-        }
-      ],
-      "direction": null,
-      "newToday": false
-    },
-    {
-      "name": "Fernando Mendoza",
-      "team": "LV",
-      "pos": "QB",
-      "count": 29272,
-      "id": "mendoza",
-      "inPool": true,
-      "rank": null,
-      "status": "Healthy",
-      "depth": {
-        "position": "QB",
-        "rank": 2,
-        "of": 4,
-        "behind": [
-          "Kirk Cousins"
-        ],
-        "reading": "listed 2nd at QB, behind Kirk Cousins"
-      },
-      "series": [
-        {
-          "date": "2026-09-04",
-          "count": 29272
+          "count": 27696
         }
       ],
       "direction": null,
@@ -1076,6 +1107,386 @@
     }
   ],
   "depthMoves": [
+    {
+      "date": "2026-09-04",
+      "id": "williams-a",
+      "name": "Antonio Williams",
+      "team": "WAS",
+      "position": "WR",
+      "fromRank": 4,
+      "toRank": 3,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "sills",
+      "name": "David Sills",
+      "team": "TB",
+      "position": "WR",
+      "fromRank": 6,
+      "toRank": 7,
+      "kind": "demoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "pearsall",
+      "name": "Ricky Pearsall",
+      "team": "SF",
+      "position": "WR",
+      "fromRank": 14,
+      "toRank": 9,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "aiyuk",
+      "name": "Brandon Aiyuk",
+      "team": "SF",
+      "position": "WR",
+      "fromRank": 13,
+      "toRank": 8,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "kirk",
+      "name": "Christian Kirk",
+      "team": "SF",
+      "position": "WR",
+      "fromRank": 4,
+      "toRank": 7,
+      "kind": "demoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "charbonnet",
+      "name": "Zach Charbonnet",
+      "team": "SEA",
+      "position": "RB",
+      "fromRank": 1,
+      "toRank": 4,
+      "kind": "demoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "wilson-e",
+      "name": "Emanuel Wilson",
+      "team": "SEA",
+      "position": "RB",
+      "fromRank": 4,
+      "toRank": 3,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "holani",
+      "name": "George Holani",
+      "team": "SEA",
+      "position": "RB",
+      "fromRank": 3,
+      "toRank": 2,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "price",
+      "name": "Jadarian Price",
+      "team": "SEA",
+      "position": "RB",
+      "fromRank": 2,
+      "toRank": 1,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "tyson",
+      "name": "Jordyn Tyson",
+      "team": "NO",
+      "position": "WR",
+      "fromRank": 2,
+      "toRank": 5,
+      "kind": "demoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "estime",
+      "name": "Audric Estime",
+      "team": "NO",
+      "position": "RB",
+      "fromRank": 5,
+      "toRank": 4,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "lance",
+      "name": "Bryce Lance",
+      "team": "NO",
+      "position": "WR",
+      "fromRank": 4,
+      "toRank": 3,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "vele",
+      "name": "Devaughn Vele",
+      "team": "NO",
+      "position": "WR",
+      "fromRank": 3,
+      "toRank": 2,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "sims",
+      "name": "Ben Sims",
+      "team": "MIA",
+      "position": "TE",
+      "fromRank": 1,
+      "toRank": 6,
+      "kind": "demoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "joly",
+      "name": "Justin Joly",
+      "team": "MIA",
+      "position": "TE",
+      "fromRank": 3,
+      "toRank": 4,
+      "kind": "traded"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "roberts",
+      "name": "Chase Roberts",
+      "team": "LV",
+      "position": "WR",
+      "fromRank": 11,
+      "toRank": 9,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "remigio",
+      "name": "Nikko Remigio",
+      "team": "KC",
+      "position": "WR",
+      "fromRank": 7,
+      "toRank": 6,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "smith-b",
+      "name": "Brashard Smith",
+      "team": "KC",
+      "position": "RB",
+      "fromRank": 4,
+      "toRank": 3,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "johnson-e",
+      "name": "Emmett Johnson",
+      "team": "KC",
+      "position": "RB",
+      "fromRank": 3,
+      "toRank": 2,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "mcgowan",
+      "name": "Seth McGowan",
+      "team": "IND",
+      "position": "RB",
+      "fromRank": 3,
+      "toRank": 2,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "richardson",
+      "name": "Anthony Richardson",
+      "team": "IND",
+      "position": "QB",
+      "fromRank": 3,
+      "toRank": 2,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "higgins-j",
+      "name": "Jayden Higgins",
+      "team": "HOU",
+      "position": "WR",
+      "fromRank": 14,
+      "toRank": 7,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "dell",
+      "name": "Tank Dell",
+      "team": "HOU",
+      "position": "WR",
+      "fromRank": 5,
+      "toRank": 6,
+      "kind": "demoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "brooks-b",
+      "name": "British Brooks",
+      "team": "HOU",
+      "position": "RB",
+      "fromRank": 4,
+      "toRank": 3,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "jacobs",
+      "name": "Josh Jacobs",
+      "team": "GB",
+      "position": "RB",
+      "fromRank": 1,
+      "toRank": 4,
+      "kind": "demoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "johnson-k",
+      "name": "Kaleb Johnson",
+      "team": "GB",
+      "position": "RB",
+      "fromRank": 3,
+      "toRank": 3,
+      "kind": "traded"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "lloyd",
+      "name": "MarShawn Lloyd",
+      "team": "GB",
+      "position": "RB",
+      "fromRank": 2,
+      "toRank": 1,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "pacheco",
+      "name": "Isiah Pacheco",
+      "team": "DET",
+      "position": "RB",
+      "fromRank": 2,
+      "toRank": 4,
+      "kind": "demoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "sutton",
+      "name": "Courtland Sutton",
+      "team": "DEN",
+      "position": "WR",
+      "fromRank": 1,
+      "toRank": 2,
+      "kind": "demoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "waddle",
+      "name": "Jaylen Waddle",
+      "team": "DEN",
+      "position": "WR",
+      "fromRank": 2,
+      "toRank": 1,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "endries",
+      "name": "Jack Endries",
+      "team": "CIN",
+      "position": "TE",
+      "fromRank": 6,
+      "toRank": 4,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "brown-b",
+      "name": "Brittain Brown",
+      "team": "CHI",
+      "position": "RB",
+      "fromRank": 5,
+      "toRank": 4,
+      "kind": "traded"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "thomas-z",
+      "name": "Zavion Thomas",
+      "team": "CHI",
+      "position": "WR",
+      "fromRank": 5,
+      "toRank": 4,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "brazzell",
+      "name": "Chris Brazzell",
+      "team": "CAR",
+      "position": "WR",
+      "fromRank": 12,
+      "toRank": 7,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "waller",
+      "name": "Darren Waller",
+      "team": "CAR",
+      "position": "TE",
+      "fromRank": 2,
+      "toRank": 3,
+      "kind": "demoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "shavers",
+      "name": "Tyrell Shavers",
+      "team": "BUF",
+      "position": "WR",
+      "fromRank": 7,
+      "toRank": 6,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "benson",
+      "name": "Trey Benson",
+      "team": "ARI",
+      "position": "RB",
+      "fromRank": 8,
+      "toRank": 5,
+      "kind": "promoted"
+    },
+    {
+      "date": "2026-09-04",
+      "id": "conner",
+      "name": "James Conner",
+      "team": "ARI",
+      "position": "RB",
+      "fromRank": 3,
+      "toRank": 4,
+      "kind": "demoted"
+    },
     {
       "date": "2026-08-28",
       "id": "washington-c",

@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-curves.js",
-    "builtAt": "2026-08-28T21:23:16.836Z",
+    "builtAt": "2026-09-04T22:30:53.065Z",
     "seasons": [
       2023,
       2024,
@@ -84,67 +84,6 @@
         }
       ]
     },
-    "Knee": {
-      "absences": 31,
-      "players": 30,
-      "medianMissed": 3,
-      "medianBaseline": 9.1,
-      "curve": [
-        {
-          "label": "Games 1–2 back",
-          "n": 31,
-          "pct": 81
-        },
-        {
-          "label": "Games 3–5",
-          "n": 28,
-          "pct": 99
-        },
-        {
-          "label": "Games 6–8",
-          "n": 24,
-          "pct": 102
-        }
-      ],
-      "examples": [
-        {
-          "id": "mitchell",
-          "name": "Keaton Mitchell",
-          "season": 2024,
-          "missed": 15
-        },
-        {
-          "id": "diggs",
-          "name": "Stefon Diggs",
-          "season": 2024,
-          "missed": 9
-        },
-        {
-          "id": "hockenson",
-          "name": "T.J. Hockenson",
-          "season": 2024,
-          "missed": 7
-        },
-        {
-          "id": "wright",
-          "name": "Jaylen Wright",
-          "season": 2025,
-          "missed": 7
-        },
-        {
-          "id": "watson",
-          "name": "Christian Watson",
-          "season": 2025,
-          "missed": 6
-        },
-        {
-          "id": "pearsall",
-          "name": "Ricky Pearsall",
-          "season": 2025,
-          "missed": 6
-        }
-      ]
-    },
     "Ankle": {
       "absences": 29,
       "players": 28,
@@ -206,64 +145,64 @@
         }
       ]
     },
-    "Arm / Hand": {
-      "absences": 19,
-      "players": 19,
+    "Knee": {
+      "absences": 25,
+      "players": 25,
       "medianMissed": 3,
-      "medianBaseline": 8.2,
+      "medianBaseline": 10.8,
       "curve": [
         {
           "label": "Games 1–2 back",
-          "n": 19,
-          "pct": 96
+          "n": 25,
+          "pct": 87
         },
         {
           "label": "Games 3–5",
-          "n": 15,
-          "pct": 129
+          "n": 24,
+          "pct": 103
         },
         {
           "label": "Games 6–8",
-          "n": 13,
-          "pct": 82
+          "n": 20,
+          "pct": 112
         }
       ],
       "examples": [
         {
-          "id": "oconnell",
-          "name": "Aidan O'Connell",
-          "season": 2025,
-          "missed": 16
+          "id": "mitchell",
+          "name": "Keaton Mitchell",
+          "season": 2024,
+          "missed": 15
         },
         {
-          "id": "miller-s",
-          "name": "Scotty Miller",
-          "season": 2025,
-          "missed": 8
+          "id": "diggs",
+          "name": "Stefon Diggs",
+          "season": 2024,
+          "missed": 9
         },
         {
-          "id": "burrow",
-          "name": "Joe Burrow",
-          "season": 2023,
+          "id": "hockenson",
+          "name": "T.J. Hockenson",
+          "season": 2024,
           "missed": 7
         },
         {
-          "id": "hardman",
-          "name": "Mecole Hardman",
-          "season": 2023,
+          "id": "wright",
+          "name": "Jaylen Wright",
+          "season": 2025,
+          "missed": 7
+        },
+        {
+          "id": "watson",
+          "name": "Christian Watson",
+          "season": 2025,
           "missed": 6
         },
         {
-          "id": "corley",
-          "name": "Malachi Corley",
-          "season": 2024,
-          "missed": 5
-        },
-        {
-          "id": "herbert",
-          "name": "Justin Herbert",
-          "season": 2023,
-          "missed": 4
+          "id": "pearsall",
+          "name": "Ricky Pearsall",
+          "season": 2025,
+          "missed": 6
         }
       ]
     },
@@ -276,31 +215,31 @@
         {
           "label": "Games 1–2 back",
           "n": 16,
-          "pct": 102
+          "pct": 93
         },
         {
           "label": "Games 3–5",
-          "n": 16,
-          "pct": 90
+          "n": 15,
+          "pct": 87
         },
         {
           "label": "Games 6–8",
-          "n": 16,
+          "n": 14,
           "pct": 77
         }
       ],
       "examples": [
         {
+          "id": "saubert",
+          "name": "Eric Saubert",
+          "season": 2025,
+          "missed": 10
+        },
+        {
           "id": "cmc",
           "name": "Christian McCaffrey",
           "season": 2024,
           "missed": 8
-        },
-        {
-          "id": "durham",
-          "name": "Payne Durham",
-          "season": 2024,
-          "missed": 7
         },
         {
           "id": "coker",
@@ -321,93 +260,32 @@
           "missed": 5
         },
         {
-          "id": "jacobs",
-          "name": "Josh Jacobs",
-          "season": 2023,
-          "missed": 4
-        }
-      ]
-    },
-    "Shoulder": {
-      "absences": 14,
-      "players": 13,
-      "medianMissed": 2,
-      "medianBaseline": 12.2,
-      "curve": [
-        {
-          "label": "Games 1–2 back",
-          "n": 14,
-          "pct": 85
-        },
-        {
-          "label": "Games 3–5",
-          "n": 14,
-          "pct": 85
-        },
-        {
-          "label": "Games 6–8",
-          "n": 13,
-          "pct": 95
-        }
-      ],
-      "examples": [
-        {
-          "id": "kirk",
-          "name": "Christian Kirk",
-          "season": 2024,
-          "missed": 9
-        },
-        {
-          "id": "watson-d",
-          "name": "Deshaun Watson",
-          "season": 2023,
-          "missed": 8
-        },
-        {
-          "id": "wilson-e",
-          "name": "Emanuel Wilson",
-          "season": 2023,
-          "missed": 7
-        },
-        {
-          "id": "lawrence",
-          "name": "Trevor Lawrence",
-          "season": 2024,
-          "missed": 5
-        },
-        {
-          "id": "whiteheart",
-          "name": "Blake Whiteheart",
+          "id": "franks",
+          "name": "Feleipe Franks",
           "season": 2025,
           "missed": 5
-        },
-        {
-          "id": "wilson-m",
-          "name": "Michael Wilson",
-          "season": 2023,
-          "missed": 3
         }
       ]
     },
     "Concussion": {
-      "absences": 14,
-      "players": 13,
+      "absences": 16,
+      "players": 15,
       "medianMissed": 2,
-      "medianBaseline": 7.6,
+      "medianBaseline": 7.1,
       "curve": [
         {
           "label": "Games 1–2 back",
-          "n": 14,
+          "n": 16,
           "pct": 97
         },
         {
           "label": "Games 3–5",
-          "n": 14,
-          "pct": 113
+          "n": 16,
+          "pct": 100
         },
         {
           "label": "Games 6–8",
-          "n": 12,
+          "n": 14,
           "pct": 116
         }
       ],
@@ -450,6 +328,128 @@
         }
       ]
     },
+    "Arm / Hand": {
+      "absences": 15,
+      "players": 15,
+      "medianMissed": 3,
+      "medianBaseline": 9.5,
+      "curve": [
+        {
+          "label": "Games 1–2 back",
+          "n": 15,
+          "pct": 96
+        },
+        {
+          "label": "Games 3–5",
+          "n": 11,
+          "pct": 168
+        },
+        {
+          "label": "Games 6–8",
+          "n": 10,
+          "pct": 90
+        }
+      ],
+      "examples": [
+        {
+          "id": "oconnell",
+          "name": "Aidan O'Connell",
+          "season": 2025,
+          "missed": 16
+        },
+        {
+          "id": "burrow",
+          "name": "Joe Burrow",
+          "season": 2023,
+          "missed": 7
+        },
+        {
+          "id": "corley",
+          "name": "Malachi Corley",
+          "season": 2024,
+          "missed": 5
+        },
+        {
+          "id": "herbert",
+          "name": "Justin Herbert",
+          "season": 2023,
+          "missed": 4
+        },
+        {
+          "id": "coleman-k",
+          "name": "Keon Coleman",
+          "season": 2024,
+          "missed": 4
+        },
+        {
+          "id": "fields-j",
+          "name": "Justin Fields",
+          "season": 2023,
+          "missed": 4
+        }
+      ]
+    },
+    "Shoulder": {
+      "absences": 15,
+      "players": 14,
+      "medianMissed": 2,
+      "medianBaseline": 12.9,
+      "curve": [
+        {
+          "label": "Games 1–2 back",
+          "n": 15,
+          "pct": 96
+        },
+        {
+          "label": "Games 3–5",
+          "n": 15,
+          "pct": 83
+        },
+        {
+          "label": "Games 6–8",
+          "n": 13,
+          "pct": 95
+        }
+      ],
+      "examples": [
+        {
+          "id": "kirk",
+          "name": "Christian Kirk",
+          "season": 2024,
+          "missed": 9
+        },
+        {
+          "id": "watson-d",
+          "name": "Deshaun Watson",
+          "season": 2023,
+          "missed": 8
+        },
+        {
+          "id": "wilson-e",
+          "name": "Emanuel Wilson",
+          "season": 2023,
+          "missed": 7
+        },
+        {
+          "id": "lawrence",
+          "name": "Trevor Lawrence",
+          "season": 2024,
+          "missed": 5
+        },
+        {
+          "id": "wilson-m",
+          "name": "Michael Wilson",
+          "season": 2023,
+          "missed": 3
+        },
+        {
+          "id": "flacco",
+          "name": "Joe Flacco",
+          "season": 2025,
+          "missed": 3
+        }
+      ]
+    },
     "Foot / Toe": {
       "absences": 13,
       "players": 12,
@@ -459,7 +459,7 @@
         {
           "label": "Games 1–2 back",
           "n": 13,
-          "pct": 53
+          "pct": 55
         },
         {
           "label": "Games 3–5",
@@ -469,7 +469,7 @@
         {
           "label": "Games 6–8",
           "n": 11,
-          "pct": 83
+          "pct": 70
         }
       ],
       "examples": [
@@ -512,25 +512,25 @@
       ]
     },
     "Hip / Groin": {
-      "absences": 13,
-      "players": 12,
+      "absences": 11,
+      "players": 10,
       "medianMissed": 3,
-      "medianBaseline": 8.3,
+      "medianBaseline": 8.7,
       "curve": [
         {
           "label": "Games 1–2 back",
-          "n": 13,
+          "n": 11,
           "pct": 127
         },
         {
           "label": "Games 3–5",
-          "n": 13,
-          "pct": 103
+          "n": 11,
+          "pct": 111
         },
         {
           "label": "Games 6–8",
-          "n": 11,
-          "pct": 96
+          "n": 10,
+          "pct": 113
         }
       ],
       "examples": [
@@ -565,23 +565,23 @@
           "missed": 3
         },
         {
-          "id": "goodson",
-          "name": "Tyler Goodson",
+          "id": "waller",
+          "name": "Darren Waller",
           "season": 2025,
           "missed": 3
         }
       ]
     },
     "Ribs / Core": {
-      "absences": 6,
-      "players": 5,
+      "absences": 7,
+      "players": 6,
       "medianMissed": 2,
       "medianBaseline": 13.5,
       "curve": [
         {
           "label": "Games 1–2 back",
-          "n": 6,
-          "pct": 117
+          "n": 7,
+          "pct": 119
         },
         {
           "label": "Games 3–5",
@@ -595,6 +595,12 @@
         }
       ],
       "examples": [
+        {
+          "id": "granson",
+          "name": "Kylen Granson",
+          "season": 2025,
+          "missed": 7
+        },
         {
           "id": "gesicki",
           "name": "Mike Gesicki",
@@ -624,6 +630,51 @@
           "name": "David Montgomery",
           "season": 2023,
           "missed": 2
+        }
+      ]
+    },
+    "Back / Neck": {
+      "absences": 6,
+      "players": 5,
+      "medianMissed": 4.5,
+      "medianBaseline": 7,
+      "curve": [
+        {
+          "label": "Games 1–2 back",
+          "n": 6,
+          "pct": 59
+        }
+      ],
+      "examples": [
+        {
+          "id": "mcmillan-j",
+          "name": "Jalen McMillan",
+          "season": 2025,
+          "missed": 13
+        },
+        {
+          "id": "jones-d",
+          "name": "Daniel Jones",
+          "season": 2023,
+          "missed": 8
+        },
+        {
+          "id": "johnson-t",
+          "name": "Theo Johnson",
+          "season": 2024,
+          "missed": 5
+        },
+        {
+          "id": "demercado",
+          "name": "Emari Demercado",
+          "season": 2024,
+          "missed": 4
+        },
+        {
+          "id": "jones-d",
+          "name": "Daniel Jones",
+          "season": 2023,
+          "missed": 3
         },
         {
           "id": "richardson",
