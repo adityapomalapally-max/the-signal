@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-curves.js",
-    "builtAt": "2026-09-04T22:30:53.065Z",
+    "builtAt": "2026-09-05T13:50:28.588Z",
     "seasons": [
       2023,
       2024,
@@ -328,67 +328,6 @@
         }
       ]
     },
-    "Arm / Hand": {
-      "absences": 15,
-      "players": 15,
-      "medianMissed": 3,
-      "medianBaseline": 9.5,
-      "curve": [
-        {
-          "label": "Games 1–2 back",
-          "n": 15,
-          "pct": 96
-        },
-        {
-          "label": "Games 3–5",
-          "n": 11,
-          "pct": 168
-        },
-        {
-          "label": "Games 6–8",
-          "n": 10,
-          "pct": 90
-        }
-      ],
-      "examples": [
-        {
-          "id": "oconnell",
-          "name": "Aidan O'Connell",
-          "season": 2025,
-          "missed": 16
-        },
-        {
-          "id": "burrow",
-          "name": "Joe Burrow",
-          "season": 2023,
-          "missed": 7
-        },
-        {
-          "id": "corley",
-          "name": "Malachi Corley",
-          "season": 2024,
-          "missed": 5
-        },
-        {
-          "id": "herbert",
-          "name": "Justin Herbert",
-          "season": 2023,
-          "missed": 4
-        },
-        {
-          "id": "coleman-k",
-          "name": "Keon Coleman",
-          "season": 2024,
-          "missed": 4
-        },
-        {
-          "id": "fields-j",
-          "name": "Justin Fields",
-          "season": 2023,
-          "missed": 4
-        }
-      ]
-    },
     "Shoulder": {
       "absences": 15,
       "players": 14,
@@ -446,6 +385,67 @@
           "id": "flacco",
           "name": "Joe Flacco",
           "season": 2025,
+          "missed": 3
+        }
+      ]
+    },
+    "Arm / Hand": {
+      "absences": 14,
+      "players": 14,
+      "medianMissed": 3,
+      "medianBaseline": 9.9,
+      "curve": [
+        {
+          "label": "Games 1–2 back",
+          "n": 14,
+          "pct": 102
+        },
+        {
+          "label": "Games 3–5",
+          "n": 11,
+          "pct": 168
+        },
+        {
+          "label": "Games 6–8",
+          "n": 10,
+          "pct": 90
+        }
+      ],
+      "examples": [
+        {
+          "id": "burrow",
+          "name": "Joe Burrow",
+          "season": 2023,
+          "missed": 7
+        },
+        {
+          "id": "corley",
+          "name": "Malachi Corley",
+          "season": 2024,
+          "missed": 5
+        },
+        {
+          "id": "herbert",
+          "name": "Justin Herbert",
+          "season": 2023,
+          "missed": 4
+        },
+        {
+          "id": "coleman-k",
+          "name": "Keon Coleman",
+          "season": 2024,
+          "missed": 4
+        },
+        {
+          "id": "fields-j",
+          "name": "Justin Fields",
+          "season": 2023,
+          "missed": 4
+        },
+        {
+          "id": "taylor",
+          "name": "Jonathan Taylor",
+          "season": 2023,
           "missed": 3
         }
       ]
