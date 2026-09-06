@@ -77,8 +77,10 @@ jobs:
             echo "_[Re-run this check](https://github.com/${GITHUB_REPOSITORY}/actions/workflows/health.yml) · updated automatically every day at 13:00 UTC._"
           } > body.md
 
+          CREATED=no
           if [ -z "$NUM" ]; then
             NUM=$(gh issue create --title "$TITLE" --body-file body.md | grep -oE '[0-9]+$')
+            CREATED=yes
             echo "opened #$NUM"
           else
             gh issue edit "$NUM" --body-file body.md
@@ -97,8 +99,14 @@ jobs:
             exit 1
           fi
 
+          # A NEW ISSUE IS OPEN BECAUSE IT IS NEW, not because anything broke.
+          # The first run announced "✅ Recovered" on an issue that had never had
+          # a problem, which is the report telling a small lie on the very first
+          # thing it ever said. Closed is the resting state: open means look.
           if [ "$STATE" = "OPEN" ]; then
-            gh issue comment "$NUM" --body "✅ Recovered — everything below is green again as of $(date -u '+%Y-%m-%d %H:%M UTC')."
+            if [ "$CREATED" = "no" ]; then
+              gh issue comment "$NUM" --body "✅ Recovered — everything below is green again as of $(date -u '+%Y-%m-%d %H:%M UTC')."
+            fi
             gh issue close "$NUM"
             echo "closed #$NUM"
           fi

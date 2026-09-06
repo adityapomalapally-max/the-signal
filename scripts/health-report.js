@@ -325,7 +325,69 @@ async function checkSeason() {
   return undefined;
 }
 
-/* ── 7. Housekeeping — the quality-of-life column ───────────────────────── */
+/* ── 7. Are the security headers still the ones we wrote ────────────────── */
+// vercel.json is a config file with nothing asserting it. Headers are the kind
+// of thing that gets loosened during a debugging session and never tightened
+// again, and the loosening is invisible: the site works either way. So the
+// live response is read back and compared to what the file claims.
+//
+// UNSAFE-INLINE IS TRACKED, NOT FAILED. index.html carries 108 inline event
+// handlers and assets/*.js generate ~56 more, so script-src cannot drop it
+// today and pretending otherwise would put a permanent red mark on the report.
+// It is stated on every run instead, with the count, so it stays a known debt
+// with a number attached rather than a thing everyone stopped noticing.
+const REQUIRED_HEADERS = [
+  'content-security-policy',
+  'x-content-type-options',
+  'referrer-policy',
+  'x-frame-options',
+  'permissions-policy',
+  'strict-transport-security',
+];
+const REQUIRED_CSP = ['default-src', 'object-src', 'base-uri', 'form-action', 'frame-ancestors'];
+
+async function checkHeaders() {
+  let res;
+  try { res = await get(`${ORIGIN}/`); }
+  catch (e) { return warn('headers', `could not read the live headers — ${e.message}`); }
+
+  const missing = REQUIRED_HEADERS.filter(h => !res.headers.get(h));
+  if (missing.length) {
+    fail('headers', `${missing.length} security header(s) are no longer being served`, missing.join('\n'));
+  }
+
+  const csp = (res.headers.get('content-security-policy') || '').toLowerCase();
+  if (csp) {
+    const lost = REQUIRED_CSP.filter(d => !csp.includes(d));
+    if (lost.length) fail('headers', `the live CSP has lost ${lost.length} directive(s)`, lost.join(', '));
+
+    // A regression that would matter far more than the inline handlers do.
+    if (csp.includes("'unsafe-eval'")) {
+      fail('headers', "the live CSP now allows 'unsafe-eval'",
+        'Nothing on this site needs eval. This is a straight loosening.');
+    }
+    if (csp.includes("script-src") && csp.includes("'unsafe-inline'")) {
+      warn('headers', "script-src still allows 'unsafe-inline' — the known debt",
+        `${countInlineHandlers()} inline handlers stand between here and dropping it. `
+        + 'Until then the CSP cannot stop an injected payload from running.');
+    }
+  }
+  if (!missing.length && csp) ok('headers', `all ${REQUIRED_HEADERS.length} security headers present and the CSP is intact`);
+  return undefined;
+}
+
+function countInlineHandlers() {
+  let n = 0;
+  const files = [path.join(ROOT, 'index.html'), ...fs.readdirSync(path.join(ROOT, 'assets'))
+    .filter(f => f.endsWith('.js')).map(f => path.join(ROOT, 'assets', f))];
+  for (const f of files) {
+    if (!fs.existsSync(f)) continue;
+    n += (fs.readFileSync(f, 'utf8').match(/\son[a-z]+\s*=\s*["'`]/g) || []).length;
+  }
+  return n;
+}
+
+/* ── 8. Housekeeping — the quality-of-life column ───────────────────────── */
 // Nothing here fails a run. It is the list of small things that rot quietly:
 // the kind of item that is never urgent and is therefore never done.
 function checkHousekeeping() {
@@ -405,6 +467,7 @@ async function main() {
   await checkRuns();
   await checkFeeds();
   await checkSeason();
+  await checkHeaders();
   checkHousekeeping();
 
   if (!process.argv.includes('--quiet')) console.log(render());
