@@ -68,3 +68,31 @@ test('problems are stated in full, and passes are folded away', () => {
     'a failure must appear above the fold, not inside the collapsed section');
   assert.match(out, /the thing that matters/, 'the detail of a failure is the part somebody acts on');
 });
+
+test('a finished build is never thrown away at the push', () => {
+  // 2026-09-06: every build step passed, the commit was made, and `git push`
+  // was rejected with "fetch first" because a code commit had landed during the
+  // seven minutes the data took to build. Seven minutes of work discarded, and
+  // the run went red having kept none of it — the same shape as the eleven-day
+  // outage, where the pipeline ran fine and committed nothing.
+  //
+  // A bare `git push` in that step is the bug. It must retry.
+  const daily = fs.readFileSync(path.join(WF, 'daily-update.yml'), 'utf8');
+  const step = daily.slice(daily.indexOf('name: Commit and push'));
+  assert.match(step, /git pull --rebase/,
+    'the push must rebase and retry — anything landing during the build otherwise discards the whole run');
+  assert.match(step, /for attempt in/,
+    'one retry is not a retry loop; a second commit can land while the first rebase runs');
+});
+
+test('two data runs cannot race each other', () => {
+  // Each run rebuilds the whole of data/, so an overlapping pair races to the
+  // same files and the loser's build is discarded at the push. The rebase above
+  // is safe precisely BECAUSE this guarantees whatever landed underneath is
+  // code rather than data.
+  const daily = fs.readFileSync(path.join(WF, 'daily-update.yml'), 'utf8');
+  assert.match(daily, /concurrency:/,
+    'the daily build needs a concurrency group, or it can race itself');
+  assert.match(daily, /cancel-in-progress:\s*false/,
+    'cancelling a run mid-build would throw away the data it had already fetched');
+});

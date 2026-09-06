@@ -35,6 +35,14 @@ on:
         options: [full, light]
         default: full
 
+# TWO DATA RUNS MUST NEVER OVERLAP. Each builds the whole of data/ from
+# scratch, so a second one starting mid-build races the first to the same files
+# and the loser's seven minutes of work is discarded at the push. The light
+# Sunday crons sit close enough to the daily to make that a real possibility.
+concurrency:
+  group: daily-data-update
+  cancel-in-progress: false
+
 jobs:
   update-data:
     runs-on: ubuntu-latest
@@ -244,7 +252,26 @@ jobs:
           - ESPN news cached
           - Player stats synced from nflverse"
           fi
-          git push
+          # THE PUSH IS THE ONLY STEP THAT CAN THROW AWAY A FINISHED BUILD.
+          #
+          # 2026-09-06: every build step passed, the commit was made, and the
+          # push was rejected with "fetch first" because a code commit had
+          # landed during the seven minutes the data took to build. The run
+          # went red having done all the work and kept none of it — the same
+          # shape as the eleven-day outage, where the pipeline ran fine and
+          # committed nothing.
+          #
+          # A rebase is safe here: this job is the only thing that writes
+          # data/, and `concurrency` above stops it racing itself, so whatever
+          # landed underneath is code and cannot conflict with these files.
+          for attempt in 1 2 3; do
+            if git push; then exit 0; fi
+            echo "push rejected — something landed during the build; rebasing and retrying ($attempt/3)"
+            git pull --rebase origin main || { echo "::error::rebase failed, leaving the commit unpushed"; exit 1; }
+            sleep $((attempt * 3))
+          done
+          echo "::error::could not push after three attempts"
+          exit 1
 
       # The data-integrity suite has to run HERE, not only in test.yml.
       #
