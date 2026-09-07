@@ -36,6 +36,20 @@ jobs:
       - name: Validate play-callers
         run: node scripts/check-playcallers.js
 
+      # DOES THE SUITE ACTUALLY CHECK ANYTHING? A passing suite is not evidence
+      # that the code is right; it is evidence that nothing DISAGREED. Three
+      # bugs shipped in one day past green tests, because each test had been
+      # written from the same wrong idea as the code it covered — the draft
+      # value sign, the offseason boundary, and a CSP check that searched the
+      # whole policy instead of the directive.
+      #
+      # This changes the code on purpose, one character at a time, and fails if
+      # the suite catches fewer of those edits than it used to. Not a target: a
+      # ratchet. See tests/mutation-baseline.json for why 100% is the wrong
+      # thing to chase.
+      - name: The suite has not got weaker
+        run: node scripts/mutate.js --budget 60 --seed 7 --strict
+
       - name: Every script parses
         run: |
           for f in scripts/*.js scripts/lib/*.js assets/*.js; do

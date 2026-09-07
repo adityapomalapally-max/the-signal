@@ -99,7 +99,7 @@ async function updatePlayerStatuses(sleeperPlayers) {
   // indistinguishable from a run that failed unless it says which it was —
   // meta.json read `playerStatusesUpdated: 0` for weeks with no way to tell.
   const diagnostics = {
-    unmatched: [], ambiguous: [], overridesApplied: [], overridesOutranked: [],
+    unmatched: [], ambiguous: [], positionMismatch: [], overridesApplied: [], overridesOutranked: [],
     overridesExpired: [], overridesOrphaned: [], overrideErrors: [], feedSilent: 0,
   };
 
@@ -112,12 +112,20 @@ async function updatePlayerStatuses(sleeperPlayers) {
   //   "James Cook III"    -> last token "III",   Sleeper stores "Cook"
   // A player who never matches is never evaluated at all, so his status is
   // frozen just as hard as a bad guard would freeze it, and silently.
+  //
+  // A PLAYER CAN BE LISTED AT MORE THAN ONE POSITION, and 2025 produced the
+  // first one that matters in decades. Sleeper carries Travis Hunter as
+  // position "DB" with fantasy_positions ["DB","WR"]; the board carries him as
+  // a WR, because that is the only way he is ownable. Indexing on `position`
+  // alone filed him under DB and nothing looking for a receiver ever found him.
   const nameIndex = new Map();
   for (const sp of Object.values(sleeperPlayers)) {
     if (!sp || !sp.position) continue;
     const full = sp.full_name || `${sp.first_name || ''} ${sp.last_name || ''}`;
-    const key = `${normalizeName(full)}|${sp.position}`;
-    if (!key.startsWith('|')) {
+    const positions = new Set([sp.position, ...(sp.fantasy_positions || [])].filter(Boolean));
+    for (const pos of positions) {
+      const key = `${normalizeName(full)}|${pos}`;
+      if (key.startsWith('|')) continue;
       if (!nameIndex.has(key)) nameIndex.set(key, []);
       nameIndex.get(key).push(sp);
     }
@@ -129,7 +137,27 @@ async function updatePlayerStatuses(sleeperPlayers) {
     let match = null;
     if (player.sleeperId && sleeperPlayers[player.sleeperId]) {
       const byId = sleeperPlayers[player.sleeperId];
-      if (byId.position === player.pos) match = byId;
+      // AN ID MATCH IS THE MATCH. This used to be thrown away unless the
+      // position strings also agreed, which quietly turned position back into a
+      // join key one line after the comment above says an id beats name
+      // matching outright — and this repo's standing rule is that names are
+      // never a join key.
+      //
+      // The cost was exactly what the paragraph above warns about: Travis
+      // Hunter is a WR on the board and a DB to Sleeper, so his id resolved,
+      // his position did not, and his status was frozen and reported as
+      // "unmatched" every single day.
+      //
+      // A disagreement is still worth knowing about — it can mean a stale id
+      // pointing at the wrong player — so it is REPORTED rather than used to
+      // drop the player. Reporting it keeps the signal; dropping him lost the
+      // status and the signal at once.
+      match = byId;
+      const listed = new Set([byId.position, ...(byId.fantasy_positions || [])].filter(Boolean));
+      if (!listed.has(player.pos)) {
+        diagnostics.positionMismatch.push(
+          `${player.name}: we say ${player.pos}, Sleeper says ${[...listed].join('/') || 'nothing'} (id ${player.sleeperId})`);
+      }
     }
 
     if (!match) {
@@ -241,6 +269,7 @@ async function updatePlayerStatuses(sleeperPlayers) {
   writeJSON('players.json', players);
   log(`Updated ${updated} player statuses`);
   if (diagnostics.unmatched.length) log(`  UNMATCHED in Sleeper DB (${diagnostics.unmatched.length}): ${diagnostics.unmatched.join(', ')}`);
+  if (diagnostics.positionMismatch.length) log(`  POSITION DISAGREES but the id matched (${diagnostics.positionMismatch.length}): ${diagnostics.positionMismatch.join('; ')}`);
   if (diagnostics.ambiguous.length) log(`  AMBIGUOUS, skipped (${diagnostics.ambiguous.length}): ${diagnostics.ambiguous.join(', ')}`);
   if (diagnostics.overridesApplied.length) {
     log(`  Overrides applied (${diagnostics.overridesApplied.length}):`);

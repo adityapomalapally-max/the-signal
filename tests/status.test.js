@@ -8,6 +8,8 @@
 
 const test = require('node:test');
 const assert = require('node:assert');
+const fs = require('node:fs');
+const path = require('node:path');
 const { formatStatus, STATUS_CLASSES, ESCALATIONS } = require('../scripts/lib/status');
 
 test('the body part rides along with the status', () => {
@@ -60,4 +62,40 @@ test('a status-out word never resolves to a healthy class', () => {
     const out = formatStatus(word, 'Knee');
     if (out) assert.notStrictEqual(out.statusClass, 'status-healthy', `${word} rendered as healthy`);
   }
+});
+
+test('an id that resolves IS the match, whatever the position says', () => {
+  // TRAVIS HUNTER. Sleeper carries him as position "DB" with fantasy_positions
+  // ["DB","WR"]; the board carries him as a WR, because that is the only way he
+  // is ownable. His sleeperId resolved every day and was then thrown away
+  // because the position strings disagreed, so his status was frozen and he was
+  // reported "unmatched" in every run for weeks.
+  //
+  // The rule this broke is the repo's oldest: names are never a join key. A
+  // position string is a name. The id is the key, and an id that resolves is
+  // the match — a disagreement gets reported, not used to drop the player.
+  const src = fs.readFileSync(path.join(__dirname, '..', 'scripts', 'update-data.js'), 'utf8');
+  const idBlock = src.slice(src.indexOf('if (player.sleeperId && sleeperPlayers[player.sleeperId])'),
+                            src.indexOf('if (!match) {'));
+  assert.ok(!/if\s*\(\s*byId\.position\s*===\s*player\.pos\s*\)\s*match\s*=/.test(idBlock),
+    'the id match is gated on the position again — that is a name being used as a join key');
+  assert.match(idBlock, /diagnostics\.positionMismatch/,
+    'a position disagreement must still be reported, or a stale id becomes invisible');
+
+  // And the name index has to file a two-way player under every position he is
+  // listed at, or nothing looking for a receiver will ever find him.
+  assert.match(src, /fantasy_positions/,
+    'the name index ignores fantasy_positions, so a two-way player is filed under one position only');
+});
+
+test('nobody in the pool is left unmatched or ambiguous', () => {
+  // The check that actually caught Hunter. It reads what the last real run
+  // wrote, so it fails on the day a feed rename breaks a join rather than
+  // whenever somebody next looks.
+  const meta = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'meta.json'), 'utf8'));
+  const d = meta.statusDiagnostics || {};
+  assert.deepStrictEqual(d.unmatched || [], [],
+    'a player the status feed cannot match has a frozen status and nothing on the page says so');
+  assert.deepStrictEqual(d.ambiguous || [], [],
+    'an ambiguous name is skipped entirely — two players are sharing one identity');
 });

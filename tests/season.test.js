@@ -96,6 +96,17 @@ test('the season being played is never called completed', async () => {
     'in May the season the feed names has not been played');
   assert.strictEqual(await season.lastCompletedSeason(new Date('2027-02-20T12:00:00Z')), 2027,
     'in February it names the season that has just finished');
+
+  // MARCH IS THE BOUNDARY, so March is what has to be pinned. Found by
+  // scripts/mutate.js: changing `month + 1 >= 3` to `month - 1 >= 3` left
+  // February and May answering identically and only moved March and April —
+  // the two months the test did not look at. A boundary tested either side of
+  // but never ON is a boundary nobody has checked.
+  assert.strictEqual(await season.lastCompletedSeason(new Date('2027-03-01T12:00:00Z')), 2026,
+    'the league year turns over in March; from the 1st the named season is the upcoming one');
+  assert.strictEqual(await season.lastCompletedSeason(new Date('2027-04-10T12:00:00Z')), 2026);
+  assert.strictEqual(await season.lastCompletedSeason(new Date('2027-02-28T12:00:00Z')), 2027,
+    'and the day before, it is still the one just played');
 });
 
 test('the offseason never names an unplayed season as completed', () => {

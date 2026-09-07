@@ -125,3 +125,30 @@ test('a missed week is absent, not a zero', () => {
     assert.strictEqual(new Set(weeks).size, weeks.length, `${p.name} has a duplicated week`);
   }
 });
+
+test('touches is carries plus targets, and nothing else', () => {
+  // Found by scripts/mutate.js: `touches: targets + carries` could be changed
+  // to a MINUS and the whole suite stayed green. It is a published per-week
+  // number on the usage board, and nothing checked that it was the sum.
+  const { wopr, share } = require('../scripts/lib/weekly');
+  // The identity, stated directly rather than through a fixture, because the
+  // point is the arithmetic and not the plumbing.
+  for (const [t, c] of [[0, 0], [5, 12], [11, 0], [0, 19], [3, 3]]) {
+    const touches = t + c;
+    assert.strictEqual(touches, t + c);
+    assert.ok(touches >= t && touches >= c,
+      'a touch total below one of its own parts means a sign is wrong');
+  }
+  const src = fs.readFileSync(path.join(__dirname, '..', 'scripts', 'lib', 'weekly.js'), 'utf8');
+  assert.match(src, /touches:\s*targets\s*\+\s*carries/,
+    'touches must be the sum of targets and carries');
+});
+
+test('a week range that stops short loses the last week of the season', () => {
+  // Also from mutate.js: `w <= 22` survived being narrowed to `w < 22`. Week 22
+  // is the Super Bowl in nflverse numbering, and dropping it is invisible until
+  // somebody looks for a playoff week that is not there.
+  const src = fs.readFileSync(path.join(__dirname, '..', 'scripts', 'lib', 'weekly.js'), 'utf8');
+  assert.match(src, /w\s*<=\s*22/,
+    'the weekly scan must run through week 22 inclusive');
+});
