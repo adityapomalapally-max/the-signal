@@ -366,10 +366,26 @@ async function checkHeaders() {
       fail('headers', "the live CSP now allows 'unsafe-eval'",
         'Nothing on this site needs eval. This is a straight loosening.');
     }
-    if (csp.includes("script-src") && csp.includes("'unsafe-inline'")) {
+    // PARSE THE DIRECTIVE, DO NOT SEARCH THE STRING. The first version asked
+    // whether the whole policy contained 'unsafe-inline' — and it always will,
+    // because style-src legitimately allows it. So on the day script-src was
+    // finally cleaned up the report went on calling it debt, and printed
+    // "0 inline handlers stand between here and dropping it", which is the
+    // check disproving itself in its own message.
+    const scriptSrc = csp.split(';').map(d => d.trim()).find(d => d.startsWith('script-src')) || '';
+    const handlers = countInlineHandlers();
+    if (scriptSrc.includes("'unsafe-inline'")) {
       warn('headers', "script-src still allows 'unsafe-inline' — the known debt",
-        `${countInlineHandlers()} inline handlers stand between here and dropping it. `
+        `${handlers} inline handlers stand between here and dropping it. `
         + 'Until then the CSP cannot stop an injected payload from running.');
+    } else if (handlers > 0) {
+      // The policy is clean but the markup is not: the next deploy of that
+      // markup is broken, or somebody is about to loosen the policy to fix it.
+      fail('headers', `script-src is clean but ${handlers} inline handler(s) are back in the source`,
+        'Those handlers cannot run under this policy. Convert them to data-click actions '
+        + 'rather than restoring the directive.');
+    } else {
+      ok('headers', "script-src allows no inline script, and nothing in the source needs it");
     }
   }
   if (!missing.length && csp) ok('headers', `all ${REQUIRED_HEADERS.length} security headers present and the CSP is intact`);
