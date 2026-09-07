@@ -49,7 +49,9 @@ test('both entry points exist in the markup and are real buttons', () => {
   assert.ok(buttons.length >= 2, `expected an entry point on the profile and on the lab, found ${buttons.length}`);
   for (const b of buttons) {
     assert.ok(b[1].trim().length > 3, 'an entry point with no readable label');
-    assert.match(b[0], /onclick="askAbout\('(player|board)'\)"/, `unexpected handler: ${b[0]}`);
+    // Declared, not executed: the inline handler this used to look for is what
+    // kept 'unsafe-inline' in the CSP. See tests/csp.test.js.
+    assert.match(b[0], /data-click="ask-about" data-arg="(player|board)"/, `unexpected handler: ${b[0]}`);
   }
   assert.ok(/id="profileAskBtn"/.test(HTML), 'the profile has no ask entry point');
 });

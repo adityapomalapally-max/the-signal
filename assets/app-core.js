@@ -497,7 +497,7 @@ function renderRankingsViewToggle() {
   if (!host) return;
   if (!rosData || !rosData.players) { host.innerHTML = ''; return; }
   host.innerHTML = [['preseason', 'Preseason'], ['ros', 'Rest of season']].map(([k, label]) =>
-    `<button class="pos-btn${rankingsView === k ? ' active' : ''}" onclick="setRankingsView('${k}')">${label}</button>`).join('');
+    `<button class="pos-btn${rankingsView === k ? ' active' : ''}" data-click="rankings-view" data-arg="${k}">${label}</button>`).join('');
 }
 
 function rosRows(tab) {
@@ -532,7 +532,7 @@ function rosBoardHtml(tab) {
     // read as more points rather than a change of view.
     const up = r.ppgDelta > 0.05, down = r.ppgDelta < -0.05;
     const deltaColour = up ? 'var(--teal)' : down ? 'var(--blue)' : 'var(--text-muted)';
-    h += `<tr onclick="openProfile('${jsAttr(r.id)}')">
+    h += `<tr data-click="open-profile" data-arg="${jsAttr(r.id)}">
       <td class="ros-rank">${i + 1}</td>
       <td><div class="player-cell-name">${rankEsc(r.name)}</div>
         <div class="ros-sub">${rankEsc(r.pos)} · ${rankEsc(r.team || '')}</div></td>
@@ -652,7 +652,7 @@ function renderRankingsPage() {
       }))
     };
     let h = `<div style="display:flex;justify-content:flex-end;margin-bottom:10px;">`
-      + `<button class="export-btn" onclick="runExport(() => exportRowChart(rankExportSpec), rankExportSpec.title, this)">Export PNG</button></div>`;
+      + `<button class="export-btn" data-click="export-rank">Export PNG</button></div>`;
     h += `<div class="medical-card" style="padding:22px 20px;">`
       + rankWhiskerChart(shown, baseline, showPos)
       + `<div class="rank-legend">`
@@ -871,7 +871,7 @@ function sortTh(id, key, label, opts) {
   const nextDir = on ? (st.dir === 'asc' ? 'descending' : 'ascending')
     : (col.dir || (col.type === 'text' ? 'asc' : 'desc')) === 'asc' ? 'ascending' : 'descending';
   return `<th class="th-sort${on ? ' on' : ''}${cls}" aria-sort="${aria}"${o.attrs || ''}>`
-    + `<button type="button" class="th-sort-btn" onclick="setTableSort('${id}','${key}')"`
+    + `<button type="button" class="th-sort-btn" data-click="table-sort" data-arg="${id}" data-arg2="${key}"`
     + ` title="Sort by ${rankEsc(o.title || label)}, ${nextDir}">`
     // The arrow is inline, inside the text flow, so a label that wraps to two
     // lines keeps its arrow beside the last word instead of stranding it at the

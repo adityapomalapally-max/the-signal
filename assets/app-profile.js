@@ -39,7 +39,7 @@ function openProfile(id, fromRoute) {
   const hsUrl = getHeadshotUrl(player);
   if (hsUrl) {
     avatarEl.style.background = playerColor(player);
-    avatarEl.innerHTML = `<img src="${hsUrl}" alt="${player.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.remove();this.parentElement.textContent='${playerInitials(player)}';">`;
+    avatarEl.innerHTML = `<img src="${hsUrl}" alt="${player.name}" style="width:100%;height:100%;object-fit:cover;" data-fb="text" data-fb-initials="${playerInitials(player)}">`;
   } else {
     avatarEl.style.background = playerColor(player);
     avatarEl.innerHTML = '';
@@ -615,7 +615,7 @@ function renderAvatar(player, size, fontSize) {
     // lazy + async: the pool is 350 players and several pages render an avatar
     // per row, so the document holds ~770 of these. Eager decoding meant every
     // one of them was requested on load, including the pages nobody opened.
-    return `<img class="player-headshot" src="${rankEsc(url)}" alt="${rankEsc(player.name)}" width="${size}" height="${size}" loading="lazy" decoding="async" style="width:${size}px;height:${size}px;border-radius:${size <= 36 ? 8 : 12}px;" onerror="this.outerHTML='<div class=\\'player-initials\\' style=\\'background:${playerColor(player)};width:${size}px;height:${size}px;font-size:${fontSize}px;\\'>${playerInitials(player)}</div>'">`;
+    return `<img class="player-headshot" src="${rankEsc(url)}" alt="${rankEsc(player.name)}" width="${size}" height="${size}" loading="lazy" decoding="async" style="width:${size}px;height:${size}px;border-radius:${size <= 36 ? 8 : 12}px;" data-fb="chip" data-fb-initials="${playerInitials(player)}" data-fb-color="${playerColor(player)}" data-fb-size="${size}" data-fb-font="${fontSize}">`;
   }
   return `<div class="player-initials" style="background:${playerColor(player)};width:${size}px;height:${size}px;font-size:${fontSize}px;">${playerInitials(player)}</div>`;
 }
@@ -1094,8 +1094,8 @@ function seasonHeadlineHtml(player) {
       </div>`).join('')}
     </div>
     <div style="margin-top:12px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;">
-      <button type="button" class="profile-jump" onclick="switchProfileTab('stats')">Full game log and season totals →</button>
-      <button type="button" class="profile-jump" onclick="closeProfile(); navigate('${jsAttr(board)}')">See where he ranks →</button>
+      <button type="button" class="profile-jump" data-click="profile-tab" data-arg="stats">Full game log and season totals →</button>
+      <button type="button" class="profile-jump" data-click="profile-nav" data-arg="${jsAttr(board)}">See where he ranks →</button>
     </div>
   </div>`;
 }
@@ -1767,7 +1767,7 @@ function renderComparePage() {
   // Position tabs
   const tabs = document.getElementById('comparePosTabs');
   tabs.innerHTML = positions.map(p =>
-    `<button onclick="setComparePos('${p}')" style="font-family:var(--mono);font-size:11px;letter-spacing:1px;padding:6px 14px;border-radius:6px;cursor:pointer;border:1px solid ${p === comparePos ? 'var(--gold)' : 'var(--border)'};background:${p === comparePos ? 'var(--gold-muted)' : 'transparent'};color:${p === comparePos ? 'var(--gold)' : 'var(--text-secondary)'};">${p}</button>`
+    `<button data-click="compare-pos" data-arg="${p}" style="font-family:var(--mono);font-size:11px;letter-spacing:1px;padding:6px 14px;border-radius:6px;cursor:pointer;border:1px solid ${p === comparePos ? 'var(--gold)' : 'var(--border)'};background:${p === comparePos ? 'var(--gold-muted)' : 'transparent'};color:${p === comparePos ? 'var(--gold)' : 'var(--text-secondary)'};">${p}</button>`
   ).join('');
 
   // Roster chips for the active position
@@ -1777,7 +1777,7 @@ function renderComparePage() {
     const on = compareSelected.includes(p.id);
     const idx = compareSelected.indexOf(p.id);
     const col = on ? COMPARE_COLORS[idx] : 'var(--border)';
-    return `<button onclick="toggleCompare('${p.id}')" style="display:flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:8px;cursor:pointer;border:1px solid ${col};background:${on ? 'var(--bg-card-hover)' : 'var(--bg-card)'};color:var(--text);">
+    return `<button data-click="compare" data-arg="${p.id}" style="display:flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:8px;cursor:pointer;border:1px solid ${col};background:${on ? 'var(--bg-card-hover)' : 'var(--bg-card)'};color:var(--text);">
       ${renderAvatar(p, 26, 9)}
       <span style="font-size:12px;font-weight:${on ? '600' : '400'};">${p.name}</span>
     </button>`;
@@ -1839,7 +1839,7 @@ function profileCompareHtml(playerId) {
   return `<div class="medical-card" style="margin-bottom:16px;">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px;">
       <span style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">Compare against</span>
-      <select class="filter-select" id="profileCompareSelect" onchange="setProfileCompare(this.value)">
+      <select class="filter-select" id="profileCompareSelect" data-change="profile-compare">
         <option value="">Pick another ${rankEsc(player.pos)}…</option>
         ${peers.map(p => `<option value="${rankEsc(p.id)}"${p.id === current ? ' selected' : ''}>${rankEsc(p.name)}${p.fRank ? ` · ${rankEsc(p.fRank)}` : ''}</option>`).join('')}
       </select>
@@ -2011,7 +2011,9 @@ function renderHeroSidebar() {
       tag: a.tag,
       tagClass: a.tagClass,
       meta: `By <span>${a.author || 'Adi'}</span> · ${a.readTime || ''}`,
-      onclick: `openArticle('${a.slug}')`
+      // Attributes rather than code, like everything else that used to hand a
+      // string of JavaScript to the markup.
+      act: `data-click="article" data-arg="${a.slug}"`
     });
   });
 
@@ -2039,13 +2041,13 @@ function renderHeroSidebar() {
         tag: 'Injury Intel',
         tagClass: 'tag-injury',
         meta: `${m.player.pos} · ${m.player.team} · Impact: ${m.maxImpact}%`,
-        onclick: `openProfile('${m.id}')`
+        act: `data-click="open-profile" data-arg="${m.id}"`
       });
     }
   }
 
   container.innerHTML = stories.slice(0, 5).map((s, i) => `
-    <div class="sidebar-story" onclick="${s.onclick}" style="cursor:pointer;">
+    <div class="sidebar-story" ${s.act} style="cursor:pointer;">
       <span class="sidebar-story-num">${String(i + 1).padStart(2, '0')}</span>
       <div class="sidebar-story-tag ${s.tagClass}">${s.tag}</div>
       <h3>${s.title}</h3>
@@ -2078,7 +2080,7 @@ function renderInjuryWatch() {
 
   container.innerHTML = watchList.map(({ id, player, topInjury }) => {
     const shortInjury = topInjury.title.split('—')[0].split('(')[0].trim();
-    return `<div class="player-quick" onclick="openProfile('${id}')">
+    return `<div class="player-quick" data-click="open-profile" data-arg="${id}">
       ${renderAvatar(player, 36, 12)}
       <div class="player-quick-info">
         <div class="player-quick-name">${player.name}</div>

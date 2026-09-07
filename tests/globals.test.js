@@ -67,7 +67,17 @@ function topLevelNames(src) {
 
 test('the scripts are read in the order the markup loads them', () => {
   assert.ok(FILES.length >= 5, `found ${FILES.length} app scripts in index.html`);
-  assert.strictEqual(FILES[0], 'app-core.js', 'app-core must load first — everything else uses its bindings');
+  // app-actions.js may sit ahead of app-core: it only attaches delegated
+  // listeners to the document and resolves nothing until an event fires, so it
+  // has no load-time dependency on anything. Everything else does.
+  const consumers = ['app-export.js', 'app-pages.js', 'app-profile.js', 'app-feeds.js'];
+  const core = FILES.indexOf('app-core.js');
+  assert.ok(core !== -1, 'app-core.js is not loaded at all');
+  for (const f of consumers) {
+    const i = FILES.indexOf(f);
+    if (i === -1) continue;
+    assert.ok(core < i, `${f} loads before app-core.js, whose bindings it uses`);
+  }
 });
 
 test('no top-level name is declared in two files', () => {

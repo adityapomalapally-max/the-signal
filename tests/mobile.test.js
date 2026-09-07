@@ -201,7 +201,7 @@ test('a phone can search for a player', () => {
   const form = HTML.match(/<form class="mobile-nav-search"[\s\S]{0,400}?<\/form>/);
   assert.ok(form, 'the drawer has no search');
   assert.match(form[0], /<input[^>]*aria-label="[^"]+"/, 'the drawer search input has no accessible name');
-  assert.match(form[0], /onsubmit="[^"]*mobileNavSearch\(/, 'the drawer search does not submit to mobileNavSearch');
+  assert.match(form[0], /data-submit="nav-search"/, 'the drawer search does not submit to mobileNavSearch');
   // A REAL input. The desktop affordance switches page and calls focus()
   // behind a timeout; iOS only raises the keyboard for a focus inside the tap
   // itself, so that pattern lands on a search box with no keyboard.

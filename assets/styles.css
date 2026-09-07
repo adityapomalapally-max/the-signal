@@ -3030,3 +3030,9 @@ a.wire-name:hover { color: var(--gold); }
   font-family: var(--mono); font-size: 9.5px; letter-spacing: 1.4px;
   text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px;
 }
+
+/* Hover states that used to be inline onmouseover/onmouseout handlers. They
+   were two of the sixty-odd inline attributes holding 'unsafe-inline' in the
+   CSP, and a background change on hover was never JavaScript's job. */
+.hover-card { transition: background .15s; }
+.hover-card:hover, .hover-card:focus-visible { background: var(--bg-card-hover); outline: none; }

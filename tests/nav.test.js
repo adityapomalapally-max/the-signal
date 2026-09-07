@@ -60,9 +60,13 @@ test('every nav item is a real link', () => {
       assert.ok(item.href, `${cls} "${item.label}" has no href — it cannot be focused, opened in a new tab, or followed`);
       assert.match(item.href, /^\//, `${cls} "${item.label}" href should be root-relative, got "${item.href}"`);
       // The SPA still has to handle the click itself, or every nav click is a
-      // full page load that throws away the loaded data.
-      assert.match(item.attrs, /preventDefault/,
+      // full page load that throws away the loaded data. The dispatcher in
+      // app-actions.js calls preventDefault for any data-click that is not
+      // marked data-raw, so carrying the action IS carrying the guard.
+      assert.match(item.attrs, /data-click="page(-nav)?"/,
         `${cls} "${item.label}" would fall through to a full page load`);
+      assert.ok(!/data-raw/.test(item.attrs),
+        `${cls} "${item.label}" opts out of preventDefault`);
     }
   }
 });
@@ -84,7 +88,7 @@ test('a nav href matches the page it switches to', () => {
   // that lies about where it goes — and the two only diverge silently.
   for (const cls of ['nav-item', 'mobile-nav-link']) {
     for (const item of nav(cls)) {
-      const called = (item.attrs.match(/switchPage\('([^']+)'\)/) || [])[1];
+      const called = (item.attrs.match(/data-arg="([^"]+)"/) || [])[1];
       assert.strictEqual(called, item.page,
         `${cls} "${item.label}": data-page is "${item.page}" but the handler opens "${called}"`);
       const expected = item.page === 'home' ? '/' : `/${item.page}`;

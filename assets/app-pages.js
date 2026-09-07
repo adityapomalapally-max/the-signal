@@ -224,10 +224,13 @@ function setLabView(view, btn) {
 // Where a board row points. Player boards open a profile; the Defence board is
 // team rows, and a team row calling openProfile(null) would be a control that
 // looks live and does nothing.
+// RETURNS ATTRIBUTES, NOT CODE. It used to hand back a string of JavaScript to
+// drop into an onclick, which is exactly the shape that kept 'unsafe-inline' in
+// the CSP. Same decision, declared instead of executed.
 function labRowAction(r) {
-  if (r.id) return `openProfile('${jsAttr(r.id)}')`;
+  if (r.id) return `data-click="open-profile" data-arg="${jsAttr(r.id)}"`;
   const teamTarget = r.teamLink || r.team;
-  if (teamTarget) return `navigate('teams/${jsAttr(String(teamTarget).toLowerCase())}')`;
+  if (teamTarget) return `data-click="nav" data-arg="teams/${jsAttr(String(teamTarget).toLowerCase())}"`;
   return '';
 }
 
@@ -256,7 +259,7 @@ function labBarBoard(rows, m) {
     const w = (Math.abs(r.value) / span) * 100;
     const left = pos ? zeroPct : zeroPct - w;
     const tip = `${r.name} (${r.team}) — ${m.label}: ${r.value}${m.unit}`;
-    return `<div class="lab-row" tabindex="0" role="button" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}" onclick="${labRowAction(r)}">
+    return `<div class="lab-row" tabindex="0" role="button" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}" ${labRowAction(r)}>
       <div class="lab-name"><span class="lab-rank">${i + 1}</span><span class="lab-player">${rankEsc(r.name)}</span><span class="lab-team">${rankEsc(r.team || '')}</span></div>
       <div class="lab-track"><div style="position:absolute;left:${left.toFixed(2)}%;width:${Math.max(w, 0.4).toFixed(2)}%;"><div class="lab-bar${pos ? '' : ' neg'}"></div></div></div>
       <div class="lab-val">${r.value}${m.unit}</div>
@@ -288,7 +291,7 @@ function labDotBoard(rows, m, lo, hi) {
     // brackets — unchecked it read "SEA () — Yards per Target Allowed".
     const tip = `${r.name}${r.team ? ` (${r.team})` : ''} — ${m.label}: ${r.value}${m.unit}`
       + (typeof r.pct === 'number' ? ` — ${r.pct}th percentile at his position` : '');
-    return `<div class="lab-row" tabindex="0" role="button" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}" onclick="${labRowAction(r)}">
+    return `<div class="lab-row" tabindex="0" role="button" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}" ${labRowAction(r)}>
       <div class="lab-name"><span class="lab-rank">${i + 1}</span><span class="lab-player">${rankEsc(r.name)}</span><span class="lab-team">${rankEsc(r.team || '')}</span></div>
       <div class="lab-track"><div class="lab-rule"></div><div class="lab-dot" style="left:${X(r.value).toFixed(2)}%;"></div></div>
       <div class="lab-val">${r.value}${m.unit}</div>
@@ -305,7 +308,7 @@ function labTable(rows, m) {
   let h = `<div class="table-scroll"><table class="players-table rank-table"><thead><tr><th>#</th><th>${teams ? 'Defence' : 'Player'}</th>`
     + (teams ? '' : '<th>Team</th>')
     + `<th>${rankEsc(m.label)}</th></tr></thead><tbody>`;
-  h += rows.map((r, i) => `<tr onclick="${labRowAction(r)}"><td>${i + 1}</td><td>${rankEsc(r.name)}</td>`
+  h += rows.map((r, i) => `<tr ${labRowAction(r)}><td>${i + 1}</td><td>${rankEsc(r.name)}</td>`
     + (teams ? '' : `<td>${rankEsc(r.team || '')}</td>`)
     + `<td>${r.value}${m.unit}</td></tr>`).join('');
   return h + '</tbody></table></div>';
@@ -353,7 +356,7 @@ function labScatterChart(pts, spec) {
   pts.forEach(p => {
     const cx = X(p.x), cy = Y(p.y);
     const tip = `${p.name} (${p.team}) — ${spec.x.label}: ${p.x} · ${spec.y.label}: ${p.y}`;
-    svg += `<g class="scatter-dot" tabindex="0" role="button" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}" onclick="openProfile('${p.id}')">`;
+    svg += `<g class="scatter-dot" tabindex="0" role="button" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}" data-click="open-profile" data-arg="${p.id}">`;
     svg += `<circle cx="${cx}" cy="${cy}" r="10" fill="transparent"/>`;
     svg += `<circle cx="${cx}" cy="${cy}" r="5" fill="#a8893a" stroke="#161a23" stroke-width="2"/>`;
     if (labelled.has(p.id)) {
@@ -836,7 +839,7 @@ function labFieldTable(rows, m) {
     // A quarterback row opens his field map, because that is the thing the
     // table is a way into. Everyone else has no grid, so the row goes where
     // every other board on this page goes.
-    body += `<tr class="${labFieldPlayer === r.id ? 'field-open' : ''}" onclick="${shape.grid ? `openFieldGrid('${jsAttr(r.id)}')` : labRowAction(r)}">`
+    body += `<tr class="${labFieldPlayer === r.id ? 'field-open' : ''}" ${shape.grid ? `data-click="field-grid" data-arg="${jsAttr(r.id)}"` : labRowAction(r)}>`
       + `<td class="field-name">${rankEsc(r.name)}</td>`
       + `<td class="field-team">${rankEsc(r.team || '')}</td><td class="field-total">${r.total}</td>`;
     for (const c of cols) {
@@ -896,7 +899,7 @@ function labFieldGrid(row, m) {
   })() : null;
 
   let h = `<div class="field-grid-wrap"><div class="field-grid-head">${rankEsc(row.name)} — ${rankEsc(m.label)} by field zone, ${labSeason}`
-    + `<button class="field-close" onclick="closeFieldGrid()" aria-label="Close the field map">Close</button></div>`;
+    + `<button class="field-close" data-click="close-field-grid" aria-label="Close the field map">Close</button></div>`;
   h += `<div class="field-grid" role="img" aria-label="Field map for ${rankEsc(row.name)}">`;
   h += `<div class="field-grid-corner"></div>` + sides.map(([, l]) => `<div class="field-grid-side">${l}</div>`).join('');
   for (const b of bands) {
@@ -1162,9 +1165,12 @@ function labFactsHtml(season, pos) {
   // unremarkable numbers is worse than no strip.
   if (!facts.length) return '';
   const cards = facts.slice(0, 4).map(f => {
-    const go = f.id ? `openProfile('${jsAttr(f.id)}')` : `navigate('${jsAttr(f.board)}')`;
-    return `<div class="fact-card" onclick="${go}" tabindex="0" role="button"
-        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${go};}">
+    // Enter and Space now come from the shared keydown handler in
+    // app-actions.js, so the card no longer carries its own onkeydown.
+    const go = f.id
+      ? `data-click="open-profile" data-arg="${jsAttr(f.id)}"`
+      : `data-click="nav" data-arg="${jsAttr(f.board)}"`;
+    return `<div class="fact-card" ${go} tabindex="0" role="button">
       <div class="fact-tag">${rankEsc(f.tag)}</div>
       <div class="fact-headline">${rankEsc(f.headline)}</div>
       <div class="fact-detail">${rankEsc(f.detail)}</div>
@@ -1334,7 +1340,7 @@ function renderFilmPage() {
       + `</div></div>`;
     return;
   }
-  host.innerHTML = mine.map(a => `<a class="film-card" href="/article/${jsAttr(a.slug)}" onclick="event.preventDefault();navigate('article/${jsAttr(a.slug)}')">`
+  host.innerHTML = mine.map(a => `<a class="film-card" href="/article/${jsAttr(a.slug)}" data-click="nav" data-arg="article/${jsAttr(a.slug)}">`
     + `<div class="film-card-tag">${rankEsc(a.tag)}</div>`
     + `<h3 class="film-card-title">${rankEsc(a.title)}</h3>`
     + `<div class="film-card-meta">${rankEsc(a.author || '')}${a.readTime ? ` &middot; ${rankEsc(a.readTime)}` : ''}${a.date ? ` &middot; ${rankEsc(a.date)}` : ''}</div>`
@@ -1365,7 +1371,7 @@ function renderLabPage() {
   const modeRow = document.getElementById('labModeToggle');
   if (modeRow) {
     modeRow.innerHTML = [['stats', 'Stats'], ['charts', 'Charts'], ['field', 'Field Map'], ['rushing', 'Rushing'], ['athletic', 'Athletic'], ['defense', 'Defense']].map(([k, label]) =>
-      `<button class="pos-btn${labMode === k ? ' active' : ''}" onclick="setLabMode('${k}')">${label}</button>`).join('');
+      `<button class="pos-btn${labMode === k ? ' active' : ''}" data-click="lab-mode" data-arg="${k}">${label}</button>`).join('');
   }
 
   // Season buttons follow whichever half is showing: FTN does not chart as far
@@ -1376,7 +1382,7 @@ function renderLabPage() {
   const seasonRow = document.getElementById('labSeasonFilter');
   if (seasonRow) {
     seasonRow.innerHTML = seasons.map(y =>
-      `<button class="pos-btn${y === labSeason ? ' active' : ''}" onclick="setLabSeason('${y}', this)">${y}</button>`).join('');
+      `<button class="pos-btn${y === labSeason ? ' active' : ''}" data-click="lab-season" data-arg="${y}">${y}</button>`).join('');
   }
   // A control that applies to nothing is worse than a missing one — it invites
   // a click that changes nothing. Athletic has no season; Defense is by team,
@@ -1415,7 +1421,7 @@ function renderLabPage() {
     b.classList.toggle('active', b.textContent.trim() === labSeason));
   const m = metrics.find(x => x.key === labMetricKey);
   document.getElementById('labMetricRow').innerHTML = metrics.map(x =>
-    `<button class="lab-metric${x.key === labMetricKey ? ' active' : ''}" onclick="setLabMetric('${x.key}')">${rankEsc(x.label)}</button>`).join('');
+    `<button class="lab-metric${x.key === labMetricKey ? ' active' : ''}" data-click="lab-metric" data-arg="${x.key}">${rankEsc(x.label)}</button>`).join('');
   if (!m) { board.innerHTML = ''; return; }
 
   // THE FIELD MAP IS A MATRIX, NOT A LEADERBOARD, so it leaves before the row
@@ -1470,7 +1476,7 @@ function renderLabPage() {
 
   let h = `<div class="lab-head"><span class="lab-title">${rankEsc(boardTitle)}</span>`
     + `<span class="lab-qual">${rankEsc(labQualFor(m))}${m.lower ? ' · LOWER RANKS FIRST' : ''}`
-    + (rows.length ? ` <button class="export-btn" onclick="runExport(() => exportRowChart(labExportBoard), labExportBoard.title, this)">Export PNG</button>` : '')
+    + (rows.length ? ` <button class="export-btn" data-click="export-lab-board">Export PNG</button>` : '')
     + `</span></div>`;
   h += `<div class="lab-sub">${rankEsc(m.note)}</div>`;
   if (!rows.length) {
@@ -1529,7 +1535,7 @@ function renderLabPage() {
   let sh = `<div class="scatter-wrap">`;
   sh += `<div class="lab-head"><span class="lab-title">${rankEsc(scatterTitle)}</span>`
     + `<span class="lab-qual">${rankEsc(labQualText(spec))} · ${pts.length} QUALIFIED`
-    + ` <button class="export-btn" onclick="runExport(() => exportScatterChart(labExportScatter), labExportScatter.title, this)">Export PNG</button>`
+    + ` <button class="export-btn" data-click="export-lab-scatter">Export PNG</button>`
     + `</span></div>`;
   sh += `<div class="lab-sub">${rankEsc(spec.sub)}</div>`;
   if (labView === 'chart') {
@@ -1537,7 +1543,7 @@ function renderLabPage() {
   } else {
     sh += `<div class="table-scroll"><table class="players-table rank-table"><thead><tr><th>Player</th><th>Team</th><th>${rankEsc(spec.x.label)}</th><th>${rankEsc(spec.y.label)}</th></tr></thead><tbody>`
       + [...pts].sort((a, b) => b.y - a.y).map(p =>
-        `<tr onclick="openProfile('${p.id}')"><td>${rankEsc(p.name)}</td><td>${rankEsc(p.team || '')}</td><td>${p.x}</td><td>${p.y}</td></tr>`).join('')
+        `<tr data-click="open-profile" data-arg="${p.id}"><td>${rankEsc(p.name)}</td><td>${rankEsc(p.team || '')}</td><td>${p.x}</td><td>${p.y}</td></tr>`).join('')
       + '</tbody></table></div>';
   }
   sh += `</div>`;
@@ -1633,7 +1639,7 @@ function setTeam(abbr) {
 }
 
 function teamsTabsHtml() {
-  const tab = (view, label, note) => `<button class="pos-btn${teamsView === view ? ' active' : ''}" onclick="setTeamsView('${view}')" title="${rankEsc(note)}">${label}</button>`;
+  const tab = (view, label, note) => `<button class="pos-btn${teamsView === view ? ' active' : ''}" data-click="teams-view" data-arg="${view}" title="${rankEsc(note)}">${label}</button>`;
   return `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px;">
     ${tab('team', 'By team', 'One team: who gets the ball, how they line up, what their defence plays, and the schedule')}
     ${tab('league', 'Across the league', 'All 32 ranked, and the biggest identity shifts of the season')}
@@ -1647,7 +1653,7 @@ function teamUsageRows(list, valueOf, unitLabel, max) {
     const w = (typeof v === 'number' && max > 0) ? (v / max) * 100 : 0;
     const tip = `${p.name}${p.producedFor ? ` — these numbers are from ${p.producedFor}` : ''}`
       + (p.games ? ` · ${p.games} games` : '') + (p.ppg ? ` · ${p.ppg} PPG` : '');
-    return `<div class="tm-row" tabindex="0" role="button" data-tip="${rankEsc(tip)}" onclick="openProfile('${p.id}')">
+    return `<div class="tm-row" tabindex="0" role="button" data-tip="${rankEsc(tip)}" data-click="open-profile" data-arg="${p.id}">
       <span class="tm-name">
         <span class="tm-player">${rankEsc(p.name)}</span>
         ${p.producedFor ? `<span class="tm-moved" title="Produced for ${rankEsc(p.producedFor)}">${rankEsc(p.producedFor)}</span>` : ''}
@@ -1695,7 +1701,7 @@ function renderTeamPicker() {
   el.innerHTML = divs.map(d => `<div class="team-div">
     <div class="team-div-label">${rankEsc(d)}</div>
     <div class="team-div-chips">${byDiv[d].sort((a, b) => a.abbr.localeCompare(b.abbr)).map(t =>
-      `<button class="team-chip${t.abbr === currentTeam ? ' active' : ''}" onclick="setTeam('${t.abbr}')" title="${rankEsc(t.name)}">${rankEsc(t.abbr)}</button>`).join('')}</div>
+      `<button class="team-chip${t.abbr === currentTeam ? ' active' : ''}" data-click="set-team" data-arg="${t.abbr}" title="${rankEsc(t.name)}">${rankEsc(t.abbr)}</button>`).join('')}</div>
   </div>`).join('');
 }
 
@@ -1897,7 +1903,7 @@ function renderTeamPage() {
   if (qbs.length) {
     h += `<div class="medical-card" style="padding:18px;margin-bottom:14px;">
       <div style="font-family:var(--serif);font-size:17px;font-weight:700;margin-bottom:10px;">Quarterbacks</div>`
-      + qbs.map(q => `<div class="tm-row" tabindex="0" role="button" onclick="openProfile('${q.id}')">
+      + qbs.map(q => `<div class="tm-row" tabindex="0" role="button" data-click="open-profile" data-arg="${q.id}">
           <span class="tm-name"><span class="tm-player">${rankEsc(q.name)}</span>
           ${q.producedFor ? `<span class="tm-moved">${rankEsc(q.producedFor)}</span>` : ''}
           ${q.statusClass && q.statusClass !== 'status-healthy' ? `<span class="tm-status ${q.statusClass}">${rankEsc(q.status)}</span>` : ''}</span>
@@ -1919,7 +1925,7 @@ function renderTeamPage() {
     <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:2px;">
       <span style="font-family:var(--serif);font-size:17px;font-weight:700;">${m.season} Schedule</span>
       <div class="position-filter" id="sosPosFilter">${['QB','RB','WR','TE'].map(x =>
-        `<button class="pos-btn${x === sosPos ? ' active' : ''}" onclick="setSosPos('${x}', this)">${x}</button>`).join('')}</div>
+        `<button class="pos-btn${x === sosPos ? ' active' : ''}" data-click="sos-pos" data-arg="${x}">${x}</button>`).join('')}</div>
     </div>
     <div style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);letter-spacing:0.5px;margin-bottom:10px;">
       18 WEEKS · BYE IN WEEK ${t.bye || '—'}${sosTeam && sosTeam.season ?
@@ -2395,7 +2401,7 @@ function renderPlayersTable(search) {
 
   const rows = playerRows();
   tbody.innerHTML = rows.map(p => `
-    <tr onclick="openProfile('${jsAttr(p.id)}')">
+    <tr data-click="open-profile" data-arg="${jsAttr(p.id)}">
       <td><div class="player-cell">${renderAvatar(p, 36, 12)}<div><div class="player-cell-name">${rankEsc(p.name)}</div></div></div></td>
       <td><span style="font-family:var(--mono);font-size:12px;color:var(--text-muted);">${rankEsc(p.pos)}</span></td>
       <td>${rankEsc(p.team || '—')}</td>
@@ -2626,11 +2632,11 @@ function renderMedicals(search = '') {
 
   let html = `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;">`;
   Object.entries(MED_FILTERS).forEach(([key, label]) => {
-    html += `<button class="pos-btn${medFilter === key ? ' active' : ''}" onclick="setMedFilter('${key}')">${label} ${counts[key]}</button>`;
+    html += `<button class="pos-btn${medFilter === key ? ' active' : ''}" data-click="med-filter" data-arg="${key}">${label} ${counts[key]}</button>`;
   });
   html += `<span style="margin-left:auto;display:flex;align-items:center;gap:8px;">`
     + `<span style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);">Sort</span>`
-    + `<select onchange="setMedSort(this.value)" style="background:var(--bg-card);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-family:var(--mono);font-size:11px;">`
+    + `<select data-change="med-sort" style="background:var(--bg-card);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-family:var(--mono);font-size:11px;">`
     + Object.entries(MED_SORTS).map(([k, l]) => `<option value="${k}"${medSort === k ? ' selected' : ''}>${l}</option>`).join('')
     + `</select></span></div>`;
 
@@ -2695,7 +2701,7 @@ function medCardHtml(r) {
   if (r.worst) meta.push(`Career impact ${r.worst.impact}`);
   if (r.seasons && r.gamesOut) meta.push(`${r.gamesOut} ruled out`);
 
-  return `<div class="medical-card" style="cursor:pointer;transition:background 0.2s;" onclick="openMedical('${jsAttr(r.id)}')" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background=''">
+  return `<div class="medical-card" style="cursor:pointer;transition:background 0.2s;" data-click="open-medical" data-arg="${jsAttr(r.id)}" class="hover-card">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
       ${medAvatar(r, 40, 12)}
       <div style="min-width:0;">
@@ -2721,8 +2727,8 @@ function medDetailHtml(id) {
         <div style="font-size:13px;color:var(--text-secondary);">${rankEsc(sub)}</div>
       </div>
       <span style="display:flex;gap:8px;align-items:center;">
-        ${r.player ? `<span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);cursor:pointer;" onclick="openProfile('${jsAttr(r.id)}')">Full profile →</span>` : ''}
-        <span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);cursor:pointer;" onclick="closeMedical()">✕ Close</span>
+        ${r.player ? `<span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);cursor:pointer;" data-click="open-profile" data-arg="${jsAttr(r.id)}">Full profile →</span>` : ''}
+        <span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);cursor:pointer;" data-click="close-medical">✕ Close</span>
       </span>
     </div>`;
 
@@ -2889,7 +2895,7 @@ function schemeLeagueHtml() {
     h += `<div style="font-family:var(--mono);font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin:14px 0 6px;">Biggest identity shifts from ${prevYear}</div>`;
     for (const m of topMovers.slice(0, 5)) {
       h += `<div style="display:flex;align-items:baseline;gap:10px;padding:5px 0;border-bottom:1px solid var(--border-subtle);font-size:13px;flex-wrap:wrap;">
-        <span style="font-family:var(--mono);font-size:11.5px;color:var(--gold);cursor:pointer;min-width:38px;" onclick="setTeam('${jsAttr(m.team)}')">${rankEsc(m.team)}</span>
+        <span style="font-family:var(--mono);font-size:11.5px;color:var(--gold);cursor:pointer;min-width:38px;" data-click="set-team" data-arg="${jsAttr(m.team)}">${rankEsc(m.team)}</span>
         <span style="color:var(--text);">${rankEsc(m.g)} personnel ${m.delta > 0 ? 'up' : 'down'} ${Math.abs(m.delta).toFixed(1)}</span>
         <span style="color:var(--text-muted);font-family:var(--mono);font-size:11px;">${m.before.toFixed(1)}% → ${m.now.toFixed(1)}%</span>
         ${m.coachChanged ? `<span style="font-family:var(--mono);font-size:10px;color:var(--teal);">NEW HC ${rankEsc((m.coach || '').split(' ').pop().toUpperCase())}</span>` : ''}
@@ -2918,7 +2924,7 @@ function schemeLeagueHtml() {
     + `</tr></thead><tbody>`;
   for (const [team, d] of rows) {
     const p = (g) => d.personnel[g] ? schemePct(d.personnel[g].rate) : '—';
-    h += `<tr style="cursor:pointer;" onclick="setTeam('${jsAttr(team)}')">
+    h += `<tr style="cursor:pointer;" data-click="set-team" data-arg="${jsAttr(team)}">
       <td style="font-family:var(--mono);color:var(--gold);">${rankEsc(team)}</td>
       <td class="scheme-num">${p('11')}</td>
       <td class="scheme-num">${p('12')}</td>
@@ -3202,7 +3208,7 @@ function seasonStateHtml(meta) {
   h += `</div>`;
   if (rosReady) {
     h += `<div class="season-state" style="margin-top:8px;"><span class="season-state-tag">Live</span>`
-      + `<span>Rest-of-season projections are available on the <a href="/rankings" onclick="event.preventDefault();navigate('rankings')">Rankings</a> page.</span></div>`;
+      + `<span>Rest-of-season projections are available on the <a href="/rankings" data-click="nav" data-arg="rankings">Rankings</a> page.</span></div>`;
   }
   return h + `</div>`;
 }
@@ -3254,7 +3260,7 @@ function renderSeasonPage() {
     if (seasonRow) {
       if (!muSeason || !years.includes(muSeason)) muSeason = years[years.length - 1];
       seasonRow.innerHTML = years.map(y =>
-        `<button class="pos-btn${y === muSeason ? ' active' : ''}" onclick="setMuSeason('${y}', this)">${y}</button>`).join('');
+        `<button class="pos-btn${y === muSeason ? ' active' : ''}" data-click="mu-season" data-arg="${y}">${y}</button>`).join('');
     }
     renderUsageBoard(board);
     return;
@@ -3277,7 +3283,7 @@ function renderSeasonPage() {
   const seasonRow = document.getElementById('muSeasonFilter');
   if (seasonRow) {
     seasonRow.innerHTML = years.map(y =>
-      `<button class="pos-btn${y === muSeason ? ' active' : ''}" onclick="setMuSeason('${y}', this)">${y}</button>`).join('');
+      `<button class="pos-btn${y === muSeason ? ' active' : ''}" data-click="mu-season" data-arg="${y}">${y}</button>`).join('');
   }
 
   // A DEFENCE NEEDS ABOUT FOUR WEEKS BEFORE IT HAS A PUBLISHABLE FIGURE.
@@ -3364,7 +3370,7 @@ function renderSeasonPage() {
     + `</tr></thead><tbody>`;
   rows.forEach((r, i) => {
     const sign = r.vsBaseline > 0 ? '+' : '';
-    h += `<tr onclick="navigate('teams/${jsAttr(r.team.toLowerCase())}')">`
+    h += `<tr data-click="nav" data-arg="teams/${jsAttr(r.team.toLowerCase())}">`
       + `<td>${i + 1}</td><td class="mu-team">${rankEsc(r.team)}</td>`
       + `<td class="mu-cell" style="background:${colour(r.vsBaseline)};">${sign}${r.vsBaseline}</td>`
       + `<td>${r.pointsAllowedPerGame}</td><td>${r.playerGames}</td></tr>`;
@@ -3432,7 +3438,7 @@ function renderWireBoard(host) {
     // A link only where the site actually has a page. The room speculates on
     // players outside the 350, and a name with no profile behind it is text.
     const name = p.id
-      ? `<a class="wire-name" href="/player/${jsAttr(p.id)}" onclick="event.preventDefault();navigate('player/${jsAttr(p.id)}')">${rankEsc(p.name)}</a>`
+      ? `<a class="wire-name" href="/player/${jsAttr(p.id)}" data-click="nav" data-arg="player/${jsAttr(p.id)}">${rankEsc(p.name)}</a>`
       : `<span class="wire-name wire-unlinked">${rankEsc(p.name)}</span>`;
     const badges = [
       p.pos ? `<span class="wire-pos">${rankEsc(p.pos)}</span>` : '',
@@ -3497,7 +3503,7 @@ function renderWireBoard(host) {
     h += `<div class="wire-list">` + moves.map(m => {
       const label = m.kind === 'traded' ? 'traded' : m.kind;
       const name = m.id
-        ? `<a class="wire-name" href="/player/${jsAttr(m.id)}" onclick="event.preventDefault();navigate('player/${jsAttr(m.id)}')">${rankEsc(m.name)}</a>`
+        ? `<a class="wire-name" href="/player/${jsAttr(m.id)}" data-click="nav" data-arg="player/${jsAttr(m.id)}">${rankEsc(m.name)}</a>`
         : `<span class="wire-name wire-unlinked">${rankEsc(m.name)}</span>`;
       return `<div class="wire-row">
         <div class="wire-count"><span class="wire-move ${m.kind === 'demoted' ? 'wire-down' : 'wire-up'}">${rankEsc(label)}</span>

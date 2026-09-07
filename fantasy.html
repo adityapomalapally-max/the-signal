@@ -79,29 +79,29 @@
 <!-- ===== NAVIGATION ===== -->
 <nav class="nav">
   <div class="nav-main">
-    <a class="nav-logo" onclick="switchPage('home')">
+    <a class="nav-logo" data-click="page" data-arg="home">
       <span class="logo-the">THE</span>
       <span class="logo-signal">Sign<em>al</em></span>
     </a>
     <div class="nav-center">
-      <a class="nav-item active" data-page="home" href="/" onclick="event.preventDefault();switchPage('home')">Home</a>
-      <a class="nav-item" data-page="teams" href="/teams" onclick="event.preventDefault();switchPage('teams')">Teams</a>
-      <a class="nav-item" data-page="rankings" href="/rankings" onclick="event.preventDefault();switchPage('rankings')">Rankings</a>
-      <a class="nav-item" data-page="lab" href="/lab" onclick="event.preventDefault();switchPage('lab')">Stats &amp; Charts</a>
-      <a class="nav-item" data-page="players" href="/players" onclick="event.preventDefault();switchPage('players')">Players</a>
-      <a class="nav-item" data-page="medicals" href="/medicals" onclick="event.preventDefault();switchPage('medicals')">Medicals</a>
-      <a class="nav-item" data-page="fantasy" href="/fantasy" onclick="event.preventDefault();switchPage('fantasy')">Fantasy</a>
-      <a class="nav-item" data-page="season" href="/season" onclick="event.preventDefault();switchPage('season')">In Season</a>
-      <a class="nav-item" data-page="draft" href="/draft" onclick="event.preventDefault();switchPage('draft')">Draft Lab</a>
-      <a class="nav-item" data-page="ask" href="/ask" onclick="event.preventDefault();switchPage('ask')">Ask</a>
+      <a class="nav-item active" data-page="home" href="/" data-click="page" data-arg="home">Home</a>
+      <a class="nav-item" data-page="teams" href="/teams" data-click="page" data-arg="teams">Teams</a>
+      <a class="nav-item" data-page="rankings" href="/rankings" data-click="page" data-arg="rankings">Rankings</a>
+      <a class="nav-item" data-page="lab" href="/lab" data-click="page" data-arg="lab">Stats &amp; Charts</a>
+      <a class="nav-item" data-page="players" href="/players" data-click="page" data-arg="players">Players</a>
+      <a class="nav-item" data-page="medicals" href="/medicals" data-click="page" data-arg="medicals">Medicals</a>
+      <a class="nav-item" data-page="fantasy" href="/fantasy" data-click="page" data-arg="fantasy">Fantasy</a>
+      <a class="nav-item" data-page="season" href="/season" data-click="page" data-arg="season">In Season</a>
+      <a class="nav-item" data-page="draft" href="/draft" data-click="page" data-arg="draft">Draft Lab</a>
+      <a class="nav-item" data-page="ask" href="/ask" data-click="page" data-arg="ask">Ask</a>
     </div>
     <div class="nav-right">
-      <div class="nav-search" aria-label="Search players" onclick="switchPage('players'); setTimeout(()=>document.getElementById('playerSearchGlobal').focus(), 100)">
+      <div class="nav-search" aria-label="Search players" data-click="players-search">
         <span>Search players...</span>
         <kbd>⌘K</kbd>
       </div>
       <a class="nav-subscribe" href="https://adityapomalapally.substack.com" target="_blank">Substack</a>
-      <div class="hamburger" id="hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="mobileNavDrawer" onclick="toggleMobileNav()">
+      <div class="hamburger" id="hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="mobileNavDrawer" data-click="nav-toggle">
         <span></span><span></span><span></span>
       </div>
     </div>
@@ -113,31 +113,31 @@
 <div id="dataHealth" hidden></div>
 
 <!-- MOBILE NAV DRAWER -->
-<div class="mobile-nav-overlay" id="mobileNavOverlay" aria-hidden="true" onclick="toggleMobileNav()"></div>
+<div class="mobile-nav-overlay" id="mobileNavOverlay" aria-hidden="true" data-click="nav-toggle"></div>
 <div class="mobile-nav-drawer" id="mobileNavDrawer">
   <div style="padding:24px 28px 16px;border-bottom:1px solid var(--border);">
-    <a class="nav-logo" onclick="switchPage('home');toggleMobileNav();" style="cursor:pointer;">
+    <a class="nav-logo" data-click="page-nav" data-arg="home" style="cursor:pointer;">
       <span class="logo-the">THE</span>
       <span class="logo-signal">Sign<em>al</em></span>
     </a>
   </div>
   <!-- The phone's search. The desktop bar's version is hidden under 768px, so
        without this a phone has no way into a player but the Players page. -->
-  <form class="mobile-nav-search" role="search" onsubmit="event.preventDefault();mobileNavSearch(this.q.value);">
+  <form class="mobile-nav-search" role="search" data-submit="nav-search">
     <input type="search" name="q" enterkeyhint="search" aria-label="Search players" placeholder="Search players...">
     <button type="submit" aria-label="Search">&rarr;</button>
   </form>
   <div style="padding:12px 0;">
-    <a class="mobile-nav-link" data-page="home" href="/" onclick="event.preventDefault();switchPage('home');toggleMobileNav();">Home</a>
-    <a class="mobile-nav-link" data-page="teams" href="/teams" onclick="event.preventDefault();switchPage('teams');toggleMobileNav();">Teams</a>
-    <a class="mobile-nav-link" data-page="rankings" href="/rankings" onclick="event.preventDefault();switchPage('rankings');toggleMobileNav();">Rankings</a>
-    <a class="mobile-nav-link" data-page="lab" href="/lab" onclick="event.preventDefault();switchPage('lab');toggleMobileNav();">Stats &amp; Charts</a>
-    <a class="mobile-nav-link" data-page="players" href="/players" onclick="event.preventDefault();switchPage('players');toggleMobileNav();">Players</a>
-    <a class="mobile-nav-link" data-page="medicals" href="/medicals" onclick="event.preventDefault();switchPage('medicals');toggleMobileNav();">Medicals</a>
-    <a class="mobile-nav-link" data-page="fantasy" href="/fantasy" onclick="event.preventDefault();switchPage('fantasy');toggleMobileNav();">Fantasy</a>
-    <a class="mobile-nav-link" data-page="season" href="/season" onclick="event.preventDefault();switchPage('season');toggleMobileNav();">In Season</a>
-    <a class="mobile-nav-link" data-page="draft" href="/draft" onclick="event.preventDefault();switchPage('draft');toggleMobileNav();">Draft Lab</a>
-    <a class="mobile-nav-link" data-page="ask" href="/ask" onclick="event.preventDefault();switchPage('ask');toggleMobileNav();">Ask</a>
+    <a class="mobile-nav-link" data-page="home" href="/" data-click="page-nav" data-arg="home">Home</a>
+    <a class="mobile-nav-link" data-page="teams" href="/teams" data-click="page-nav" data-arg="teams">Teams</a>
+    <a class="mobile-nav-link" data-page="rankings" href="/rankings" data-click="page-nav" data-arg="rankings">Rankings</a>
+    <a class="mobile-nav-link" data-page="lab" href="/lab" data-click="page-nav" data-arg="lab">Stats &amp; Charts</a>
+    <a class="mobile-nav-link" data-page="players" href="/players" data-click="page-nav" data-arg="players">Players</a>
+    <a class="mobile-nav-link" data-page="medicals" href="/medicals" data-click="page-nav" data-arg="medicals">Medicals</a>
+    <a class="mobile-nav-link" data-page="fantasy" href="/fantasy" data-click="page-nav" data-arg="fantasy">Fantasy</a>
+    <a class="mobile-nav-link" data-page="season" href="/season" data-click="page-nav" data-arg="season">In Season</a>
+    <a class="mobile-nav-link" data-page="draft" href="/draft" data-click="page-nav" data-arg="draft">Draft Lab</a>
+    <a class="mobile-nav-link" data-page="ask" href="/ask" data-click="page-nav" data-arg="ask">Ask</a>
   </div>
   <div style="padding:16px 28px;border-top:1px solid var(--border);">
     <a href="https://adityapomalapally.substack.com" target="_blank" class="nav-subscribe" style="display:block;text-align:center;">Substack</a>
@@ -186,9 +186,9 @@
     <span class="section-divider-label">NFL News Wire</span>
     <span class="section-divider-line"></span>
     <div style="display:flex;gap:4px;">
-      <button class="pos-btn active" onclick="filterNews('all',this)">All</button>
-      <button class="pos-btn" onclick="filterNews('injury',this)">Injuries</button>
-      <button class="pos-btn" onclick="filterNews('fantasy',this)">Fantasy</button>
+      <button class="pos-btn active" data-click="news-filter" data-arg="all">All</button>
+      <button class="pos-btn" data-click="news-filter" data-arg="injury">Injuries</button>
+      <button class="pos-btn" data-click="news-filter" data-arg="fantasy">Fantasy</button>
     </div>
     <span class="section-divider-action" id="newsTimestamp" style="font-family:var(--mono);font-size:9px;"></span>
   </div>
@@ -231,7 +231,7 @@
         </div>
       </div>
 
-      <div class="analysis-card fade-in" onclick="openArticle('acl-recovery')">
+      <div class="analysis-card fade-in" data-click="article" data-arg="acl-recovery">
         <div class="analysis-text">
           <span class="analysis-tag tag-injury">Medical Intel</span>
           <h3>ACL Recovery Timelines: Separating the Myths From the Data</h3>
@@ -247,7 +247,7 @@
         </div>
       </div>
 
-      <div class="analysis-card fade-in" onclick="openArticle('generational-vs-elite')">
+      <div class="analysis-card fade-in" data-click="article" data-arg="generational-vs-elite">
         <div class="analysis-text">
           <span class="analysis-tag tag-draft">Draft Lab</span>
           <h3>GENERATIONAL vs. Elite: Why the Label Matters and Who Actually Earns It</h3>
@@ -263,7 +263,7 @@
         </div>
       </div>
 
-      <div class="analysis-card fade-in" onclick="openArticle('lamb-route-tree')">
+      <div class="analysis-card fade-in" data-click="article" data-arg="lamb-route-tree">
         <div class="analysis-text">
           <span class="analysis-tag tag-film">Film Room</span>
           <h3>CeeDee Lamb's Route Tree Expansion: What Film Shows About His 2026 Ceiling</h3>
@@ -285,7 +285,7 @@
       <div class="sidebar-section">
         <div class="sidebar-section-title">
           <span>Injury Watch</span>
-          <span class="view-all" onclick="switchPage('medicals')">View all</span>
+          <span class="view-all" data-click="page" data-arg="medicals">View all</span>
         </div>
         <div id="injuryWatchSidebar">
           <p style="font-size:12px;color:var(--text-muted);font-family:var(--mono);">Loading...</p>
@@ -323,17 +323,17 @@
       <p>Power rankings, AI trade advice, what-if scenarios, optimal lineups.</p>
       <span class="tool-badge badge-live">● Live</span>
     </a>
-    <div class="tool-item" onclick="switchPage('players')">
+    <div class="tool-item" data-click="page" data-arg="players">
       <h4>Player Profiles</h4>
       <p>Searchable database with medical histories and performance metrics.</p>
       <span class="tool-badge badge-live">● Live</span>
     </div>
-    <div class="tool-item" onclick="switchPage('medicals')">
+    <div class="tool-item" data-click="page" data-arg="medicals">
       <h4>Medical Database</h4>
       <p>Injury histories with a source on every entry, and published return-rate research beside them.</p>
       <span class="tool-badge badge-new">Beta</span>
     </div>
-    <div class="tool-item" onclick="switchPage('draft')">
+    <div class="tool-item" data-click="page" data-arg="draft">
       <h4>Draft Model</h4>
       <p>POE-based prospect evaluation, tiered and sourced.</p>
       <span class="tool-badge badge-new">Beta</span>
@@ -351,23 +351,23 @@
       <p id="rankingsMethod">2026 projections — floor, median, and ceiling for every ranked player.</p>
       <div class="players-search-bar" style="justify-content:space-between;flex-wrap:wrap;gap:12px;">
         <div class="position-filter" id="rankTabs">
-          <button class="pos-btn active" onclick="setRankTab('overall', this)">Overall</button>
-          <button class="pos-btn" onclick="setRankTab('qb', this)">QB</button>
-          <button class="pos-btn" onclick="setRankTab('rb', this)">RB</button>
-          <button class="pos-btn" onclick="setRankTab('wr', this)">WR</button>
-          <button class="pos-btn" onclick="setRankTab('te', this)">TE</button>
+          <button class="pos-btn active" data-click="rank-tab" data-arg="overall">Overall</button>
+          <button class="pos-btn" data-click="rank-tab" data-arg="qb">QB</button>
+          <button class="pos-btn" data-click="rank-tab" data-arg="rb">RB</button>
+          <button class="pos-btn" data-click="rank-tab" data-arg="wr">WR</button>
+          <button class="pos-btn" data-click="rank-tab" data-arg="te">TE</button>
         </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
           <!-- Only rendered once data/ros.json exists, which is once games have
                been played. Out of season there is no second view to offer. -->
           <div class="position-filter" id="rankingsViewMode"></div>
           <div class="position-filter" id="rankAvailToggle">
-            <button class="pos-btn active" onclick="setRankAvail(true, this)">Show missed-time risk</button>
-            <button class="pos-btn" onclick="setRankAvail(false, this)">Health assumed</button>
+            <button class="pos-btn active" data-click="rank-avail" data-arg="true">Show missed-time risk</button>
+            <button class="pos-btn" data-click="rank-avail" data-arg="false">Health assumed</button>
           </div>
           <div class="position-filter" id="rankViewToggle">
-            <button class="pos-btn active" onclick="setRankView('chart', this)">Chart</button>
-            <button class="pos-btn" onclick="setRankView('table', this)">Table</button>
+            <button class="pos-btn active" data-click="rank-view" data-arg="chart">Chart</button>
+            <button class="pos-btn" data-click="rank-view" data-arg="table">Table</button>
           </div>
         </div>
       </div>
@@ -421,10 +421,10 @@
         <div class="lab-control">
           <span class="filter-label">Position</span>
           <div class="position-filter" id="labPosFilter">
-            <button class="pos-btn" onclick="setLabPos('QB', this)">QB</button>
-            <button class="pos-btn" onclick="setLabPos('RB', this)">RB</button>
-            <button class="pos-btn active" onclick="setLabPos('WR', this)">WR</button>
-            <button class="pos-btn" onclick="setLabPos('TE', this)">TE</button>
+            <button class="pos-btn" data-click="lab-pos" data-arg="QB">QB</button>
+            <button class="pos-btn" data-click="lab-pos" data-arg="RB">RB</button>
+            <button class="pos-btn active" data-click="lab-pos" data-arg="WR">WR</button>
+            <button class="pos-btn" data-click="lab-pos" data-arg="TE">TE</button>
           </div>
         </div>
         <div class="lab-control">
@@ -434,15 +434,15 @@
         <div class="lab-control lab-control-view">
           <span class="filter-label">View</span>
           <div class="position-filter" id="labViewToggle">
-            <button class="pos-btn active" onclick="setLabView('chart', this)">Chart</button>
-            <button class="pos-btn" onclick="setLabView('table', this)">Table</button>
+            <button class="pos-btn active" data-click="lab-view" data-arg="chart">Chart</button>
+            <button class="pos-btn" data-click="lab-view" data-arg="table">Table</button>
           </div>
         </div>
       </div>
     </div>
     <div class="section-body">
       <div class="lab-metric-row" id="labMetricRow"></div>
-      <div class="ask-inline-row"><button class="ask-inline-btn" onclick="askAbout('board')">Ask about this board</button></div>
+      <div class="ask-inline-row"><button class="ask-inline-btn" data-click="ask-about" data-arg="board">Ask about this board</button></div>
       <div id="labBoard"></div>
       <div id="labScatter"></div>
     </div>
@@ -458,26 +458,26 @@
       <h1>Player Database</h1>
       <p>Every player in the pool, with medical history, performance metrics and sourced analysis. Select a player for the full profile.</p>
       <div class="players-search-bar">
-        <input type="text" class="players-search-input" id="playerSearchGlobal" placeholder="Search by name, team, or position..." oninput="filterPlayers(this.value)">
+        <input type="text" class="players-search-input" id="playerSearchGlobal" placeholder="Search by name, team, or position..." data-input="player-search">
         <div class="position-filter">
-          <button class="pos-btn active" data-filter="all" onclick="filterByPos('all', this)">All</button>
-          <button class="pos-btn" data-filter="QB" onclick="filterByPos('QB', this)">QB</button>
-          <button class="pos-btn" data-filter="RB" onclick="filterByPos('RB', this)">RB</button>
-          <button class="pos-btn" data-filter="WR" onclick="filterByPos('WR', this)">WR</button>
-          <button class="pos-btn" data-filter="TE" onclick="filterByPos('TE', this)">TE</button>
+          <button class="pos-btn active" data-filter="all" data-click="filter-pos" data-arg="all">All</button>
+          <button class="pos-btn" data-filter="QB" data-click="filter-pos" data-arg="QB">QB</button>
+          <button class="pos-btn" data-filter="RB" data-click="filter-pos" data-arg="RB">RB</button>
+          <button class="pos-btn" data-filter="WR" data-click="filter-pos" data-arg="WR">WR</button>
+          <button class="pos-btn" data-filter="TE" data-click="filter-pos" data-arg="TE">TE</button>
         </div>
       </div>
       <div class="table-filters">
         <label class="filter-field">
           <span class="filter-label">Team</span>
-          <select class="filter-select" id="playerTeamFilter" onchange="setPlayerFilter('team', this.value)"></select>
+          <select class="filter-select" id="playerTeamFilter" data-change="player-filter" data-arg="team"></select>
         </label>
         <label class="filter-field">
           <span class="filter-label">Status</span>
-          <select class="filter-select" id="playerStatusFilter" onchange="setPlayerFilter('status', this.value)"></select>
+          <select class="filter-select" id="playerStatusFilter" data-change="player-filter" data-arg="status"></select>
         </label>
         <span class="table-count" id="playersCount" aria-live="polite"></span>
-        <button type="button" class="filter-reset" id="playersReset" onclick="resetPlayerFilters()" hidden>Clear filters</button>
+        <button type="button" class="filter-reset" id="playersReset" data-click="reset-filters" hidden>Clear filters</button>
       </div>
     </div>
     <div class="table-scroll">
@@ -503,10 +503,10 @@
          with the live answer pushed the 287 profiles further down still, so it
          gets a contents line rather than asking anyone to scroll and hope. -->
     <div class="med-jump" style="padding:0 var(--page-gutter) 20px;">
-      <a href="#injuryToday" onclick="medJump(event,'injuryToday')">Hurt today</a>
-      <a href="#bodyMap" onclick="medJump(event,'bodyMap')">The body map</a>
-      <a href="#injuryTypeGrid" onclick="medJump(event,'injuryTypeGrid')">Injury research</a>
-      <a href="#medicalsContent" onclick="medJump(event,'medicalsContent')">All 287 profiles</a>
+      <a href="#injuryToday" data-click="med-jump" data-arg="injuryToday">Hurt today</a>
+      <a href="#bodyMap" data-click="med-jump" data-arg="bodyMap">The body map</a>
+      <a href="#injuryTypeGrid" data-click="med-jump" data-arg="injuryTypeGrid">Injury research</a>
+      <a href="#medicalsContent" data-click="med-jump" data-arg="medicalsContent">All 287 profiles</a>
     </div>
 
     <!-- WHO IS HURT TODAY. The live, actionable answer, which used to sit 2,280
@@ -534,8 +534,8 @@
     <!-- INJURY IMPACT TOOL -->
     <div style="padding:24px var(--page-gutter) 32px;">
       <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;">
-        <button class="pos-btn active" onclick="switchInjuryMode('injury',this)">By Injury Type</button>
-        <button class="pos-btn" onclick="switchInjuryMode('player',this)">By Player</button>
+        <button class="pos-btn active" data-click="injury-mode" data-arg="injury">By Injury Type</button>
+        <button class="pos-btn" data-click="injury-mode" data-arg="player">By Player</button>
       </div>
 
       <div id="injuryToolContent">
@@ -547,7 +547,7 @@
       </div>
 
       <div id="playerToolContent" style="display:none;">
-        <input type="text" class="players-search-input" id="injuryPlayerSearch" placeholder="Search player for injury risk profile..." oninput="searchInjuryPlayer(this.value)" autocomplete="off">
+        <input type="text" class="players-search-input" id="injuryPlayerSearch" placeholder="Search player for injury risk profile..." data-input="injury-search" autocomplete="off">
         <div id="injuryPlayerResults" style="margin-top:16px;"></div>
       </div>
     </div>
@@ -560,7 +560,7 @@
 
     <!-- SEARCH & BROWSE -->
     <div style="padding:24px var(--page-gutter) 0;">
-      <input type="text" class="players-search-input" id="medicalSearchInput" placeholder="Search player name..." oninput="filterMedicals(this.value)" autocomplete="off">
+      <input type="text" class="players-search-input" id="medicalSearchInput" placeholder="Search player name..." data-input="medical-search" autocomplete="off">
     </div>
     <div id="medicalsContent" style="padding:16px var(--page-gutter) 48px;"></div>
   </div>
@@ -582,7 +582,7 @@
         <p>League power rankings, trade evaluation, what-if scenarios and lineup optimisation. Opens in a new tab.</p>
         <span class="tool-badge badge-live">● Live — Open Tool</span>
       </a>
-      <div class="tool-item" onclick="document.getElementById('valueBoardTop').scrollIntoView({behavior:'smooth'})">
+      <div class="tool-item" data-click="scroll-to" data-arg="valueBoardTop">
         <h4>Value Board</h4>
         <p>Where these ranks disagree with what the room is actually doing, by consensus ADP.</p>
         <span class="tool-badge badge-live">● Live — Below</span>
@@ -601,16 +601,16 @@
       </div>
       <div class="players-search-bar" style="justify-content:space-between;flex-wrap:wrap;gap:12px;padding:0;border:none;">
         <div class="position-filter" id="vbPosFilter">
-          <button class="pos-btn active" onclick="setVbPos('all', this)">All</button>
-          <button class="pos-btn" onclick="setVbPos('QB', this)">QB</button>
-          <button class="pos-btn" onclick="setVbPos('RB', this)">RB</button>
-          <button class="pos-btn" onclick="setVbPos('WR', this)">WR</button>
-          <button class="pos-btn" onclick="setVbPos('TE', this)">TE</button>
+          <button class="pos-btn active" data-click="vb-pos" data-arg="all">All</button>
+          <button class="pos-btn" data-click="vb-pos" data-arg="QB">QB</button>
+          <button class="pos-btn" data-click="vb-pos" data-arg="RB">RB</button>
+          <button class="pos-btn" data-click="vb-pos" data-arg="WR">WR</button>
+          <button class="pos-btn" data-click="vb-pos" data-arg="TE">TE</button>
         </div>
         <div class="position-filter" id="vbViewFilter">
-          <button class="pos-btn active" onclick="setVbView('values', this)">Best values</button>
-          <button class="pos-btn" onclick="setVbView('reaches', this)">Market reaches</button>
-          <button class="pos-btn" onclick="setVbView('all', this)">Full board</button>
+          <button class="pos-btn active" data-click="vb-view" data-arg="values">Best values</button>
+          <button class="pos-btn" data-click="vb-view" data-arg="reaches">Market reaches</button>
+          <button class="pos-btn" data-click="vb-view" data-arg="all">Full board</button>
         </div>
       </div>
       <div id="valueBoardBody"></div>
@@ -631,8 +631,8 @@
       <div class="lab-control">
         <span class="lab-control-label">Show</span>
         <div class="position-filter" id="draftViewToggle">
-          <button class="pos-btn active" onclick="setDraftView('model', this)">The Model</button>
-          <button class="pos-btn" onclick="setDraftView('film', this)">Film Room</button>
+          <button class="pos-btn active" data-click="draft-view" data-arg="model">The Model</button>
+          <button class="pos-btn" data-click="draft-view" data-arg="film">Film Room</button>
         </div>
       </div>
     </div>
@@ -719,7 +719,7 @@
 
         <h3 style="font-family:var(--serif);font-size:20px;font-weight:600;margin-bottom:16px;">The GENERATIONAL Label</h3>
         <p style="font-size:15px;line-height:1.8;color:var(--text-secondary);margin-bottom:12px;">GENERATIONAL is reserved only for prospects who truly <em>break</em> the model — players whose POE is so far above the regression line that the model can't explain them with contextual factors alone. In the 2018-2023 training data, only a handful of prospects earned this designation.</p>
-        <p style="font-size:15px;line-height:1.8;color:var(--text-secondary);"><span style="color:var(--gold);cursor:pointer;" onclick="openArticle('generational-vs-elite')">Read the full article on GENERATIONAL vs. Elite →</span></p>
+        <p style="font-size:15px;line-height:1.8;color:var(--text-secondary);"><span style="color:var(--gold);cursor:pointer;" data-click="article" data-arg="generational-vs-elite">Read the full article on GENERATIONAL vs. Elite →</span></p>
       </div>
 
       <!-- Sidebar -->
@@ -789,18 +789,18 @@
       <div class="lab-control">
         <span class="lab-control-label">Show</span>
         <div class="position-filter" id="seasonViewToggle">
-          <button class="pos-btn active" onclick="setSeasonView('matchups', this)">Matchups</button>
-          <button class="pos-btn" onclick="setSeasonView('usage', this)">Weekly Usage</button>
-          <button class="pos-btn" onclick="setSeasonView('wire', this)">Waiver Wire</button>
+          <button class="pos-btn active" data-click="season-view" data-arg="matchups">Matchups</button>
+          <button class="pos-btn" data-click="season-view" data-arg="usage">Weekly Usage</button>
+          <button class="pos-btn" data-click="season-view" data-arg="wire">Waiver Wire</button>
         </div>
       </div>
       <div class="lab-control" id="muPosControl">
         <span class="lab-control-label">Position</span>
         <div class="position-filter" id="muPosFilter">
-          <button class="pos-btn" onclick="setMuPos('QB', this)">QB</button>
-          <button class="pos-btn" onclick="setMuPos('RB', this)">RB</button>
-          <button class="pos-btn active" onclick="setMuPos('WR', this)">WR</button>
-          <button class="pos-btn" onclick="setMuPos('TE', this)">TE</button>
+          <button class="pos-btn" data-click="mu-pos" data-arg="QB">QB</button>
+          <button class="pos-btn" data-click="mu-pos" data-arg="RB">RB</button>
+          <button class="pos-btn active" data-click="mu-pos" data-arg="WR">WR</button>
+          <button class="pos-btn" data-click="mu-pos" data-arg="TE">TE</button>
         </div>
       </div>
       <div class="lab-control" id="muSeasonControl">
@@ -821,11 +821,11 @@
       <p>Questions answered from this site's own data — rankings, production, charting, field maps, usage and medical histories. It answers from those rows or it says it cannot; it does not fall back on general football knowledge.</p>
     </div>
     <div style="padding:0 var(--page-gutter) 48px;max-width:900px;">
-      <form id="askForm" class="ask-form" onsubmit="event.preventDefault();submitAsk();">
+      <form id="askForm" class="ask-form" data-submit="ask">
         <label class="ask-label" for="askInput">Your question</label>
         <textarea id="askInput" class="ask-input" rows="2" maxlength="500"
           placeholder="Where is Puka Nacua targeted, and how does his catch rate hold up deep?"
-          oninput="askCount()"></textarea>
+          data-input="ask-count"></textarea>
         <div class="ask-row">
           <span class="ask-count" id="askCount">0 / 500</span>
           <button type="submit" class="ask-send" id="askSend">Ask</button>
@@ -833,9 +833,9 @@
       </form>
       <div class="ask-examples">
         <span class="ask-ex-label">Try</span>
-        <button type="button" class="ask-ex" onclick="askExample(this)">Where does Matthew Stafford throw best?</button>
-        <button type="button" class="ask-ex" onclick="askExample(this)">Which gaps does James Cook run well through?</button>
-        <button type="button" class="ask-ex" onclick="askExample(this)">Is Malik Nabers healthy, and what does the history say?</button>
+        <button type="button" class="ask-ex" data-click="ask-example">Where does Matthew Stafford throw best?</button>
+        <button type="button" class="ask-ex" data-click="ask-example">Which gaps does James Cook run well through?</button>
+        <button type="button" class="ask-ex" data-click="ask-example">Is Malik Nabers healthy, and what does the history say?</button>
       </div>
       <div id="askOut" class="ask-out" aria-live="polite"></div>
     </div>
@@ -846,7 +846,7 @@
 <div class="page-section" id="page-article">
   <div class="page-shell">
     <div class="article-page">
-      <div class="article-back" onclick="switchPage('home')">← Back to Home</div>
+      <div class="article-back" data-click="page" data-arg="home">← Back to Home</div>
       <div class="article-page-header">
         <span class="article-page-tag" id="articlePageTag">Medical Intel</span>
         <h1 class="article-page-title" id="articlePageTitle">Loading...</h1>
@@ -862,7 +862,7 @@
 </div>
 
 <!-- ===== PLAYER PROFILE MODAL ===== -->
-<div class="profile-overlay" id="profileOverlay" role="dialog" aria-modal="true" aria-labelledby="profileName" onclick="if(event.target===this)closeProfile()">
+<div class="profile-overlay" id="profileOverlay" role="dialog" aria-modal="true" aria-labelledby="profileName" data-click="profile-backdrop">
   <div class="profile-modal">
     <div class="profile-modal-header">
       <div class="profile-player-info">
@@ -873,15 +873,15 @@
         </div>
       </div>
       <div class="profile-header-actions">
-        <button class="ask-inline-btn" id="profileAskBtn" onclick="askAbout('player')">Ask about him</button>
-        <button class="profile-close" onclick="closeProfile()" aria-label="Close player profile">✕</button>
+        <button class="ask-inline-btn" id="profileAskBtn" data-click="ask-about" data-arg="player">Ask about him</button>
+        <button class="profile-close" data-click="close-profile" aria-label="Close player profile">✕</button>
       </div>
     </div>
     <div class="profile-tabs" role="tablist" aria-label="Player profile sections">
-      <button type="button" class="profile-tab active" role="tab" id="ptab-overview" aria-selected="true" aria-controls="profileContent" tabindex="0" data-tab="overview" onclick="switchProfileTab('overview', this)">Overview</button>
-      <button type="button" class="profile-tab" role="tab" id="ptab-stats" aria-selected="false" aria-controls="profileContent" tabindex="-1" data-tab="stats" onclick="switchProfileTab('stats', this)">Stats</button>
-      <button type="button" class="profile-tab" role="tab" id="ptab-fantasy" aria-selected="false" aria-controls="profileContent" tabindex="-1" data-tab="fantasy" onclick="switchProfileTab('fantasy', this)">Fantasy</button>
-      <button type="button" class="profile-tab" role="tab" id="ptab-medical" aria-selected="false" aria-controls="profileContent" tabindex="-1" data-tab="medical" onclick="switchProfileTab('medical', this)">Medical</button>
+      <button type="button" class="profile-tab active" role="tab" id="ptab-overview" aria-selected="true" aria-controls="profileContent" tabindex="0" data-tab="overview" data-click="profile-tab" data-arg="overview">Overview</button>
+      <button type="button" class="profile-tab" role="tab" id="ptab-stats" aria-selected="false" aria-controls="profileContent" tabindex="-1" data-tab="stats" data-click="profile-tab" data-arg="stats">Stats</button>
+      <button type="button" class="profile-tab" role="tab" id="ptab-fantasy" aria-selected="false" aria-controls="profileContent" tabindex="-1" data-tab="fantasy" data-click="profile-tab" data-arg="fantasy">Fantasy</button>
+      <button type="button" class="profile-tab" role="tab" id="ptab-medical" aria-selected="false" aria-controls="profileContent" tabindex="-1" data-tab="medical" data-click="profile-tab" data-arg="medical">Medical</button>
     </div>
     <div class="profile-content" id="profileContent" role="tabpanel" aria-labelledby="ptab-overview" tabindex="0"></div>
   </div>
@@ -891,7 +891,7 @@
 <div class="site-footer">
   <div class="footer-main">
     <div class="footer-brand">
-      <a class="nav-logo" onclick="switchPage('home')" style="cursor:pointer;">
+      <a class="nav-logo" data-click="page" data-arg="home" style="cursor:pointer;">
         <span class="logo-the">THE</span>
         <span class="logo-signal">Sign<em>al</em></span>
       </a>
@@ -899,16 +899,16 @@
     </div>
     <div class="footer-col">
       <h5>Sections</h5>
-      <a href="#" onclick="switchPage('home')">Home</a>
-      <a href="#" onclick="switchPage('players')">Player Profiles</a>
-      <a href="#" onclick="switchPage('medicals')">Medical Database</a>
-      <a href="#" onclick="switchPage('draft')">Draft Lab</a>
+      <a href="#" data-click="page" data-arg="home">Home</a>
+      <a href="#" data-click="page" data-arg="players">Player Profiles</a>
+      <a href="#" data-click="page" data-arg="medicals">Medical Database</a>
+      <a href="#" data-click="page" data-arg="draft">Draft Lab</a>
     </div>
     <div class="footer-col">
       <h5>Fantasy</h5>
       <a href="https://sleeper-analytics.vercel.app" target="_blank">Sleeper Analytics</a>
-      <a href="#" onclick="switchPage('fantasy')">Trade Analyzer</a>
-      <a href="#" onclick="switchPage('fantasy')">Rankings</a>
+      <a href="#" data-click="page" data-arg="fantasy">Trade Analyzer</a>
+      <a href="#" data-click="page" data-arg="fantasy">Rankings</a>
     </div>
     <div class="footer-col">
       <h5>Connect</h5>
@@ -930,6 +930,7 @@
 
 <!-- Classic scripts, loaded in this exact order and sharing one global scope,
      because the markup above uses inline onclick handlers. See assets/app-core.js. -->
+<script src="/assets/app-actions.js"></script>
 <script src="/assets/app-core.js"></script>
 <script src="/assets/app-export.js"></script>
 <script src="/assets/app-pages.js"></script>

@@ -104,7 +104,7 @@ function renderInjuryTypeGrid() {
     // The bar is the figure. A number read against a drawn scale is harder to
     // misread than a number sitting on its own.
     const bar = rate === null ? '' : `<div class="inj-bar"><div class="inj-bar-fill" style="width:${Math.max(2, Math.min(100, rate))}%;"></div></div>`;
-    return `<button type="button" class="inj-card" onclick="showInjuryDetail('${rankEsc(key)}')">
+    return `<button type="button" class="inj-card" data-click="injury-detail" data-arg="${rankEsc(key)}">
       <div class="inj-name">${rankEsc(inj.name)}</div>
       ${rate === null ? '' : `<div class="inj-figure">${rate}<span class="inj-figure-unit">%</span></div>`}
       ${bar}
@@ -158,7 +158,7 @@ function renderInjuryToday() {
     // under "10 out" is usually somebody who is merely questionable.
     h += `<div class="today-list-label">The most valuable players carrying one, whichever kind</div>`;
     h += `<div class="today-list">` + notable.map(p => `
-      <button type="button" class="today-row" onclick="openProfile('${jsAttr(p.id)}')">
+      <button type="button" class="today-row" data-click="open-profile" data-arg="${jsAttr(p.id)}">
         <span class="today-name">${rankEsc(p.name)}</span>
         <span class="today-meta">${rankEsc(p.fRank)} · ${rankEsc(p.team || '')}</span>
         <span class="player-quick-status ${rankEsc(p.statusClass)}">${rankEsc(p.status)}</span>
@@ -243,7 +243,7 @@ function showInjuryDetail(key) {
         <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin:24px 0 12px;">Players in Our Database With This Injury (${affectedPlayers.length})</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;">
           ${affectedPlayers.map(p => `
-            <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:background 0.2s;" onclick="openProfile('${p.id}')" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background='var(--bg-card)'">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:background 0.2s;" data-click="open-profile" data-arg="${p.id}" class="hover-card">
               ${renderAvatar(p, 34, 11)}
               <div style="flex:1;min-width:0;">
                 <div style="font-weight:600;font-size:13px;">${p.name}</div>
@@ -257,7 +257,7 @@ function showInjuryDetail(key) {
 
       <div style="margin-top:20px;font-size:12px;color:var(--text-muted);">Sources: ${inj.sources}</div>
 
-      <div style="margin-top:16px;"><span style="font-size:13px;color:var(--gold);cursor:pointer;" onclick="document.getElementById('injuryToolResults').innerHTML='';renderInjuryTypeGrid();">← Back to all injury types</span></div>
+      <div style="margin-top:16px;"><span style="font-size:13px;color:var(--gold);cursor:pointer;" data-click="injury-reset">← Back to all injury types</span></div>
     </div>
   `;
 
@@ -334,7 +334,7 @@ function searchInjuryPlayer(query) {
           <span class="severity ${inj.severity}" style="font-size:9px;">${inj.severityLabel.split('—')[0].trim()}</span>
         </div>
       `).join('')}
-      <div style="margin-top:12px;"><span style="font-size:13px;color:var(--gold);cursor:pointer;" onclick="openProfile('${id}')">View full medical profile →</span></div>
+      <div style="margin-top:12px;"><span style="font-size:13px;color:var(--gold);cursor:pointer;" data-click="open-profile" data-arg="${id}">View full medical profile →</span></div>
     </div>`;
   }).join('');
 }
@@ -414,7 +414,7 @@ async function loadSleeperTrending() {
     if (trending && trending.adds && trending.adds.length > 0 && trending.adds[0].name) {
       container.innerHTML = trending.adds.slice(0, 10).map((t, i) => {
         const ourPlayer = playersDB.find(x => t.name.toLowerCase().includes(x.name.split(' ').pop().toLowerCase()) && x.pos === t.position);
-        const clickHandler = ourPlayer ? `onclick="openProfile('${jsAttr(ourPlayer.id)}')"` : '';
+        const clickHandler = ourPlayer ? `data-click="open-profile" data-arg="${jsAttr(ourPlayer.id)}"` : '';
         const statusHtml = t.injury_status ? `<span style="font-family:var(--mono);font-size:8px;padding:2px 5px;border-radius:3px;background:var(--red-muted);color:var(--red);text-transform:uppercase;">${rankEsc(t.injury_status)}</span>` : '';
         return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-subtle);cursor:${ourPlayer ? 'pointer' : 'default'};" ${clickHandler}>
           <span style="font-family:var(--mono);font-size:10px;color:var(--gold);font-weight:600;min-width:18px;">${i + 1}</span>
@@ -448,7 +448,7 @@ async function loadSleeperTrending() {
       const team = p.team || 'FA';
       const injStatus = p.injury_status || '';
       const ourPlayer = playersDB.find(x => x.name.toLowerCase().includes(p.last_name.toLowerCase()) && x.pos === pos);
-      const clickHandler = ourPlayer ? `onclick="openProfile('${jsAttr(ourPlayer.id)}')"` : '';
+      const clickHandler = ourPlayer ? `data-click="open-profile" data-arg="${jsAttr(ourPlayer.id)}"` : '';
       const statusHtml = injStatus ? `<span style="font-family:var(--mono);font-size:8px;padding:2px 5px;border-radius:3px;background:var(--red-muted);color:var(--red);text-transform:uppercase;">${rankEsc(injStatus)}</span>` : '';
 
       return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-subtle);cursor:${ourPlayer ? 'pointer' : 'default'};" ${clickHandler}>
@@ -1246,7 +1246,13 @@ document.addEventListener('keydown', e => {
 // give each one a button role, put it in the tab order, and map Enter/Space
 // to a click. Runs after any render that injects new markup.
 function makeClickablesAccessible(root) {
-  (root || document).querySelectorAll('[onclick]:not([data-a11y])').forEach(el => {
+  // SELECTS data-click NOW. It used to look for [onclick], and when the inline
+  // handlers were removed this selector quietly matched nothing — the promotion
+  // would have stopped happening across the whole site with no error anywhere,
+  // which is the same silent-failure shape the rest of this repo has rules
+  // about. app-actions.js also maps Enter/Space centrally now, so this is
+  // belt and braces; the part that still matters here is role and tabindex.
+  (root || document).querySelectorAll('[data-click]:not([data-a11y])').forEach(el => {
     el.setAttribute('data-a11y', '1');
     const tag = el.tagName.toLowerCase();
     if (tag === 'button' || tag === 'a') return; // already focusable
@@ -1414,8 +1420,8 @@ function renderBodyMap() {
   // actually does something.
   const buttons = Object.entries(regions).map(([key, r]) =>
     `<button type="button" class="body-pick${key === activeRegion ? ' on' : ''}"
-       onclick="setBodyRegion('${rankEsc(key)}')"
-       onmouseenter="setBodyRegion('${rankEsc(key)}')"
+       data-click="body-region" data-arg="${rankEsc(key)}"
+       data-hover="body-region" data-arg="${rankEsc(key)}"
        aria-pressed="${key === activeRegion}">
       <span>${rankEsc(r.label)}</span>
       <span class="body-pick-count">${r.episodes}</span>
@@ -1474,7 +1480,7 @@ function bodyPanelHtml(key) {
     }
     if (c.examples && c.examples.length) {
       h += `<div class="body-note">For instance: ${c.examples.map(e =>
-        `<button type="button" class="body-example" onclick="openProfile('${jsAttr(e.id)}')">${rankEsc(e.name)}</button> missed ${e.missed} in ${e.season}`).join(', ')}.</div>`;
+        `<button type="button" class="body-example" data-click="open-profile" data-arg="${jsAttr(e.id)}">${rankEsc(e.name)}</button> missed ${e.missed} in ${e.season}`).join(', ')}.</div>`;
     }
     h += `</div>`;
   } else {
@@ -1593,7 +1599,7 @@ async function submitAsk() {
       // What the answer was built from, so it can be checked against the site
       // rather than taken on trust — the same bargain every other page makes.
       h += `<div class="ask-ground"><span class="ask-ground-label">Built from</span> `
-        + g.players.map(p => `<a href="/player/${jsAttr(playerSlug(p.name))}" onclick="event.preventDefault();navigate('player/${jsAttr(playerSlug(p.name))}')">${rankEsc(p.name)}</a>`).join(', ')
+        + g.players.map(p => `<a href="/player/${jsAttr(playerSlug(p.name))}" data-click="nav" data-arg="player/${jsAttr(playerSlug(p.name))}">${rankEsc(p.name)}</a>`).join(', ')
         + (g.topics && g.topics.length ? ` &middot; ${rankEsc(g.topics.join(', '))}` : '')
         + `</div>`;
     }
