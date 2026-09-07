@@ -196,10 +196,30 @@ async function latestDataSeason() {
   return gamesHaveStarted(s) ? s.season : s.previousSeason;
 }
 
-/** The most recent COMPLETED season — never the one in progress. */
-async function lastCompletedSeason() {
+/**
+ * The most recent COMPLETED season — never the one in progress.
+ *
+ * THE OFFSEASON IS THE AMBIGUOUS ONE, and it used to be answered wrongly. The
+ * feed names a season long before it is played: it reads 2026 all through the
+ * spring and summer of 2026, and it reads `off` from roughly March. Returning
+ * `s.season` for `off` therefore named an UNPLAYED season as the last completed
+ * one for five months of every year — and this is the value build-teams and
+ * build-sos use to decide which season's stats to read, so it would have had
+ * them asking for numbers that do not exist yet, every spring.
+ *
+ * It is ambiguous rather than simply wrong because `off` covers both sides of
+ * the rollover: in February the season the feed names has just FINISHED, and in
+ * May the season it names has not started. The league year turns over in March,
+ * which is what settles it, and is the same boundary fromDate() already uses.
+ *
+ * `post` still returns the named season: the playoffs are in progress, but the
+ * regular season whose stats every caller wants is done.
+ */
+async function lastCompletedSeason(now = new Date()) {
   const s = await state();
-  return s.phase === 'post' || s.phase === 'off' ? s.season : s.previousSeason;
+  if (s.phase === 'post') return s.season;
+  if (s.phase !== 'off') return s.previousSeason;   // pre and regular
+  return (now.getUTCMonth() + 1) >= 3 ? s.previousSeason : s.season;
 }
 
 /**

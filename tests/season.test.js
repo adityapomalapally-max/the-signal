@@ -87,8 +87,29 @@ test('the season being played is never called completed', async () => {
   at('post', 2026);
   assert.strictEqual(await season.lastCompletedSeason(), 2026);
 
+  // THE OFFSEASON CUTS BOTH WAYS, which is why it takes a clock. The feed names
+  // 2027 from March 2027 onward while 2027 has not been played — so the last
+  // completed season is 2026. Before the March rollover the same label means
+  // the season that has just finished.
   at('off', 2027);
-  assert.strictEqual(await season.lastCompletedSeason(), 2027);
+  assert.strictEqual(await season.lastCompletedSeason(new Date('2027-05-01T12:00:00Z')), 2026,
+    'in May the season the feed names has not been played');
+  assert.strictEqual(await season.lastCompletedSeason(new Date('2027-02-20T12:00:00Z')), 2027,
+    'in February it names the season that has just finished');
+});
+
+test('the offseason never names an unplayed season as completed', () => {
+  // The bug this replaced: for five months of every year `off` returned the
+  // season the feed had already rolled forward to, and build-teams and
+  // build-sos read that to decide which stats to load — so they would have
+  // asked for a season with no numbers in it, every spring.
+  const may = new Date('2027-05-01T12:00:00Z');
+  const state = { season: 2027, previousSeason: 2026, week: 0, phase: 'off' };
+  season.__setState(state);
+  return season.lastCompletedSeason(may).then(v => {
+    assert.strictEqual(v, 2026);
+    assert.notStrictEqual(v, state.season, 'the season being prepared for is not a completed one');
+  });
 });
 
 test('in-season is the flag that ages preseason products', async () => {
