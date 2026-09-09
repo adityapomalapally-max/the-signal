@@ -149,6 +149,28 @@ test('the date fallback names a season the way the league does', () => {
   assert.strictEqual(may.phase, 'off', 'May is the offseason, not a playoff');
 });
 
+test('the date fallback still knows it is the season in December', () => {
+  // DECEMBER WAS THE MONTH NOBODY TESTED, and it is the worst one to get wrong:
+  // it is the fantasy playoffs, and the fallback only runs when Sleeper is
+  // unreachable — so the failure would arrive on the day the site is under the
+  // most load and the least supervision.
+  //
+  // The mutation ratchet found it. Narrowing `m <= 12` to `m < 12` leaves
+  // December falling through every branch to `off`, and `off` makes
+  // gamesHaveStarted() false, which makes latestDataSeason() hand back LAST
+  // season — every number on the site a year stale, in week 15, silently.
+  // January, October, May and August were all covered; the far edge of the
+  // regular season was not.
+  for (const [iso, phase] of [['2026-09-01', 'regular'], ['2026-12-31', 'regular']]) {
+    const d = season.fromDate(new Date(`${iso}T12:00:00Z`));
+    assert.strictEqual(d.phase, phase, `${iso} should be ${phase}, not ${d.phase}`);
+    assert.strictEqual(d.season, 2026);
+  }
+  // And the boundary on the other side of it: January is the postseason of the
+  // season that began in September, not the offseason.
+  assert.strictEqual(season.fromDate(new Date('2027-02-28T12:00:00Z')).phase, 'post');
+});
+
 test('the fallback is conservative in the direction that matters', () => {
   // Better to call a live season "pre" for a few days than to declare a regular
   // season that has not started and go asking for games nobody has played.
