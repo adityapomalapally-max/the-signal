@@ -203,9 +203,28 @@ const TAB_SIZE = { overall: 24, qb: 20, rb: 24, wr: 32, te: 16 };
 const log = (m) => console.log(`[rankings] ${m}`);
 
 async function main() {
+  // AVAILABILITY IS READ OVER SEASONS THAT ARE ACTUALLY ON DISK.
+  //
+  // This used to be [last-2, last-1, last] from lastCompletedSeason, computed
+  // independently of the window fetch-stats writes. The two agree all year and
+  // diverge on the day the season starts: fetch-stats follows dataSeasons(3),
+  // which moved to [2024, 2025, 2026] at kickoff and therefore stopped writing
+  // 2023, while this went on asking for 2023. A season that is not in the
+  // weekly logs reads as zero games for every player, so the league floor came
+  // out as 0 from 287 player-seasons and the build aborted — correctly, over a
+  // window it had invented.
+  //
+  // Anchored on the same source now, and narrowed to completed seasons because
+  // a season in progress would understate games played for everybody.
   const last = await season.lastCompletedSeason();
-  AVAIL_SEASONS = [last - 2, last - 1, last];
-  log(`league is in ${await season.describe()} — availability read over ${AVAIL_SEASONS.join(', ')}`);
+  AVAIL_SEASONS = (await season.dataSeasons(3)).filter(s => s <= last);
+  log(`league is in ${await season.describe()} — availability read over ${AVAIL_SEASONS.join(', ') || 'nothing'}`);
+  if (AVAIL_SEASONS.length < 2) {
+    console.error(`[rankings] ABORT: availability needs at least two completed seasons on disk, got `
+      + `${AVAIL_SEASONS.length}. dataSeasons is [${(await season.dataSeasons(3)).join(', ')}] and the last `
+      + `completed season is ${last}.`);
+    process.exit(1);
+  }
   if (!fs.existsSync(SRC)) {
     console.error(`[rankings] ABORT: ${SRC} not found`);
     process.exit(1);

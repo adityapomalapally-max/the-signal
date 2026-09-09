@@ -85,12 +85,22 @@ test('availability is measured over completed seasons, never one in progress', (
   // played as a game missed — in week 3 a healthy starter reads as 3 of 17,
   // and every floor on the site collapses. This is why it is
   // lastCompletedSeason and not the window everything else fetches.
+  // THE PROPERTY, NOT THE MECHANISM. This used to assert that these files never
+  // mention dataSeasons, which is a way of writing the rule and not the rule
+  // itself — and it blocked the correct fix. build-rankings now derives its
+  // window from dataSeasons (so it can only ask for seasons the fetches
+  // actually write) and then drops anything past the last completed one. That
+  // satisfies this test's reason and failed its letter.
   for (const name of ['build-rankings', 'build-injury-curves']) {
     const src = fs.readFileSync(path.join(SCRIPTS, `${name}.js`), 'utf8');
     assert.match(src, /lastCompletedSeason\(\)/,
-      `${name} does not use lastCompletedSeason — a partial season in its window reads unplayed games as missed ones`);
-    assert.ok(!/dataSeasons\(/.test(src),
-      `${name} uses dataSeasons, which includes the season in progress`);
+      `${name} does not consult lastCompletedSeason — a partial season in its window reads unplayed games as missed ones`);
+    const body = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+    if (/dataSeasons\(/.test(body)) {
+      assert.match(body, /filter\(\s*s\s*=>\s*s\s*<=\s*last\s*\)/,
+        `${name} takes its window from dataSeasons, which includes the season in progress, `
+        + `without filtering it back to completed seasons`);
+    }
   }
 });
 
@@ -221,4 +231,48 @@ test('a completed season going missing is still fatal', () => {
     assert.ok(/process\.exit\(1\)|throw e/.test(src),
       `${name} no longer fails on a season that IS published and missing`);
   }
+});
+
+test('no build reads a season window the fetches do not write', () => {
+  // THE ROLLOVER PULLS TWO WINDOWS APART. fetch-stats writes dataSeasons(3),
+  // which moves forward the day the season starts — [2023,2024,2025] becomes
+  // [2024,2025,2026], so 2023 stops being written. build-rankings computed its
+  // availability window separately, from lastCompletedSeason, and went on
+  // asking for 2023. A season missing from the weekly logs reads as zero games
+  // for every player, the league floor came out as 0, and the build aborted
+  // over a window it had invented.
+  //
+  // Any window a build reads has to be derived from the window the fetches
+  // write, or the two agree all year and disagree in September.
+  const src = fs.readFileSync(path.join(SCRIPTS, 'build-rankings.js'), 'utf8');
+  const body = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+  assert.match(body, /AVAIL_SEASONS\s*=\s*\(await season\.dataSeasons\(/,
+    'the availability window must come from dataSeasons — the same source fetch-stats writes from');
+  assert.ok(!/AVAIL_SEASONS\s*=\s*\[\s*last\s*-\s*2/.test(body),
+    'the availability window is being computed independently of the data again');
+});
+
+test('the availability window stays inside the data at the rollover', async () => {
+  const season = require('../scripts/lib/season');
+  const inside = async (label) => {
+    const data = await season.dataSeasons(3);
+    const last = await season.lastCompletedSeason();
+    const avail = data.filter(s => s <= last);
+    assert.ok(avail.length >= 2, `${label}: only ${avail.length} completed season(s) on disk`);
+    for (const s of avail) {
+      assert.ok(data.includes(s), `${label}: availability wants ${s}, which the fetches do not write`);
+    }
+  };
+
+  // Preseason: the windows agree.
+  season.__setState({ season: 2026, previousSeason: 2025, week: 0, phase: 'pre',
+                      seasonStartDate: '2026-09-09', source: 'test' });
+  await inside('preseason');
+
+  // The day it starts: dataSeasons moves and lastCompletedSeason does not.
+  season.__setState({ season: 2026, previousSeason: 2025, week: 1, phase: 'regular',
+                      seasonStartDate: '2026-09-01', source: 'test' });
+  await inside('opening week');
+
+  season.__reset();
 });
