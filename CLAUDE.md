@@ -1214,6 +1214,33 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   continuation of the instructions above it, which is the whole mechanism an injection uses. Between
   markers it is plainly a quoted string somebody typed, and a question cannot close its own fence.
 
+## Routes run — estimated, and the estimate is measured
+- COUNTED IN `build-scheme`'s EXISTING participation loop, so it costs nothing: participation already
+  says who was on the field for every snap, and `offense_positions` says what each of them lined up
+  as. A skill player on the field for a dropback is counted as having run a route. Lands in
+  `player-usage.json` as `routes` and `routeShare`.
+- ROUTE PARTICIPATION IS NOT IN ANY FREE FEED — PFF and FTN chart it, and weekly-usage.json has said
+  so in its caveats since it was written. This is the closest thing available, and it is labelled an
+  ESTIMATE everywhere it surfaces, including in every percentile row built on it.
+- WHAT IT CANNOT SEE IS BLOCKING, and the size of that is MEASURED rather than hedged. Against
+  published distributions receivers and tight ends land on them — median YPRR 1.49 and 1.24 against
+  a public 1.4-1.6 and 1.1-1.3 — and backs come in low at 0.82 against a public 1.0-1.3. That gap is
+  the pass protection, so a back's per-route rates are the ones to trust least.
+- THE RANK SURVIVES WHAT THE LEVEL DOES NOT. The inflation is roughly common to every back, so a
+  percentile — a position among players measured the same wrong way — still means what it says even
+  where the raw number is off. That is the argument for publishing it ranked and labelled rather
+  than not publishing it.
+- REGULAR SEASON ONLY, and it has to be stated because snaps and personnel mix are not. Routes are
+  only ever read as a DENOMINATOR under targets and yards from stats.json, which is regular season;
+  counted across the playoffs they understated every per-route rate on the site — Nacua's yards per
+  route run came out 2.84 against a true 3.52, a fifth too low, with nothing reading wrong anywhere.
+- THE DENOMINATOR GOES THROUGH `teamKey()`. Route share is against the dropbacks of the team he
+  played them FOR, and nflverse calls the Rams `LA` — unaliased, every Rams receiver has no share at
+  all. The probe written to measure this feature before building it walked straight into it.
+- `route` IS A COLUMN IN participation AND IT IS NOT THIS. It carries the route CONCEPT run by the
+  targeted receiver on that play (GO, SLANT, HITCH/CURL — 13 values on 42% of rows), one per play
+  rather than one per player. It is a route tree waiting to be built, not a route count.
+
 ## What an opportunity was worth — expected fantasy points
 - `scripts/lib/xfp.js`, called from build-scheme: the SEVENTH OUTPUT of the one 93MB pbp download,
   on the same bargain as the field map, weekly usage and rushing. `data/xfp.json`, GSIS-keyed.

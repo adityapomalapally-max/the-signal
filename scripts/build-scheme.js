@@ -137,7 +137,9 @@ function leanPbp(csv) {
   // optional on purpose: if nflverse renames one, scheme still builds and only
   // the charting output goes thin, which is the right failure for a layer that
   // rides along on somebody else's download.
-  for (const col of ['receiver_player_id', 'passer_player_id', 'posteam', 'complete_pass']) {
+  // season_type gates the route count. Optional like the rest of this block: if
+  // nflverse renames it the routes go absent rather than taking scheme down.
+  for (const col of ['receiver_player_id', 'passer_player_id', 'posteam', 'complete_pass', 'season_type']) {
     idx[col] = header.indexOf(col);
   }
   const map = new Map();
@@ -156,6 +158,7 @@ function leanPbp(csv) {
       passer: str('passer_player_id'),
       posteam: str('posteam'),
       complete: num('complete_pass') === 1,
+      seasonType: str('season_type'),
     });
   }
   return map;
@@ -277,18 +280,46 @@ async function coachesBySeason() {
   return resolved;
 }
 
+// Who can run a route. Taken from participation's own per-snap position list,
+// which uses C/G/T for the line and QB for the passer — none of them run one.
+const ROUTE_POSITIONS = new Set(['WR', 'TE', 'RB', 'FB']);
+
 // Which personnel a PLAYER is on the field for. participation lists every
 // player on every snap by GSIS id, so once the pool carries those ids this is
 // a direct count rather than an inference. It is the bridge between a team's
 // scheme and one player's job: a tight end who only appears in 12 personnel has
 // a different outlook from one his offence trusts in 11.
+//
+// ROUTES ARE COUNTED HERE TOO, AND THEY ARE AN ESTIMATE. Route participation is
+// charted by PFF and FTN and is not in any free feed — weekly-usage.json has
+// said so in its caveats for as long as it has existed. What participation DOES
+// give is who was on the field for a dropback, and `offense_positions` gives
+// what each of them was lined up as, so a skill player on the field for a
+// dropback is counted as having run a route.
+//
+// WHAT THAT CANNOT SEE IS BLOCKING. A back who stayed in to protect ran no
+// route and is counted as though he did, which inflates the denominator of
+// every per-route rate — most for backs, some for tight ends, barely for
+// receivers. THE SIZE OF IT IS MEASURED RATHER THAN GUESSED: against published
+// distributions the receiver and tight-end medians land on them (YPRR 1.49 and
+// 1.24 against a public 1.4-1.6 and 1.1-1.3) while backs come in low at 0.82
+// against a public 1.0-1.3. That gap IS the pass protection, and it is the
+// reason the file marks these routes estimated and the backs' rates especially.
 function tallyUsage(usage, row, group, gsisIndex) {
   if (!row.players) return;
+  const positions = (row.positions || '').split(';');
+  let i = -1;
   for (const raw of row.players.split(';')) {
+    i++;
     const player = gsisIndex.get(raw.trim());
     if (!player) continue;
-    const u = usage[player.id] = usage[player.id] || { name: player.name, pos: player.pos, snaps: 0, groupings: {}, teams: {} };
+    const u = usage[player.id] = usage[player.id] || { name: player.name, pos: player.pos, snaps: 0, routes: 0, groupings: {}, teams: {} };
     u.snaps++;
+    // Lined up as a skill player on THIS snap, from participation's own
+    // position list rather than from the pool — a receiver taking a snap at
+    // running back is a running back on that play, and the pool only knows
+    // what he mostly is.
+    if (row.isDropback && ROUTE_POSITIONS.has((positions[i] || '').trim())) u.routes++;
     u.groupings[group] = (u.groupings[group] || 0) + 1;
     // The team he played these snaps FOR, which is not necessarily the team he
     // is on now. Comparing a 2025 season to his 2026 employer's scheme reads a
@@ -456,6 +487,11 @@ async function buildSeason(season) {
   const teams = {};
   const defenses = {};
   const usage = {};
+  // The denominator for route share. Keyed through teamKey() — nflverse calls
+  // the Rams LA and everything here calls them LAR, and an unaliased key leaves
+  // every Rams receiver with no share at all. It cost a wrong answer in the
+  // probe that measured this feature before it was built.
+  const teamDropbacks = {};
   const league = { overall: blank(), byGrouping: {}, formation: {}, coverage: {}, manZone: {} };
   let joined = 0, counted = 0, skipped = 0;
 
@@ -476,7 +512,24 @@ async function buildSeason(season) {
     counted++;
     if (play) joined++;
     tally(t.overall, row, play);
-    tallyUsage(usage, { players: r.offense_players, team: teamKey(team) }, group, gsisIndex);
+    // A dropback, not a completed pass: a sack is a dropback and every receiver
+    // on it ran a route. Kneels and spikes are already filtered above.
+    tallyUsage(usage, {
+      players: r.offense_players,
+      positions: r.offense_positions,
+      team: teamKey(team),
+      // REGULAR SEASON ONLY, and it has to be said here rather than assumed.
+      // Snaps and personnel mix legitimately count every game a player played;
+      // routes do not, because routes are only ever read as a DENOMINATOR under
+      // targets and yards that come from stats.json, which is regular season.
+      // Counted across the playoffs it understated every per-route rate on the
+      // site — Nacua's yards per route run came out 2.84 against a regular
+      // season 3.52, a fifth too low, with nothing anywhere reading wrong.
+      isDropback: !!(play && play.isPass && play.seasonType === 'REG'),
+    }, group, gsisIndex);
+    if (play && play.isPass && play.seasonType === 'REG') {
+      teamDropbacks[teamKey(team)] = (teamDropbacks[teamKey(team)] || 0) + 1;
+    }
     t.byGrouping[group] = t.byGrouping[group] || blank();
     tally(t.byGrouping[group], row, play);
 
@@ -597,7 +650,7 @@ async function buildSeason(season) {
     throw new Error(`league actual and expected points differ by ${((xfp.meta.leagueRatio - 1) * 100).toFixed(1)}% — the pricing and the attribution disagree`);
   }
 
-  return { teams, league, usage, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage, weekly, rushing, xfp };
+  return { teams, league, usage, teamDropbacks, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage, weekly, rushing, xfp };
 }
 
 function shapeDefense(d) {
@@ -672,7 +725,7 @@ async function main() {
 
   for (const season of wanted) {
     try {
-      const { teams, league: lg, usage, defenses, charting, fieldmap, fmCoverage, weekly, rushing, xfp } = await buildSeason(season);
+      const { teams, league: lg, usage, teamDropbacks, defenses, charting, fieldmap, fmCoverage, weekly, rushing, xfp } = await buildSeason(season);
       if (!Object.keys(teams).length) throw new Error('no team rows produced');
       const shaped = {};
       for (const [team, raw] of Object.entries(teams)) shaped[team] = shapeTeam(raw);
@@ -714,9 +767,19 @@ async function main() {
           if (share >= 1) mix[g] = share;
         }
         const teams = Object.entries(u.teams).sort((a, b) => b[1] - a[1]);
+        const team = teams.length ? teams[0][0] : null;
+        // Route share is against the dropbacks of the team he played them FOR,
+        // not the team that employs him now — the same rule the personnel
+        // comparison already follows. A player split across two teams is
+        // measured against his main one, which is stated rather than hidden.
+        const drops = team ? (teamDropbacks[team] || 0) : 0;
         shapedUsage[id] = {
           name: u.name, pos: u.pos, snaps: u.snaps, mix,
-          team: teams.length ? teams[0][0] : null,
+          team,
+          ...(u.routes ? {
+            routes: u.routes,
+            routeShare: drops ? +(u.routes / drops * 100).toFixed(1) : null,
+          } : {}),
           ...(teams.length > 1 ? { alsoWith: teams.slice(1).map(([t, n]) => ({ team: t, snaps: n })) } : {}),
         };
       }
@@ -789,6 +852,15 @@ async function main() {
       source: 'nflverse pbp_participation offense_players, joined to the pool on GSIS id',
       qualifier: `Players with at least ${MIN_USAGE_SNAPS} charted snaps in a season`,
       caveats: 'Share of the player\'s OWN snaps, not his team\'s. A player is only counted on snaps where the offensive personnel could be read, and only if the pool carries his GSIS id.',
+      routes: 'ROUTES ARE AN ESTIMATE, NOT A COUNT. Route participation is charted by PFF and FTN and '
+        + 'is in no free feed. What participation gives is who was on the field for a dropback and what '
+        + 'each of them lined up as, so a skill player on the field for a dropback is counted as having '
+        + 'run a route. It cannot see BLOCKING: a back who stayed in to protect is counted as though he '
+        + 'ran one. Measured against published distributions, receivers and tight ends land on them '
+        + '(median YPRR 1.49 and 1.24 against a public 1.4-1.6 and 1.1-1.3) and backs come in low at '
+        + '0.82 against a public 1.0-1.3 — that gap is the pass protection this cannot see, so a back\'s '
+        + 'per-route rates are the ones to trust least. Route share is against the dropbacks of the team '
+        + 'he played them for.',
     },
     seasons: usageSeasons,
   };

@@ -215,3 +215,60 @@ test('the pool is described as ours, not as the league', () => {
   assert.ok(Array.isArray(pct.meta.caveats) && pct.meta.caveats.length >= 3,
     'the caveats that explain what a percentile is not have gone');
 });
+
+test('an estimated metric says it is estimated', () => {
+  // Routes are the one number on this card that is not counted. Route
+  // participation is charted by PFF and FTN and is in no free feed, so these
+  // are inferred from who was on the field for a dropback — and the inference
+  // cannot see blocking. A reader comparing a yards-per-route-run figure here
+  // against a published one needs to know that, and the only place it can
+  // reach him is the label.
+  const routeKeys = ['rtePerG', 'routeShare', 'yprr', 'tprr'];
+  let found = 0;
+  for (const pos of positions) {
+    for (const m of pct.groups[pos]) {
+      if (!routeKeys.includes(m.key)) continue;
+      found++;
+      assert.match(m.note || '', /estimated/i,
+        `${pos}.${m.key} is built on estimated routes and does not say so`);
+    }
+  }
+  assert.ok(found >= 4, 'the route metrics have gone from the card');
+  assert.match(pct.meta.routes || '', /cannot see blocking/i,
+    'the file no longer states what the route estimate cannot see');
+});
+
+test('nobody runs a route on a snap his team did not drop back', () => {
+  // The arithmetic bound on the estimate. Routes are counted on dropbacks and a
+  // player cannot be on the field for more of them than his team had — a share
+  // over 100 means the denominator is keyed differently from the numerator,
+  // which is exactly what the LA/LAR alias did to every Rams receiver in the
+  // probe that preceded this feature.
+  const usage = JSON.parse(fs.readFileSync(path.join(D, 'player-usage.json'), 'utf8'));
+  const season = usage.meta.seasons[usage.meta.seasons.length - 1];
+  let withRoutes = 0;
+  for (const [id, u] of Object.entries(usage.seasons[season])) {
+    if (u.routes === undefined) continue;
+    withRoutes++;
+    assert.ok(u.routes > 0 && u.routes <= u.snaps,
+      `${id}: ${u.routes} routes on ${u.snaps} snaps — a route is a snap`);
+    if (u.routeShare !== null && u.routeShare !== undefined) {
+      assert.ok(u.routeShare > 0 && u.routeShare <= 100,
+        `${id}: route share ${u.routeShare}% — the denominator is not his team's dropbacks`);
+    }
+  }
+  assert.ok(withRoutes > 100, `only ${withRoutes} players carry routes — the estimate has stopped running`);
+});
+
+test('a lineman is never credited with a route', () => {
+  // The position list is read per SNAP from participation, not from the pool,
+  // so the check is that nobody whose job is blocking appears at all. If the
+  // position column were dropped, every one of the eleven players on a dropback
+  // would be credited and route counts would roughly double.
+  const usage = JSON.parse(fs.readFileSync(path.join(D, 'player-usage.json'), 'utf8'));
+  const season = usage.meta.seasons[usage.meta.seasons.length - 1];
+  const rows = Object.values(usage.seasons[season]).filter(u => u.routes);
+  const overRun = rows.filter(u => u.routes > u.snaps * 0.95 && u.snaps > 200);
+  assert.deepStrictEqual(overRun.map(u => u.name), [],
+    'a player ran a route on essentially every snap he played, which means dropbacks are not being filtered');
+});

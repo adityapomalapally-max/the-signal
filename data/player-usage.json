@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-09-09T18:33:27.334Z",
+    "generated": "2026-09-09T19:09:22.873Z",
     "seasons": [
       2023,
       2024,
@@ -9,7 +9,8 @@
     "live": 2026,
     "source": "nflverse pbp_participation offense_players, joined to the pool on GSIS id",
     "qualifier": "Players with at least 100 charted snaps in a season",
-    "caveats": "Share of the player's OWN snaps, not his team's. A player is only counted on snaps where the offensive personnel could be read, and only if the pool carries his GSIS id."
+    "caveats": "Share of the player's OWN snaps, not his team's. A player is only counted on snaps where the offensive personnel could be read, and only if the pool carries his GSIS id.",
+    "routes": "ROUTES ARE AN ESTIMATE, NOT A COUNT. Route participation is charted by PFF and FTN and is in no free feed. What participation gives is who was on the field for a dropback and what each of them lined up as, so a skill player on the field for a dropback is counted as having run a route. It cannot see BLOCKING: a back who stayed in to protect is counted as though he ran one. Measured against published distributions, receivers and tight ends land on them (median YPRR 1.49 and 1.24 against a public 1.4-1.6 and 1.1-1.3) and backs come in low at 0.82 against a public 1.0-1.3 — that gap is the pass protection this cannot see, so a back's per-route rates are the ones to trust least. Route share is against the dropbacks of the team he played them for."
   },
   "seasons": {
     "2023": {
@@ -4641,7 +4642,9 @@
           "21": 9,
           "22": 4.1
         },
-        "team": "DAL"
+        "team": "DAL",
+        "routes": 486,
+        "routeShare": 65.9
       },
       "ferguson": {
         "name": "Jake Ferguson",
@@ -4654,7 +4657,9 @@
           "21": 1.5,
           "01": 1.1
         },
-        "team": "DAL"
+        "team": "DAL",
+        "routes": 577,
+        "routeShare": 78.3
       },
       "lamb": {
         "name": "CeeDee Lamb",
@@ -4668,7 +4673,9 @@
           "22": 1.1,
           "01": 1.3
         },
-        "team": "DAL"
+        "team": "DAL",
+        "routes": 494,
+        "routeShare": 67
       },
       "pickens": {
         "name": "George Pickens",
@@ -4679,7 +4686,9 @@
           "12": 15.7,
           "21": 7.7
         },
-        "team": "DAL"
+        "team": "DAL",
+        "routes": 657,
+        "routeShare": 89.1
       },
       "turpin": {
         "name": "KaVontae Turpin",
@@ -4691,7 +4700,9 @@
           "21": 2.6,
           "01": 2.8
         },
-        "team": "DAL"
+        "team": "DAL",
+        "routes": 267,
+        "routeShare": 36.2
       },
       "hurts": {
         "name": "Jalen Hurts",
@@ -4714,7 +4725,9 @@
           "13": 6.3,
           "21": 1.1
         },
-        "team": "PHI"
+        "team": "PHI",
+        "routes": 435,
+        "routeShare": 71.8
       },
       "goedert": {
         "name": "Dallas Goedert",
@@ -4725,7 +4738,9 @@
           "12": 24.8,
           "13": 6.3
         },
-        "team": "PHI"
+        "team": "PHI",
+        "routes": 472,
+        "routeShare": 77.9
       },
       "brown-a": {
         "name": "A.J. Brown",
@@ -4736,7 +4751,9 @@
           "12": 25,
           "13": 4.3
         },
-        "team": "PHI"
+        "team": "PHI",
+        "routes": 508,
+        "routeShare": 83.8
       },
       "smith": {
         "name": "DeVonta Smith",
@@ -4747,7 +4764,9 @@
           "12": 26.2,
           "13": 1.6
         },
-        "team": "PHI"
+        "team": "PHI",
+        "routes": 548,
+        "routeShare": 90.4
       },
       "dotson": {
         "name": "Jahan Dotson",
@@ -4757,7 +4776,9 @@
           "11": 91.1,
           "12": 7.6
         },
-        "team": "PHI"
+        "team": "PHI",
+        "routes": 435,
+        "routeShare": 71.8
       },
       "granson": {
         "name": "Kylen Granson",
@@ -4770,7 +4791,9 @@
           "14": 2.1,
           "22": 1.3
         },
-        "team": "PHI"
+        "team": "PHI",
+        "routes": 102,
+        "routeShare": 16.8
       },
       "ward": {
         "name": "Cam Ward",
@@ -4794,7 +4817,9 @@
           "13": 1.2,
           "21": 3.8
         },
-        "team": "TEN"
+        "team": "TEN",
+        "routes": 388,
+        "routeShare": 56.6
       },
       "okonkwo": {
         "name": "Chig Okonkwo",
@@ -4806,7 +4831,9 @@
           "13": 1.5,
           "21": 2.8
         },
-        "team": "TEN"
+        "team": "TEN",
+        "routes": 480,
+        "routeShare": 70.1
       },
       "helm": {
         "name": "Gunnar Helm",
@@ -4818,7 +4845,9 @@
           "13": 1.9,
           "21": 1.3
         },
-        "team": "TEN"
+        "team": "TEN",
+        "routes": 296,
+        "routeShare": 43.2
       },
       "ridley": {
         "name": "Calvin Ridley",
@@ -4828,7 +4857,9 @@
           "11": 86.4,
           "12": 13.6
         },
-        "team": "TEN"
+        "team": "TEN",
+        "routes": 170,
+        "routeShare": 24.8
       },
       "ayomanor": {
         "name": "Elic Ayomanor",
@@ -4839,7 +4870,9 @@
           "12": 18.6,
           "21": 1.1
         },
-        "team": "TEN"
+        "team": "TEN",
+        "routes": 529,
+        "routeShare": 77.2
       },
       "dike": {
         "name": "Chimere Dike",
@@ -4850,7 +4883,9 @@
           "12": 10.8,
           "21": 3.1
         },
-        "team": "TEN"
+        "team": "TEN",
+        "routes": 434,
+        "routeShare": 63.4
       },
       "nix": {
         "name": "Bo Nix",
@@ -4878,7 +4913,9 @@
           "21": 10.1,
           "22": 7.2
         },
-        "team": "DEN"
+        "team": "DEN",
+        "routes": 156,
+        "routeShare": 22
       },
       "sutton": {
         "name": "Courtland Sutton",
@@ -4892,7 +4929,9 @@
           "22": 2.8,
           "01": 1.9
         },
-        "team": "DEN"
+        "team": "DEN",
+        "routes": 655,
+        "routeShare": 92.3
       },
       "franklin": {
         "name": "Troy Franklin",
@@ -4904,7 +4943,9 @@
           "21": 5.6,
           "01": 3
         },
-        "team": "DEN"
+        "team": "DEN",
+        "routes": 512,
+        "routeShare": 72.1
       },
       "engram": {
         "name": "Evan Engram",
@@ -4917,7 +4958,9 @@
           "22": 5.2,
           "01": 3.1
         },
-        "team": "DEN"
+        "team": "DEN",
+        "routes": 389,
+        "routeShare": 54.8
       },
       "mims": {
         "name": "Marvin Mims",
@@ -4933,7 +4976,9 @@
           "22": 1.3,
           "01": 4.3
         },
-        "team": "DEN"
+        "team": "DEN",
+        "routes": 288,
+        "routeShare": 40.6
       },
       "harvey": {
         "name": "RJ Harvey",
@@ -4946,7 +4991,9 @@
           "21": 9.7,
           "22": 9.1
         },
-        "team": "DEN"
+        "team": "DEN",
+        "routes": 302,
+        "routeShare": 42.5
       },
       "bryant": {
         "name": "Pat Bryant",
@@ -4959,7 +5006,9 @@
           "22": 1.8,
           "01": 3.2
         },
-        "team": "DEN"
+        "team": "DEN",
+        "routes": 319,
+        "routeShare": 44.9
       },
       "jones-d": {
         "name": "Daniel Jones",
@@ -4981,7 +5030,9 @@
           "12": 26.3,
           "13": 10.1
         },
-        "team": "IND"
+        "team": "IND",
+        "routes": 518,
+        "routeShare": 81.1
       },
       "alie-cox": {
         "name": "Mo Alie-Cox",
@@ -4992,7 +5043,9 @@
           "12": 61.1,
           "13": 24
         },
-        "team": "IND"
+        "team": "IND",
+        "routes": 200,
+        "routeShare": 31.3
       },
       "warren": {
         "name": "Tyler Warren",
@@ -5003,7 +5056,9 @@
           "12": 21,
           "13": 10.7
         },
-        "team": "IND"
+        "team": "IND",
+        "routes": 571,
+        "routeShare": 89.4
       },
       "pittman": {
         "name": "Michael Pittman",
@@ -5014,7 +5069,9 @@
           "12": 23.6,
           "13": 3
         },
-        "team": "IND"
+        "team": "IND",
+        "routes": 570,
+        "routeShare": 89.2
       },
       "pierce": {
         "name": "Alec Pierce",
@@ -5025,7 +5082,9 @@
           "12": 25.2,
           "13": 6.4
         },
-        "team": "IND"
+        "team": "IND",
+        "routes": 501,
+        "routeShare": 78.4
       },
       "downs": {
         "name": "Josh Downs",
@@ -5035,7 +5094,9 @@
           "11": 95.5,
           "12": 3.6
         },
-        "team": "IND"
+        "team": "IND",
+        "routes": 362,
+        "routeShare": 56.7
       },
       "mitchell-a": {
         "name": "Adonai Mitchell",
@@ -5048,6 +5109,8 @@
           "21": 4.7
         },
         "team": "NYJ",
+        "routes": 323,
+        "routeShare": 50.9,
         "alsoWith": [
           {
             "team": "IND",
@@ -5082,7 +5145,9 @@
           "21": 30.8,
           "22": 8.1
         },
-        "team": "MIA"
+        "team": "MIA",
+        "routes": 411,
+        "routeShare": 73.7
       },
       "waddle": {
         "name": "Jaylen Waddle",
@@ -5096,7 +5161,9 @@
           "21": 28.1,
           "22": 8.8
         },
-        "team": "MIA"
+        "team": "MIA",
+        "routes": 429,
+        "routeShare": 76.9
       },
       "washington-malik": {
         "name": "Malik Washington",
@@ -5110,7 +5177,9 @@
           "21": 16.3,
           "22": 1.1
         },
-        "team": "MIA"
+        "team": "MIA",
+        "routes": 369,
+        "routeShare": 66.1
       },
       "gordon": {
         "name": "Ollie Gordon",
@@ -5124,7 +5193,9 @@
           "21": 38.4,
           "22": 13.8
         },
-        "team": "MIA"
+        "team": "MIA",
+        "routes": 119,
+        "routeShare": 21.3
       },
       "burrow": {
         "name": "Joe Burrow",
@@ -5146,7 +5217,9 @@
           "12": 34.2,
           "21": 2.7
         },
-        "team": "CIN"
+        "team": "CIN",
+        "routes": 472,
+        "routeShare": 65
       },
       "sample": {
         "name": "Drew Sample",
@@ -5158,7 +5231,9 @@
           "13": 1.2,
           "21": 1.8
         },
-        "team": "CIN"
+        "team": "CIN",
+        "routes": 309,
+        "routeShare": 42.6
       },
       "higgins": {
         "name": "Tee Higgins",
@@ -5168,7 +5243,9 @@
           "11": 72.8,
           "12": 23.9
         },
-        "team": "CIN"
+        "team": "CIN",
+        "routes": 552,
+        "routeShare": 76
       },
       "chase": {
         "name": "Ja'Marr Chase",
@@ -5179,7 +5256,9 @@
           "12": 28.3,
           "21": 1.7
         },
-        "team": "CIN"
+        "team": "CIN",
+        "routes": 663,
+        "routeShare": 91.3
       },
       "iosivas": {
         "name": "Andrei Iosivas",
@@ -5189,7 +5268,9 @@
           "11": 80.9,
           "12": 15.9
         },
-        "team": "CIN"
+        "team": "CIN",
+        "routes": 578,
+        "routeShare": 79.6
       },
       "gesicki": {
         "name": "Mike Gesicki",
@@ -5200,7 +5281,9 @@
           "12": 43,
           "21": 1.5
         },
-        "team": "CIN"
+        "team": "CIN",
+        "routes": 266,
+        "routeShare": 36.6
       },
       "perine": {
         "name": "Samaje Perine",
@@ -5211,7 +5294,9 @@
           "12": 21.3,
           "21": 4.5
         },
-        "team": "CIN"
+        "team": "CIN",
+        "routes": 238,
+        "routeShare": 32.8
       },
       "flacco": {
         "name": "Joe Flacco",
@@ -5241,7 +5326,9 @@
           "13": 3.1,
           "21": 5.1
         },
-        "team": "CLE"
+        "team": "CLE",
+        "routes": 169,
+        "routeShare": 25.1
       },
       "njoku": {
         "name": "David Njoku",
@@ -5253,7 +5340,9 @@
           "13": 6.9,
           "02": 1.4
         },
-        "team": "CLE"
+        "team": "CLE",
+        "routes": 327,
+        "routeShare": 48.5
       },
       "fannin": {
         "name": "Harold Fannin",
@@ -5265,7 +5354,9 @@
           "13": 5.7,
           "02": 1
         },
-        "team": "CLE"
+        "team": "CLE",
+        "routes": 489,
+        "routeShare": 72.6
       },
       "jeudy": {
         "name": "Jerry Jeudy",
@@ -5277,7 +5368,9 @@
           "13": 2,
           "21": 1.3
         },
-        "team": "CLE"
+        "team": "CLE",
+        "routes": 623,
+        "routeShare": 92.4
       },
       "thrash": {
         "name": "Jamari Thrash",
@@ -5288,7 +5381,9 @@
           "12": 19.9,
           "02": 3.6
         },
-        "team": "CLE"
+        "team": "CLE",
+        "routes": 145,
+        "routeShare": 21.5
       },
       "mahomes": {
         "name": "Patrick Mahomes",
@@ -5312,7 +5407,9 @@
           "13": 8,
           "21": 5.4
         },
-        "team": "KC"
+        "team": "KC",
+        "routes": 281,
+        "routeShare": 38.3
       },
       "kelce": {
         "name": "Travis Kelce",
@@ -5324,7 +5421,9 @@
           "13": 7.8,
           "21": 1.7
         },
-        "team": "KC"
+        "team": "KC",
+        "routes": 636,
+        "routeShare": 86.6
       },
       "worthy": {
         "name": "Xavier Worthy",
@@ -5336,7 +5435,9 @@
           "13": 4.4,
           "21": 3
         },
-        "team": "KC"
+        "team": "KC",
+        "routes": 449,
+        "routeShare": 61.2
       },
       "smith-b": {
         "name": "Brashard Smith",
@@ -5350,7 +5451,9 @@
           "21": 23.7,
           "23": 1.6
         },
-        "team": "KC"
+        "team": "KC",
+        "routes": 113,
+        "routeShare": 15.4
       },
       "thornton": {
         "name": "Tyquan Thornton",
@@ -5362,7 +5465,9 @@
           "13": 2.1,
           "21": 4.2
         },
-        "team": "KC"
+        "team": "KC",
+        "routes": 271,
+        "routeShare": 36.9
       },
       "herbert": {
         "name": "Justin Herbert",
@@ -5392,7 +5497,9 @@
           "21": 14.8,
           "22": 4.1
         },
-        "team": "LAC"
+        "team": "LAC",
+        "routes": 234,
+        "routeShare": 32.8
       },
       "allen-keenan": {
         "name": "Keenan Allen",
@@ -5405,7 +5512,9 @@
           "21": 1.3,
           "01": 1.9
         },
-        "team": "LAC"
+        "team": "LAC",
+        "routes": 493,
+        "routeShare": 69.1
       },
       "johnston": {
         "name": "Quentin Johnston",
@@ -5419,7 +5528,9 @@
           "21": 11.5,
           "01": 1.6
         },
-        "team": "LAC"
+        "team": "LAC",
+        "routes": 511,
+        "routeShare": 71.7
       },
       "mcconkey": {
         "name": "Ladd McConkey",
@@ -5433,7 +5544,9 @@
           "21": 9.6,
           "01": 1.4
         },
-        "team": "LAC"
+        "team": "LAC",
+        "routes": 591,
+        "routeShare": 82.9
       },
       "harris": {
         "name": "Tre' Harris",
@@ -5449,7 +5562,9 @@
           "22": 11.4,
           "01": 2
         },
-        "team": "LAC"
+        "team": "LAC",
+        "routes": 298,
+        "routeShare": 41.8
       },
       "penix": {
         "name": "Michael Penix",
@@ -5473,7 +5588,9 @@
           "21": 31.2,
           "22": 1.5
         },
-        "team": "ATL"
+        "team": "ATL",
+        "routes": 146,
+        "routeShare": 23.7
       },
       "robinson": {
         "name": "Bijan Robinson",
@@ -5485,7 +5602,9 @@
           "13": 5,
           "21": 11.6
         },
-        "team": "ATL"
+        "team": "ATL",
+        "routes": 533,
+        "routeShare": 86.4
       },
       "pitts": {
         "name": "Kyle Pitts",
@@ -5497,7 +5616,9 @@
           "13": 7.3,
           "21": 8.7
         },
-        "team": "ATL"
+        "team": "ATL",
+        "routes": 588,
+        "routeShare": 95.3
       },
       "london": {
         "name": "Drake London",
@@ -5509,7 +5630,9 @@
           "13": 2.7,
           "21": 10.7
         },
-        "team": "ATL"
+        "team": "ATL",
+        "routes": 418,
+        "routeShare": 67.7
       },
       "mayfield": {
         "name": "Baker Mayfield",
@@ -5534,7 +5657,9 @@
           "13": 2.3,
           "21": 8.8
         },
-        "team": "TB"
+        "team": "TB",
+        "routes": 233,
+        "routeShare": 33.8
       },
       "otton": {
         "name": "Cade Otton",
@@ -5546,7 +5671,9 @@
           "13": 3,
           "21": 4.1
         },
-        "team": "TB"
+        "team": "TB",
+        "routes": 614,
+        "routeShare": 89
       },
       "evans": {
         "name": "Mike Evans",
@@ -5559,7 +5686,9 @@
           "13": 2.4,
           "21": 1.9
         },
-        "team": "TB"
+        "team": "TB",
+        "routes": 252,
+        "routeShare": 36.5
       },
       "egbuka": {
         "name": "Emeka Egbuka",
@@ -5571,7 +5700,9 @@
           "12": 19.3,
           "21": 3.9
         },
-        "team": "TB"
+        "team": "TB",
+        "routes": 574,
+        "routeShare": 83.2
       },
       "white": {
         "name": "Rachaad White",
@@ -5584,7 +5715,9 @@
           "13": 1.9,
           "21": 8.8
         },
-        "team": "TB"
+        "team": "TB",
+        "routes": 403,
+        "routeShare": 58.4
       },
       "tucker": {
         "name": "Sean Tucker",
@@ -5596,7 +5729,9 @@
           "13": 4.6,
           "21": 6.9
         },
-        "team": "TB"
+        "team": "TB",
+        "routes": 73,
+        "routeShare": 10.6
       },
       "sills": {
         "name": "David Sills",
@@ -5608,7 +5743,9 @@
           "13": 5.4,
           "21": 5.6
         },
-        "team": "ATL"
+        "team": "ATL",
+        "routes": 345,
+        "routeShare": 55.9
       },
       "smith-g": {
         "name": "Geno Smith",
@@ -5630,7 +5767,9 @@
           "12": 38.9,
           "13": 7.4
         },
-        "team": "LV"
+        "team": "LV",
+        "routes": 462,
+        "routeShare": 72.9
       },
       "mayer": {
         "name": "Michael Mayer",
@@ -5641,7 +5780,9 @@
           "12": 50.4,
           "13": 9
         },
-        "team": "LV"
+        "team": "LV",
+        "routes": 277,
+        "routeShare": 43.7
       },
       "bowers": {
         "name": "Brock Bowers",
@@ -5652,7 +5793,9 @@
           "12": 44.6,
           "13": 8.8
         },
-        "team": "LV"
+        "team": "LV",
+        "routes": 432,
+        "routeShare": 68.1
       },
       "meyers": {
         "name": "Jakobi Meyers",
@@ -5664,6 +5807,8 @@
           "21": 1.2
         },
         "team": "JAX",
+        "routes": 559,
+        "routeShare": 81.6,
         "alsoWith": [
           {
             "team": "LV",
@@ -5680,7 +5825,9 @@
           "12": 36,
           "13": 5.3
         },
-        "team": "LV"
+        "team": "LV",
+        "routes": 613,
+        "routeShare": 96.7
       },
       "maye": {
         "name": "Drake Maye",
@@ -5706,7 +5853,9 @@
           "21": 17,
           "22": 4.5
         },
-        "team": "NE"
+        "team": "NE",
+        "routes": 361,
+        "routeShare": 55.7
       },
       "henry-h": {
         "name": "Hunter Henry",
@@ -5718,7 +5867,9 @@
           "21": 9.6,
           "22": 8.2
         },
-        "team": "NE"
+        "team": "NE",
+        "routes": 543,
+        "routeShare": 83.8
       },
       "diggs": {
         "name": "Stefon Diggs",
@@ -5730,7 +5881,9 @@
           "21": 10.2,
           "22": 2.3
         },
-        "team": "NE"
+        "team": "NE",
+        "routes": 442,
+        "routeShare": 68.2
       },
       "boutte": {
         "name": "Kayshon Boutte",
@@ -5742,7 +5895,9 @@
           "20": 2.2,
           "21": 12
         },
-        "team": "NE"
+        "team": "NE",
+        "routes": 397,
+        "routeShare": 61.3
       },
       "hooper": {
         "name": "Austin Hooper",
@@ -5754,7 +5909,9 @@
           "21": 21.6,
           "22": 14.5
         },
-        "team": "NE"
+        "team": "NE",
+        "routes": 240,
+        "routeShare": 37
       },
       "douglas-d": {
         "name": "DeMario Douglas",
@@ -5766,7 +5923,9 @@
           "12": 5.1,
           "21": 2.1
         },
-        "team": "NE"
+        "team": "NE",
+        "routes": 239,
+        "routeShare": 36.9
       },
       "bech": {
         "name": "Jack Bech",
@@ -5777,7 +5936,9 @@
           "12": 22.7,
           "13": 1.1
         },
-        "team": "LV"
+        "team": "LV",
+        "routes": 209,
+        "routeShare": 33
       },
       "henderson": {
         "name": "TreVeyon Henderson",
@@ -5790,7 +5951,9 @@
           "21": 24.1,
           "22": 7.3
         },
-        "team": "NE"
+        "team": "NE",
+        "routes": 291,
+        "routeShare": 44.9
       },
       "williams-k": {
         "name": "Kyle Williams",
@@ -5804,7 +5967,9 @@
           "21": 21.2,
           "22": 5.5
         },
-        "team": "NE"
+        "team": "NE",
+        "routes": 191,
+        "routeShare": 29.5
       },
       "fields-j": {
         "name": "Justin Fields",
@@ -5828,7 +5993,9 @@
           "21": 11.3,
           "22": 2.4
         },
-        "team": "NYJ"
+        "team": "NYJ",
+        "routes": 346,
+        "routeShare": 54.5
       },
       "taylor-m": {
         "name": "Mason Taylor",
@@ -5840,7 +6007,9 @@
           "21": 3.6,
           "22": 1.9
         },
-        "team": "NYJ"
+        "team": "NYJ",
+        "routes": 415,
+        "routeShare": 65.4
       },
       "wilson": {
         "name": "Garrett Wilson",
@@ -5851,7 +6020,9 @@
           "12": 20.3,
           "21": 9.1
         },
-        "team": "NYJ"
+        "team": "NYJ",
+        "routes": 240,
+        "routeShare": 37.8
       },
       "davis-i": {
         "name": "Isaiah Davis",
@@ -5863,7 +6034,9 @@
           "21": 4.1,
           "22": 1.7
         },
-        "team": "NYJ"
+        "team": "NYJ",
+        "routes": 224,
+        "routeShare": 35.3
       },
       "rodgers": {
         "name": "Aaron Rodgers",
@@ -5888,7 +6061,9 @@
           "21": 4.6,
           "22": 1.7
         },
-        "team": "PIT"
+        "team": "PIT",
+        "routes": 255,
+        "routeShare": 40.6
       },
       "washington-d": {
         "name": "Darnell Washington",
@@ -5900,7 +6075,9 @@
           "13": 25.5,
           "22": 1.5
         },
-        "team": "PIT"
+        "team": "PIT",
+        "routes": 278,
+        "routeShare": 44.3
       },
       "metcalf": {
         "name": "DK Metcalf",
@@ -5912,7 +6089,9 @@
           "13": 11.2,
           "21": 2
         },
-        "team": "PIT"
+        "team": "PIT",
+        "routes": 492,
+        "routeShare": 78.3
       },
       "gainwell": {
         "name": "Kenny Gainwell",
@@ -5925,7 +6104,9 @@
           "21": 4.3,
           "22": 1.6
         },
-        "team": "PIT"
+        "team": "PIT",
+        "routes": 373,
+        "routeShare": 59.4
       },
       "freiermuth": {
         "name": "Pat Freiermuth",
@@ -5936,7 +6117,9 @@
           "12": 34.4,
           "13": 24.7
         },
-        "team": "PIT"
+        "team": "PIT",
+        "routes": 357,
+        "routeShare": 56.8
       },
       "lawrence": {
         "name": "Trevor Lawrence",
@@ -5962,7 +6145,9 @@
           "13": 1.5,
           "21": 5.5
         },
-        "team": "JAX"
+        "team": "JAX",
+        "routes": 366,
+        "routeShare": 53.4
       },
       "strange": {
         "name": "Brenton Strange",
@@ -5974,7 +6159,9 @@
           "13": 2,
           "21": 2.8
         },
-        "team": "JAX"
+        "team": "JAX",
+        "routes": 358,
+        "routeShare": 52.3
       },
       "thomas": {
         "name": "Brian Thomas",
@@ -5986,7 +6173,9 @@
           "12": 16.5,
           "21": 1.9
         },
-        "team": "JAX"
+        "team": "JAX",
+        "routes": 496,
+        "routeShare": 72.4
       },
       "hunter": {
         "name": "Travis Hunter",
@@ -5996,7 +6185,9 @@
           "10": 1.8,
           "11": 98.2
         },
-        "team": "JAX"
+        "team": "JAX",
+        "routes": 236,
+        "routeShare": 34.5
       },
       "washington": {
         "name": "Parker Washington",
@@ -6008,7 +6199,9 @@
           "12": 16.5,
           "21": 2.6
         },
-        "team": "JAX"
+        "team": "JAX",
+        "routes": 437,
+        "routeShare": 63.8
       },
       "bigsby": {
         "name": "Tank Bigsby",
@@ -6022,6 +6215,8 @@
           "22": 1.4
         },
         "team": "PHI",
+        "routes": 63,
+        "routeShare": 10.4,
         "alsoWith": [
           {
             "team": "JAX",
@@ -6038,7 +6233,9 @@
           "12": 4.7,
           "21": 5.5
         },
-        "team": "JAX"
+        "team": "JAX",
+        "routes": 214,
+        "routeShare": 31.2
       },
       "young": {
         "name": "Bryce Young",
@@ -6064,7 +6261,9 @@
           "21": 2.1,
           "22": 2.1
         },
-        "team": "CAR"
+        "team": "CAR",
+        "routes": 278,
+        "routeShare": 44.8
       },
       "legette": {
         "name": "Xavier Legette",
@@ -6076,7 +6275,9 @@
           "21": 2,
           "01": 1.3
         },
-        "team": "CAR"
+        "team": "CAR",
+        "routes": 421,
+        "routeShare": 67.8
       },
       "mcmillan": {
         "name": "Tetairoa McMillan",
@@ -6088,7 +6289,9 @@
           "21": 1.9,
           "01": 1
         },
-        "team": "CAR"
+        "team": "CAR",
+        "routes": 581,
+        "routeShare": 93.6
       },
       "dowdle": {
         "name": "Rico Dowdle",
@@ -6101,7 +6304,9 @@
           "21": 2.3,
           "22": 1.8
         },
-        "team": "CAR"
+        "team": "CAR",
+        "routes": 318,
+        "routeShare": 51.2
       },
       "tuten": {
         "name": "Bhayshul Tuten",
@@ -6114,7 +6319,9 @@
           "13": 1.7,
           "21": 11.3
         },
-        "team": "JAX"
+        "team": "JAX",
+        "routes": 109,
+        "routeShare": 15.9
       },
       "darnold": {
         "name": "Sam Darnold",
@@ -6142,7 +6349,9 @@
           "21": 14.4,
           "22": 4.9
         },
-        "team": "SEA"
+        "team": "SEA",
+        "routes": 243,
+        "routeShare": 44.1
       },
       "barner": {
         "name": "AJ Barner",
@@ -6157,7 +6366,9 @@
           "02": 2.2,
           "01": 1.2
         },
-        "team": "SEA"
+        "team": "SEA",
+        "routes": 455,
+        "routeShare": 82.6
       },
       "kupp": {
         "name": "Cooper Kupp",
@@ -6171,7 +6382,9 @@
           "02": 2.3,
           "01": 1.3
         },
-        "team": "SEA"
+        "team": "SEA",
+        "routes": 442,
+        "routeShare": 80.2
       },
       "jsn": {
         "name": "Jaxon Smith-Njigba",
@@ -6186,7 +6399,9 @@
           "02": 2.2,
           "01": 1.2
         },
-        "team": "SEA"
+        "team": "SEA",
+        "routes": 513,
+        "routeShare": 93.1
       },
       "charbonnet": {
         "name": "Zach Charbonnet",
@@ -6199,7 +6414,9 @@
           "21": 12.4,
           "22": 13.3
         },
-        "team": "SEA"
+        "team": "SEA",
+        "routes": 271,
+        "routeShare": 49.2
       },
       "horton": {
         "name": "Tory Horton",
@@ -6212,7 +6429,9 @@
           "21": 4.3,
           "02": 7.4
         },
-        "team": "SEA"
+        "team": "SEA",
+        "routes": 147,
+        "routeShare": 26.7
       },
       "purdy": {
         "name": "Brock Purdy",
@@ -6236,7 +6455,9 @@
           "21": 36.1,
           "22": 7.1
         },
-        "team": "SF"
+        "team": "SF",
+        "routes": 581,
+        "routeShare": 88.4
       },
       "kittle": {
         "name": "George Kittle",
@@ -6248,7 +6469,9 @@
           "21": 41.4,
           "22": 7.8
         },
-        "team": "SF"
+        "team": "SF",
+        "routes": 327,
+        "routeShare": 49.8
       },
       "jennings": {
         "name": "Jauan Jennings",
@@ -6260,7 +6483,9 @@
           "21": 37.3,
           "22": 7.5
         },
-        "team": "SF"
+        "team": "SF",
+        "routes": 483,
+        "routeShare": 73.5
       },
       "pearsall": {
         "name": "Ricky Pearsall",
@@ -6271,7 +6496,9 @@
           "12": 11.9,
           "21": 38.6
         },
-        "team": "SF"
+        "team": "SF",
+        "routes": 297,
+        "routeShare": 45.2
       },
       "robinson-b": {
         "name": "Brian Robinson",
@@ -6283,7 +6510,9 @@
           "21": 41.8,
           "22": 9.7
         },
-        "team": "SF"
+        "team": "SF",
+        "routes": 77,
+        "routeShare": 11.7
       },
       "farrell": {
         "name": "Luke Farrell",
@@ -6296,7 +6525,9 @@
           "22": 20.9,
           "23": 2
         },
-        "team": "SF"
+        "team": "SF",
+        "routes": 165,
+        "routeShare": 25.1
       },
       "arroyo": {
         "name": "Elijah Arroyo",
@@ -6310,7 +6541,9 @@
           "22": 14.5,
           "02": 5.6
         },
-        "team": "SEA"
+        "team": "SEA",
+        "routes": 171,
+        "routeShare": 31
       },
       "tonges": {
         "name": "Jake Tonges",
@@ -6323,7 +6556,9 @@
           "22": 10.1,
           "23": 2
         },
-        "team": "SF"
+        "team": "SF",
+        "routes": 261,
+        "routeShare": 39.7
       },
       "murray": {
         "name": "Kyler Murray",
@@ -6345,7 +6580,9 @@
           "12": 37.3,
           "13": 11.8
         },
-        "team": "ARI"
+        "team": "ARI",
+        "routes": 746,
+        "routeShare": 94.4
       },
       "harrison": {
         "name": "Marvin Harrison",
@@ -6357,7 +6594,9 @@
           "12": 29.9,
           "13": 6.6
         },
-        "team": "ARI"
+        "team": "ARI",
+        "routes": 410,
+        "routeShare": 51.9
       },
       "wilson-m": {
         "name": "Michael Wilson",
@@ -6369,7 +6608,9 @@
           "12": 33,
           "13": 5.6
         },
-        "team": "ARI"
+        "team": "ARI",
+        "routes": 673,
+        "routeShare": 85.2
       },
       "benson": {
         "name": "Trey Benson",
@@ -6380,7 +6621,9 @@
           "12": 26.4,
           "13": 4
         },
-        "team": "ARI"
+        "team": "ARI",
+        "routes": 84,
+        "routeShare": 10.6
       },
       "kamara": {
         "name": "Alvin Kamara",
@@ -6392,7 +6635,9 @@
           "12": 20.1,
           "13": 2.8
         },
-        "team": "NO"
+        "team": "NO",
+        "routes": 295,
+        "routeShare": 41.5
       },
       "johnson": {
         "name": "Juwan Johnson",
@@ -6404,7 +6649,9 @@
           "13": 4.5,
           "03": 2.1
         },
-        "team": "NO"
+        "team": "NO",
+        "routes": 586,
+        "routeShare": 82.5
       },
       "olave": {
         "name": "Chris Olave",
@@ -6416,7 +6663,9 @@
           "02": 1.1,
           "01": 1
         },
-        "team": "NO"
+        "team": "NO",
+        "routes": 617,
+        "routeShare": 86.9
       },
       "shaheed": {
         "name": "Rashid Shaheed",
@@ -6430,6 +6679,8 @@
           "01": 1.2
         },
         "team": "NO",
+        "routes": 510,
+        "routeShare": 71.8,
         "alsoWith": [
           {
             "team": "SEA",
@@ -6448,7 +6699,9 @@
           "21": 3.4,
           "22": 2.6
         },
-        "team": "NO"
+        "team": "NO",
+        "routes": 54,
+        "routeShare": 7.6
       },
       "vele": {
         "name": "Devaughn Vele",
@@ -6462,7 +6715,9 @@
           "02": 1.5,
           "01": 1.5
         },
-        "team": "NO"
+        "team": "NO",
+        "routes": 266,
+        "routeShare": 37.5
       },
       "daniels": {
         "name": "Jayden Daniels",
@@ -6489,7 +6744,9 @@
           "21": 2.5,
           "01": 1.4
         },
-        "team": "WAS"
+        "team": "WAS",
+        "routes": 280,
+        "routeShare": 45.4
       },
       "samuel": {
         "name": "Deebo Samuel",
@@ -6503,7 +6760,9 @@
           "21": 1.6,
           "01": 1.2
         },
-        "team": "WAS"
+        "team": "WAS",
+        "routes": 473,
+        "routeShare": 76.7
       },
       "tracy": {
         "name": "Tyrone Tracy",
@@ -6515,7 +6774,9 @@
           "13": 2.7,
           "21": 1.2
         },
-        "team": "NYG"
+        "team": "NYG",
+        "routes": 344,
+        "routeShare": 50.9
       },
       "johnson-t": {
         "name": "Theo Johnson",
@@ -6526,7 +6787,9 @@
           "12": 36,
           "13": 5.8
         },
-        "team": "NYG"
+        "team": "NYG",
+        "routes": 529,
+        "routeShare": 78.3
       },
       "nabers": {
         "name": "Malik Nabers",
@@ -6536,7 +6799,9 @@
           "11": 74.6,
           "12": 23.7
         },
-        "team": "NYG"
+        "team": "NYG",
+        "routes": 145,
+        "routeShare": 21.4
       },
       "robinson-w": {
         "name": "Wan'Dale Robinson",
@@ -6547,7 +6812,9 @@
           "12": 30.3,
           "13": 3.4
         },
-        "team": "NYG"
+        "team": "NYG",
+        "routes": 587,
+        "routeShare": 86.8
       },
       "skattebo": {
         "name": "Cam Skattebo",
@@ -6559,7 +6826,9 @@
           "13": 6.3,
           "21": 2.3
         },
-        "team": "NYG"
+        "team": "NYG",
+        "routes": 163,
+        "routeShare": 24.1
       },
       "croskey-merritt": {
         "name": "Jacory Croskey-Merritt",
@@ -6571,7 +6840,9 @@
           "13": 5.1,
           "21": 2.9
         },
-        "team": "WAS"
+        "team": "WAS",
+        "routes": 189,
+        "routeShare": 30.6
       },
       "love": {
         "name": "Jordan Love",
@@ -6595,7 +6866,9 @@
           "13": 1.9,
           "21": 5.3
         },
-        "team": "GB"
+        "team": "GB",
+        "routes": 258,
+        "routeShare": 48.4
       },
       "kraft": {
         "name": "Tucker Kraft",
@@ -6607,7 +6880,9 @@
           "13": 3.4,
           "21": 2.5
         },
-        "team": "GB"
+        "team": "GB",
+        "routes": 250,
+        "routeShare": 46.9
       },
       "doubs": {
         "name": "Romeo Doubs",
@@ -6618,7 +6893,9 @@
           "12": 30.7,
           "21": 3.2
         },
-        "team": "GB"
+        "team": "GB",
+        "routes": 418,
+        "routeShare": 78.4
       },
       "golden": {
         "name": "Matthew Golden",
@@ -6629,7 +6906,9 @@
           "12": 27.6,
           "21": 3.2
         },
-        "team": "GB"
+        "team": "GB",
+        "routes": 268,
+        "routeShare": 50.3
       },
       "brooks-c": {
         "name": "Chris Brooks",
@@ -6640,7 +6919,9 @@
           "12": 13.8,
           "21": 19.4
         },
-        "team": "GB"
+        "team": "GB",
+        "routes": 123,
+        "routeShare": 23.1
       },
       "wicks": {
         "name": "Dontayvion Wicks",
@@ -6651,7 +6932,9 @@
           "12": 23.4,
           "21": 3
         },
-        "team": "GB"
+        "team": "GB",
+        "routes": 234,
+        "routeShare": 43.9
       },
       "reed": {
         "name": "Jayden Reed",
@@ -6662,7 +6945,9 @@
           "11": 94.2,
           "12": 1.9
         },
-        "team": "GB"
+        "team": "GB",
+        "routes": 108,
+        "routeShare": 20.3
       },
       "goff": {
         "name": "Jared Goff",
@@ -6690,7 +6975,9 @@
           "20": 2.9,
           "21": 4.7
         },
-        "team": "DET"
+        "team": "DET",
+        "routes": 459,
+        "routeShare": 70.6
       },
       "laporta": {
         "name": "Sam LaPorta",
@@ -6702,7 +6989,9 @@
           "13": 7.7,
           "21": 2.5
         },
-        "team": "DET"
+        "team": "DET",
+        "routes": 287,
+        "routeShare": 44.2
       },
       "stbrown": {
         "name": "Amon-Ra St. Brown",
@@ -6716,7 +7005,9 @@
           "20": 2,
           "21": 3.2
         },
-        "team": "DET"
+        "team": "DET",
+        "routes": 590,
+        "routeShare": 90.8
       },
       "williams-jameson": {
         "name": "Jameson Williams",
@@ -6730,7 +7021,9 @@
           "20": 2.2,
           "21": 3.2
         },
-        "team": "DET"
+        "team": "DET",
+        "routes": 621,
+        "routeShare": 95.5
       },
       "montgomery": {
         "name": "David Montgomery",
@@ -6744,7 +7037,9 @@
           "20": 5.3,
           "21": 8.4
         },
-        "team": "DET"
+        "team": "DET",
+        "routes": 232,
+        "routeShare": 35.7
       },
       "teslaa": {
         "name": "Isaac TeSlaa",
@@ -6757,7 +7052,9 @@
           "13": 2.2,
           "20": 2.5
         },
-        "team": "DET"
+        "team": "DET",
+        "routes": 308,
+        "routeShare": 47.4
       },
       "wilson-e": {
         "name": "Emanuel Wilson",
@@ -6769,7 +7066,9 @@
           "13": 1.3,
           "21": 2.6
         },
-        "team": "GB"
+        "team": "GB",
+        "routes": 166,
+        "routeShare": 31.1
       },
       "stroud": {
         "name": "C.J. Stroud",
@@ -6797,7 +7096,9 @@
           "21": 1.4,
           "22": 1.8
         },
-        "team": "HOU"
+        "team": "HOU",
+        "routes": 586,
+        "routeShare": 84.2
       },
       "collins": {
         "name": "Nico Collins",
@@ -6810,7 +7111,9 @@
           "20": 2.8,
           "21": 5.5
         },
-        "team": "HOU"
+        "team": "HOU",
+        "routes": 517,
+        "routeShare": 74.3
       },
       "higgins-j": {
         "name": "Jayden Higgins",
@@ -6824,7 +7127,9 @@
           "21": 9.1,
           "22": 1.3
         },
-        "team": "HOU"
+        "team": "HOU",
+        "routes": 388,
+        "routeShare": 55.7
       },
       "noel": {
         "name": "Jaylin Noel",
@@ -6836,7 +7141,9 @@
           "12": 2.2,
           "20": 1.3
         },
-        "team": "HOU"
+        "team": "HOU",
+        "routes": 214,
+        "routeShare": 30.7
       },
       "stafford": {
         "name": "Matthew Stafford",
@@ -6858,7 +7165,9 @@
           "12": 8.6,
           "13": 25.8
         },
-        "team": "LAR"
+        "team": "LAR",
+        "routes": 479,
+        "routeShare": 72.6
       },
       "adams": {
         "name": "Davante Adams",
@@ -6869,7 +7178,9 @@
           "12": 10.2,
           "13": 8.4
         },
-        "team": "LAR"
+        "team": "LAR",
+        "routes": 429,
+        "routeShare": 65
       },
       "nacua": {
         "name": "Puka Nacua",
@@ -6880,7 +7191,9 @@
           "12": 9.1,
           "13": 17.3
         },
-        "team": "LAR"
+        "team": "LAR",
+        "routes": 487,
+        "routeShare": 73.8
       },
       "parkinson": {
         "name": "Colby Parkinson",
@@ -6891,7 +7204,9 @@
           "12": 12.8,
           "13": 49.5
         },
-        "team": "LAR"
+        "team": "LAR",
+        "routes": 330,
+        "routeShare": 50
       },
       "marks": {
         "name": "Woody Marks",
@@ -6905,7 +7220,9 @@
           "21": 4.9,
           "22": 1.3
         },
-        "team": "HOU"
+        "team": "HOU",
+        "routes": 343,
+        "routeShare": 49.3
       },
       "corum": {
         "name": "Blake Corum",
@@ -6916,7 +7233,9 @@
           "12": 9.6,
           "13": 40.8
         },
-        "team": "LAR"
+        "team": "LAR",
+        "routes": 178,
+        "routeShare": 27
       },
       "allen": {
         "name": "Josh Allen",
@@ -6942,7 +7261,9 @@
           "21": 10.5,
           "22": 15.9
         },
-        "team": "BUF"
+        "team": "BUF",
+        "routes": 291,
+        "routeShare": 46.9
       },
       "kincaid": {
         "name": "Dalton Kincaid",
@@ -6956,7 +7277,9 @@
           "22": 4.6,
           "02": 1.6
         },
-        "team": "BUF"
+        "team": "BUF",
+        "routes": 219,
+        "routeShare": 35.3
       },
       "coleman-k": {
         "name": "Keon Coleman",
@@ -6969,7 +7292,9 @@
           "21": 6.7,
           "22": 6.8
         },
-        "team": "BUF"
+        "team": "BUF",
+        "routes": 333,
+        "routeShare": 53.6
       },
       "shakir": {
         "name": "Khalil Shakir",
@@ -6981,7 +7306,9 @@
           "21": 2.1,
           "22": 2.4
         },
-        "team": "BUF"
+        "team": "BUF",
+        "routes": 410,
+        "routeShare": 66
       },
       "shavers": {
         "name": "Tyrell Shavers",
@@ -6993,7 +7320,9 @@
           "21": 11.8,
           "22": 4.1
         },
-        "team": "BUF"
+        "team": "BUF",
+        "routes": 219,
+        "routeShare": 35.3
       },
       "johnson-ty": {
         "name": "Ty Johnson",
@@ -7005,7 +7334,9 @@
           "21": 6.7,
           "22": 3.8
         },
-        "team": "BUF"
+        "team": "BUF",
+        "routes": 257,
+        "routeShare": 41.4
       },
       "davis": {
         "name": "Ray Davis",
@@ -7017,7 +7348,9 @@
           "21": 12.8,
           "22": 7.2
         },
-        "team": "BUF"
+        "team": "BUF",
+        "routes": 77,
+        "routeShare": 12.4
       },
       "jackson": {
         "name": "Lamar Jackson",
@@ -7043,7 +7376,9 @@
           "21": 23.5,
           "22": 12.6
         },
-        "team": "BAL"
+        "team": "BAL",
+        "routes": 207,
+        "routeShare": 38.8
       },
       "andrews": {
         "name": "Mark Andrews",
@@ -7055,7 +7390,9 @@
           "13": 9,
           "21": 10.7
         },
-        "team": "BAL"
+        "team": "BAL",
+        "routes": 388,
+        "routeShare": 72.8
       },
       "bateman": {
         "name": "Rashod Bateman",
@@ -7067,7 +7404,9 @@
           "21": 18.4,
           "22": 1.2
         },
-        "team": "BAL"
+        "team": "BAL",
+        "routes": 332,
+        "routeShare": 62.3
       },
       "flowers": {
         "name": "Zay Flowers",
@@ -7080,7 +7419,9 @@
           "21": 20,
           "22": 3.2
         },
-        "team": "BAL"
+        "team": "BAL",
+        "routes": 508,
+        "routeShare": 95.3
       },
       "hill": {
         "name": "Justice Hill",
@@ -7092,7 +7433,9 @@
           "13": 2.3,
           "21": 2.7
         },
-        "team": "BAL"
+        "team": "BAL",
+        "routes": 173,
+        "routeShare": 32.5
       },
       "wallace": {
         "name": "Tylan Wallace",
@@ -7106,7 +7449,9 @@
           "22": 12.2,
           "31": 1.1
         },
-        "team": "BAL"
+        "team": "BAL",
+        "routes": 94,
+        "routeShare": 17.6
       },
       "mccarthy": {
         "name": "J.J. McCarthy",
@@ -7132,7 +7477,9 @@
           "21": 9.6,
           "22": 4.8
         },
-        "team": "MIN"
+        "team": "MIN",
+        "routes": 227,
+        "routeShare": 37.3
       },
       "hockenson": {
         "name": "T.J. Hockenson",
@@ -7144,7 +7491,9 @@
           "13": 4.6,
           "22": 3.2
         },
-        "team": "MIN"
+        "team": "MIN",
+        "routes": 474,
+        "routeShare": 78
       },
       "jefferson": {
         "name": "Justin Jefferson",
@@ -7157,7 +7506,9 @@
           "21": 7.5,
           "22": 3.3
         },
-        "team": "MIN"
+        "team": "MIN",
+        "routes": 584,
+        "routeShare": 96.1
       },
       "nailor": {
         "name": "Jalen Nailor",
@@ -7168,7 +7519,9 @@
           "12": 7.7,
           "21": 2.4
         },
-        "team": "MIN"
+        "team": "MIN",
+        "routes": 444,
+        "routeShare": 73
       },
       "williams-c": {
         "name": "Caleb Williams",
@@ -7192,7 +7545,9 @@
           "12": 36.1,
           "13": 9
         },
-        "team": "CHI"
+        "team": "CHI",
+        "routes": 367,
+        "routeShare": 54
       },
       "kmet": {
         "name": "Cole Kmet",
@@ -7205,7 +7560,9 @@
           "01": 1.2,
           "02": 1.5
         },
-        "team": "CHI"
+        "team": "CHI",
+        "routes": 433,
+        "routeShare": 63.7
       },
       "moore": {
         "name": "DJ Moore",
@@ -7218,7 +7575,9 @@
           "01": 2,
           "02": 1.2
         },
-        "team": "CHI"
+        "team": "CHI",
+        "routes": 593,
+        "routeShare": 87.2
       },
       "odunze": {
         "name": "Rome Odunze",
@@ -7231,7 +7590,9 @@
           "01": 2.4,
           "02": 1.4
         },
-        "team": "CHI"
+        "team": "CHI",
+        "routes": 439,
+        "routeShare": 64.6
       },
       "loveland": {
         "name": "Colston Loveland",
@@ -7244,7 +7605,9 @@
           "02": 1,
           "01": 1.1
         },
-        "team": "CHI"
+        "team": "CHI",
+        "routes": 427,
+        "routeShare": 62.8
       },
       "monangai": {
         "name": "Kyle Monangai",
@@ -7255,7 +7618,9 @@
           "12": 36.2,
           "13": 11.3
         },
-        "team": "CHI"
+        "team": "CHI",
+        "routes": 279,
+        "routeShare": 41
       },
       "burden": {
         "name": "Luther Burden",
@@ -7268,7 +7633,9 @@
           "01": 3.8,
           "02": 2.6
         },
-        "team": "CHI"
+        "team": "CHI",
+        "routes": 254,
+        "routeShare": 37.4
       },
       "mason": {
         "name": "Jordan Mason",
@@ -7281,7 +7648,9 @@
           "21": 9.5,
           "22": 2.8
         },
-        "team": "MIN"
+        "team": "MIN",
+        "routes": 229,
+        "routeShare": 37.7
       },
       "mooney": {
         "name": "Darnell Mooney",
@@ -7293,7 +7662,9 @@
           "13": 2.9,
           "21": 10.2
         },
-        "team": "ATL"
+        "team": "ATL",
+        "routes": 478,
+        "routeShare": 77.5
       },
       "coker": {
         "name": "Jalen Coker",
@@ -7305,7 +7676,9 @@
           "13": 1.2,
           "01": 1.6
         },
-        "team": "CAR"
+        "team": "CAR",
+        "routes": 302,
+        "routeShare": 48.6
       },
       "shough": {
         "name": "Tyler Shough",
@@ -7331,7 +7704,9 @@
           "13": 2,
           "01": 2.7
         },
-        "team": "NO"
+        "team": "NO",
+        "routes": 184,
+        "routeShare": 25.9
       },
       "dart": {
         "name": "Jaxson Dart",
@@ -7353,7 +7728,9 @@
           "10": 3.6,
           "11": 95.3
         },
-        "team": "HOU"
+        "team": "HOU",
+        "routes": 297,
+        "routeShare": 42.7
       },
       "morris": {
         "name": "Quintin Morris",
@@ -7365,7 +7742,9 @@
           "13": 3.9,
           "21": 2
         },
-        "team": "JAX"
+        "team": "JAX",
+        "routes": 95,
+        "routeShare": 13.9
       },
       "dulcich": {
         "name": "Greg Dulcich",
@@ -7378,7 +7757,9 @@
           "21": 14.4,
           "22": 13.2
         },
-        "team": "MIA"
+        "team": "MIA",
+        "routes": 150,
+        "routeShare": 26.9
       },
       "wright": {
         "name": "Jaylen Wright",
@@ -7392,7 +7773,9 @@
           "22": 9.8,
           "31": 2.5
         },
-        "team": "MIA"
+        "team": "MIA",
+        "routes": 43,
+        "routeShare": 7.7
       },
       "likely": {
         "name": "Isaiah Likely",
@@ -7405,7 +7788,9 @@
           "21": 5.5,
           "22": 17.8
         },
-        "team": "BAL"
+        "team": "BAL",
+        "routes": 267,
+        "routeShare": 50.1
       },
       "mitchell": {
         "name": "Keaton Mitchell",
@@ -7418,7 +7803,9 @@
           "22": 14.4,
           "31": 2.3
         },
-        "team": "BAL"
+        "team": "BAL",
+        "routes": 57,
+        "routeShare": 10.7
       },
       "addison": {
         "name": "Jordan Addison",
@@ -7429,7 +7816,9 @@
           "12": 20.2,
           "21": 9.6
         },
-        "team": "MIN"
+        "team": "MIN",
+        "routes": 467,
+        "routeShare": 76.8
       },
       "judkins": {
         "name": "Quinshon Judkins",
@@ -7441,7 +7830,9 @@
           "13": 7.8,
           "21": 2.5
         },
-        "team": "CLE"
+        "team": "CLE",
+        "routes": 189,
+        "routeShare": 28
       },
       "corley": {
         "name": "Malachi Corley",
@@ -7454,7 +7845,9 @@
           "13": 2.1,
           "01": 1
         },
-        "team": "CLE"
+        "team": "CLE",
+        "routes": 80,
+        "routeShare": 11.9
       },
       "kallerup": {
         "name": "Nick Kallerup",
@@ -7468,7 +7861,9 @@
           "22": 12.9,
           "02": 1.4
         },
-        "team": "SEA"
+        "team": "SEA",
+        "routes": 28,
+        "routeShare": 5.1
       },
       "brissett": {
         "name": "Jacoby Brissett",
@@ -7492,7 +7887,9 @@
           "12": 30,
           "13": 2
         },
-        "team": "ARI"
+        "team": "ARI",
+        "routes": 148,
+        "routeShare": 18.7
       },
       "ferguson-t": {
         "name": "Terrance Ferguson",
@@ -7502,7 +7899,9 @@
           "11": 27.6,
           "13": 71.9
         },
-        "team": "LAR"
+        "team": "LAR",
+        "routes": 186,
+        "routeShare": 28.2
       },
       "jones-m": {
         "name": "Mac Jones",
@@ -7542,7 +7941,9 @@
           "21": 5.1,
           "22": 1.2
         },
-        "team": "WAS"
+        "team": "WAS",
+        "routes": 116,
+        "routeShare": 18.8
       },
       "vidal": {
         "name": "Kimani Vidal",
@@ -7557,7 +7958,9 @@
           "21": 13.6,
           "22": 7.8
         },
-        "team": "LAC"
+        "team": "LAC",
+        "routes": 306,
+        "routeShare": 42.9
       },
       "gadsden": {
         "name": "Oronde Gadsden",
@@ -7571,7 +7974,9 @@
           "22": 9.6,
           "01": 1.7
         },
-        "team": "LAC"
+        "team": "LAC",
+        "routes": 438,
+        "routeShare": 61.4
       },
       "watson": {
         "name": "Christian Watson",
@@ -7583,7 +7988,9 @@
           "12": 24.3,
           "21": 3.3
         },
-        "team": "GB"
+        "team": "GB",
+        "routes": 233,
+        "routeShare": 43.7
       },
       "cousins": {
         "name": "Kirk Cousins",
@@ -7617,7 +8024,9 @@
           "12": 13.5,
           "21": 6
         },
-        "team": "TEN"
+        "team": "TEN",
+        "routes": 282,
+        "routeShare": 41.2
       },
       "sanders": {
         "name": "Shedeur Sanders",
@@ -7640,7 +8049,9 @@
           "12": 21.6,
           "13": 2.4
         },
-        "team": "KC"
+        "team": "KC",
+        "routes": 286,
+        "routeShare": 39
       },
       "flournoy": {
         "name": "Ryan Flournoy",
@@ -7653,7 +8064,9 @@
           "22": 2.9,
           "01": 1.5
         },
-        "team": "DAL"
+        "team": "DAL",
+        "routes": 289,
+        "routeShare": 39.2
       },
       "davis-m": {
         "name": "Malik Davis",
@@ -7666,7 +8079,9 @@
           "21": 7.9,
           "22": 2.6
         },
-        "team": "DAL"
+        "team": "DAL",
+        "routes": 88,
+        "routeShare": 11.9
       },
       "godwin": {
         "name": "Chris Godwin",
@@ -7678,7 +8093,9 @@
           "12": 8.9,
           "21": 5.2
         },
-        "team": "TB"
+        "team": "TB",
+        "routes": 290,
+        "routeShare": 42
       },
       "waller": {
         "name": "Darren Waller",
@@ -7692,7 +8109,9 @@
           "22": 21.2,
           "31": 1.2
         },
-        "team": "MIA"
+        "team": "MIA",
+        "routes": 166,
+        "routeShare": 29.7
       },
       "estime": {
         "name": "Audric Estime",
@@ -7703,7 +8122,9 @@
           "12": 13,
           "13": 1.7
         },
-        "team": "NO"
+        "team": "NO",
+        "routes": 117,
+        "routeShare": 16.5
       },
       "mcmillan-j": {
         "name": "Jalen McMillan",
@@ -7715,7 +8136,9 @@
           "12": 5.7,
           "21": 10.7
         },
-        "team": "TB"
+        "team": "TB",
+        "routes": 86,
+        "routeShare": 12.5
       },
       "ewers": {
         "name": "Quinn Ewers",

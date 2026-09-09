@@ -85,9 +85,13 @@ const RECEIVING = [
   { key: 'airShare',   group: 'Opportunity', label: 'Air yards share',       dir: 'high',    fmt: 1, unit: '%', get: s => num(s.st.airYardShare) },
   { key: 'snapPct',    group: 'Opportunity', label: 'Snap share',            dir: 'high',    fmt: 1, unit: '%', get: s => num(s.ngs && s.ngs.snapPct) },
   { key: 'firstReadG', group: 'Opportunity', label: 'First-read looks / game', dir: 'high',  fmt: 1, get: s => per(s.ch && s.ch.firstRead, s.st.games) },
+  { key: 'rtePerG',    group: 'Opportunity', label: 'Routes / game',          dir: 'high',    fmt: 1, get: s => per(s.use && s.use.routes, s.st.games), note: 'estimated' },
+  { key: 'routeShare', group: 'Opportunity', label: 'Route share',           dir: 'high',    fmt: 1, unit: '%', get: s => num(s.use && s.use.routeShare), note: 'estimated; of his team\u2019s dropbacks across the whole season, so a missed game lowers it' },
 
   { key: 'catchPct',   group: 'Efficiency',  label: 'Catch rate',            dir: 'high',    fmt: 1, unit: '%', get: s => num(s.st.catchPct) },
   { key: 'firstRead',  group: 'Efficiency',  label: 'First-read target rate', dir: 'high',   fmt: 1, unit: '%', get: s => num(s.ch && s.ch.firstReadRate), note: 'share of his targets the play was designed to produce' },
+  { key: 'yprr',       group: 'Efficiency',  label: 'Yards per route run',   dir: 'high',    fmt: 2, get: s => per(s.st.recYds, s.use && s.use.routes), note: 'estimated routes' },
+  { key: 'tprr',        group: 'Efficiency',  label: 'Targets per route run', dir: 'high',    fmt: 3, get: s => per(s.st.targets, s.use && s.use.routes), note: 'estimated routes' },
   { key: 'yacPerRec',  group: 'Efficiency',  label: 'Yards after catch / rec', dir: 'high',  fmt: 2, get: s => num(s.st.yacPerRec) },
   { key: 'yacOE',      group: 'Efficiency',  label: 'YAC over expected',     dir: 'high',    fmt: 2, get: s => num(s.ngs && s.ngs.rec && s.ngs.rec.yacOE) },
   { key: 'separation', group: 'Efficiency',  label: 'Separation at catch',   dir: 'high',    fmt: 2, unit: ' yd', get: s => num(s.ngs && s.ngs.rec && s.ngs.rec.separation) },
@@ -109,6 +113,7 @@ const RUSHING = [
   { key: 'tgtPerG',    group: 'Opportunity', label: 'Targets / game',        dir: 'high',    fmt: 1, get: s => per(s.st.targets, s.st.games) },
   { key: 'tgtShare',   group: 'Opportunity', label: 'Target share',          dir: 'high',    fmt: 1, unit: '%', get: s => num(s.st.tgtShare) },
   { key: 'snapPct',    group: 'Opportunity', label: 'Snap share',            dir: 'high',    fmt: 1, unit: '%', get: s => num(s.ngs && s.ngs.snapPct) },
+  { key: 'rtePerG',    group: 'Opportunity', label: 'Routes / game',         dir: 'high',    fmt: 1, get: s => per(s.use && s.use.routes, s.st.games), note: 'estimated; a back who stayed in to block counts as one' },
 
   { key: 'ypc',        group: 'Efficiency',  label: 'Yards per carry',       dir: 'high',    fmt: 2, get: s => num(s.st.ypc) },
   { key: 'ybc',        group: 'Efficiency',  label: 'Yards before contact / att', dir: 'high', fmt: 2, get: s => num(s.adv && s.adv.rushing && s.adv.rushing.ybcPerAttempt), note: 'his blocking' },
@@ -227,6 +232,7 @@ async function main() {
   const advstats = read('advstats.json');
   const ngs = read('ngs.json');
   const charting = read('charting.json');
+  const usage = read('player-usage.json');
   // Expected points, if they have been built. Optional on purpose: xfp.json is
   // the seventh output of build-scheme's play-by-play download, and a season
   // nflverse has not published yet produces no file at all. The percentile card
@@ -303,6 +309,7 @@ async function main() {
       ch: (charting.seasons && charting.seasons[season] && charting.seasons[season].players
         && charting.seasons[season].players[id]) || null,
       xfp: xfpRow,
+      use: (usage.seasons && usage.seasons[season] && usage.seasons[season][id]) || null,
     });
   }
 
@@ -402,6 +409,11 @@ async function main() {
       source: 'a second reading of stats.json, advstats.json, ngs.json and charting.json — nothing is fetched and nothing is modelled',
       pools,
       pool: 'The Signal’s tracked players, not the whole league. A rank of #12 here means twelfth of the receivers on this site who cleared the volume floor.',
+      routes: 'Routes are ESTIMATED from who was on the field for a dropback — see player-usage.json '
+        + 'for how and for what it was measured against. They cannot see blocking, so a back who '
+        + 'stayed in to protect counts as having run one. That inflation is roughly common to every '
+        + 'back, which is why the RANK survives it even though the LEVEL does not: a percentile is a '
+        + 'position among players measured the same wrong way.',
       caveats: [
         'A percentile is a position in a distribution, not a grade. Metrics marked neutral describe a role — where a player is used — and carry no good end.',
         'Ties share a rank and a percentile, so two identical seasons are never separated by array order.',
