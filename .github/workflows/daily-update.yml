@@ -198,6 +198,17 @@ jobs:
         if: steps.plan.outputs.tier == 'full'
         run: node scripts/build-playcallers.js
       
+      # EVERY NUMBER ON THE SITE, SAID AS A RANK. Reads what the steps above
+      # wrote and fetches nothing itself — stats, advstats, NGS and the charting
+      # half of build-scheme — so it has to follow all four. It is the scale a
+      # profile page cannot supply from a bare value, and it is rebuilt daily
+      # because the pool it ranks against churns daily: a percentile computed
+      # against last week's qualified receivers is a rank in a field that no
+      # longer exists.
+      - name: Build percentile ranks
+        if: steps.plan.outputs.tier == 'full'
+        run: node scripts/build-percentiles.js
+
       # After the data steps: the pool changes, and a sitemap listing yesterday's
       # players is a list of soft 404s submitted to Google.
       # Follows the pool, which only the full build changes.

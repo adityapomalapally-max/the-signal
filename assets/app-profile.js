@@ -184,6 +184,10 @@ function renderProfileTab(tab) {
     // is the order a reader actually thinks in.
     html += rosLineHtml(currentProfileId);
     html += trendHtml(currentProfileId);
+    // Ranks before the detail. Everything below this card is a value the reader
+    // has to scale himself; this is the card that tells him whether any of them
+    // are unusual, so it earns the position directly under what he did.
+    html += percentileHtml(currentProfileId);
     html += usageHtml(currentProfileId);
     // Usage says which package he plays in; charting says whether the offence is
     // trying to get him the ball; the advanced splits say how much of the result
@@ -833,11 +837,12 @@ async function loadNgsSection(playerId, pos) {
 // Games actually missed live in the availability figure on Rankings.
 // Personnel usage, fetched only when a profile is opened.
 let usagePromise = null, usageData = null, usageScheme = null;
-let chartingData = null, advstatsData = null, contextData = null;
+let chartingData = null, advstatsData = null, contextData = null, pctData = null;
 // One promise for everything the overview needs, so there is ONE guard against
-// the re-render loop rather than four. Gzipped these cost about 97KB between
-// them — charting 15, advstats 63, context 19 — which is the same order as the
-// usage and scheme files already fetched here.
+// the re-render loop rather than five. Re-measured 2026-09-09, because the
+// figures that used to be in this comment were a year old and two of them were
+// wrong by more than 2x: gzipped, charting 33KB, advstats 40, context 16,
+// player-usage 20, percentiles 32.
 function ensureUsage() {
   if (!usagePromise) {
     usagePromise = Promise.all([
@@ -846,6 +851,7 @@ function ensureUsage() {
       loadJSON('/data/charting.json').then(d => (chartingData = d)),
       loadJSON('/data/advstats.json').then(d => (advstatsData = d)),
       loadJSON('/data/context.json').then(d => (contextData = d)),
+      loadJSON('/data/percentiles.json').then(d => (pctData = d)),
     ]);
   }
   return usagePromise;
@@ -1253,6 +1259,103 @@ function advancedHtml(playerId) {
  * capped by how often his coach calls that package. The raw share alone does
  * not say that; the gap does.
  */
+/**
+ * Where he ranks, which is the thing a bare number cannot say.
+ *
+ * Every other card on this profile prints values. 8.9 targets a game, 4.5 yards
+ * of separation, a 6.8% drop rate — three different scales, none of which a
+ * reader carries in his head, all of them rendered in the same typeface at the
+ * same size and therefore read as equally significant. This card supplies the
+ * scale that makes them mean something.
+ *
+ * THE BAR IS THE PERCENTILE, NEVER THE VALUE. A bar as long as the number is a
+ * bar chart of unrelated quantities; a bar as long as the percentile is a
+ * position in a field, which is what the reader is actually being told.
+ *
+ * AND A NEUTRAL METRIC GETS NO VERDICT. Average depth of target has no good
+ * end — a slot man at 4.1 and a field-stretcher at 14.8 hold two jobs, not a
+ * worse and a better one — so those rows are drawn in muted grey. Colouring
+ * them like the rest would have this card calling deep threats better players,
+ * silently, on a page that looks entirely normal.
+ */
+function percentileHtml(playerId) {
+  if (!pctData || !pctData.players) return '';
+  const row = pctData.players[playerId];
+  if (!row || !row.stats) return '';
+  const meta = pctData.meta || {};
+  const defs = (pctData.groups || {})[row.pos] || [];
+  if (!defs.length) return '';
+
+  const pool = (meta.pools || {})[row.pos] || {};
+  const shown = defs.filter(d => row.stats[d.key]);
+  if (!shown.length) return '';
+
+  // Teal above the median, blue below it — the site's validated diverging pair,
+  // warm against cool, already used for the same job on the field map. Muted
+  // grey where the metric has no good end, so the colour makes no claim the
+  // data cannot support.
+  const colourFor = (d, p) => d.dir === 'neutral' ? 'var(--text-muted)' : (p >= 50 ? 'var(--teal)' : 'var(--blue)');
+
+  const fmtValue = (d, v) => {
+    const n = Number(v);
+    const text = d.fmt === 0 ? String(Math.round(n)) : n.toFixed(d.fmt);
+    return `${text}${d.unit || ''}`;
+  };
+  // 1st, 2nd, 3rd, 11th. Printed beside a rank it is the half readers actually
+  // compare between players.
+  const ordinal = (n) => {
+    const t = n % 100;
+    if (t >= 11 && t <= 13) return `${n}th`;
+    return `${n}${['th', 'st', 'nd', 'rd'][n % 10] || 'th'}`;
+  };
+
+  let body = '';
+  let lastGroup = null;
+  for (const d of shown) {
+    const s = row.stats[d.key];
+    if (d.group !== lastGroup) {
+      body += `<div style="font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin:12px 0 6px;">${rankEsc(d.group)}</div>`;
+      lastGroup = d.group;
+    }
+    const w = Math.max(2, Math.min(100, s.p));
+    body += `<div style="margin-bottom:9px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:12.5px;margin-bottom:3px;">
+        <span style="color:var(--text-secondary);">${rankEsc(d.label)}${d.note ? `<span style="color:var(--text-muted);font-size:11px;"> ${rankEsc(d.note)}</span>` : ''}</span>
+        <span style="font-family:var(--mono);font-size:11.5px;white-space:nowrap;">${rankEsc(fmtValue(d, s.v))}<span style="color:var(--text-muted);"> · ${rankEsc(ordinal(s.p))} · #${rankEsc(String(s.r))}</span></span>
+      </div>
+      <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
+        <div style="height:100%;width:${w}%;background:${colourFor(d, s.p)};"></div>
+      </div>
+    </div>`;
+  }
+
+  // The season this describes is not always the season being played. Same
+  // distinction player-usage.json carries: while nflverse has not published the
+  // new year, every figure here belongs to the last one and the card says so
+  // rather than letting the reader assume it is current.
+  const stale = Number.isInteger(meta.season) && Number.isInteger(meta.live) && meta.season < meta.live;
+  let foot = `Pool: ${rankEsc(String(pool.qualified || 0))} qualified ${rankEsc(row.pos)}s of ${rankEsc(String(pool.eligible || 0))} tracked — ${rankEsc(String(pool.floorLabel || ''))}. ${rankEsc(String(meta.pool || ''))}`;
+  if (!row.qualified) {
+    foot = `<strong style="color:var(--gold);">He is under the floor for this pool</strong> — ${rankEsc(String(pool.floorLabel || ''))} — so these ranks are measured against a group he did not qualify for. ` + foot;
+  }
+  if (stale) {
+    foot = `These describe ${rankEsc(String(meta.season))}, not the ${rankEsc(String(meta.live))} season now being played. ` + foot;
+  }
+  if (meta.thin) {
+    foot = `<strong style="color:var(--gold);">Thin sample</strong> — a median of ${rankEsc(String(meta.medianGames))} games behind every figure here. ` + foot;
+  }
+
+  return `<div class="medical-card" style="margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px;">
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">Where he ranks</span>
+      <span style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);">${rankEsc(String(meta.season || ''))} · ${rankEsc(String(pool.qualified || 0))} QUALIFIED ${rankEsc(row.pos)}s</span>
+    </div>
+    <div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;margin-bottom:4px;">Each bar is his percentile among qualified ${rankEsc(row.pos)}s, not the value itself. Grey rows describe how he is used and carry no good end.</div>
+    ${body}
+    <div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.6;margin-top:10px;">${foot}</div>
+  </div>`;
+}
+
 function usageHtml(playerId) {
   if (!usageData || !usageData.seasons) return '';
   const years = (usageData.meta.seasons || []).slice().sort();

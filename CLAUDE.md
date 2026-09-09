@@ -1214,6 +1214,40 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   continuation of the instructions above it, which is the whole mechanism an injection uses. Between
   markers it is plainly a quoted string somebody typed, and a question cannot close its own fence.
 
+## Every number, said as a rank
+- `scripts/build-percentiles.js` -> `data/percentiles.json`, daily, AFTER fetch-stats, fetch-ngs,
+  fetch-advstats and build-scheme, all of which it reads. It FETCHES NOTHING — it is a second
+  reading of files already on disk, which is why it is cheap enough to run every morning.
+- A PROFILE FULL OF BARE VALUES ASKS THE READER TO SUPPLY THE SCALE. 8.9 targets a game, 4.5 yards
+  of separation and a 6.8% drop rate are three different scales rendered in one typeface, so they
+  read as equally significant and none of them means anything. THE BAR IS THE PERCENTILE, NEVER THE
+  VALUE — a bar as long as the number is a chart of unrelated quantities.
+- THE POOL IS OURS AND THE FILE SAYS SO. 80 qualified receivers is not the 80 best in football, it
+  is the receivers this site tracks who cleared the floor. `meta.pools` carries the size, the floor
+  and what the floor was computed from, and the card prints all three.
+- THE FLOOR IS A SHARE OF THE POOL LEADER (20%), not a hand-typed count. In week 2 it is 20% of a
+  two-game leader, so it admits roughly the same fraction of the position all season instead of
+  admitting nobody until November — the same reason `dataSeasons` beats a typed year.
+- NOT EVERY METRIC HAS A GOOD END, and a percentile bar implies one. aDOT is the type case: a 4.1
+  slot man and a 14.8 field-stretcher hold two jobs, not a worse and a better one. Every metric
+  declares `dir: high | low | neutral`; neutral rows are drawn in muted grey and make no claim.
+  Teal above the median and blue below it — the validated diverging pair, reused, never re-picked.
+- `dir: 'low'` INVERTS, so 100 always reads as the good end. This is the combine-percentile bug
+  class (lower is better for the forty) and it is invisible from the page: every value in range,
+  every rank unique, and the claim exactly backwards. The test's witness is asymmetric on purpose —
+  THE BEST VALUE MUST HOLD RANK 1, which "the ranks are 1..n" does not check. Mutation-tested:
+  deleting the inversion reds it, and a floor of 0.0 reds the test that the floor excludes anybody.
+- ROUND BEFORE RANKING. Ranks were computed on full precision and published rounded, so two
+  quarterbacks on 26.94 and 26.87 attempts both printed 26.9 and ranked #29 and #30. Nothing errors;
+  the file just shows a reader two identical numbers and says one is better. Found by the tie test,
+  not by reading the code.
+- A METRIC A PLAYER HAS NO MEASUREMENT FOR IS ABSENT, NEVER ZERO — a zero ranks him last at a thing
+  he never did. Same rule as the weekly shards and the radar axes.
+- MEDIAN GAMES DECIDES WHICH SEASON IS RANKED. A percentile over one game is a coin flip with a
+  decimal point, so the build walks back to a season with a median of 4+ games and the card names
+  the season it found. It also carries `live`, like player-usage.json, so a card describing last
+  season while the league plays this one says so instead of implying it is current.
+
 ## The domain lives in three constants
 - `build-page-shells.js`, `build-sitemap.js` and `build-og-image.js` each hold the origin. Every
   canonical tag, `og:url`, and all 666 sitemap URLs are GENERATED from them, so moving domain is
