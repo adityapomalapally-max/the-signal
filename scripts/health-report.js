@@ -285,22 +285,34 @@ async function checkFeeds() {
     ['Sleeper state', 'https://api.sleeper.app/v1/state/nfl'],
     ['Sleeper players', 'https://api.sleeper.app/v1/players/nfl/trending/add?limit=1'],
     ['ESPN news', 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/news'],
-    ['nflverse stats', dataSeason
+    [`nflverse ${dataSeason} stats`, dataSeason
       ? `https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_${dataSeason}.csv`
       : null],
   ].filter(f => f[1]);
 
-  const down = [];
+  // nflverse BUILDS A SEASON'S FILE AFTER ITS FIRST GAMES, so between kickoff
+  // and that build a 404 for the current season is the correct state of the
+  // world, not an outage. fetch-stats.js already tolerates exactly this — it
+  // continues on the completed seasons and says so — and a monitor that calls
+  // it a problem anyway would warn every morning of the changeover week and
+  // teach the reader to scroll past the feeds line for good.
+  const lastCompleted = st ? await season.lastCompletedSeason() : null;
+  const down = [], expected = [];
   for (const [name, url] of feeds) {
     try {
-      const res = await get(url, { method: name === 'nflverse stats' ? 'HEAD' : 'GET' });
-      if (!res.ok) down.push(`${name} → HTTP ${res.status}`);
+      const res = await get(url, { method: name.startsWith('nflverse') ? 'HEAD' : 'GET' });
+      if (res.ok) continue;
+      const isUnpublishedSeason = name.startsWith('nflverse') && res.status === 404
+        && lastCompleted != null && dataSeason > lastCompleted;
+      (isUnpublishedSeason ? expected : down).push(`${name} → HTTP ${res.status}`);
     } catch (e) {
       down.push(`${name} → ${e.message}`);
     }
   }
 
   if (down.length) warn('feeds', `${down.length} of ${feeds.length} upstream feeds are not answering`, down.join('\n'));
+  else if (expected.length) ok('feeds', `${feeds.length - expected.length} of ${feeds.length} feeds answered; `
+    + `${dataSeason} is not published yet, which is correct until its first games are in`);
   else ok('feeds', `all ${feeds.length} upstream feeds answered`);
 }
 
