@@ -31,10 +31,28 @@ const poolIds = new Set(pool.map(p => p.id));
 // would then be gone until somebody spent a 70MB-a-season `--all` rebuild
 // getting it back. Keeping them means a returning player's profile is whole the
 // day he returns. That is the trade, made on purpose rather than by accident.
-test('the current season of usage is keyed by players who exist in the pool', () => {
-  const current = usage.meta.seasons[usage.meta.seasons.length - 1];
-  for (const id of Object.keys(usage.seasons[current])) {
-    assert.ok(poolIds.has(id), `${current}: "${id}" is not in the pool`);
+//
+// "CURRENT" IS THE SEASON STILL BEING REBUILT, NOT THE NEWEST ONE ON FILE.
+// Those were the same thing until 2026-09-09, when they came apart for a week:
+// the league rolled over to 2026, nflverse had not yet published
+// pbp_participation_2026, and build-scheme rebuilt nothing. 2025 became a past
+// season by every argument above — carried forward, never refreshed — while
+// still being the newest season in the file, so this test went on demanding it
+// match a pool that was being rebuilt underneath it. The morning badie left the
+// pool the daily run went red over a season nothing had touched in a day.
+// player-usage.json now states the season it is rebuilt against, and this asks
+// the question of that season only.
+test('the season still being rebuilt is keyed by players who exist in the pool', () => {
+  const newest = usage.meta.seasons[usage.meta.seasons.length - 1];
+  const live = usage.meta.live;
+  assert.ok(Number.isInteger(live), 'player-usage.json does not say which season it is rebuilt against');
+  // The gap only ever opens one way. A file holding a season LATER than the one
+  // the build considers live is not a publication lag, it is a bad join or a
+  // simulated calendar, and it must not slip through the skip below.
+  assert.ok(newest <= live, `usage carries ${newest}, which is later than the live season ${live}`);
+  if (newest < live) return;   // the rollover gap: nothing here was rebuilt today
+  for (const id of Object.keys(usage.seasons[newest])) {
+    assert.ok(poolIds.has(id), `${newest}: "${id}" is not in the pool`);
   }
 });
 

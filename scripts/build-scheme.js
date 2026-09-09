@@ -739,6 +739,18 @@ async function main() {
     meta: {
       generated: new Date().toISOString(),
       seasons: Object.keys(usageSeasons).map(Number).sort(),
+      // THE SEASON THIS FILE IS REBUILT AGAINST, which is not always the newest
+      // season IN it. Every morning the run rebuilds `live` and carries the rest
+      // forward untouched, so while the two are equal the newest season here is
+      // a fresh join against today's pool. On 2026-09-09 they came apart: the
+      // league had rolled over to 2026, nflverse had not yet published
+      // pbp_participation_2026, and 2025 quietly stopped being rebuilt while
+      // still looking like the current season to anything reading this file.
+      // tests/usage.test.js asks that season's rows to match the pool, so the
+      // first player to leave the pool that morning reddened the run over a
+      // season nothing had rebuilt in a day. Stating `live` here is what lets a
+      // reader — and that test — tell a live season from a frozen one.
+      live,
       source: 'nflverse pbp_participation offense_players, joined to the pool on GSIS id',
       qualifier: `Players with at least ${MIN_USAGE_SNAPS} charted snaps in a season`,
       caveats: 'Share of the player\'s OWN snaps, not his team\'s. A player is only counted on snaps where the offensive personnel could be read, and only if the pool carries his GSIS id.',
@@ -764,16 +776,32 @@ async function main() {
   //
   // Pruning here rather than at the join keeps the rule where it can be checked:
   // the files on disk are true about the pool on disk.
+  //
+  // CHARTING ONLY, AND THE LIST USED TO BE LONGER. It read
+  // [charting, weekly, rushing, usage, fieldmap] and took `season.players` from
+  // each — a key only charting has, so for four years of the five buckets this
+  // loop did nothing at all and said nothing about it. Naming them was worse
+  // than leaving them out, because the next person to notice the shape mismatch
+  // would "fix" it and delete most of three files:
+  //   - weekly-usage and rushing are keyed by GSIS id, not by pool id, so
+  //     poolIds.has() is false for every row in them. They are joined to the
+  //     pool through the crosswalk at read time and legitimately carry players
+  //     the pool has never held.
+  //   - fieldmap is keyed by role (passers/receivers/rushers) before it is keyed
+  //     by player, and is GSIS-keyed underneath for the same reason.
+  //   - player-usage keeps its history on purpose. See the comment on the first
+  //     test in tests/usage.test.js: pool membership is hysteretic, a player who
+  //     drops out this week can be back next week, and re-earning his old rows
+  //     costs a 70MB-a-season --all rebuild. Its live season needs no pruning
+  //     because it is rebuilt from the pool; its past seasons are meant to
+  //     outlive it.
   const poolIds = new Set(JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'players.json'), 'utf8')).map(p => p.id));
   let pruned = 0;
-  for (const bucket of [chartingSeasons, weeklySeasons, rushingSeasons, usageSeasons, fieldmapSeasons]) {
-    if (!bucket) continue;
-    for (const [yr, season] of Object.entries(bucket)) {
-      const players = season && season.players;
-      if (!players) continue;
-      for (const id of Object.keys(players)) {
-        if (!poolIds.has(id)) { delete players[id]; pruned++; }
-      }
+  for (const season of Object.values(chartingSeasons)) {
+    const players = season && season.players;
+    if (!players) continue;
+    for (const id of Object.keys(players)) {
+      if (!poolIds.has(id)) { delete players[id]; pruned++; }
     }
   }
   if (pruned) log(`  pruned ${pruned} row(s) for players who have left the pool`);
