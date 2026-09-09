@@ -149,6 +149,13 @@ test('the dry run walks the real workflow rather than a copy of it', () => {
 function tiersFor(guard) {
   if (!guard) return new Set(['full', 'light']);
   const g = guard.replace(/always\(\)\s*&&\s*/, '').trim();
+  // A BARE always() IS A TIER GUARD OF NONE AT ALL. It says "run even if a step
+  // before this one failed", which is about failure and not about tiers, so it
+  // admits exactly what an unguarded step admits. The ratchet is the first step
+  // to use it that is also a `node scripts/*.js` line, which is the only reason
+  // this shape had never reached here — the data-integrity step has carried it
+  // since it was written and runs `node --test` instead.
+  if (g === 'always()') return new Set(['full', 'light']);
   if (/tier\s*!=\s*'none'/.test(g)) return new Set(['full', 'light']);
   if (/tier\s*==\s*'full'/.test(g)) return new Set(['full']);
   if (/tier\s*==\s*'light'/.test(g)) return new Set(['light']);

@@ -313,6 +313,31 @@ jobs:
         if: always()
         run: node --test 'tests/*.test.js'
 
+      # THE RATCHET HAS THE SAME HOLE THE DATA SUITE HAD, and it sat in it for
+      # two days. scripts/mutate.js runs in test.yml, which is `on: push` — and
+      # GitHub does not trigger workflows for a push made with the default
+      # GITHUB_TOKEN, which is exactly how the step above pushes. So it runs
+      # only when a PERSON pushes, and between people it says nothing.
+      #
+      # 2026-09-09 is the proof: the count dropped from 34 to 33 on 09-08 with
+      # the rollover fixes, and the next six runs were red without anyone
+      # looking, because the only pushes in between were the bot's. The thing it
+      # had stopped noticing was the date fallback losing December — which turns
+      # gamesHaveStarted() false and hands the whole site last season, in week
+      # 15, on the one path that only runs when Sleeper is unreachable.
+      #
+      # 40 seconds. Same bargain as the three checks below: after the push, with
+      # always(), so a suite that has gone weaker reds the run without holding
+      # up the day's data. It is the only step here that EDITS source files —
+      # it restores them in a `finally` and on SIGINT, it runs after the commit,
+      # and the commit adds only data/, sitemap.xml and robots.txt, so a crash
+      # mid-mutation cannot reach one.
+      #
+      # No tier guard: this is a fact about the CODE, not about today's data.
+      - name: The suite has not got weaker
+        if: always()
+        run: node scripts/mutate.js --budget 60 --seed 7 --strict
+
       # Last, and deliberately after the push: a broken hand-written override is
       # a silent no-op — the file claims a player is on PUP and the site shows
       # him healthy — so the run has to go red. Running it here means a typo in

@@ -122,6 +122,19 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   every medical injury, a game log behind every dated injury event, no invented projections, ordered
   rankings, no draft article in the sitemap. When you learn a new rule the hard way, add a test with it.
 - A test that cannot fail is decoration. Mutate the data and watch it go red before you trust it.
+- `scripts/mutate.js --budget 60 --seed 7 --strict` is the RATCHET: it edits the lib files one
+  character at a time and fails if the suite catches fewer than `tests/mutation-baseline.json` says.
+  A ratchet, not a target — chasing 100% is the classic mutation-testing mistake.
+- IT RUNS IN BOTH WORKFLOWS, and it had to. test.yml is `on: push`, and GitHub does not trigger
+  workflows for a push made with the default GITHUB_TOKEN — which is how the daily bot pushes. So
+  between two human pushes the ratchet says nothing, and on 2026-09-08 it went from 34 to 33 and
+  stayed red for six runs with nobody looking. It is in daily-update.yml now, after the push with
+  `always()`, 40 seconds. THE SAME HOLE ALREADY COST THE DATA-INTEGRITY SUITE, which is why that
+  suite is in the daily Action too; the fix was applied once and not looked for elsewhere.
+- WHEN THE RATCHET DROPS, FIND THE SURVIVOR — do not lower the baseline. The number in the file is
+  the whole mechanism. The 34 -> 33 drop was the date fallback's `m >= 9 && m <= 12` losing December
+  to `off`, which turns gamesHaveStarted() false and hands the entire site last season in week 15,
+  on a path that only runs when Sleeper is unreachable.
 
 ## Scheme & identity
 - `scripts/build-scheme.js` — generates data/scheme.json from nflverse `pbp_participation` joined to
