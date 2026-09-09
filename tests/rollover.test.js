@@ -186,3 +186,39 @@ test('the tier guards in the workflow are ones this test understands', () => {
     assert.doesNotThrow(() => tiersFor(guard), `${script}.js has a guard the rule cannot read: ${guard}`);
   }
 });
+
+test('every per-season fetch knows a new season is not published on day one', () => {
+  // THE FOURTH TIME. nflverse builds a season's files after its first games, so
+  // between kickoff and that build a 404 for the current season is correct.
+  // fetch-stats and fetch-injuries learned that on 09-04; fetch-ngs did not,
+  // and on the first full build after the 2026 season began it took the whole
+  // run down over snap_counts_2026.csv.
+  //
+  // The rule is in lib/season.js now, and this is what stops a fifth script
+  // building a per-season URL without it.
+  const offenders = [];
+  for (const name of fs.readdirSync(SCRIPTS).filter(f => f.endsWith('.js'))) {
+    const src = fs.readFileSync(path.join(SCRIPTS, name), 'utf8');
+    const body = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+    // A URL built per season: `..._${season}.csv`, `URL(season)`, and friends.
+    const perSeason = /https?:[^`'"]*\$\{season\}/.test(body) || /\bURL\(season\)/.test(body);
+    if (!perSeason) continue;
+    if (!/notPublishedYet/.test(body)) offenders.push(name);
+  }
+  assert.deepStrictEqual(offenders, [],
+    `these fetch a file per season and would abort the run on the day a season starts, `
+    + `before nflverse has published it: ${offenders.join(', ')}. Guard the catch with `
+    + `seasonLib.notPublishedYet(season).`);
+});
+
+test('a completed season going missing is still fatal', () => {
+  // The other half. The 2025 stats file 404'd for months after nflverse moved
+  // the release and nothing said so. Tolerating THAT is the bug the tolerance
+  // must not introduce.
+  for (const name of ['fetch-stats.js', 'fetch-injuries.js', 'fetch-ngs.js']) {
+    const src = fs.readFileSync(path.join(SCRIPTS, name), 'utf8');
+    assert.match(src, /notPublishedYet/, `${name} lost the publication-lag guard`);
+    assert.ok(/process\.exit\(1\)|throw e/.test(src),
+      `${name} no longer fails on a season that IS published and missing`);
+  }
+});

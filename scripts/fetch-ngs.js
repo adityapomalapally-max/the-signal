@@ -144,7 +144,18 @@ async function main() {
   // ---- Snap counts (per game -> snap-weighted season offensive %) ----
   for (const season of SEASONS) {
     log(`Fetching ${season} snap counts...`);
-    const rows = parseCSV(await fetchCSV(SNAP_URL(season)));
+    let rows;
+    try {
+      rows = parseCSV(await fetchCSV(SNAP_URL(season)));
+    } catch (e) {
+      // The season in progress has no snap file until its first games are in.
+      // A completed season missing one is a different event and still fatal.
+      if (await seasonLib.notPublishedYet(season)) {
+        log(`  NOTE: ${season} snap counts are not published yet (${e.message}). Continuing without them.`);
+        continue;
+      }
+      throw e;
+    }
     const acc = {}; // playerId -> { snaps, teamSnaps, games }
     for (const r of rows) {
       if (r.game_type !== 'REG') continue;

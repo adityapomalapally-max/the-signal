@@ -249,6 +249,24 @@ async function isInSeason() {
   return gamesHaveStarted(await state());
 }
 
+/**
+ * Is a missing per-season file the publication lag, or an emergency?
+ *
+ * nflverse builds a season's files after its first games are played, so between
+ * kickoff and that build a 404 for the current season is the correct state of
+ * the world. For a season that has FINISHED it is the 2025 release move, which
+ * went unnoticed for months, and must still fail the run.
+ *
+ * This lives here because it was written three times in three scripts and
+ * missed in a fourth: fetch-stats and fetch-injuries got it on 09-04,
+ * fetch-ngs did not, and on the first full build after the 2026 season started
+ * fetch-ngs took the whole run down over snap_counts_2026.csv. One definition,
+ * and tests/rollover.test.js requires every per-season fetch to use it.
+ */
+async function notPublishedYet(season) {
+  return Number(season) > await lastCompletedSeason();
+}
+
 /** For logging. Every script that reads a season should say which one it read. */
 async function describe() {
   const s = await state();
@@ -261,6 +279,6 @@ function __reset() { cached = null; }
 
 module.exports = {
   state, dataSeasons, latestDataSeason, lastCompletedSeason,
-  targetSeason, isInSeason, describe, fromDate, gamesHaveStarted,
+  targetSeason, isInSeason, describe, fromDate, gamesHaveStarted, notPublishedYet,
   __setState, __reset,
 };

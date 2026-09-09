@@ -115,7 +115,7 @@ async function main() {
       // kickoff and that first build the file legitimately does not exist. The
       // emergency this abort was written for is a COMPLETED season going
       // missing — that is the 2025 release move, and it still exits 1.
-      if (season > lastCompleted) {
+      if (await seasonLib.notPublishedYet(season)) {
         log(`NOTE: ${season} is not published yet (${e.message}). That season is `
             + `in progress; continuing without it.`);
         continue;
