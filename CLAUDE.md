@@ -1214,6 +1214,46 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   continuation of the instructions above it, which is the whole mechanism an injection uses. Between
   markers it is plainly a quoted string somebody typed, and a question cannot close its own fence.
 
+## What an opportunity was worth — expected fantasy points
+- `scripts/lib/xfp.js`, called from build-scheme: the SEVENTH OUTPUT of the one 93MB pbp download,
+  on the same bargain as the field map, weekly usage and rushing. `data/xfp.json`, GSIS-keyed.
+- FANTASY POINTS SAY WHAT A PLAYER SCORED, NOT WHETHER HIS CHANCES WERE ANY GOOD. Eight targets at
+  the goal line and eight screens behind the line are the same target count and not the same
+  afternoon. Every target is priced by pass depth crossed with WHERE THE BALL WAS AIMED relative to
+  the goal line; every carry by field position crossed with down and distance.
+- EMPIRICAL, NOT FITTED. A cell's price is the mean fantasy points the plays in that cell actually
+  produced THAT SAME SEASON. No regression, no coefficients — anyone with the same CSV recomputes
+  the same number, and the price table ships in the file under `cells` so no figure has to be taken
+  on trust.
+- THE GRID WAS MEASURED AND THE FIRST ONE WAS WRONG. Depth crossed with field position produced
+  `intermediate throw from inside the 10` — 40 plays at 4.00 points each, a cell that was noise and
+  a geometry that barely exists. The feature that decides what a target is worth is the distance
+  from the CATCH POINT to the goal line (`yardline_100 - air_yards`), because that is what makes a
+  catch a touchdown. 19 cells, 2 under the floor, 0.95% of targets priced off a marginal.
+- THE WITNESS IS PHYSICAL, WHICH IS WHY IT IS WORTH ASSERTING: in the end-zone cells the catch rate
+  and the touchdown rate are THE SAME NUMBER (46.9/46.9, 37.7/37.7, 30.2/30.2 in 2025). Nothing in
+  the code forces that — it falls out of the completion flag, the touchdown flag and the target line
+  being read off the same play. Mutation-tested: moving the end-zone boundary by ONE YARD reds it.
+- BOTH SIDES COME FROM THE SAME PLAYS. Actual points are recomputed from the same rows on the same
+  scoring, so league actual and league expected can differ only by what the thin-cell fallbacks
+  smoothed — 0.5% measured, and build-scheme FAILS the run past 2%. Reconciled against stats.json:
+  median gap 0.0 points across a season, 10th-to-90th plus or minus 2, which is one fumble lost or
+  one two-point conversion, both deliberately excluded from both sides.
+- PASSING IS NOT PRICED, SO PASSERS ARE ABSENT rather than published wrong — a QB's rushing
+  expectation beside his total points would show every one of them hundreds "over expected". Decided
+  from the play-by-play (20+ attempts as a passer), not from the pool, because a passer outside the
+  350 is still a passer. THE TEST FOUND THAT THE CAVEAT SAYING SO WAS THE ONLY PLACE IT WAS TRUE:
+  30 quarterbacks were in the file while the meta claimed they were excluded.
+- THE GAP IS MOSTLY TOUCHDOWNS AND TOUCHDOWNS DO NOT REPEAT. That is the reading the number is for,
+  and the profile card says it in prose. THE BADGE IS GOLD IN BOTH DIRECTIONS on purpose:
+  green-for-over and red-for-under would be a verdict the number does not support.
+- AN SVG SCALES ITS TEXT WITH EVERYTHING ELSE. `preserveAspectRatio="none"` squeezed the axis labels
+  into slivers; removing it fixed the distortion and then a 640-wide viewBox in a 358px card rendered
+  an 8px label at 5px. The viewBox is sized near the NARROWEST render (380), not the widest. Both
+  numbers came from measuring in a browser, not from reading the CSS.
+- The chart's table twin is a `<details>`, not a toggle — a disclosure element needs no click
+  handler, and this page is trying to shed its 108 inline handlers rather than add the 109th.
+
 ## Every number, said as a rank
 - `scripts/build-percentiles.js` -> `data/percentiles.json`, daily, AFTER fetch-stats, fetch-ngs,
   fetch-advstats and build-scheme, all of which it reads. It FETCHES NOTHING — it is a second

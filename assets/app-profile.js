@@ -188,6 +188,9 @@ function renderProfileTab(tab) {
     // has to scale himself; this is the card that tells him whether any of them
     // are unusual, so it earns the position directly under what he did.
     html += percentileHtml(currentProfileId);
+    // What the chances were worth follows where he ranks, because a rank says
+    // he was 8th in targets and this says what those targets were made of.
+    html += xfpHtml(player);
     html += usageHtml(currentProfileId);
     // Usage says which package he plays in; charting says whether the offence is
     // trying to get him the ball; the advanced splits say how much of the result
@@ -837,7 +840,7 @@ async function loadNgsSection(playerId, pos) {
 // Games actually missed live in the availability figure on Rankings.
 // Personnel usage, fetched only when a profile is opened.
 let usagePromise = null, usageData = null, usageScheme = null;
-let chartingData = null, advstatsData = null, contextData = null, pctData = null;
+let chartingData = null, advstatsData = null, contextData = null, pctData = null, xfpData = null;
 // One promise for everything the overview needs, so there is ONE guard against
 // the re-render loop rather than five. Re-measured 2026-09-09, because the
 // figures that used to be in this comment were a year old and two of them were
@@ -852,6 +855,7 @@ function ensureUsage() {
       loadJSON('/data/advstats.json').then(d => (advstatsData = d)),
       loadJSON('/data/context.json').then(d => (contextData = d)),
       loadJSON('/data/percentiles.json').then(d => (pctData = d)),
+      loadJSON('/data/xfp.json').then(d => (xfpData = d)),
     ]);
   }
   return usagePromise;
@@ -1353,6 +1357,115 @@ function percentileHtml(playerId) {
     <div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;margin-bottom:4px;">Each bar is his percentile among qualified ${rankEsc(row.pos)}s, not the value itself. Grey rows describe how he is used and carry no good end.</div>
     ${body}
     <div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.6;margin-top:10px;">${foot}</div>
+  </div>`;
+}
+
+/**
+ * What his chances were worth, against what they returned.
+ *
+ * Every other card here reports something that happened. This one reports what
+ * should have happened, and the gap between the two is the most useful single
+ * number in fantasy analysis — and the most easily misread. So the card says
+ * what the gap IS rather than colouring it good or bad: a player far over
+ * expected is not a player having a great season so much as a player whose
+ * touchdowns have not started regressing yet.
+ *
+ * THE BADGE IS GOLD IN BOTH DIRECTIONS, on purpose. Green-for-over and
+ * red-for-under would be the site making a claim the number does not support.
+ * The prose carries the direction, because the direction needs a sentence.
+ *
+ * The chart has a table twin, as every chart here does, and it is a <details>
+ * rather than a toggle — a disclosure element needs no click handler, and this
+ * page is trying to get rid of the 108 inline handlers it already has, not add
+ * the 109th.
+ */
+function xfpHtml(player) {
+  if (!xfpData || !xfpData.seasons || !player || !player.gsisId) return '';
+  const seasons = xfpData.meta.seasons || [];
+  const season = seasons[seasons.length - 1];
+  const row = xfpData.seasons[season] && xfpData.seasons[season][player.gsisId];
+  if (!row || !row.weeks || row.weeks.length < 2) return '';
+
+  const over = row.diff > 0;
+  const mag = Math.abs(row.diff).toFixed(1);
+  const perG = Math.abs(row.diffPerG).toFixed(2);
+
+  // Chart geometry. Weeks on x, points on y, both series on ONE scale — drawn
+  // on separate scales they would cross wherever the axes happened to put them
+  // and the gap, which is the entire finding, would be decoration.
+  // THE viewBox IS SIZED NEAR THE NARROWEST RENDER, NOT THE WIDEST. An SVG
+  // scales its text along with everything else, so a 640-wide viewBox squeezed
+  // into a 358px card renders an 8px label at 5px — measured, and illegible.
+  // At 380 the phone draws it at roughly its nominal size and the desktop
+  // scales it up to about 13px, which sits beside the body text rather than
+  // under it. Chosen from the two measurements, not from taste.
+  const W = 380, H = 140, PADL = 26, PADR = 6, PADT = 10, PADB = 18;
+  const wks = row.weeks;
+  const maxY = Math.max(...wks.map(w => Math.max(w.fp, w.xfp)), 1);
+  const xAt = (i) => PADL + (wks.length === 1 ? 0 : (i / (wks.length - 1)) * (W - PADL - PADR));
+  const yAt = (v) => PADT + (1 - v / maxY) * (H - PADT - PADB);
+  const path = (pick) => wks.map((w, i) => `${i ? 'L' : 'M'}${xAt(i).toFixed(1)},${yAt(pick(w)).toFixed(1)}`).join(' ');
+
+  // Gridlines at quarters of the scale, so the reader can price the gap.
+  let grid = '';
+  for (let g = 0; g <= 4; g++) {
+    const v = (maxY / 4) * g, y = yAt(v);
+    grid += `<line x1="${PADL}" y1="${y.toFixed(1)}" x2="${W - PADR}" y2="${y.toFixed(1)}" stroke="var(--border)" stroke-width="1"/>`
+      + `<text x="${PADL - 5}" y="${(y + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--text-muted)" font-family="var(--mono)">${Math.round(v)}</text>`;
+  }
+  // Week labels, thinned so they never collide on a phone.
+  let xlab = '';
+  const step = Math.ceil(wks.length / 8);
+  wks.forEach((w, i) => {
+    if (i % step) return;
+    xlab += `<text x="${xAt(i).toFixed(1)}" y="${H - 6}" text-anchor="middle" font-size="9" fill="var(--text-muted)" font-family="var(--mono)">W${w.week}</text>`;
+  });
+
+  // NOT preserveAspectRatio="none". Stretching a 640-wide viewBox into a 390px
+  // phone squeezes the TEXT as well as the plot, and the axis labels came out
+  // as illegible slivers — visible in the browser, invisible in the code.
+  // Scaling proportionally makes the chart shorter on a narrow screen, which is
+  // the correct trade: a flatter chart still reads, a compressed one does not.
+  const svg = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" role="img" aria-label="Fantasy points against expected, by week">
+    ${grid}${xlab}
+    <path d="${path(w => w.xfp)}" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <path d="${path(w => w.fp)}" fill="none" stroke="#a8893a" stroke-width="2"/>
+  </svg>`;
+
+  let table = '<tr><th style="text-align:left;font-weight:400;">Week</th><th style="text-align:right;font-weight:400;">Scored</th><th style="text-align:right;font-weight:400;">Expected</th><th style="text-align:right;font-weight:400;">Diff</th></tr>';
+  for (const w of wks) {
+    const d = Math.round((w.fp - w.xfp) * 10) / 10;
+    table += `<tr><td>W${rankEsc(String(w.week))}</td><td style="text-align:right;">${rankEsc(w.fp.toFixed(1))}</td>`
+      + `<td style="text-align:right;color:var(--text-muted);">${rankEsc(w.xfp.toFixed(1))}</td>`
+      + `<td style="text-align:right;">${d > 0 ? '+' : ''}${rankEsc(d.toFixed(1))}</td></tr>`;
+  }
+
+  const stat = (label, value) => `<div style="display:flex;justify-content:space-between;gap:12px;padding:3px 0;font-size:12.5px;">
+      <span style="color:var(--text-secondary);">${rankEsc(label)}</span>
+      <span style="font-family:var(--mono);font-size:11.5px;">${rankEsc(value)}</span>
+    </div>`;
+
+  return `<div class="medical-card" style="margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px;">
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">What his chances were worth</span>
+      <span style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);">${rankEsc(String(season))} · ${rankEsc(String(row.targets))} TGT · ${rankEsc(String(row.carries))} CAR</span>
+    </div>
+    <div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;margin-bottom:8px;">Every target priced by how deep it was thrown and how close to the goal line it was aimed; every carry by where it started and the down. <strong style="color:var(--gold);">${over ? '+' : '−'}${rankEsc(mag)}</strong> against expectation over ${rankEsc(String(row.games))} games — ${over
+      ? `he has scored more than his chances were worth, by ${rankEsc(perG)} a game. That gap is mostly touchdowns, and touchdowns do not repeat.`
+      : `the chances have been there and have not come back, by ${rankEsc(perG)} a game. That is the shape of a player who has been unlucky rather than bad.`}</div>
+    ${stat('Fantasy points scored', row.fp.toFixed(1))}
+    ${stat('What the opportunities were worth', row.xfp.toFixed(1))}
+    ${stat('Per game', `${row.fpPerG.toFixed(2)} against ${row.xfpPerG.toFixed(2)}`)}
+    <div style="margin:10px 0 4px;">${svg}</div>
+    <div style="display:flex;gap:14px;font-size:11px;color:var(--text-muted);font-family:var(--mono);margin-bottom:6px;">
+      <span><span style="display:inline-block;width:14px;height:2px;background:#a8893a;vertical-align:middle;"></span> Scored</span>
+      <span><span style="display:inline-block;width:14px;border-top:2px dashed var(--text-muted);vertical-align:middle;"></span> Expected</span>
+    </div>
+    <details style="margin-top:4px;">
+      <summary style="font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;">The numbers</summary>
+      <div style="overflow-x:auto;margin-top:8px;"><table style="width:100%;border-collapse:collapse;font-size:11.5px;font-family:var(--mono);">${table}</table></div>
+    </details>
+    <div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.6;margin-top:10px;">Expected points measure the value of the chances he RECEIVED, not what he deserved — getting open is a skill, and it is priced here as an opportunity rather than credited as one. Passing is not priced, so quarterbacks are absent. Fumbles and two-point conversions are excluded from both sides.</div>
   </div>`;
 }
 

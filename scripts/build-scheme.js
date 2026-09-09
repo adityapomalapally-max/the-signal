@@ -32,6 +32,7 @@ const path = require('path');
 const { fetchCSV, parseCSV, parseCSVLine } = require('./lib/match');
 const { buildWeeklyUsage } = require('./lib/weekly');
 const { buildRushing } = require('./lib/rushing');
+const { buildXfp } = require('./lib/xfp');
 const { poolCrosswalk } = require('./lib/ids');
 const season_lib = require('./lib/season');
 const season = season_lib;
@@ -45,6 +46,7 @@ const OUT_CHARTING = path.join(DATA_DIR, 'charting.json');
 const OUT_FIELDMAP = path.join(DATA_DIR, 'fieldmap.json');
 const OUT_WEEKLY = path.join(DATA_DIR, 'weekly-usage.json');
 const OUT_RUSHING = path.join(DATA_DIR, 'rushing.json');
+const OUT_XFP = path.join(DATA_DIR, 'xfp.json');
 
 // The seasons participation data covers well. 2016-2022 exists but the schema
 // and the league both moved; three seasons is enough to read a trend and short
@@ -574,7 +576,28 @@ async function buildSeason(season) {
     throw new Error(`${rushing.meta.missingEpaPct}% of carries have no EPA — play-by-play has changed`);
   }
 
-  return { teams, league, usage, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage, weekly, rushing };
+  // THE SEVENTH OUTPUT OF THE ONE pbp DOWNLOAD, and the one that answers a
+  // question none of the other six do: not what a player did, but whether the
+  // chances he was given were any good. Eight targets at the goal line and
+  // eight screens behind the line are the same target count and not the same
+  // afternoon.
+  //
+  // The self-consistency check is cheap and belongs here rather than only in a
+  // test, because it catches the failure that has no symptom: every price is a
+  // mean over these same plays, so league actual and league expected can only
+  // differ by what the thin-cell fallbacks smoothed. Measured on 2025 that is
+  // 0.1%. Far apart means the pricing and the attribution have come loose from
+  // each other, and every per-player diff on the site would be wrong by a
+  // constant nobody could see.
+  const xfp = buildXfp(pbpCsv);
+  log(`  xfp: ${xfp.meta.playersQualified} players over ${xfp.meta.targets} targets and `
+    + `${xfp.meta.carries} carries (${xfp.meta.fallbackPct}% priced off a marginal), `
+    + `league ratio ${xfp.meta.leagueRatio}`);
+  if (xfp.meta.leagueRatio !== null && Math.abs(xfp.meta.leagueRatio - 1) > 0.02) {
+    throw new Error(`league actual and expected points differ by ${((xfp.meta.leagueRatio - 1) * 100).toFixed(1)}% — the pricing and the attribution disagree`);
+  }
+
+  return { teams, league, usage, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage, weekly, rushing, xfp };
 }
 
 function shapeDefense(d) {
@@ -641,11 +664,15 @@ async function main() {
   const weeklySeasons = { ...(existingWeekly.seasons || {}) };
   const existingRushing = fs.existsSync(OUT_RUSHING) ? JSON.parse(fs.readFileSync(OUT_RUSHING, 'utf8')) : { seasons: {} };
   const rushingSeasons = { ...(existingRushing.seasons || {}) };
+  const existingXfp = fs.existsSync(OUT_XFP) ? JSON.parse(fs.readFileSync(OUT_XFP, 'utf8')) : { seasons: {} };
+  const xfpSeasons = { ...(existingXfp.seasons || {}) };
+  let xfpCellsLatest = (existingXfp.cells || null);
+  let xfpMetaLatest = (existingXfp.meta && existingXfp.meta.build) || null;
   const failures = [];
 
   for (const season of wanted) {
     try {
-      const { teams, league: lg, usage, defenses, charting, fieldmap, fmCoverage, weekly, rushing } = await buildSeason(season);
+      const { teams, league: lg, usage, defenses, charting, fieldmap, fmCoverage, weekly, rushing, xfp } = await buildSeason(season);
       if (!Object.keys(teams).length) throw new Error('no team rows produced');
       const shaped = {};
       for (const [team, raw] of Object.entries(teams)) shaped[team] = shapeTeam(raw);
@@ -666,6 +693,14 @@ async function main() {
       if (fieldmap) { fieldmapSeasons[season] = fieldmap; fmCoverageLatest = fmCoverage; }
       if (weekly && Object.keys(weekly).length) weeklySeasons[season] = weekly;
       if (rushing && Object.keys(rushing.players).length) rushingSeasons[season] = rushing.players;
+      if (xfp && Object.keys(xfp.players).length) {
+        xfpSeasons[season] = xfp.players;
+        // The price table belongs to the newest season built, not to all of
+        // them: the cells are means over ONE season's plays and a table blended
+        // across years would price this year's throws at last year's rates.
+        xfpCellsLatest = xfp.cells;
+        xfpMetaLatest = { ...xfp.meta, season };
+      }
       league[season] = shapeTeam(lg);
       league[season].defense = shapeDefense(leagueDef);
       // Share of his own snaps, per grouping. A raw count says how much he
@@ -934,6 +969,49 @@ async function main() {
     const latestRush = rushingSeasons[rushYears[rushYears.length - 1]] || {};
     log(`${wroteRushing ? 'wrote' : 'unchanged —'} rushing.json: ${Object.keys(latestRush).length} backs in `
       + `${rushYears[rushYears.length - 1]} — ${Math.round(fs.statSync(OUT_RUSHING).size / 1024)}KB`);
+  }
+
+  // The seventh output. What the chances were worth, against what they returned.
+  const xfpYears = Object.keys(xfpSeasons).map(Number).sort();
+  if (xfpYears.length) {
+    const xfpOut = {
+      meta: {
+        generated: new Date().toISOString(),
+        builtBy: 'scripts/build-scheme.js via lib/xfp.js',
+        seasons: xfpYears,
+        source: 'nflverse play-by-play. Every target priced by pass depth crossed with where the ball '
+          + 'was aimed relative to the goal line; every carry by field position crossed with down and '
+          + 'distance. REG season only.',
+        scoring: 'Full PPR — 1 per reception, 0.1 per yard, 6 per touchdown — matching nflverse '
+          + 'fantasy_points_ppr, which is what every other points figure on this site already is.',
+        method: 'EMPIRICAL, NOT FITTED. A cell\'s price is the mean fantasy points the plays in that '
+          + 'cell actually produced in that same season. No regression, no coefficients, nothing '
+          + 'trained — anyone with the same CSV recomputes the same number.',
+        build: xfpMetaLatest,
+        caveats: [
+          'PASSING IS NOT PRICED, so quarterbacks are absent rather than wrong. A quarterback\'s points '
+          + 'are overwhelmingly passing, and showing his rushing expectation beside his total would put '
+          + 'every quarterback in the league hundreds of points "over expected".',
+          'Fumbles lost and two-point conversions are excluded from BOTH sides. They are outcomes '
+          + 'rather than opportunities and have no situation to price. Measured against stats.json, '
+          + 'this leaves a median gap of 0.0 points across a season and a 10th-to-90th range of '
+          + 'plus or minus 2 — which is one fumble, or one two-point conversion.',
+          'THE GAP IS MOSTLY TOUCHDOWNS, AND TOUCHDOWNS DO NOT REPEAT. A player far over expected is '
+          + 'usually not a player who will stay there. That is the reading this file is for.',
+          'Expected points measure the value of the chances a player RECEIVED. They are not a claim '
+          + 'about what he deserved: getting open on a deep ball is itself a skill, and it is priced '
+          + 'here as an opportunity rather than credited as one.',
+          'The price table travels with the numbers under `cells`, so any figure here can be looked up '
+          + 'rather than taken on trust.',
+        ],
+      },
+      cells: xfpCellsLatest,
+      seasons: xfpSeasons,
+    };
+    const wroteXfp = writeJSONIfChanged(OUT_XFP, xfpOut);
+    const latestXfp = xfpSeasons[xfpYears[xfpYears.length - 1]] || {};
+    log(`${wroteXfp ? 'wrote' : 'unchanged —'} xfp.json: ${Object.keys(latestXfp).length} players in `
+      + `${xfpYears[xfpYears.length - 1]} — ${Math.round(fs.statSync(OUT_XFP).size / 1024)}KB`);
   }
 }
 

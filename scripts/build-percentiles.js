@@ -99,6 +99,8 @@ const RECEIVING = [
   { key: 'tdPerG',     group: 'Production',  label: 'Touchdowns / game',      dir: 'high',   fmt: 2, get: s => per(s.st.recTD, s.st.games) },
   { key: 'boomRate',   group: 'Production',  label: 'Boom rate',              dir: 'high',   fmt: 0, unit: '%', get: s => num(s.vol && s.vol.boomRate) },
   { key: 'bustRate',   group: 'Production',  label: 'Bust rate',              dir: 'low',    fmt: 0, unit: '%', get: s => num(s.vol && s.vol.bustRate) },
+  { key: 'xfpPerG',    group: 'Production',  label: 'What his chances were worth', dir: 'high', fmt: 2, get: s => num(s.xfp && s.xfp.xfpPerG), note: 'expected points per game' },
+  { key: 'diffPerG',   group: 'Production',  label: 'Scored against expected', dir: 'neutral', fmt: 2, get: s => num(s.xfp && s.xfp.diffPerG), note: 'a gap either way is mostly touchdown variance' },
 ];
 
 const RUSHING = [
@@ -119,6 +121,8 @@ const RUSHING = [
   { key: 'tdPerG',     group: 'Production',  label: 'Touchdowns / game',     dir: 'high',    fmt: 2, get: s => per(add(s.st.rushTD, s.st.recTD), s.st.games) },
   { key: 'boomRate',   group: 'Production',  label: 'Boom rate',             dir: 'high',    fmt: 0, unit: '%', get: s => num(s.vol && s.vol.boomRate) },
   { key: 'bustRate',   group: 'Production',  label: 'Bust rate',             dir: 'low',     fmt: 0, unit: '%', get: s => num(s.vol && s.vol.bustRate) },
+  { key: 'xfpPerG',    group: 'Production',  label: 'What his chances were worth', dir: 'high', fmt: 2, get: s => num(s.xfp && s.xfp.xfpPerG), note: 'expected points per game' },
+  { key: 'diffPerG',   group: 'Production',  label: 'Scored against expected', dir: 'neutral', fmt: 2, get: s => num(s.xfp && s.xfp.diffPerG), note: 'a gap either way is mostly touchdown variance' },
 ];
 
 const PASSING = [
@@ -223,6 +227,12 @@ async function main() {
   const advstats = read('advstats.json');
   const ngs = read('ngs.json');
   const charting = read('charting.json');
+  // Expected points, if they have been built. Optional on purpose: xfp.json is
+  // the seventh output of build-scheme's play-by-play download, and a season
+  // nflverse has not published yet produces no file at all. The percentile card
+  // should come out two rows shorter, not fail to render.
+  let xfpFile = null;
+  try { xfpFile = read('xfp.json'); } catch (e) { log('xfp.json is not on disk — publishing without expected points'); }
 
   // The season this is ABOUT, which is not always the newest season on file.
   // Same distinction player-usage.json now carries: `live` is what the league
@@ -268,6 +278,7 @@ async function main() {
   }
 
   const poolPos = new Map(pool.map(p => [p.id, p.pos]));
+  const poolGsis = new Map(pool.filter(p => p.gsisId).map(p => [p.id, p.gsisId]));
   const poolName = new Map(pool.map(p => [p.id, p.name]));
 
   // Everything one player contributes, gathered once.
@@ -278,6 +289,11 @@ async function main() {
     const st = stats[id] && stats[id].seasons && stats[id].seasons[season];
     if (!st) continue;
     const advPlayer = advstats.players && advstats.players[id];
+    // xfp.json is keyed by GSIS id, like every pbp-derived file here, so it
+    // joins through the crosswalk and never by name.
+    const gsis = poolGsis.get(id);
+    const xfpRow = (xfpFile && gsis && xfpFile.seasons && xfpFile.seasons[season]
+      && xfpFile.seasons[season][gsis]) || null;
     rows.set(id, {
       pos,
       st,
@@ -286,6 +302,7 @@ async function main() {
       ngs: (ngs[id] && ngs[id][season]) || null,
       ch: (charting.seasons && charting.seasons[season] && charting.seasons[season].players
         && charting.seasons[season].players[id]) || null,
+      xfp: xfpRow,
     });
   }
 
