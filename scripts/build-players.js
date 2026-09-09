@@ -138,6 +138,7 @@ function colorFor(sleeperId) {
 const { formatStatus } = require('./lib/status');
 const { USER_AGENT } = require('./lib/agent');
 const { fetchCSV, parseCSV } = require('./lib/match');
+const seasonLib = require('./lib/season');
 
 /**
  * sleeper_id -> gsis_id, from the nflverse rosters.
@@ -167,8 +168,17 @@ async function fetchGsisCrosswalk(seasons) {
       }
       log(`  crosswalk ${season}: ${n} ids`);
     } catch (e) {
-      failures++;
-      log(`  ERROR fetching ${season} roster: ${e.message}`);
+      // A season nflverse has not published yet is not an error, and calling it
+      // one meant this printed ERROR every morning of the changeover week for
+      // something nobody could fix. It has always CONTINUED past it — only the
+      // word was wrong, and a log that cries error over an expected state is
+      // how a real one goes unread.
+      if (await seasonLib.notPublishedYet(season)) {
+        log(`  ${season} roster is not published yet (${e.message})`);
+      } else {
+        failures++;
+        log(`  ERROR fetching ${season} roster: ${e.message}`);
+      }
     }
   }
   if (failures === seasons.length) log('  CROSSWALK UNAVAILABLE — keeping the ids already on file, adding none');

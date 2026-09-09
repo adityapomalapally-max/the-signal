@@ -33,7 +33,8 @@ const { fetchCSV, parseCSV, parseCSVLine } = require('./lib/match');
 const { buildWeeklyUsage } = require('./lib/weekly');
 const { buildRushing } = require('./lib/rushing');
 const { poolCrosswalk } = require('./lib/ids');
-const season = require('./lib/season');
+const season_lib = require('./lib/season');
+const season = season_lib;
 const { buildFieldMap, finishFieldMap, DEPTH_BANDS, GAPS,
         MIN_ATTEMPTS, MIN_TARGETS, MIN_CARRIES, MIN_CELL, MIN_CELL_STRIP } = require('./lib/fieldmap');
 
@@ -687,10 +688,16 @@ async function main() {
       usageSeasons[season] = shapedUsage;
       log(`  ${season}: ${Object.keys(shaped).length} teams`);
     } catch (e) {
-      // A season that has not kicked off yet is not a failure. A past season
+      // A season nflverse has not published yet is not a failure. A past season
       // that disappeared is — nflverse moved a file on us once already.
-      // Only a season that has not happened yet is allowed to be missing.
-      if (season > live) log(`  ${season} has not started yet (${e.message})`);
+      //
+      // THE ANCHOR MATTERS. This compared against `live`, the newest season
+      // WITH DATA, which becomes the current season the moment it kicks off —
+      // so on opening night `2026 > 2026` was false and a file nflverse had not
+      // built yet took the build down. notPublishedYet asks the right question:
+      // has this season FINISHED, in which case a missing file is the 2025
+      // release move all over again.
+      if (await season_lib.notPublishedYet(season)) log(`  ${season} is not published yet (${e.message})`);
       else failures.push(`${season}: ${e.message}`);
     }
   }
@@ -745,6 +752,32 @@ async function main() {
   // The third output of the one pbp download. Only written when a season
   // actually produced charting — FTN does not cover every year, and an empty
   // file would read as "nobody was ever the first read".
+  // RETAINED SEASONS ARE RE-VALIDATED AGAINST THE POOL AS IT IS NOW.
+  //
+  // Only the seasons in this run's window get rebuilt; older ones are carried
+  // forward from the file. So a season built months ago keeps whatever the pool
+  // held then, and when build-players drops somebody — Jacoby Jones, retired
+  // since 2015, went in a routine rebuild — every carried season still lists
+  // him. The site then joins a charted player to nothing, and the invariant
+  // "every charted player is in the pool" is quietly false for the one season
+  // nobody rebuilt.
+  //
+  // Pruning here rather than at the join keeps the rule where it can be checked:
+  // the files on disk are true about the pool on disk.
+  const poolIds = new Set(JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'players.json'), 'utf8')).map(p => p.id));
+  let pruned = 0;
+  for (const bucket of [chartingSeasons, weeklySeasons, rushingSeasons, usageSeasons, fieldmapSeasons]) {
+    if (!bucket) continue;
+    for (const [yr, season] of Object.entries(bucket)) {
+      const players = season && season.players;
+      if (!players) continue;
+      for (const id of Object.keys(players)) {
+        if (!poolIds.has(id)) { delete players[id]; pruned++; }
+      }
+    }
+  }
+  if (pruned) log(`  pruned ${pruned} row(s) for players who have left the pool`);
+
   const chartYears = Object.keys(chartingSeasons).map(Number).sort();
   if (chartYears.length) {
     const chartingOut = {

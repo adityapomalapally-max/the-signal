@@ -210,8 +210,14 @@ test('every per-season fetch knows a new season is not published on day one', ()
   for (const name of fs.readdirSync(SCRIPTS).filter(f => f.endsWith('.js'))) {
     const src = fs.readFileSync(path.join(SCRIPTS, name), 'utf8');
     const body = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
-    // A URL built per season: `..._${season}.csv`, `URL(season)`, and friends.
-    const perSeason = /https?:[^`'"]*\$\{season\}/.test(body) || /\bURL\(season\)/.test(body);
+    // A URL built per season. THE FIRST VERSION OF THIS ANCHORED ON `http` and
+    // therefore missed build-scheme, whose path is assembled from a `${base}`
+    // variable — `${base}/pbp_participation/pbp_participation_${season}.csv` —
+    // and which took the first full build after kickoff down over exactly that
+    // file. Match the shape that matters instead: a season interpolated into
+    // something that ends in a file extension.
+    const perSeason = /\$\{season\}[^`'"]{0,40}\.(csv|json|gz|parquet)/.test(body)
+      || /\bURL\(season\)/.test(body);
     if (!perSeason) continue;
     if (!/notPublishedYet/.test(body)) offenders.push(name);
   }
@@ -225,7 +231,7 @@ test('a completed season going missing is still fatal', () => {
   // The other half. The 2025 stats file 404'd for months after nflverse moved
   // the release and nothing said so. Tolerating THAT is the bug the tolerance
   // must not introduce.
-  for (const name of ['fetch-stats.js', 'fetch-injuries.js', 'fetch-ngs.js']) {
+  for (const name of ['fetch-stats.js', 'fetch-injuries.js', 'fetch-ngs.js', 'build-scheme.js']) {
     const src = fs.readFileSync(path.join(SCRIPTS, name), 'utf8');
     assert.match(src, /notPublishedYet/, `${name} lost the publication-lag guard`);
     assert.ok(/process\.exit\(1\)|throw e/.test(src),

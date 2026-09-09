@@ -134,9 +134,9 @@
       "caveats": "Three seasons of game logs, and only players who played 8+ games in consecutive seasons. That is survivorship: a player who lost his job or his season entirely leaves the sample, so the real downside is likely worse than the floor shown."
     },
     "builtBy": "scripts/build-rankings.js",
-    "builtAt": "2026-09-09T01:05:23.214Z",
+    "builtAt": "2026-09-09T02:39:59.176Z",
     "overallMethod": "Derived from the hand-ordered positional tabs. Each player inherits the projected median of the slot he was ranked into, then VORP is taken against replacement level. Ordering is the analyst's; the replacement math is the model's.",
-    "availabilityMethod": "The missed-time case is a different downside from the floor beside it. The floor is a cold season played out in full; this is a normal season cut short. It holds the projected per-game rate flat and applies it to a low-availability year. League-wide that year is 11 of 17 games — the 15th percentile of 293 player-seasons across 2023–2025, the same percentile the projection set uses for its floor — then scaled by how available the player himself has been against the league average of 86%. It counts every missed game regardless of cause, suspensions included, because the question is how often he was not in your lineup. The per-game rate is deliberately NOT reduced: this prices availability only, never diminished play on return. Ordering is untouched — it moves the downside, never the rank.",
+    "availabilityMethod": "The missed-time case is a different downside from the floor beside it. The floor is a cold season played out in full; this is a normal season cut short. It holds the projected per-game rate flat and applies it to a low-availability year. League-wide that year is 11 of 17 games — the 15th percentile of 209 player-seasons across 2024–2025, the same percentile the projection set uses for its floor — then scaled by how available the player himself has been against the league average of 86%. It counts every missed game regardless of cause, suspensions included, because the question is how often he was not in your lineup. The per-game rate is deliberately NOT reduced: this prices availability only, never diminished play on return. Ordering is untouched — it moves the downside, never the rank.",
     "availabilityCaveat": "A record of one or two seasons is too short to read a player-specific floor from, so those fall back to the league figure. A player who is not currently healthy is flagged, not adjusted: history cannot see the knock he is carrying now, and a games-missed number inferred from a one-word status would be invented.",
     "baselines": {
       "qb": {
@@ -185,14 +185,12 @@
       "floor": 289,
       "ceiling": 441,
       "availability": {
-        "pct": 96,
+        "pct": 94,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           16,
           16
         ],
@@ -214,14 +212,12 @@
       "floor": 285,
       "ceiling": 434,
       "availability": {
-        "pct": 90,
+        "pct": 88,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           17,
           13
         ],
@@ -297,14 +293,12 @@
       "floor": 264,
       "ceiling": 398,
       "availability": {
-        "pct": 69,
+        "pct": 74,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          10,
           17,
           8
         ],
@@ -326,14 +320,12 @@
       "floor": 268,
       "ceiling": 403,
       "availability": {
-        "pct": 94,
+        "pct": 91,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           15,
           16
         ],
@@ -355,21 +347,19 @@
       "floor": 250,
       "ceiling": 385,
       "availability": {
-        "pct": 90,
+        "pct": 97,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          13,
           17,
           16
         ],
-        "worst": 13,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 208,
+        "worst": 16,
+        "floorGames": 12,
+        "basis": "above-league",
+        "floor": 227,
         "statusFlag": null
       }
     },
@@ -384,21 +374,19 @@
       "floor": 254,
       "ceiling": 392,
       "availability": {
-        "pct": 84,
+        "pct": 79,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           10,
           17
         ],
         "worst": 10,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 212,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 193,
         "statusFlag": null
       }
     },
@@ -413,21 +401,19 @@
       "floor": 248,
       "ceiling": 383,
       "availability": {
-        "pct": 59,
+        "pct": 65,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          8,
           17,
           5
         ],
         "worst": 5,
-        "floorGames": 7,
+        "floorGames": 8,
         "basis": "below-league",
-        "floor": 132,
+        "floor": 151,
         "statusFlag": null
       }
     },
@@ -469,21 +455,19 @@
       "floor": 248,
       "ceiling": 383,
       "availability": {
-        "pct": 82,
+        "pct": 74,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           8,
           17
         ],
         "worst": 8,
-        "floorGames": 10,
+        "floorGames": 9,
         "basis": "below-league",
-        "floor": 188,
+        "floor": 169,
         "statusFlag": null
       }
     },
@@ -523,21 +507,19 @@
       "floor": 239,
       "ceiling": 377,
       "availability": {
-        "pct": 78,
+        "pct": 71,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           15,
           9
         ],
         "worst": 9,
-        "floorGames": 10,
+        "floorGames": 9,
         "basis": "below-league",
-        "floor": 185,
+        "floor": 166,
         "statusFlag": null
       }
     },
@@ -552,18 +534,16 @@
       "floor": 213,
       "ceiling": 333,
       "availability": {
-        "pct": 94,
+        "pct": 97,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          15,
           16,
           17
         ],
-        "worst": 15,
+        "worst": 16,
         "floorGames": 12,
         "basis": "above-league",
         "floor": 202,
@@ -610,12 +590,10 @@
       "availability": {
         "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           17,
           17
         ],
@@ -639,12 +617,10 @@
       "availability": {
         "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           17,
           17
         ],
@@ -666,14 +642,12 @@
       "floor": 237,
       "ceiling": 373,
       "availability": {
-        "pct": 90,
+        "pct": 88,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           16,
           14
         ],
@@ -695,21 +669,19 @@
       "floor": 205,
       "ceiling": 344,
       "availability": {
-        "pct": 92,
+        "pct": 88,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           15,
           15
         ],
         "worst": 15,
-        "floorGames": 12,
-        "basis": "above-league",
-        "floor": 191,
+        "floorGames": 11,
+        "basis": "league",
+        "floor": 175,
         "statusFlag": null
       }
     },
@@ -732,21 +704,19 @@
       "floor": 211,
       "ceiling": 393,
       "availability": {
-        "pct": 96,
+        "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          15,
           17,
           17
         ],
-        "worst": 15,
-        "floorGames": 12,
+        "worst": 17,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 222,
+        "floor": 241,
         "statusFlag": null
       }
     },
@@ -763,12 +733,10 @@
       "availability": {
         "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           17,
           17
         ],
@@ -790,21 +758,19 @@
       "floor": 209,
       "ceiling": 375,
       "availability": {
-        "pct": 73,
+        "pct": 62,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           4,
           17
         ],
         "worst": 4,
-        "floorGames": 9,
+        "floorGames": 8,
         "basis": "below-league",
-        "floor": 159,
+        "floor": 141,
         "statusFlag": null
       }
     },
@@ -819,21 +785,19 @@
       "floor": 208,
       "ceiling": 372,
       "availability": {
-        "pct": 80,
+        "pct": 91,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          10,
           14,
           17
         ],
-        "worst": 10,
-        "floorGames": 10,
-        "basis": "below-league",
-        "floor": 175,
+        "worst": 14,
+        "floorGames": 12,
+        "basis": "above-league",
+        "floor": 210,
         "statusFlag": null
       }
     },
@@ -848,14 +812,12 @@
       "floor": 180,
       "ceiling": 308,
       "availability": {
-        "pct": 98,
+        "pct": 97,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           16,
           17
         ],
@@ -877,21 +839,19 @@
       "floor": 198,
       "ceiling": 355,
       "availability": {
-        "pct": 90,
+        "pct": 94,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          14,
           16,
           16
         ],
-        "worst": 14,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 184,
+        "worst": 16,
+        "floorGames": 12,
+        "basis": "above-league",
+        "floor": 201,
         "statusFlag": null
       }
     },
@@ -931,21 +891,19 @@
       "floor": 178,
       "ceiling": 305,
       "availability": {
-        "pct": 84,
+        "pct": 82,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          15,
           11,
           17
         ],
         "worst": 11,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 162,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 148,
         "statusFlag": null
       }
     },
@@ -960,21 +918,19 @@
       "floor": 202,
       "ceiling": 362,
       "availability": {
-        "pct": 86,
+        "pct": 97,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          11,
           17,
           16
         ],
-        "worst": 11,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 188,
+        "worst": 16,
+        "floorGames": 12,
+        "basis": "above-league",
+        "floor": 205,
         "statusFlag": null
       }
     },
@@ -991,12 +947,10 @@
       "availability": {
         "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           17,
           17
         ],
@@ -1043,21 +997,19 @@
       "floor": 170,
       "ceiling": 305,
       "availability": {
-        "pct": 84,
+        "pct": 97,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          10,
           16,
           17
         ],
-        "worst": 10,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 155,
+        "worst": 16,
+        "floorGames": 12,
+        "basis": "above-league",
+        "floor": 169,
         "statusFlag": null
       }
     },
@@ -1072,21 +1024,19 @@
       "floor": 170,
       "ceiling": 305,
       "availability": {
-        "pct": 88,
+        "pct": 94,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          13,
           17,
           15
         ],
-        "worst": 13,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 155,
+        "worst": 15,
+        "floorGames": 12,
+        "basis": "above-league",
+        "floor": 169,
         "statusFlag": null
       }
     },
@@ -1101,14 +1051,12 @@
       "floor": 149,
       "ceiling": 251,
       "availability": {
-        "pct": 96,
+        "pct": 97,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           17,
           16
         ],
@@ -1130,14 +1078,12 @@
       "floor": 152,
       "ceiling": 268,
       "availability": {
-        "pct": 96,
+        "pct": 94,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           16,
           16
         ],
@@ -1247,21 +1193,19 @@
       "floor": 156,
       "ceiling": 263,
       "availability": {
-        "pct": 88,
+        "pct": 97,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          12,
           16,
           17
         ],
-        "worst": 12,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 138,
+        "worst": 16,
+        "floorGames": 12,
+        "basis": "above-league",
+        "floor": 151,
         "statusFlag": null
       }
     },
@@ -1301,14 +1245,12 @@
       "floor": 156,
       "ceiling": 281,
       "availability": {
-        "pct": 96,
+        "pct": 94,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           15,
           17
         ],
@@ -1330,21 +1272,19 @@
       "floor": 155,
       "ceiling": 260,
       "availability": {
-        "pct": 88,
+        "pct": 91,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
           14,
-          14,
           17
         ],
         "worst": 14,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 137,
+        "floorGames": 12,
+        "basis": "above-league",
+        "floor": 150,
         "statusFlag": null
       }
     },
@@ -1359,14 +1299,12 @@
       "floor": 155,
       "ceiling": 278,
       "availability": {
-        "pct": 96,
+        "pct": 97,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           17,
           16
         ],
@@ -1390,14 +1328,12 @@
       "floor": 202,
       "ceiling": 329,
       "availability": {
-        "pct": 96,
+        "pct": 97,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           17,
           16
         ],
@@ -1419,21 +1355,19 @@
       "floor": 195,
       "ceiling": 321,
       "availability": {
-        "pct": 86,
+        "pct": 79,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           11,
           16
         ],
         "worst": 11,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 165,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 150,
         "statusFlag": null
       }
     },
@@ -1448,21 +1382,19 @@
       "floor": 190,
       "ceiling": 318,
       "availability": {
-        "pct": 86,
+        "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          10,
           17,
           17
         ],
-        "worst": 10,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 160,
+        "worst": 17,
+        "floorGames": 13,
+        "basis": "above-league",
+        "floor": 190,
         "statusFlag": null
       }
     },
@@ -1477,21 +1409,19 @@
       "floor": 193,
       "ceiling": 317,
       "availability": {
-        "pct": 88,
+        "pct": 82,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           15,
           13
         ],
         "worst": 13,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 163,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 148,
         "statusFlag": null
       }
     },
@@ -1506,21 +1436,19 @@
       "floor": 184,
       "ceiling": 316,
       "availability": {
-        "pct": 98,
+        "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           17,
           17
         ],
-        "worst": 16,
-        "floorGames": 12,
+        "worst": 17,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 173,
+        "floor": 187,
         "statusFlag": null
       }
     },
@@ -1537,12 +1465,10 @@
       "availability": {
         "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           17,
           17
         ],
@@ -1564,21 +1490,19 @@
       "floor": 173,
       "ceiling": 313,
       "availability": {
-        "pct": 88,
+        "pct": 82,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           13,
           15
         ],
         "worst": 13,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 149,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 135,
         "statusFlag": null
       }
     },
@@ -1593,14 +1517,12 @@
       "floor": 173,
       "ceiling": 313,
       "availability": {
-        "pct": 94,
+        "pct": 91,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           14,
           17
         ],
@@ -1622,14 +1544,12 @@
       "floor": 162,
       "ceiling": 294,
       "availability": {
-        "pct": 82,
+        "pct": 79,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          15,
           12,
           15
         ],
@@ -1651,14 +1571,12 @@
       "floor": 180,
       "ceiling": 317,
       "availability": {
-        "pct": 88,
+        "pct": 85,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           17,
           12
         ],
@@ -1707,14 +1625,12 @@
       "floor": 147,
       "ceiling": 277,
       "availability": {
-        "pct": 90,
+        "pct": 88,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           13,
           17
         ],
@@ -1736,21 +1652,19 @@
       "floor": 145,
       "ceiling": 273,
       "availability": {
-        "pct": 98,
+        "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           17,
           17
         ],
-        "worst": 16,
-        "floorGames": 12,
+        "worst": 17,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 145,
+        "floor": 158,
         "statusFlag": "Questionable"
       }
     },
@@ -1817,21 +1731,19 @@
       "floor": 146,
       "ceiling": 275,
       "availability": {
-        "pct": 78,
+        "pct": 71,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           8,
           16
         ],
         "worst": 8,
-        "floorGames": 10,
+        "floorGames": 9,
         "basis": "below-league",
-        "floor": 122,
+        "floor": 110,
         "statusFlag": null
       }
     },
@@ -1846,21 +1758,19 @@
       "floor": 135,
       "ceiling": 258,
       "availability": {
-        "pct": 88,
+        "pct": 91,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          14,
           15,
           16
         ],
-        "worst": 14,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 128,
+        "worst": 15,
+        "floorGames": 12,
+        "basis": "above-league",
+        "floor": 140,
         "statusFlag": null
       }
     },
@@ -1875,21 +1785,19 @@
       "floor": 161,
       "ceiling": 292,
       "availability": {
-        "pct": 53,
+        "pct": 32,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           3,
           8
         ],
         "worst": 3,
-        "floorGames": 7,
+        "floorGames": 5,
         "basis": "below-league",
-        "floor": 91,
+        "floor": 65,
         "statusFlag": null
       }
     },
@@ -1904,14 +1812,12 @@
       "floor": 156,
       "ceiling": 287,
       "availability": {
-        "pct": 76,
+        "pct": 79,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          12,
           12,
           15
         ],
@@ -1933,21 +1839,19 @@
       "floor": 138,
       "ceiling": 276,
       "availability": {
-        "pct": 80,
+        "pct": 71,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
           17,
-          17,
           7
         ],
         "worst": 7,
-        "floorGames": 10,
+        "floorGames": 9,
         "basis": "below-league",
-        "floor": 119,
+        "floor": 107,
         "statusFlag": null
       }
     },
@@ -1962,21 +1866,19 @@
       "floor": 137,
       "ceiling": 275,
       "availability": {
-        "pct": 86,
+        "pct": 79,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
           17,
-          17,
           10
         ],
         "worst": 10,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 130,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 118,
         "statusFlag": null
       }
     },
@@ -1991,21 +1893,19 @@
       "floor": 130,
       "ceiling": 257,
       "availability": {
-        "pct": 76,
+        "pct": 65,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           14,
           8
         ],
         "worst": 8,
-        "floorGames": 10,
+        "floorGames": 8,
         "basis": "below-league",
-        "floor": 112,
+        "floor": 89,
         "statusFlag": null
       }
     },
@@ -2045,21 +1945,19 @@
       "floor": 132,
       "ceiling": 259,
       "availability": {
-        "pct": 86,
+        "pct": 94,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          12,
           15,
           17
         ],
-        "worst": 12,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 124,
+        "worst": 15,
+        "floorGames": 12,
+        "basis": "above-league",
+        "floor": 136,
         "statusFlag": null
       }
     },
@@ -2074,21 +1972,19 @@
       "floor": 131,
       "ceiling": 262,
       "availability": {
-        "pct": 65,
+        "pct": 71,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          9,
           14,
           10
         ],
-        "worst": 9,
-        "floorGames": 8,
+        "worst": 10,
+        "floorGames": 9,
         "basis": "below-league",
-        "floor": 91,
+        "floor": 103,
         "statusFlag": null
       }
     },
@@ -2128,21 +2024,19 @@
       "floor": 130,
       "ceiling": 255,
       "availability": {
-        "pct": 88,
+        "pct": 82,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           14,
           14
         ],
         "worst": 14,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 122,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 111,
         "statusFlag": null
       }
     },
@@ -2157,21 +2051,19 @@
       "floor": 130,
       "ceiling": 264,
       "availability": {
-        "pct": 65,
+        "pct": 79,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          6,
           12,
           15
         ],
-        "worst": 6,
-        "floorGames": 8,
+        "worst": 12,
+        "floorGames": 10,
         "basis": "below-league",
-        "floor": 87,
+        "floor": 109,
         "statusFlag": null
       }
     },
@@ -2186,14 +2078,12 @@
       "floor": 132,
       "ceiling": 259,
       "availability": {
-        "pct": 90,
+        "pct": 88,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           15,
           15
         ],
@@ -2286,14 +2176,12 @@
       "floor": 164,
       "ceiling": 284,
       "availability": {
-        "pct": 98,
+        "pct": 97,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           16,
           17
         ],
@@ -2340,14 +2228,12 @@
       "floor": 130,
       "ceiling": 235,
       "availability": {
-        "pct": 69,
+        "pct": 74,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          10,
           17,
           8
         ],
@@ -2394,21 +2280,19 @@
       "floor": 117,
       "ceiling": 227,
       "availability": {
-        "pct": 82,
+        "pct": 74,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           16,
           9
         ],
         "worst": 9,
-        "floorGames": 10,
+        "floorGames": 9,
         "basis": "below-league",
-        "floor": 99,
+        "floor": 89,
         "statusFlag": "Questionable (Hip)"
       }
     },
@@ -2450,12 +2334,10 @@
       "availability": {
         "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           17,
           17
         ],
@@ -2477,14 +2359,12 @@
       "floor": 106,
       "ceiling": 206,
       "availability": {
-        "pct": 82,
+        "pct": 76,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           15,
           11
         ],
@@ -2506,21 +2386,19 @@
       "floor": 108,
       "ceiling": 199,
       "availability": {
-        "pct": 80,
+        "pct": 74,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           13,
           12
         ],
         "worst": 12,
-        "floorGames": 10,
+        "floorGames": 9,
         "basis": "below-league",
-        "floor": 91,
+        "floor": 82,
         "statusFlag": null
       }
     },
@@ -2533,21 +2411,19 @@
       "ppg": 7.1,
       "vorp": -29,
       "availability": {
-        "pct": 78,
+        "pct": 74,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          15,
           10,
           15
         ],
         "worst": 10,
-        "floorGames": 10,
+        "floorGames": 9,
         "basis": "below-league",
-        "floor": 71,
+        "floor": 64,
         "statusFlag": null
       }
     },
@@ -2562,18 +2438,16 @@
       "floor": 105,
       "ceiling": 203,
       "availability": {
-        "pct": 94,
+        "pct": 97,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          15,
           16,
           17
         ],
-        "worst": 15,
+        "worst": 16,
         "floorGames": 12,
         "basis": "above-league",
         "floor": 105,
@@ -2589,21 +2463,19 @@
       "ppg": 6.5,
       "vorp": -39,
       "availability": {
-        "pct": 61,
+        "pct": 76,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          5,
           14,
           12
         ],
-        "worst": 5,
-        "floorGames": 8,
+        "worst": 12,
+        "floorGames": 10,
         "basis": "below-league",
-        "floor": 52,
+        "floor": 65,
         "statusFlag": null
       }
     },
@@ -2624,21 +2496,19 @@
       "floor": 87,
       "ceiling": 173,
       "availability": {
-        "pct": 86,
+        "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          10,
           17,
           17
         ],
-        "worst": 10,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 83,
+        "worst": 17,
+        "floorGames": 13,
+        "basis": "above-league",
+        "floor": 99,
         "statusFlag": null
       }
     },
@@ -2661,21 +2531,19 @@
       "floor": 211,
       "ceiling": 393,
       "availability": {
-        "pct": 96,
+        "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          15,
           17,
           17
         ],
-        "worst": 15,
-        "floorGames": 12,
+        "worst": 17,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 222,
+        "floor": 241,
         "statusFlag": null
       },
       "ownPpg": 18.5,
@@ -2694,12 +2562,10 @@
       "availability": {
         "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           17,
           17
         ],
@@ -2723,21 +2589,19 @@
       "floor": 209,
       "ceiling": 375,
       "availability": {
-        "pct": 73,
+        "pct": 62,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           4,
           17
         ],
         "worst": 4,
-        "floorGames": 9,
+        "floorGames": 8,
         "basis": "below-league",
-        "floor": 159,
+        "floor": 141,
         "statusFlag": null
       },
       "ownPpg": 17.6,
@@ -2754,21 +2618,19 @@
       "floor": 208,
       "ceiling": 372,
       "availability": {
-        "pct": 80,
+        "pct": 91,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          10,
           14,
           17
         ],
-        "worst": 10,
-        "floorGames": 10,
-        "basis": "below-league",
-        "floor": 175,
+        "worst": 14,
+        "floorGames": 12,
+        "basis": "above-league",
+        "floor": 210,
         "statusFlag": null
       },
       "ownPpg": 17.5,
@@ -2785,14 +2647,12 @@
       "floor": 180,
       "ceiling": 308,
       "availability": {
-        "pct": 98,
+        "pct": 97,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           16,
           17
         ],
@@ -2816,14 +2676,12 @@
       "floor": 202,
       "ceiling": 329,
       "availability": {
-        "pct": 96,
+        "pct": 97,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           17,
           16
         ],
@@ -2847,21 +2705,19 @@
       "floor": 198,
       "ceiling": 355,
       "availability": {
-        "pct": 90,
+        "pct": 94,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          14,
           16,
           16
         ],
-        "worst": 14,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 184,
+        "worst": 16,
+        "floorGames": 12,
+        "basis": "above-league",
+        "floor": 201,
         "statusFlag": null
       },
       "ownPpg": 16.8,
@@ -2878,21 +2734,19 @@
       "floor": 195,
       "ceiling": 321,
       "availability": {
-        "pct": 86,
+        "pct": 79,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           11,
           16
         ],
         "worst": 11,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 165,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 150,
         "statusFlag": null
       },
       "ownPpg": 15,
@@ -2909,21 +2763,19 @@
       "floor": 190,
       "ceiling": 318,
       "availability": {
-        "pct": 86,
+        "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          10,
           17,
           17
         ],
-        "worst": 10,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 160,
+        "worst": 17,
+        "floorGames": 13,
+        "basis": "above-league",
+        "floor": 190,
         "statusFlag": null
       },
       "ownPpg": 14.6,
@@ -2940,21 +2792,19 @@
       "floor": 193,
       "ceiling": 317,
       "availability": {
-        "pct": 88,
+        "pct": 82,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           15,
           13
         ],
         "worst": 13,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 163,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 148,
         "statusFlag": null
       },
       "ownPpg": 14.8,
@@ -2971,21 +2821,19 @@
       "floor": 184,
       "ceiling": 316,
       "availability": {
-        "pct": 98,
+        "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           17,
           17
         ],
-        "worst": 16,
-        "floorGames": 12,
+        "worst": 17,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 173,
+        "floor": 187,
         "statusFlag": null
       },
       "ownPpg": 14.4,
@@ -3031,12 +2879,10 @@
       "availability": {
         "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           17,
           17
         ],
@@ -3060,21 +2906,19 @@
       "floor": 173,
       "ceiling": 313,
       "availability": {
-        "pct": 88,
+        "pct": 82,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           13,
           15
         ],
         "worst": 13,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 149,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 135,
         "statusFlag": null
       },
       "ownPpg": 13.5,
@@ -3091,21 +2935,19 @@
       "floor": 178,
       "ceiling": 305,
       "availability": {
-        "pct": 84,
+        "pct": 82,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          15,
           11,
           17
         ],
         "worst": 11,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 162,
+        "floorGames": 10,
+        "basis": "below-league",
+        "floor": 148,
         "statusFlag": null
       },
       "ownPpg": 14.8,
@@ -3122,14 +2964,12 @@
       "floor": 173,
       "ceiling": 313,
       "availability": {
-        "pct": 94,
+        "pct": 91,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           14,
           17
         ],
@@ -3153,14 +2993,12 @@
       "floor": 162,
       "ceiling": 294,
       "availability": {
-        "pct": 82,
+        "pct": 79,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          15,
           12,
           15
         ],
@@ -3184,14 +3022,12 @@
       "floor": 180,
       "ceiling": 317,
       "availability": {
-        "pct": 88,
+        "pct": 85,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           17,
           12
         ],
@@ -3215,21 +3051,19 @@
       "floor": 202,
       "ceiling": 362,
       "availability": {
-        "pct": 86,
+        "pct": 97,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          11,
           17,
           16
         ],
-        "worst": 11,
-        "floorGames": 11,
-        "basis": "league",
-        "floor": 188,
+        "worst": 16,
+        "floorGames": 12,
+        "basis": "above-league",
+        "floor": 205,
         "statusFlag": null
       },
       "ownPpg": 17.1,
@@ -3248,12 +3082,10 @@
       "availability": {
         "pct": 100,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          17,
           17,
           17
         ],
@@ -3333,14 +3165,12 @@
       "floor": 147,
       "ceiling": 277,
       "availability": {
-        "pct": 90,
+        "pct": 88,
         "seasons": [
-          2023,
           2024,
           2025
         ],
         "games": [
-          16,
           13,
           17
         ],
