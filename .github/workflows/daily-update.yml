@@ -127,8 +127,21 @@ jobs:
         if: steps.plan.outputs.tier == 'full'
         run: node scripts/build-injury-anatomy.js
 
+      # RUNS ON EVERY TIER, BECAUSE THE CHECK THAT DEMANDS ITS OUTPUT DOES.
+      #
+      # This was `tier == 'full'` while check-season.js — which fails the run if
+      # the ADP board has not been frozen once the season starts — runs on
+      # `tier != 'none'`. The 2026 season began at 01:00 UTC on 09-09, between a
+      # full run at 15:00 the day before and a light run at 01:05 that night. So
+      # the light run correctly noticed the board was still live, and the only
+      # script that could have frozen it had not been allowed to run.
+      #
+      # A check must not demand a state the run it is attached to cannot reach.
+      # In season the light path here is free anyway: fetch-adp freezes the file
+      # and returns without touching the network, and out of season the light
+      # crons are 'none' and this never fires at all.
       - name: Fetch average draft position
-        if: steps.plan.outputs.tier == 'full'
+        if: steps.plan.outputs.tier != 'none'
         run: node scripts/fetch-adp.js
 
       # THE BOARD CARRIES A LIVE INJURY FLAG AND WAS NOT BEING REBUILT. It was

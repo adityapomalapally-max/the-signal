@@ -117,3 +117,72 @@ test('the dry run walks the real workflow rather than a copy of it', () => {
   assert.match(src, /daily-update\.yml/,
     'dry-run-rollover no longer reads the workflow, so a step added there is a step it never tests');
 });
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   A CHECK MUST NOT DEMAND A STATE ITS OWN RUN CANNOT REACH.
+
+   The 2026 season began at 01:00 UTC on 09-09, between a full run at 15:00 the
+   previous afternoon and a light run at 01:05 that night. The light run
+   correctly noticed the ADP board had not been frozen, failed, and could not
+   possibly have fixed it: fetch-adp.js — the only script that freezes it — was
+   guarded `tier == 'full'` while check-season.js, which fails the run over it,
+   was guarded `tier != 'none'`.
+
+   That is the third time in this repo a check has fired for a state the run
+   could not produce, so it is worth a rule rather than a third fix: every
+   script that SATISFIES an assertion must run on at least the tiers of the
+   check that MAKES it.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+// Which tiers a step's `if:` admits. The workflow only ever uses these shapes;
+// anything else should fail loudly rather than be guessed at.
+function tiersFor(guard) {
+  if (!guard) return new Set(['full', 'light']);
+  const g = guard.replace(/always\(\)\s*&&\s*/, '').trim();
+  if (/tier\s*!=\s*'none'/.test(g)) return new Set(['full', 'light']);
+  if (/tier\s*==\s*'full'/.test(g)) return new Set(['full']);
+  if (/tier\s*==\s*'light'/.test(g)) return new Set(['light']);
+  throw new Error(`unrecognised tier guard, teach this test about it: ${guard}`);
+}
+
+function stepGuards(yml) {
+  const out = new Map();
+  // Steps are "- name: X" then optionally "if: ..." then "run: node scripts/y.js"
+  const blocks = yml.split(/\n      - name: /).slice(1);
+  for (const b of blocks) {
+    const guard = (b.match(/\n        if:\s*(.+)/) || [])[1] || null;
+    for (const m of b.matchAll(/node scripts\/([a-z-]+)\.js/g)) out.set(m[1], guard);
+  }
+  return out;
+}
+
+test('a check never demands something its own run was not allowed to do', () => {
+  const yml = fs.readFileSync(path.join(ROOT, '.github', 'workflows', 'daily-update.yml'), 'utf8');
+  const guards = stepGuards(yml);
+
+  // [the check that can fail, the script that is the only way to satisfy it]
+  const PAIRS = [
+    ['check-season', 'fetch-adp'],       // "the board has not been frozen"
+    ['check-overrides', 'update-data'],  // overrides are applied by the update
+    ['check-feeds', 'update-data'],      // meta.json is written by the update
+  ];
+
+  for (const [checker, fixer] of PAIRS) {
+    if (!guards.has(checker) || !guards.has(fixer)) continue;
+    const need = tiersFor(guards.get(checker));
+    const can = tiersFor(guards.get(fixer));
+    const unreachable = [...need].filter(t => !can.has(t));
+    assert.deepStrictEqual(unreachable, [],
+      `${checker}.js runs on [${[...need]}] but ${fixer}.js — the only thing that can satisfy it — `
+      + `runs on [${[...can]}]. On a ${unreachable} run the check can fail and nothing could have prevented it.`);
+  }
+});
+
+test('the tier guards in the workflow are ones this test understands', () => {
+  // So that a new guard shape cannot slip past the rule above by being
+  // unparseable rather than by being wrong.
+  const yml = fs.readFileSync(path.join(ROOT, '.github', 'workflows', 'daily-update.yml'), 'utf8');
+  for (const [script, guard] of stepGuards(yml)) {
+    assert.doesNotThrow(() => tiersFor(guard), `${script}.js has a guard the rule cannot read: ${guard}`);
+  }
+});
