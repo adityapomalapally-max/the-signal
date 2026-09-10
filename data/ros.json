@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "builtBy": "scripts/build-ros.js",
+    "builtAt": "2026-09-10T16:43:11.108Z",
+    "season": 2026,
+    "throughWeek": 1,
+    "gamesRemaining": 16,
+    "method": "blend of season-to-date points per game with the preseason projection, at a weight derived in build-ros-weights.js from our own game logs rather than chosen",
+    "weightsFrom": "2026-08-18T21:57:21.394Z",
+    "isNot": "a re-ranking of the board. rankings.json is untouched; the medians there are the analyst's call. This answers a different question and is allowed to order players differently.",
+    "caveats": [
+      "Points per game, so it says nothing about availability — a player who misses games scores nothing in them, and that downside belongs to the availability figure, not here.",
+      "Games remaining is a simple count from the current week and does not know about byes still to come for a specific team.",
+      "The weights were fitted in-sample on the seasons they describe."
+    ],
+    "coverage": {
+      "projected": 3,
+      "skippedNoGameLog": 81,
+      "skippedNotInPool": 4
+    }
+  },
+  "players": {
+    "maye": {
+      "name": "Drake Maye",
+      "pos": "QB",
+      "team": "NE",
+      "gamesPlayed": 1,
+      "pointsSoFar": 9.8,
+      "actualPpg": 9.8,
+      "preseasonPpg": 20.5,
+      "weightOnActual": 0.4,
+      "weightBasis": "QB week 2 (nearest fitted)",
+      "projectedPpg": 16.22,
+      "gamesRemaining": 16,
+      "restOfSeasonPoints": 259.5,
+      "ppgDelta": -4.28
+    },
+    "jsn": {
+      "name": "Jaxon Smith-Njigba",
+      "pos": "WR",
+      "team": "SEA",
+      "gamesPlayed": 1,
+      "pointsSoFar": 26.2,
+      "actualPpg": 26.2,
+      "preseasonPpg": 14.1,
+      "weightOnActual": 0.33,
+      "weightBasis": "WR week 2 (nearest fitted)",
+      "projectedPpg": 18.09,
+      "gamesRemaining": 16,
+      "restOfSeasonPoints": 289.5,
+      "ppgDelta": 3.99
+    },
+    "brown-a": {
+      "name": "A.J. Brown",
+      "pos": "WR",
+      "team": "NE",
+      "gamesPlayed": 1,
+      "pointsSoFar": 5.6,
+      "actualPpg": 5.6,
+      "preseasonPpg": 13.5,
+      "weightOnActual": 0.33,
+      "weightBasis": "WR week 2 (nearest fitted)",
+      "projectedPpg": 10.89,
+      "gamesRemaining": 16,
+      "restOfSeasonPoints": 174.3,
+      "ppgDelta": -2.61
+    }
+  }
+}
