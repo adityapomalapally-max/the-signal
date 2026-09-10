@@ -113,14 +113,42 @@ test('every published cell clears the floor the file states', () => {
   }
 });
 
+/**
+ * The newest season this board is actually ABOUT, which is not the newest
+ * season it has rows for.
+ *
+ * `latestSeasonWithGames` turns over the moment one game is played. On
+ * 2026-09-10, the morning after Week 1, it read 2026 and that season held two
+ * defences with every cell marked thin — one night of football — so both
+ * assertions below were being made against an empty board and failed. The
+ * failure was real and the board was not wrong: MIN_GAMES exists precisely so
+ * nothing is published off one afternoon, and the page falls back to last
+ * season for the same reason.
+ *
+ * So these ask the question of the newest season with a REAL board behind it,
+ * and say so out loud if there is not one anywhere — which would be a genuine
+ * problem rather than a September morning.
+ */
+function seasonWithABoard(M) {
+  const years = Object.keys(M.seasons).map(Number).sort((a, b) => b - a);
+  for (const y of years) {
+    const s = M.seasons[y];
+    if (!s || !s.defenses) continue;
+    const priced = Object.values(s.defenses)
+      .filter(d => d.WR && typeof d.WR.vsBaseline === 'number').length;
+    if (priced >= 20) return String(y);
+  }
+  return null;
+}
+
 test('the corrected metric disagrees with the naive one', () => {
   // The whole justification for computing it. Measured on 2025: twelve of
   // thirty-two defences move five or more places. If that ever collapses to
   // zero the correction is doing nothing and the column should go.
   if (!M) return;
-  const year = String(M.meta.latestSeasonWithGames || Object.keys(M.seasons).pop());
+  const year = seasonWithABoard(M);
+  assert.ok(year, 'no season anywhere has a published board — the qualifiers are excluding everything');
   const s = M.seasons[year];
-  if (!s) return;
   let anyDisagreement = false;
   for (const pos of POSITIONS) {
     const rows = Object.entries(s.defenses)
@@ -143,7 +171,8 @@ test('a defence held below expectation is negative, and the file says which way 
     'the file has to state WHY the familiar number is the weaker one');
   // The sign convention is the thing a reader will get backwards, so it is
   // asserted rather than assumed: some defences must be on each side of zero.
-  const year = Object.keys(M.seasons).pop();
+  const year = seasonWithABoard(M);
+  assert.ok(year, 'no season anywhere has a published board — the qualifiers are excluding everything');
   const wr = Object.values(M.seasons[year].defenses).map(d => d.WR).filter(c => c && typeof c.vsBaseline === 'number');
   assert.ok(wr.some(c => c.vsBaseline < 0), 'no defence held receivers below their own average — implausible');
   assert.ok(wr.some(c => c.vsBaseline > 0), 'no defence was beaten — implausible');

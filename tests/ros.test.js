@@ -70,26 +70,48 @@ test('the file says what the prior actually is', () => {
   assert.match(weights.meta.caveats.join(' '), /in-sample/i);
 });
 
-test('before any games are played it writes nothing rather than restating the projection', () => {
+// ros.json legitimately EXISTS once the season is under way, so "a simulation
+// must not write the live file" can no longer be checked by asking whether the
+// file is there. What it always meant is that the simulation must not CHANGE
+// it, and that is true in both halves of the year.
+function liveRos() {
+  const f = path.join(ROOT, 'data', 'ros.json');
+  return fs.existsSync(f) ? fs.readFileSync(f, 'utf8') : null;
+}
+
+test('in season it projects, and the file it writes is not a simulation', () => {
+  // THIS TEST USED TO ASSERT THE OPPOSITE, and it was right until Week 1 was
+  // played. It ran build-ros against the REAL calendar and required a no-op —
+  // which held only while it happened to be the preseason, so it went red on
+  // 2026-09-10 with the script doing exactly the right thing. Its own comment
+  // already recorded being patched once for the same reason, a week earlier in
+  // the calendar; the phrasing was fixed and the dependence on today's date
+  // was not.
+  //
+  // The no-op branch is pinned below against a season with no game logs, where
+  // it is true every day of the year. What this one covers is the half that
+  // only became reachable in September and had never been exercised live: in
+  // season the script produces a real forecast and a file with no simulation
+  // stamp on it.
   const out = execFileSync('node', ['scripts/build-ros.js'], { cwd: ROOT }).toString();
-  // TWO HONEST NO-OPS, NOT ONE. Before the season flips this says "not in
-  // season"; in the days between the flip and Week 1 it says the season is
-  // under way with no games on file. Pinning only the first phrasing made this
-  // test go red every year for the week in between, over a script doing exactly
-  // the right thing. What matters is that it explains itself and writes nothing.
-  assert.match(out, /not in season|no games are on file/i);
-  assert.ok(!fs.existsSync(path.join(ROOT, 'data', 'ros.json')),
-    'a rest-of-season file before any football has been played would imply an update that never happened');
+  assert.match(out, /players projected through week \d+|no games are on file/i,
+    'the live run neither projected nor explained why it did not');
+  const live = liveRos();
+  if (live) {
+    const j = JSON.parse(live);
+    assert.ok(!j.meta.simulated, 'the live rest-of-season file carries a simulation stamp');
+  }
 });
 
 test('a simulated week produces a real forecast', () => {
   // The machinery cannot be exercised live until September, so it is exercised
   // against a season we already have. Without this it would ship untested and
   // first run in anger on the busiest day of the year.
+  const before = liveRos();
   const out = execFileSync('node', ['scripts/build-ros.js', '--simulate', '2025:6'], { cwd: ROOT }).toString();
   assert.match(out, /players projected through week 6/);
   assert.match(out, /biggest risers/);
-  assert.ok(!fs.existsSync(path.join(ROOT, 'data', 'ros.json')), 'a simulation must not write the live file');
+  assert.strictEqual(liveRos(), before, 'a simulation must not touch the live file');
 });
 
 test('the blend always sits between the two things it blends', () => {
@@ -108,10 +130,15 @@ test('the week between the season flipping and Week 1 kicking off is a no-op, no
   // Sleeper flips season_type to "regular" several days before anyone plays.
   // Throwing in that window would have reddened the daily Action every morning
   // for about a week, every year, over a completely normal condition.
-  const out = execFileSync('node', ['scripts/build-ros.js', '--simulate', '2026:1'], { cwd: ROOT }).toString();
+  // A SEASON WITH NO GAME LOGS, not "next year" — 2026:1 was hardcoded here and
+  // stopped exercising this branch the moment 2026 week 1 was played, which is
+  // the one morning it most needed to work. Simulating a season nothing has
+  // been played in reaches the branch on any date.
+  const before = liveRos();
+  const out = execFileSync('node', ['scripts/build-ros.js', '--simulate', '2027:1'], { cwd: ROOT }).toString();
   assert.match(out, /no games are on file yet/i);
   assert.match(out, /normal/i, 'and it has to say the condition is expected, not alarming');
-  assert.ok(!fs.existsSync(path.join(ROOT, 'data', 'ros.json')));
+  assert.strictEqual(liveRos(), before, 'a simulation must not touch the live file');
 });
 
 test('games on file with nothing projected IS still a failure', () => {

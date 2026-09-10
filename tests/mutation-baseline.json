@@ -2,6 +2,6 @@
   "_comment": "A RATCHET, NOT A TARGET. scripts/mutate.js runs a fixed, seeded sample of mutants and this is the number the suite currently catches. CI fails if it drops. It does not have to go up, and chasing 100% is the classic mutation-testing mistake: most of the survivors left are `||` -> `&&` inside defaulting expressions like `a || b`, where the mutant is close to equivalent and a test written to kill it would assert nothing anybody cares about. What the ratchet stops is a change that quietly makes the SUITE weaker — deleting an assertion, loosening a boundary, or replacing a real check with one that cannot fail.",
   "budget": 60,
   "seed": 7,
-  "caught": 34,
-  "recorded": "2026-09-07"
+  "caught": 35,
+  "recorded": "2026-09-10"
 }

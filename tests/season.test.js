@@ -190,6 +190,7 @@ test('THE ALARM RINGS: today\'s data would fail a Week 2 check', async () => {
   // in Week 1 is what reddened eleven consecutive daily runs in 2026.
   const { execFileSync } = require('node:child_process');
   const path = require('node:path');
+  const fs = require('node:fs');
   const ROOT = path.join(__dirname, '..');
 
   // Today, unmodified: expected to pass.
@@ -216,10 +217,27 @@ test('THE ALARM RINGS: today\'s data would fail a Week 2 check', async () => {
   // case on the site: the matchup board would go on showing last year's
   // defences under a banner that says "preseason" and look entirely correct.
   // A layer missing from this list is a layer that can go stale in silence.
-  for (const layer of ['matchups.json', 'weekly-usage.json', 'fieldmap.json', 'charting.json']) {
-    assert.ok(output.includes(layer),
-      `the alarm did not name ${layer} — it can go a year stale without reddening the run.\n\nGot:\n${output}`);
+  //
+  // WHAT IS ASSERTED IS THAT THE CHECK WATCHES EACH LAYER, NOT THAT EACH LAYER
+  // IS BEHIND TODAY. Those were the same sentence while every layer was stuck
+  // on 2025, and they came apart on 2026-09-10: build-matchups reads the weekly
+  // shards, which nflverse fills the morning after Week 1, so matchups.json had
+  // a 2026 season while scheme, charting, fieldmap and weekly-usage — all of
+  // them downstream of pbp_participation, which nflverse publishes days later —
+  // did not. The alarm was working perfectly and this test failed it for naming
+  // three layers instead of four.
+  //
+  // A layer dropped from check-season's list is still the failure worth
+  // catching, so that is read off the list itself, and the alarm still has to
+  // ring and name something for the mechanism to count as exercised.
+  const watched = fs.readFileSync(path.join(ROOT, 'scripts', 'check-season.js'), 'utf8');
+  const layers = ['matchups.json', 'weekly-usage.json', 'fieldmap.json', 'charting.json'];
+  for (const layer of layers) {
+    assert.match(watched, new RegExp(`file:\\s*'${layer.replace('.', '\\.')}'`),
+      `check-season no longer watches ${layer} — it can go a year stale without reddening the run`);
   }
+  assert.ok(layers.some(l => output.includes(l)),
+    `the alarm rang but named none of the in-season layers.\n\nGot:\n${output}`);
 });
 
 test('AND IT STAYS QUIET before anyone has kicked off', async () => {
