@@ -434,7 +434,24 @@ async function buildCharting(season, plays, gsisIndex) {
     if (truthy(r.is_drop)) pc.drops++;
   }
 
-  const rate = rows.length ? joined / rows.length : 0;
+  // AN EMPTY FILE IS THE SAME ANSWER AS A MISSING ONE, and it was not being
+  // read that way. A 404 is caught above and returns null; a file that exists
+  // and has no rows in it fell through to `rate = 0`, which is under the
+  // threshold, so it threw "the join key moved" — and this step is on the
+  // critical path, so it would take the whole daily run down.
+  //
+  // nflverse publishing an empty per-season file is documented behaviour, not a
+  // hypothetical: CLAUDE.md records asking for a season too early getting "a 404
+  // or, worse, an empty file". FTN is a separate charting vendor from the
+  // play-by-play, so the morning pbp_participation_2026 lands and FTN's 2026
+  // file is still empty is a real morning, and it is the exact shape that took
+  // build-environment down on 2026-09-10 — one vendor ready, another not.
+  if (!rows.length) {
+    log(`  FTN charting for ${season} is published but empty — no charting yet, which is not a broken join`);
+    return null;
+  }
+
+  const rate = joined / rows.length;
   log(`  charting: ${rows.length} rows, ${joined} joined to pbp (${(rate * 100).toFixed(1)}%), `
     + `${dropbacks} dropbacks, ${attributed} attributed to the pool`);
   if (rate < 0.99) {

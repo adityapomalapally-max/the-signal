@@ -148,8 +148,14 @@ test('meta.json records whether the last run actually worked', () => {
 test('no projection is invented', () => {
   // Empty beats wrong: a missing projection renders as nothing. A null is
   // fine; a NaN or a string that looks like a number is not.
-  if (!has('projections-2026.json')) return;
-  const proj = read('projections-2026.json');
+  // THE FILENAME CARRIES A YEAR AND THE SKIP WAS SILENT, which is a check with
+  // an expiry date on it. The day the analyst's medians move to
+  // projections-2027.json, `has()` goes false and this test stops running —
+  // passing, reporting nothing, and covering nothing. Resolved by pattern and
+  // asserted to exist, so a rename is a red test rather than a quiet one.
+  const projFile = fs.readdirSync(DATA).filter((f) => /^projections-\d{4}\.json$/.test(f)).sort().pop();
+  assert.ok(projFile, 'no projections-<year>.json on disk — the analyst medians are the source of truth for the board');
+  const proj = read(projFile);
   const walk = (node, trail) => {
     if (node === null || node === undefined) return;
     if (typeof node === 'number') {

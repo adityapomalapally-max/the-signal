@@ -1294,6 +1294,55 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - The chart's table twin is a `<details>`, not a toggle — a disclosure element needs no click
   handler, and this page is trying to shed its 108 inline handlers rather than add the 109th.
 
+## A guard that cannot tell a young season from a broken feed
+- THE CLASS, NAMED, BECAUSE IT HAS NOW COST FOUR OUTAGES. Every per-season source publishes on its
+  own clock. nflverse rebuilds play-by-play the night of a game; Next Gen Stats had 2026 up the
+  morning after Week 1; PFR had nothing for days; FTN charts separately again. So for the first
+  weeks of every season there is always some layer that has this year and some that does not, and
+  that state is NORMAL. A check that answers it with a fatal loses the day's data over a file that
+  will be complete tomorrow — and the daily commit happens near the END of the run, so anything
+  that throws mid-build throws the whole morning away.
+- THE TELL IS A GUARD PHRASED AS "the feed moved" FIRING ON A COUNT. `only 0 teams have a pressure
+  rate`, `only 2 defenses found`, `only 0.0% of FTN rows joined` — each was written to catch a
+  renamed column and each fires just as readily on a season three days old.
+- THE RULE: ask the question only of a season every vendor has finished with (`lastCompletedSeason`),
+  or degrade to the season that has one, and say which in the log. Keep the fatal for the case that
+  genuinely cannot be a publication lag — a COMPLETED season coming up short.
+  - `build-environment.js` builds nothing past lastCompletedSeason, so its column-rename guard is
+    only ever asked of a finished year.
+  - `build-sos.js` falls back to last season when the live one is thin instead of exiting 1. The
+    fallback already existed — MIN_WEEKS_FOR_LIVE — and the abort was bypassing it. Note it decides
+    on SLEEPER'S WEEK NUMBER and fetches from NFLVERSE: two clocks, and Sleeper runs ahead.
+  - `build-scheme.js` treats an EMPTY FTN charting file as a missing one. A 404 was already caught;
+    a published-but-empty file fell through to `rate = 0`, which is under the join threshold, so it
+    threw "the join key moved" on the critical path.
+- ZERO IS NOT A RATE. `attempts ? located / attempts : null` with a `!== null` guard is the shape
+  that survives an empty season; `rows.length ? joined / rows.length : 0` is the shape that throws.
+  lib/fieldmap.js had it right and build-scheme did not.
+- `node scripts/dry-run-rollover.js --week 6` is how this gets found rather than suffered. It reads
+  the step list out of the workflow, runs it under a simulated mid-season calendar, and classifies
+  each step. It is what surfaced the build-sos abort. Steps that say nothing about the rollover —
+  mutate.js, which is a fact about the code — are excluded so the signal stays clean.
+
+## A test that encodes today's date as a rule
+- IT PASSES EVERY DAY UNTIL THE DAY IT MATTERS, which is the same failure shape as the guards above
+  wearing test clothing. Six went red on 2026-09-10 on data that was correct.
+- THE FORMS IT TAKES, all found in this repo:
+  - Running a build against the REAL calendar and asserting a branch that only holds in one part of
+    the year (`build-ros` must no-op). Drive the calendar, or simulate a season with no data.
+  - A hardcoded season in a simulation (`--simulate 2026:1` to reach "no games on file") that stops
+    reaching the branch the moment that season is played. Use a season nothing has been played in.
+  - Reading `latestSeasonWithGames` or `Math.max(...seasons)` as "the season with data". It turns
+    over on the first kickoff, when the newest season holds two teams and every cell is thin.
+  - Asserting a file EXISTS or does NOT exist when the season legitimately changes that. "A
+    simulation must not write the live file" became untestable that way; what it meant is that the
+    simulation must not CHANGE it.
+  - Requiring an alarm to name every layer, when the layers legitimately catch up at different
+    speeds. Assert the alarm WATCHES each layer — read off its own list — and that it still rings.
+  - A silent `if (!has('projections-2026.json')) return;`. A year in a filename plus a quiet skip is
+    a check with an expiry date: the day the file is renamed the test stops running and still passes.
+    Resolve the file by pattern and assert it exists.
+
 ## Every number, said as a rank
 - `scripts/build-percentiles.js` -> `data/percentiles.json`, daily, AFTER fetch-stats, fetch-ngs,
   fetch-advstats and build-scheme, all of which it reads. It FETCHES NOTHING — it is a second

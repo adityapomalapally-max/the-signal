@@ -61,12 +61,21 @@ const season = require('./lib/season');
 // The Action's steps, in the Action's order, read from the workflow rather
 // than copied out of it: a step added there and not here would be a step this
 // never tests, and the divergence would be silent.
+// A step that says nothing about the rollover. mutate.js edits the lib files and
+// re-runs the suite — a fact about the CODE, which the calendar cannot change.
+// In here it fails for a reason that is pure sandbox: the fetches could not
+// reach nflverse, so the data is inconsistent, so the suite is red before a
+// single mutant is applied. Reported as LOUD it reads like a rollover finding
+// and is not one, and the value of this tool is entirely in the signal being
+// clean.
+const NOT_ABOUT_THE_ROLLOVER = new Set(['mutate']);
+
 function workflowSteps() {
   const yml = fs.readFileSync(path.join(ROOT, '.github', 'workflows', 'daily-update.yml'), 'utf8');
   return [...yml.matchAll(/node scripts\/([a-z-]+)\.js([^\n]*)/g)].map(m => ({
     script: m[1],
     args: m[2].trim().split(/\s+/).filter(Boolean),
-  }));
+  })).filter(st => !NOT_ABOUT_THE_ROLLOVER.has(st.script));
 }
 
 // Which season a generated file says it is about. Each layer states it

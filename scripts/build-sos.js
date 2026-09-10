@@ -68,19 +68,47 @@ async function main() {
   log('=== SOS Start ===');
 
   log(`Fetching ${DEF_SEASON} weekly stats...`);
-  const rows = parseCSV(await fetchCSV(STATS_URL(DEF_SEASON)));
-  const totals = {};                 // "TEAM|POS" -> points conceded
-  const weeksFaced = {};             // TEAM -> Set(weeks)
-  for (const r of rows) {
-    if (r.season_type !== 'REG') continue;
-    if (!POSITIONS.includes(r.position) || !r.opponent_team) continue;
-    const k = `${r.opponent_team}|${r.position}`;
-    totals[k] = (totals[k] || 0) + (r.fantasy_points_ppr || 0);
-    (weeksFaced[r.opponent_team] ||= new Set()).add(r.week);
+  const readDefenses = async (year) => {
+    const rows = parseCSV(await fetchCSV(STATS_URL(year)));
+    const totals = {};               // "TEAM|POS" -> points conceded
+    const weeksFaced = {};           // TEAM -> Set(weeks)
+    for (const r of rows) {
+      if (r.season_type !== 'REG') continue;
+      if (!POSITIONS.includes(r.position) || !r.opponent_team) continue;
+      const k = `${r.opponent_team}|${r.position}`;
+      totals[k] = (totals[k] || 0) + (r.fantasy_points_ppr || 0);
+      (weeksFaced[r.opponent_team] ||= new Set()).add(r.week);
+    }
+    return { totals, weeksFaced, defenses: Object.keys(weeksFaced) };
+  };
+
+  // THE SWITCH IS MADE ON SLEEPER'S WEEK NUMBER AND THE DATA IS FETCHED FROM
+  // NFLVERSE, AND THOSE ARE TWO DIFFERENT CLOCKS. `week > MIN_WEEKS_FOR_LIVE`
+  // says the calendar has reached week five; it does not say nflverse has
+  // finished publishing week four. Sleeper is already known to run ahead — it
+  // called the 2026 season "regular, week 1" eleven days before anyone played.
+  //
+  // When the two disagreed, this aborted the process, which takes the WHOLE
+  // daily run down and loses the day's data over a file that will be complete
+  // by tomorrow. That is the same mistake build-environment made on 2026-09-10:
+  // a guard that cannot tell "the feed moved" from "the season is young", and
+  // answers both with a fatal.
+  //
+  // The fallback it needs already exists and is the entire point of
+  // MIN_WEEKS_FOR_LIVE — below the floor, last season is the better guess. So a
+  // thin live season now takes that path and says why. Only the completed
+  // season coming up short is fatal, because that one really cannot be a
+  // publication lag.
+  let { totals, weeksFaced, defenses } = await readDefenses(DEF_SEASON);
+  if (defenses.length < 32 && live) {
+    const fallback = await seasonLib.lastCompletedSeason();
+    log(`only ${defenses.length} defenses have played in ${DEF_SEASON} so far — not a moved feed, a young season. `
+      + `Falling back to ${fallback}, the same call MIN_WEEKS_FOR_LIVE makes below the floor.`);
+    DEF_SEASON = fallback;
+    ({ totals, weeksFaced, defenses } = await readDefenses(DEF_SEASON));
   }
-  const defenses = Object.keys(weeksFaced);
   if (defenses.length < 32) {
-    log(`ABORT: only ${defenses.length} defenses found in ${DEF_SEASON}. Feed or schema moved.`);
+    log(`ABORT: only ${defenses.length} defenses found in ${DEF_SEASON}, a completed season. Feed or schema moved.`);
     process.exit(1);
   }
 
