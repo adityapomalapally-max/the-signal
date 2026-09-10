@@ -168,6 +168,10 @@ async function main() {
   // GSIS id, never the name: an offensive lineman is exactly the kind of player
   // whose name is written three ways.
   const currentSeason = await season.targetSeason();
+  // The newest season every vendor has finished publishing. Both the continuity
+  // comparison and the assembly below are bounded by it, and they have to use
+  // the SAME value or they describe different years to the same reader.
+  const lastCompleted = await season.lastCompletedSeason();
   const startersFor = (rows, team) => {
     const latest = {};
     for (const r of rows) {
@@ -181,7 +185,14 @@ async function main() {
   };
   let continuity = new Map();
   try {
-    const measuredSeason = Math.max(...[...expByTeam.keys()]);
+    // THE SEASON THIS BOARD MEASURES, WHICH IS NOT THE NEWEST KEY NGS HAS.
+    // Taken straight from expByTeam it became 2026 the morning after week 1 —
+    // Next Gen Stats publishes within a day — so the continuity block fetched
+    // the 2026 depth chart, compared it against the 2026 depth chart, and
+    // reported all thirty-two lines fully intact. Every lineman "returning",
+    // which is precisely what the test at the bottom of environment.test.js
+    // calls the signature of a join that matched nothing.
+    const measuredSeason = Math.max(...[...expByTeam.keys()].filter((y) => Number(y) <= lastCompleted));
     const [prevRows, nowRows] = await Promise.all([
       parseCSV(await fetchCSV(DEPTH(measuredSeason))),
       parseCSV(await fetchCSV(DEPTH(currentSeason))),
@@ -294,7 +305,27 @@ async function main() {
   const agreement = [];
   const persistence = [];
 
+  // ONLY SEASONS THAT HAVE FINISHED. This file's own docblock says an
+  // environment describes a season that has been played, and the card is
+  // titled in the past tense for that reason — what is current is the LINE
+  // CONTINUITY below, which is a separate comparison against today's depth
+  // chart.
+  //
+  // It was not enforced, and the vendors do not lag equally. On 2026-09-10,
+  // the morning after week 1, Next Gen Stats had already published two 2026
+  // rows and PFR had published none — so a 2026 season appeared here built on
+  // NGS alone, and the guard at the bottom, which exists to catch a COLUMN
+  // RENAME, fired on "only 0 teams have a pressure rate in 2026" and took the
+  // whole daily run down before the commit. A day's data lost to two rows.
+  //
+  // A season in progress is half-measured by construction: whichever vendor
+  // publishes first decides what the board says. Waiting for the season to
+  // finish is not a delay, it is what the number means.
   for (const [s, teams] of [...expByTeam.entries()].sort((a, b) => a[0] - b[0])) {
+    if (Number(s) > lastCompleted) {
+      log(`${s} is still being played — an environment describes a finished season, so it is not built yet`);
+      continue;
+    }
     const expPer = new Map(), ybcPer = new Map(), pressPct = new Map();
     for (const [team, v] of teams) {
       if (v.att >= MIN_TEAM_CARRIES) expPer.set(team, v.exp / v.att);
@@ -410,6 +441,14 @@ async function main() {
   // differently from the rushing ones and reading them with the wrong names
   // produced a full set of nulls that rendered perfectly — every team's
   // pressure rate simply absent, and no error anywhere.
+  //
+  // It can only ask this of a season every vendor has finished publishing, which
+  // is what the filter above now guarantees. Asked of a season in progress it
+  // stops being a test of the JOIN and becomes a test of whose file landed
+  // first — and PFR is always last.
+  if (!Object.keys(seasons).length) {
+    throw new Error('no completed season produced an environment — every vendor is empty, which is not a publication lag');
+  }
   const latestSeason = Math.max(...Object.keys(seasons).map(Number));
   const withPressure = Object.values(seasons[latestSeason]).filter((t) => t.pass.pressurePct !== null).length;
   if (withPressure < 20) {
