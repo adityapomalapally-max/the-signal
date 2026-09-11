@@ -239,29 +239,68 @@ async function checkRuns() {
     return warn('runs', `could not reach the Actions API — ${e.message}`);
   }
 
-  const done = runs.filter(r => r.status === 'completed');
-  if (!done.length) return warn('runs', 'no completed scheduled runs to judge');
+  // THIS CHECK MUST NOT COUNT ITS OWN FAILURES. The health report exits 1 whenever
+  // it finds anything, so a failed Health Report run is the alarm RINGING, not a
+  // system fault — and reading it back as evidence makes one broken thing look
+  // like two. On 2026-09-11 a single failing test in the daily build was reported
+  // as "2 scheduled runs have failed IN A ROW", the second being this report
+  // saying so, with a link sending the reader to a run whose only content was the
+  // paragraph directly above it.
+  //
+  // Nothing is lost by dropping it. Its conclusion cannot distinguish "found
+  // problems" from "I am broken", so it carries no information about either — the
+  // issue it files is the evidence, not its exit code. Matched on the workflow
+  // PATH; the display name is editable from the file itself.
+  const v = judgeRuns(runs);
+  ({ fail, warn, ok })[v.level]('runs', v.line, v.detail);
+  return undefined;
+}
+
+/** The workflow this script IS. Matched on path; the display name is editable. */
+const SELF_WORKFLOW = '.github/workflows/health.yml';
+
+/**
+ * Verdict on the scheduled runs, extracted because the states that matter cannot
+ * be reached through checkRuns — it needs a token and a network, so every branch
+ * below was judged only against whatever the repo happened to have done that week.
+ * The one-failure branch had never been executed at all.
+ */
+function judgeRuns(runs) {
+  const done = (runs || []).filter(r => r.status === 'completed' && r.path !== SELF_WORKFLOW);
+  if (!done.length) return { level: 'warn', line: 'no completed scheduled runs to judge' };
 
   let streak = 0;
   for (const r of done) { if (r.conclusion === 'failure') streak++; else break; }
 
   const recent = done.slice(0, 10);
   const failed = recent.filter(r => r.conclusion === 'failure').length;
+  const detail = (rows) => rows.map(r => `${r.created_at.slice(0, 16)}  ${r.name}  ${r.html_url}`).join('\n');
 
   if (streak >= 2) {
-    fail('runs', `${streak} scheduled runs have failed IN A ROW`,
-      done.slice(0, streak).map(r => `${r.created_at.slice(0, 16)}  ${r.name}  ${r.html_url}`).join('\n'));
-  } else if (failed > 2) {
+    return { level: 'fail', line: `${streak} scheduled runs have failed IN A ROW`, detail: detail(done.slice(0, streak)) };
+  }
+  if (streak === 1) {
+    // ONE FAILURE IS NOT YET A PATTERN, AND IT IS NOT A RECOVERY EITHER. This
+    // used to fall through to the branch below, which counts the green runs AHEAD
+    // of the newest run and therefore found none — the report printed "recovered
+    // — 0 green in a row", which cannot be true of anything. A single red at the
+    // top is the state where somebody should look before the next cron makes it
+    // a streak, so it warns and names the run.
+    return {
+      level: 'warn',
+      line: 'the most recent scheduled run failed — one is not a pattern yet, but it is the one to look at',
+      detail: detail(done.slice(0, 1)),
+    };
+  }
+  if (failed > 2) {
     // A streak of zero with old failures behind it is a RECOVERY, not a fault.
     // Reporting "7 of the last 10 failed" on a repo that has been green for two
     // days is technically true and practically noise.
     const green = [];
     for (const r of done) { if (r.conclusion === 'success') green.push(r); else break; }
-    ok('runs', `recovered — ${green.length} green in a row, after ${failed} failures still inside the last ${recent.length}`);
-  } else {
-    ok('runs', `scheduled runs are healthy (${recent.length - failed}/${recent.length} green)`);
+    return { level: 'ok', line: `recovered — ${green.length} green in a row, after ${failed} failures still inside the last ${recent.length}` };
   }
-  return undefined;
+  return { level: 'ok', line: `scheduled runs are healthy (${recent.length - failed}/${recent.length} green)` };
 }
 
 function ghToken() {
@@ -509,4 +548,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { main, results, render, rowIsStale, daysSinceRow };
+module.exports = { main, results, render, rowIsStale, daysSinceRow, judgeRuns, SELF_WORKFLOW };

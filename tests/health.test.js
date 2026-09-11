@@ -94,6 +94,50 @@ test('the live ADP series says which of the two states it is in', () => {
   }
 });
 
+test('the report does not count its own failures as evidence', () => {
+  // IT EXITS 1 WHENEVER IT FINDS ANYTHING, so a failed Health Report run is the
+  // alarm RINGING, not a fault. Counted back in, one broken thing reads as two:
+  // on 2026-09-11 a single failing test in the daily build was reported as "2
+  // scheduled runs have failed IN A ROW", the second being this report saying so.
+  const run = (name, conclusion, p) => ({
+    status: 'completed', conclusion, name, path: p,
+    created_at: '2026-09-11T14:55:00Z', html_url: 'https://example.invalid/1',
+  });
+  const v = health.judgeRuns([
+    run('Health Report', 'failure', health.SELF_WORKFLOW),
+    run('Daily Data Update', 'failure', '.github/workflows/daily-update.yml'),
+    run('Daily Data Update', 'success', '.github/workflows/daily-update.yml'),
+  ]);
+  assert.strictEqual(v.level, 'warn',
+    'one real failure with this report’s own red on top of it must not read as a streak of two');
+  assert.ok(!/Health Report/.test(v.detail || ''),
+    'the detail must not send the reader to a run whose only content is the paragraph above it');
+});
+
+test('one red at the top is neither a pattern nor a recovery', () => {
+  // The state that printed "recovered — 0 green in a row", which cannot be true
+  // of anything: the recovery branch counts the green runs AHEAD of the newest
+  // run, and when the newest run is red there are none. It had never executed —
+  // reaching it needs a token and a network, so it was only ever judged against
+  // whatever the repo happened to have done that week.
+  const run = (conclusion, i) => ({
+    status: 'completed', conclusion, name: 'Daily Data Update',
+    path: '.github/workflows/daily-update.yml',
+    created_at: `2026-09-${10 - i}T14:55:00Z`, html_url: `https://example.invalid/${i}`,
+  });
+  const v = health.judgeRuns([run('failure', 0), run('success', 1), run('failure', 2),
+    run('failure', 3), run('success', 4)]);
+  assert.strictEqual(v.level, 'warn', 'the newest scheduled run failed — that is not an all-clear');
+  assert.ok(!/recovered/.test(v.line), `a run that just failed is not a recovery: "${v.line}"`);
+  assert.ok(!/\b0 green\b/.test(v.line), `"0 green in a row" is not a state anything can be in: "${v.line}"`);
+
+  // And the branch it used to fall into still works when it is actually true.
+  const rec = health.judgeRuns([run('success', 0), run('success', 1), run('failure', 2),
+    run('failure', 3), run('failure', 4)]);
+  assert.strictEqual(rec.level, 'ok', 'green at the top with old failures behind it IS a recovery');
+  assert.match(rec.line, /2 green in a row/, 'and it counts the green ones it actually found');
+});
+
 test('the headline takes the worst of what it found', () => {
   const at = (rows) => health.render(rows).split('\n')[0];
   assert.match(at([{ level: 'ok', area: 'a', line: 'x' }]), /all clear/);

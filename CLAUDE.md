@@ -258,6 +258,19 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   on file (never a fresh day — that would record a morning the market did not move), and it
   carries its reason, so a reader opening the file in January finds it there rather than in a
   build log nobody kept.
+- AN ALARM MUST NOT READ ITS OWN RINGING AS EVIDENCE. health-report exits 1 whenever it finds
+  anything, so a failed Health Report run means the alarm WORKED — counted back in by its own
+  `runs` check it made one broken thing look like two ("2 scheduled runs have failed IN A ROW",
+  the second being this report saying so, linking to a run whose only content was the paragraph
+  above it). Its own workflow is excluded by PATH. Nothing is lost: its conclusion cannot tell
+  "found problems" from "I am broken", so it carries no information about either, and the issue
+  it files is the evidence.
+- THE BRANCHES THAT NEED A NETWORK ARE THE ONES NOBODY HAS EVER RUN. `checkRuns` needs a token
+  and the Actions API, so its states were only ever judged against whatever the repo happened to
+  have done that week — and the one-failure case had never executed at all, falling through to a
+  recovery branch that counts the green runs AHEAD of the newest one and printed "recovered — 0
+  green in a row". `judgeRuns(runs)` is pure and takes the run list, so every state is reachable
+  from a test with no network.
 - THE TEST THAT MISSED IT ASSERTED THE READER AND CALLED IT DONE. `rowIsStale({frozen:true})`
   is a fact about one function; a flag whose only writer is the test that checks it is
   decoration. When a guard depends on a key, assert the PRODUCER and the CONSUMER in one test,
