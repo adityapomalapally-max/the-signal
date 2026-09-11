@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-ros.js",
-    "builtAt": "2026-09-10T16:43:11.108Z",
+    "builtAt": "2026-09-11T14:59:48.954Z",
     "season": 2026,
     "throughWeek": 1,
     "gamesRemaining": 16,
@@ -14,8 +14,8 @@
       "The weights were fitted in-sample on the seasons they describe."
     ],
     "coverage": {
-      "projected": 3,
-      "skippedNoGameLog": 81,
+      "projected": 11,
+      "skippedNoGameLog": 73,
       "skippedNotInPool": 4
     }
   },
@@ -34,6 +34,81 @@
       "gamesRemaining": 16,
       "restOfSeasonPoints": 259.5,
       "ppgDelta": -4.28
+    },
+    "purdy": {
+      "name": "Brock Purdy",
+      "pos": "QB",
+      "team": "SF",
+      "gamesPlayed": 1,
+      "pointsSoFar": 21.1,
+      "actualPpg": 21.1,
+      "preseasonPpg": 18.5,
+      "weightOnActual": 0.4,
+      "weightBasis": "QB week 2 (nearest fitted)",
+      "projectedPpg": 19.54,
+      "gamesRemaining": 16,
+      "restOfSeasonPoints": 312.6,
+      "ppgDelta": 1.04
+    },
+    "stafford": {
+      "name": "Matthew Stafford",
+      "pos": "QB",
+      "team": "LAR",
+      "gamesPlayed": 1,
+      "pointsSoFar": 4.1,
+      "actualPpg": 4.1,
+      "preseasonPpg": 16.8,
+      "weightOnActual": 0.4,
+      "weightBasis": "QB week 2 (nearest fitted)",
+      "projectedPpg": 11.72,
+      "gamesRemaining": 16,
+      "restOfSeasonPoints": 187.5,
+      "ppgDelta": -5.08
+    },
+    "cmc": {
+      "name": "Christian McCaffrey",
+      "pos": "RB",
+      "team": "SF",
+      "gamesPlayed": 1,
+      "pointsSoFar": 13.8,
+      "actualPpg": 13.8,
+      "preseasonPpg": 17.6,
+      "weightOnActual": 0.29,
+      "weightBasis": "RB week 2 (nearest fitted)",
+      "projectedPpg": 16.5,
+      "gamesRemaining": 16,
+      "restOfSeasonPoints": 264,
+      "ppgDelta": -1.1
+    },
+    "williams": {
+      "name": "Kyren Williams",
+      "pos": "RB",
+      "team": "LAR",
+      "gamesPlayed": 1,
+      "pointsSoFar": 15.5,
+      "actualPpg": 15.5,
+      "preseasonPpg": 12.6,
+      "weightOnActual": 0.29,
+      "weightBasis": "RB week 2 (nearest fitted)",
+      "projectedPpg": 13.44,
+      "gamesRemaining": 16,
+      "restOfSeasonPoints": 215.1,
+      "ppgDelta": 0.84
+    },
+    "nacua": {
+      "name": "Puka Nacua",
+      "pos": "WR",
+      "team": "LAR",
+      "gamesPlayed": 1,
+      "pointsSoFar": 12.4,
+      "actualPpg": 12.4,
+      "preseasonPpg": 15,
+      "weightOnActual": 0.33,
+      "weightBasis": "WR week 2 (nearest fitted)",
+      "projectedPpg": 14.14,
+      "gamesRemaining": 16,
+      "restOfSeasonPoints": 226.3,
+      "ppgDelta": -0.86
     },
     "jsn": {
       "name": "Jaxon Smith-Njigba",
@@ -64,6 +139,51 @@
       "gamesRemaining": 16,
       "restOfSeasonPoints": 174.3,
       "ppgDelta": -2.61
+    },
+    "evans": {
+      "name": "Mike Evans",
+      "pos": "WR",
+      "team": "SF",
+      "gamesPlayed": 1,
+      "pointsSoFar": 16.9,
+      "actualPpg": 16.9,
+      "preseasonPpg": 11.2,
+      "weightOnActual": 0.33,
+      "weightBasis": "WR week 2 (nearest fitted)",
+      "projectedPpg": 13.08,
+      "gamesRemaining": 16,
+      "restOfSeasonPoints": 209.3,
+      "ppgDelta": 1.88
+    },
+    "adams": {
+      "name": "Davante Adams",
+      "pos": "WR",
+      "team": "LAR",
+      "gamesPlayed": 1,
+      "pointsSoFar": 5.6,
+      "actualPpg": 5.6,
+      "preseasonPpg": 11.1,
+      "weightOnActual": 0.33,
+      "weightBasis": "WR week 2 (nearest fitted)",
+      "projectedPpg": 9.29,
+      "gamesRemaining": 16,
+      "restOfSeasonPoints": 148.6,
+      "ppgDelta": -1.81
+    },
+    "kittle": {
+      "name": "George Kittle",
+      "pos": "TE",
+      "team": "SF",
+      "gamesPlayed": 1,
+      "pointsSoFar": 3.2,
+      "actualPpg": 3.2,
+      "preseasonPpg": 9.4,
+      "weightOnActual": 0.23,
+      "weightBasis": "TE week 2 (nearest fitted)",
+      "projectedPpg": 7.97,
+      "gamesRemaining": 16,
+      "restOfSeasonPoints": 127.6,
+      "ppgDelta": -1.43
     }
   }
 }
