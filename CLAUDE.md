@@ -1005,6 +1005,12 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   derived from them — all API calls, about a second of work) four more times a week in season.
   Schedules: Sun 16:30 UTC (12:30 ET, after inactives), Sun 22:30 UTC, Tue 23:00 UTC (claims go in
   Tuesday night), Thu 23:00 UTC (TNF inactives).
+- HOW LATE, MEASURED: not "past the hour" — about FOUR HOURS. Across 2026-09-09 to 09-11 the 11:00
+  daily actually began at 14:55 and 15:02, and the 13:00 health report at 16:54, 17:02, 17:05 and
+  18:07. A Thursday 23:00 light refresh landed at 00:52 the next day. This is why cadence.js reads
+  the cron expression instead of the clock, and it is also why "today's run" shows up in the
+  afternoon and looks like somebody triggered it by hand. Anything that watches these runs from
+  outside has to sit hours past the cron or it will report on yesterday.
 - `scripts/lib/cadence.js` decides, AND IT READS THE CRON THAT FIRED, NOT THE CLOCK. GitHub delays
   scheduled runs, sometimes past the hour, so `getUTCHours() === 11` would quietly demote a late
   daily build to a status refresh and skip the day's real work. `github.event.schedule` is the exact
