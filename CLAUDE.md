@@ -250,6 +250,20 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - The join is guarded: if the name match rate against the pool falls below 70% the run FAILS
   rather than writing an empty day. A silently empty series looks like a day when nobody was
   ranked, and by the time anyone notices the real data is gone.
+- A SERIES THAT STOPS ON PURPOSE HAS TO SAY SO IN THE DATA. ADP freezes when the draft market
+  closes, and for three days the health report called it a dead feed — because `rowIsStale`
+  forgives a row carrying `frozen` and NOTHING EVER WROTE ONE. build-history logged "the market
+  closed, so the series does too" and skipped the write, so the last row was an ordinary row.
+  Two correct halves that had never been introduced. The freeze is STAMPED onto the row already
+  on file (never a fresh day — that would record a morning the market did not move), and it
+  carries its reason, so a reader opening the file in January finds it there rather than in a
+  build log nobody kept.
+- THE TEST THAT MISSED IT ASSERTED THE READER AND CALLED IT DONE. `rowIsStale({frozen:true})`
+  is a fact about one function; a flag whose only writer is the test that checks it is
+  decoration. When a guard depends on a key, assert the PRODUCER and the CONSUMER in one test,
+  against the real functions — renaming the key on either side must go red. Mutation-tested
+  three ways: rename it in the writer, rename it in the reader, or stamp today instead of the
+  end, and all three ring.
 - `scripts/backfill-history.js` is a ONE-OFF, deliberately not in the Action: it rewrites the
   files from git rather than appending. The daily bot has been committing dated snapshots since
   May, so 23 days and 77 real status changes were recovered from the repo's own history. What

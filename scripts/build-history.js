@@ -54,6 +54,50 @@ function readLines(file) {
   return fs.readFileSync(p, 'utf8').trim().split('\n').filter(Boolean).map(l => JSON.parse(l));
 }
 
+/**
+ * Mark where a series ended ON PURPOSE.
+ *
+ * A frozen series and an abandoned one look identical from the outside: both are
+ * a file whose last row is old. health-report.js already knows the difference and
+ * looks for a `frozen` flag on the final row — but nothing ever WROTE one, so the
+ * guard could not fire and a deliberate stop reported as a dead feed every morning
+ * from September to next August. That is how a report stops being read.
+ *
+ * It stamps the row ALREADY ON FILE rather than appending a new one. A row dated
+ * today would record a day the market did not move, which is the exact thing the
+ * freeze exists to avoid. Idempotent for the same reason every write here is: the
+ * daily Action re-runs and re-dispatches, and a second pass must change nothing.
+ */
+function freezeSeries(file, meta, dry) {
+  const rows = readLines(file);
+  const closed = String(meta.closedAt || '').slice(0, 10);
+  const when = closed ? `frozen ${closed}` : 'frozen';
+  if (!rows.length) return `${when} — no rows on file to stamp`;
+  const last = rows[rows.length - 1];
+  if (last.frozen) return `${when} — the market closed, so the series does too`;
+  upsertDay(file, last.date, frozenRow(last, meta), dry);
+  return `${when} — the market closed, so the series does too (stamped ${last.date})`;
+}
+
+/**
+ * The stamp itself, extracted because the WHOLE POINT is that this row satisfies
+ * health-report's rowIsStale — and a test proving that cannot reach the flag
+ * through a function whose only output is a log line and a file write.
+ *
+ * `frozen` is the exact key rowIsStale reads. Renaming it on either side without
+ * the other restores the bug this was written to fix, so a test holds the two
+ * together rather than checking each alone.
+ */
+function frozenRow(last, meta) {
+  return {
+    ...last,
+    frozen: true,
+    // Why it stopped, travelling WITH the data. A reader opening this file in
+    // January finds the reason on the row rather than in a build log nobody kept.
+    frozenReason: (meta && meta.closedNote) || 'the source market closed',
+  };
+}
+
 /** Append, or replace today's line if the script already ran today. */
 function upsertDay(file, date, line, dry) {
   const rows = readLines(file).filter(r => r.date !== date);
@@ -146,8 +190,12 @@ function main() {
   // recorded every morning for the rest of the season — four months of
   // identical rows implying a market that is moving when it has closed. The
   // series stops where the market stopped.
+  //
+  // Stopping SILENTLY, though, leaves a file indistinguishable from one that
+  // died in an outage, and the health report reds the board on it every morning
+  // for the rest of the season. The decision gets written onto the last row.
   if (adp.meta && adp.meta.historical) {
-    report.push(`adp        frozen ${String(adp.meta.closedAt).slice(0, 10)} — the market closed, so the series does too`);
+    report.push(`adp        ${freezeSeries('adp.jsonl', adp.meta, dry || eventsOnly)}`);
   } else {
     const adpCount = upsertDay('adp.jsonl', date, { date, source: adp.meta.source, values: adpValues }, dry || eventsOnly);
     report.push(eventsOnly
@@ -310,4 +358,4 @@ if (require.main === module) try {
   process.exit(1);
 }
 
-module.exports = { depthChangesFor, depthKey, normalize };
+module.exports = { depthChangesFor, depthKey, normalize, frozenRow };

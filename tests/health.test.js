@@ -52,6 +52,48 @@ test('a frozen series is a decision, not a dead one', () => {
     'ADP freezes on purpose when the draft market closes; flagging it would put a permanent red mark on the report');
 });
 
+test('and something actually writes the flag that decision is carried in', () => {
+  // THE TEST ABOVE PASSED FOR THREE DAYS WHILE THE REPORT WAS RED. It proves the
+  // reader honours `frozen`; nothing proved the writer ever emits one, and it did
+  // not — build-history logged "the market closed, so the series does too" and
+  // skipped the write entirely, so the last row was an ordinary row wearing no
+  // flag. Two correct halves, never introduced to each other.
+  //
+  // A guard whose key is only ever written by the test that checks it is
+  // decoration. This holds the real producer against the real consumer, so
+  // renaming the flag on either side reds it.
+  const { frozenRow } = require('../scripts/build-history');
+  const last = { date: '2026-09-08', source: 'Fantasy Football Calculator', values: { x: 1 } };
+  const row = frozenRow(last, { closedNote: 'Drafts are over.' });
+
+  assert.strictEqual(health.rowIsStale(row), false,
+    'the row build-history stamps must be the row rowIsStale forgives — that is the whole handshake');
+  assert.strictEqual(health.rowIsStale(last), true,
+    'and the unstamped row it was built from must still read as stale, or the test proves nothing');
+  assert.strictEqual(row.date, last.date, 'the stamp marks where the series ENDED, never a fresh day');
+  assert.deepStrictEqual(row.values, last.values, 'stamping must not disturb the data on the row');
+  assert.ok(row.frozenReason, 'a freeze with no reason on it is indistinguishable from a bug next season');
+});
+
+test('the live ADP series says which of the two states it is in', () => {
+  // End to end, against what is actually on disk, and it asserts in BOTH phases
+  // rather than skipping one — a test that only means something for half the year
+  // is the shape that goes quiet in the preseason and rots unnoticed.
+  const adp = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'adp.json'), 'utf8'));
+  const rows = fs.readFileSync(path.join(ROOT, 'data', 'history', 'adp.jsonl'), 'utf8')
+    .trim().split('\n').filter(Boolean).map(l => JSON.parse(l));
+  const last = rows[rows.length - 1];
+
+  if (adp.meta && adp.meta.historical) {
+    assert.ok(last.frozen,
+      `adp.json is stamped historical (closed ${String(adp.meta.closedAt).slice(0, 10)}) but the last series row `
+      + `(${last.date}) carries no frozen flag — the health report will red every morning until the next preseason`);
+  } else {
+    assert.ok(!last.frozen,
+      'the draft market is open but the series is stamped frozen — it has stopped sampling a market that is still moving');
+  }
+});
+
 test('the headline takes the worst of what it found', () => {
   const at = (rows) => health.render(rows).split('\n')[0];
   assert.match(at([{ level: 'ok', area: 'a', line: 'x' }]), /all clear/);
