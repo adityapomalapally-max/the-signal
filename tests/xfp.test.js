@@ -73,8 +73,16 @@ test('league actual and league expected are the same points counted twice', () =
 test('the grid still fits the data', () => {
   const b = xfp.meta.build;
   assert.ok(Number.isFinite(b.fallbackPct), 'the fallback share is not reported');
-  assert.ok(b.fallbackPct < 5,
-    `${b.fallbackPct}% of opportunities were priced off a marginal rather than their own cell — the grid has stopped fitting`);
+  // THE BOUND HAS TO SCALE WITH THE SAMPLE. Every cell is thinner in a young
+  // season, so more of them fall under MIN_CELL and more opportunities are
+  // priced off a marginal — correctly. Holding a full-season number against a
+  // one-week file fails the build for doing the right thing, which is how the
+  // last three mornings were lost. A full season is about 30,000 opportunities.
+  const full = b.opportunities >= 20000;
+  const bound = full ? 5 : 40;
+  assert.ok(b.fallbackPct < bound,
+    `${b.fallbackPct}% of opportunities were priced off a marginal rather than their own cell, `
+    + `against a bound of ${bound}% for a season of ${b.opportunities} opportunities — the grid has stopped fitting`);
   assert.strictEqual(b.skippedNoLine, 0,
     'opportunities are being dropped for want of a field position — pbp has changed');
 });

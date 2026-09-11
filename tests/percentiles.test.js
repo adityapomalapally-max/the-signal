@@ -216,6 +216,27 @@ test('the pool is described as ours, not as the league', () => {
     'the caveats that explain what a percentile is not have gone');
 });
 
+/**
+ * The newest season whose routes are worth checking, which is not simply the
+ * newest season on file.
+ *
+ * The morning nflverse publishes this season's participation, player-usage
+ * gains a season holding a handful of players — MIN_USAGE_SNAPS is 100 snaps
+ * and almost nobody has those after one week. Read as "the newest season" it
+ * made both route checks below fail on data that was exactly right, which is
+ * the same expiring-proxy shape that has now reddened the daily run on three
+ * separate mornings. Simulated a thin 2026 before it could happen and watched
+ * them go red, rather than finding out on the day.
+ */
+function seasonWithRoutes(usage) {
+  const years = (usage.meta.seasons || []).map(Number).sort((a, b) => b - a);
+  for (const y of years) {
+    const rows = Object.values(usage.seasons[y] || {}).filter(u => u.routes);
+    if (rows.length >= 100) return y;
+  }
+  return null;
+}
+
 test('an estimated metric says it is estimated', () => {
   // Routes are the one number on this card that is not counted. Route
   // participation is charted by PFF and FTN and is in no free feed, so these
@@ -245,7 +266,8 @@ test('nobody runs a route on a snap his team did not drop back', () => {
   // which is exactly what the LA/LAR alias did to every Rams receiver in the
   // probe that preceded this feature.
   const usage = JSON.parse(fs.readFileSync(path.join(D, 'player-usage.json'), 'utf8'));
-  const season = usage.meta.seasons[usage.meta.seasons.length - 1];
+  const season = seasonWithRoutes(usage);
+  assert.ok(season, 'no season anywhere carries routes for a meaningful number of players');
   let withRoutes = 0;
   for (const [id, u] of Object.entries(usage.seasons[season])) {
     if (u.routes === undefined) continue;
@@ -266,7 +288,8 @@ test('a lineman is never credited with a route', () => {
   // position column were dropped, every one of the eleven players on a dropback
   // would be credited and route counts would roughly double.
   const usage = JSON.parse(fs.readFileSync(path.join(D, 'player-usage.json'), 'utf8'));
-  const season = usage.meta.seasons[usage.meta.seasons.length - 1];
+  const season = seasonWithRoutes(usage);
+  assert.ok(season, 'no season anywhere carries routes for a meaningful number of players');
   const rows = Object.values(usage.seasons[season]).filter(u => u.routes);
   const overRun = rows.filter(u => u.routes > u.snaps * 0.95 && u.snaps > 200);
   assert.deepStrictEqual(overRun.map(u => u.name), [],
