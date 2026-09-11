@@ -201,12 +201,34 @@ test('every figure travels with the season it belongs to', () => {
   if (p.fieldMap) assert.ok(p.fieldMap.season, 'the field map carries no season');
   // The projection was the one that did not, and the model read it as belonging
   // to the season sitting beside it — reporting a 2026 forecast as 2025 fact.
+  //
+  // THE SEASONS COINCIDE ONCE THE SEASON STARTS, AND THAT IS NOT THE BUG. This
+  // asserted that the projection season DIFFERED from the production season,
+  // which was a proxy for "the model cannot confuse them" that worked only
+  // while production lagged a year behind the forecast. On 2026-09-11 nflverse
+  // published Week 1, production became 2026, the forecast was already 2026,
+  // and the check called a correct context mislabelled — failing the daily run
+  // on the morning the rollover finally completed.
+  //
+  // What actually stops the confusion is that the projection is LABELLED as one
+  // wherever it appears, and that holds whether or not the years match. So the
+  // figures have to be named as projections, the note has to say what they are,
+  // and the two layers have to carry their seasons separately rather than
+  // sharing one.
   if (p.ranking) {
     assert.ok(p.ranking.projectionForSeason, 'the projection carries no season');
-    const production = p.production && Number(p.production.season);
-    if (production) {
-      assert.notStrictEqual(Number(p.ranking.projectionForSeason), production,
-        'the projection season equals the production season — one of them is mislabelled');
+    for (const key of ['points', 'ppg', 'yards', 'fantasyPoints']) {
+      assert.ok(!(key in p.ranking),
+        `the projection carries a bare "${key}" — a forecast named like a result is what the model read as fact`);
+    }
+    assert.ok('projectedPoints' in p.ranking || 'projectedPPG' in p.ranking,
+      'no projected figure is named as a projection');
+    assert.match(String(p.ranking.note || ''), /projection/i,
+      'the projection no longer says it is one');
+    if (p.production) {
+      assert.ok(p.production.season, 'production carries no season of its own');
+      assert.notStrictEqual(p.ranking.projectionForSeason, undefined,
+        'the projection and the production would share a season field');
     }
   }
 });
