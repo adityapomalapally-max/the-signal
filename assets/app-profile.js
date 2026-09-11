@@ -191,6 +191,9 @@ function renderProfileTab(tab) {
     // What the chances were worth follows where he ranks, because a rank says
     // he was 8th in targets and this says what those targets were made of.
     html += xfpHtml(player);
+    // Usage says which package he is on the field for; this says what the
+    // offence actually threw him when he was. They read as one argument.
+    html += routeHtml(currentProfileId);
     html += usageHtml(currentProfileId);
     // Usage says which package he plays in; charting says whether the offence is
     // trying to get him the ball; the advanced splits say how much of the result
@@ -840,7 +843,7 @@ async function loadNgsSection(playerId, pos) {
 // Games actually missed live in the availability figure on Rankings.
 // Personnel usage, fetched only when a profile is opened.
 let usagePromise = null, usageData = null, usageScheme = null;
-let chartingData = null, advstatsData = null, contextData = null, pctData = null, xfpData = null;
+let chartingData = null, advstatsData = null, contextData = null, pctData = null, xfpData = null, routeData = null;
 // One promise for everything the overview needs, so there is ONE guard against
 // the re-render loop rather than five. Re-measured 2026-09-09, because the
 // figures that used to be in this comment were a year old and two of them were
@@ -856,6 +859,7 @@ function ensureUsage() {
       loadJSON('/data/context.json').then(d => (contextData = d)),
       loadJSON('/data/percentiles.json').then(d => (pctData = d)),
       loadJSON('/data/xfp.json').then(d => (xfpData = d)),
+      loadJSON('/data/routes.json').then(d => (routeData = d)),
     ]);
   }
   return usagePromise;
@@ -1466,6 +1470,80 @@ function xfpHtml(player) {
       <div style="overflow-x:auto;margin-top:8px;"><table style="width:100%;border-collapse:collapse;font-size:11.5px;font-family:var(--mono);">${table}</table></div>
     </details>
     <div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.6;margin-top:10px;">Expected points measure the value of the chances he RECEIVED, not what he deserved — getting open is a skill, and it is priced here as an opportunity rather than credited as one. Passing is not priced, so quarterbacks are absent. Fumbles and two-point conversions are excluded from both sides.</div>
+  </div>`;
+}
+
+/**
+ * What the throws that came his way actually were.
+ *
+ * A target count says a receiver got ninety looks. It cannot say whether they
+ * were ninety screens or ninety posts, and that is the difference between a
+ * player whose ceiling is capped by his role and one his offence is using to
+ * win games. This card says which.
+ *
+ * THE LEAGUE SHARE IS THE POINT, and it is drawn on the same bar rather than
+ * printed beside it. "22.6% screens" means nothing until you know the league
+ * throws 9% — so the baseline is a marker on the track and the reader sees the
+ * gap without doing arithmetic. Same argument as the personnel card comparing a
+ * player's grouping share to how often his offence calls it.
+ *
+ * AND IT IS NOT A ROUTE TREE. participation charts the route the ball went to,
+ * one per play, so this is what he was TARGETED on — not what he ran. The card
+ * says so in the header rather than in a footnote, because the difference is
+ * roughly a factor of five and a reader who misses it is reading a much bigger
+ * claim than the data supports.
+ */
+function routeHtml(playerId) {
+  if (!routeData || !routeData.seasons) return '';
+  const seasons = routeData.meta.seasons || [];
+  const season = seasons[seasons.length - 1];
+  const row = (routeData.seasons[season] || {})[playerId];
+  if (!row || !row.mix) return '';
+
+  const mix = Object.entries(row.mix).sort((a, b) => b[1].share - a[1].share);
+  if (mix.length < 2) return '';
+
+  // The widest share on the card sets the scale, so a mix that is all short
+  // routes still fills the track rather than huddling at the left.
+  const max = Math.max(...mix.map(([, m]) => Math.max(m.share, m.leagueShare || 0)), 10);
+  const pctOf = (v) => Math.max(1, Math.min(100, (v / max) * 100));
+
+  let rows = '';
+  for (const [concept, m] of mix) {
+    const over = m.leagueShare !== null && m.share > m.leagueShare * 1.5 && m.share >= 8;
+    const w = pctOf(m.share);
+    const lg = m.leagueShare === null ? null : pctOf(m.leagueShare);
+    rows += `<div style="margin-bottom:9px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:12.5px;margin-bottom:3px;">
+        <span style="color:var(--text-secondary);">${rankEsc(concept)}</span>
+        <span style="font-family:var(--mono);font-size:11.5px;white-space:nowrap;">${rankEsc(m.share.toFixed(1))}%<span style="color:var(--text-muted);">${m.leagueShare === null ? '' : ` vs ${rankEsc(m.leagueShare.toFixed(1))}% lg`} · ${rankEsc(m.yardsPerTarget.toFixed(1))} y/t</span></span>
+      </div>
+      <div style="position:relative;height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
+        <div style="height:100%;width:${w}%;background:${over ? 'var(--gold)' : 'var(--teal)'};"></div>
+        ${lg === null ? '' : `<div style="position:absolute;top:-2px;left:${lg}%;width:1px;height:10px;background:var(--text-muted);"></div>`}
+      </div>
+    </div>`;
+  }
+
+  const lead = row.lead;
+  let verdict = '';
+  if (lead && lead.leagueShare !== null && lead.share > lead.leagueShare * 1.6) {
+    verdict = `<div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;margin-top:10px;">He is thrown <strong style="color:var(--text);">${rankEsc(lead.concept.toLowerCase())}</strong> on ${rankEsc(lead.share.toFixed(1))}% of his targets, against a league ${rankEsc(lead.leagueShare.toFixed(1))}%. That is a role, not a preference — it shapes what his ceiling can be.</div>`;
+  }
+
+  const floorNote = row.belowFloor
+    ? ` A further ${rankEsc(row.belowFloor.share.toFixed(1))}% came on concepts he saw once, too few to draw.`
+    : '';
+
+  return `<div class="medical-card" style="margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px;">
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">What he was thrown</span>
+      <span style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);">${rankEsc(String(season))} · ${rankEsc(String(row.chartedTargets))} CHARTED TARGETS</span>
+    </div>
+    <div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;margin-bottom:8px;">The route each throw to him was designed to be. The tick on every bar is what the league throws to that concept. This is what he was <strong style="color:var(--text);">targeted on</strong>, not a route tree — charting records the route the ball went to, not the four his team-mates ran.</div>
+    ${rows}
+    ${verdict}
+    <div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.6;margin-top:10px;">A share is of his charted targets, so two players with the same mix can still have had very different jobs.${floorNote}</div>
   </div>`;
 }
 

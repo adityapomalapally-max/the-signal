@@ -33,6 +33,7 @@ const { fetchCSV, parseCSV, parseCSVLine } = require('./lib/match');
 const { buildWeeklyUsage } = require('./lib/weekly');
 const { buildRushing } = require('./lib/rushing');
 const { buildXfp } = require('./lib/xfp');
+const { blankRoutes, tallyRoute, finishRoutes } = require('./lib/routes');
 const { poolCrosswalk } = require('./lib/ids');
 const season_lib = require('./lib/season');
 const season = season_lib;
@@ -47,6 +48,7 @@ const OUT_FIELDMAP = path.join(DATA_DIR, 'fieldmap.json');
 const OUT_WEEKLY = path.join(DATA_DIR, 'weekly-usage.json');
 const OUT_RUSHING = path.join(DATA_DIR, 'rushing.json');
 const OUT_XFP = path.join(DATA_DIR, 'xfp.json');
+const OUT_ROUTES = path.join(DATA_DIR, 'routes.json');
 
 // The seasons participation data covers well. 2016-2022 exists but the schema
 // and the league both moved; three seasons is enough to read a trend and short
@@ -139,7 +141,11 @@ function leanPbp(csv) {
   // rides along on somebody else's download.
   // season_type gates the route count. Optional like the rest of this block: if
   // nflverse renames it the routes go absent rather than taking scheme down.
-  for (const col of ['receiver_player_id', 'passer_player_id', 'posteam', 'complete_pass', 'season_type']) {
+  // air_yards and pass_touchdown are here for the route board: a concept means
+  // little without how far downfield it is thrown and how often it scores.
+  // Optional like the rest of this block.
+  for (const col of ['receiver_player_id', 'passer_player_id', 'posteam', 'complete_pass', 'season_type',
+                     'air_yards', 'pass_touchdown']) {
     idx[col] = header.indexOf(col);
   }
   const map = new Map();
@@ -159,6 +165,8 @@ function leanPbp(csv) {
       posteam: str('posteam'),
       complete: num('complete_pass') === 1,
       seasonType: str('season_type'),
+      airYards: num('air_yards'),
+      passTd: num('pass_touchdown') === 1,
     });
   }
   return map;
@@ -509,6 +517,10 @@ async function buildSeason(season) {
   // every Rams receiver with no share at all. It cost a wrong answer in the
   // probe that measured this feature before it was built.
   const teamDropbacks = {};
+  // THE EIGHTH OUTPUT OF THE ONE pbp DOWNLOAD. participation carries a `route`
+  // value per play — the concept the throw went to — and it rides along on the
+  // loop already walking these rows.
+  const routeAcc = blankRoutes();
   const league = { overall: blank(), byGrouping: {}, formation: {}, coverage: {}, manZone: {} };
   let joined = 0, counted = 0, skipped = 0;
 
@@ -546,6 +558,7 @@ async function buildSeason(season) {
     }, group, gsisIndex);
     if (play && play.isPass && play.seasonType === 'REG') {
       teamDropbacks[teamKey(team)] = (teamDropbacks[teamKey(team)] || 0) + 1;
+      tallyRoute(routeAcc, r.route, play, gsisIndex);
     }
     t.byGrouping[group] = t.byGrouping[group] || blank();
     tally(t.byGrouping[group], row, play);
@@ -667,7 +680,12 @@ async function buildSeason(season) {
     throw new Error(`league actual and expected points differ by ${((xfp.meta.leagueRatio - 1) * 100).toFixed(1)}% — the pricing and the attribution disagree`);
   }
 
-  return { teams, league, usage, teamDropbacks, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage, weekly, rushing, xfp };
+  const routes = finishRoutes(routeAcc);
+  log(`  routes: ${routes.meta.chartedPct}% of pass plays charted, `
+    + `${Object.keys(routes.players).length} players at ${routes.meta.minChartedTargets}+ charted targets, `
+    + `${routes.meta.concepts.length} concepts`);
+
+  return { teams, league, usage, teamDropbacks, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage, weekly, rushing, xfp, routes };
 }
 
 function shapeDefense(d) {
@@ -734,6 +752,10 @@ async function main() {
   const weeklySeasons = { ...(existingWeekly.seasons || {}) };
   const existingRushing = fs.existsSync(OUT_RUSHING) ? JSON.parse(fs.readFileSync(OUT_RUSHING, 'utf8')) : { seasons: {} };
   const rushingSeasons = { ...(existingRushing.seasons || {}) };
+  const existingRoutes = fs.existsSync(OUT_ROUTES) ? JSON.parse(fs.readFileSync(OUT_ROUTES, 'utf8')) : { seasons: {} };
+  const routeSeasons = { ...(existingRoutes.seasons || {}) };
+  let routeLeagueLatest = existingRoutes.league || null;
+  let routeMetaLatest = (existingRoutes.meta && existingRoutes.meta.build) || null;
   const existingXfp = fs.existsSync(OUT_XFP) ? JSON.parse(fs.readFileSync(OUT_XFP, 'utf8')) : { seasons: {} };
   const xfpSeasons = { ...(existingXfp.seasons || {}) };
   let xfpCellsLatest = (existingXfp.cells || null);
@@ -742,7 +764,7 @@ async function main() {
 
   for (const season of wanted) {
     try {
-      const { teams, league: lg, usage, teamDropbacks, defenses, charting, fieldmap, fmCoverage, weekly, rushing, xfp } = await buildSeason(season);
+      const { teams, league: lg, usage, teamDropbacks, defenses, charting, fieldmap, fmCoverage, weekly, rushing, xfp, routes } = await buildSeason(season);
       if (!Object.keys(teams).length) throw new Error('no team rows produced');
       const shaped = {};
       for (const [team, raw] of Object.entries(teams)) shaped[team] = shapeTeam(raw);
@@ -763,6 +785,13 @@ async function main() {
       if (fieldmap) { fieldmapSeasons[season] = fieldmap; fmCoverageLatest = fmCoverage; }
       if (weekly && Object.keys(weekly).length) weeklySeasons[season] = weekly;
       if (rushing && Object.keys(rushing.players).length) rushingSeasons[season] = rushing.players;
+      if (routes && Object.keys(routes.players).length) {
+        routeSeasons[season] = routes.players;
+        // The baseline belongs to the newest season built, like the xfp price
+        // table: a league share blended across years is nobody's season.
+        routeLeagueLatest = routes.league;
+        routeMetaLatest = { ...routes.meta, season };
+      }
       if (xfp && Object.keys(xfp.players).length) {
         xfpSeasons[season] = xfp.players;
         // The price table belongs to the newest season built, not to all of
@@ -1101,6 +1130,40 @@ async function main() {
     const latestXfp = xfpSeasons[xfpYears[xfpYears.length - 1]] || {};
     log(`${wroteXfp ? 'wrote' : 'unchanged —'} xfp.json: ${Object.keys(latestXfp).length} players in `
       + `${xfpYears[xfpYears.length - 1]} — ${Math.round(fs.statSync(OUT_XFP).size / 1024)}KB`);
+  }
+
+  // The eighth output. Which route the ball went to, and what the league throws.
+  const routeYears = Object.keys(routeSeasons).map(Number).sort();
+  if (routeYears.length) {
+    const routesOut = {
+      meta: {
+        generated: new Date().toISOString(),
+        builtBy: 'scripts/build-scheme.js via lib/routes.js',
+        seasons: routeYears,
+        source: 'nflverse pbp_participation `route`, joined to pbp on game_id + play_id and '
+          + 'attributed through receiver_player_id. REG season only.',
+        build: routeMetaLatest,
+        caveats: [
+          'THIS IS WHAT A PLAYER WAS TARGETED ON, NOT A ROUTE TREE. participation carries ONE route '
+          + 'per play — the concept the pass was thrown to — not what all five eligible receivers ran. '
+          + 'A real route tree counts every route run whether or not the ball arrived, and would be '
+          + 'roughly five times as many. Called one, this would overstate itself by that factor.',
+          'About 10% of pass plays carry no route, and a charted play with no receiver_player_id '
+          + 'counts for the league baseline and for nobody in particular — the same split charting makes.',
+          'The league baseline is built from EVERY charted throw, not only those reaching a pool '
+          + 'player. A baseline drawn from the 350 tracked players would be the pool\'s own habits and '
+          + 'would flatter everybody toward the middle.',
+          'A share is of his CHARTED targets, so it is a share of the throws that came his way and not '
+          + 'of the routes he ran. Two players with the same mix can have had very different jobs.',
+        ],
+      },
+      league: routeLeagueLatest,
+      seasons: routeSeasons,
+    };
+    const wroteRoutes = writeJSONIfChanged(OUT_ROUTES, routesOut);
+    const latestRoutes = routeSeasons[routeYears[routeYears.length - 1]] || {};
+    log(`${wroteRoutes ? 'wrote' : 'unchanged —'} routes.json: ${Object.keys(latestRoutes).length} players in `
+      + `${routeYears[routeYears.length - 1]} — ${Math.round(fs.statSync(OUT_ROUTES).size / 1024)}KB`);
   }
 }
 

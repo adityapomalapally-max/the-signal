@@ -1233,6 +1233,36 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   continuation of the instructions above it, which is the whole mechanism an injection uses. Between
   markers it is plainly a quoted string somebody typed, and a question cannot close its own fence.
 
+## What he was thrown — the route board
+- `scripts/lib/routes.js`, tallied inside build-scheme's EXISTING participation loop: the eighth
+  output of the one pbp download. `data/routes.json`, 31KB gzipped, 170 players at 25+ charted
+  targets, 13 concepts, 85% of pass plays charted.
+- IT IS NOT A ROUTE TREE AND THE FILE SAYS SO IN CAPITALS. participation's `route` column is ONE
+  VALUE PER PLAY — the concept the ball was thrown to — not what all five eligible receivers ran. A
+  real route tree counts every route run whether the pass arrived or not and would be roughly five
+  times as many. Called one, this overstates itself by that factor, and it is the single most likely
+  thing to go wrong here because nothing about the numbers would look broken. There is a test that
+  asserts the caveat like a figure.
+- THE COMPARISON IS THE PRODUCT. A target count says a receiver got ninety looks; this says whether
+  they were ninety screens or ninety posts. "22.6% screens" means nothing until you know the league
+  throws 9%, so every player row carries its own `leagueShare` and the card draws it as a TICK ON
+  THE SAME BAR rather than a number beside it. Same argument as personnel usage against team rate.
+- THE LEAGUE BASELINE IS BUILT FROM EVERY CHARTED THROW, not only those reaching a pool player. A
+  baseline drawn from the 350 tracked players would be the pool's own habits and would flatter
+  everybody toward the middle. There is a test that `charted > attributed`, which fails the moment
+  the baseline starts being built from the pool.
+- THE JOIN WITNESS IS THE DEPTH LADDER, and it is physical. The concept comes from participation and
+  the air yards from pbp, meeting on game_id + play_id and nowhere else: SCREEN -3.3 and SWING -3.2
+  are thrown BEHIND the line, QUICK OUT 2.6, HITCH/CURL 5.9, IN/DIG 12.7, GO 24.7. Nothing in the
+  code produces that ordering. Mutation-tested by swapping the SCREEN and GO labels, which reds two
+  separate assertions — the depths and the catch rates, on different columns.
+- WHAT THE FLOOR DROPS IS STATED. A player with 25 charted targets across nine concepts has several
+  seen once; dropping them silently left one mix summing to 73%, a page showing percentages that
+  account for three quarters of a player. `belowFloor` carries the remainder so the shares close.
+- CORNER has the highest touchdown rate of any concept at 12.8%, ahead of POST 10.8 and GO 9.9 —
+  the fade doing what everyone believes it does. Gibbs is 22.6% screens against a league 9% and
+  19.4% swings against 5.2%, which is a pass-catching back's fingerprint in two numbers.
+
 ## Routes run — estimated, and the estimate is measured
 - COUNTED IN `build-scheme`'s EXISTING participation loop, so it costs nothing: participation already
   says who was on the field for every snap, and `offense_positions` says what each of them lined up
