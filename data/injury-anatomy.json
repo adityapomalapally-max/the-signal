@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-anatomy.js",
-    "builtAt": "2026-09-11T14:59:48.470Z",
+    "builtAt": "2026-09-12T13:59:58.352Z",
     "layers": {
       "frequency": "counted from data/injuries.json — the official NFL injury reports for this pool",
       "recovery": "from data/injury-curves.json, derived from those same reports",
@@ -179,14 +179,14 @@
     },
     "shoulder": {
       "label": "Shoulder",
-      "episodes": 87,
-      "players": 68,
-      "shareOfAll": 7.8,
+      "episodes": 86,
+      "players": 67,
+      "shareOfAll": 7.7,
       "reportedAs": [
         {
           "part": "Shoulder",
-          "episodes": 79,
-          "players": 62
+          "episodes": 78,
+          "players": 61
         },
         {
           "part": "Right Shoulder",
@@ -328,9 +328,9 @@
     },
     "arm": {
       "label": "Arm, elbow & hand",
-      "episodes": 69,
-      "players": 56,
-      "shareOfAll": 6.2,
+      "episodes": 70,
+      "players": 57,
+      "shareOfAll": 6.3,
       "reportedAs": [
         {
           "part": "Wrist",
@@ -344,8 +344,8 @@
         },
         {
           "part": "Elbow",
-          "episodes": 9,
-          "players": 7
+          "episodes": 10,
+          "players": 8
         },
         {
           "part": "Thumb",
@@ -406,15 +406,15 @@
       "recovery": {
         "source": "injury-curves.json",
         "bucket": "Arm / Hand",
-        "absences": 9,
-        "players": 9,
-        "medianGamesMissed": 2,
-        "baselinePpg": 4,
+        "absences": 10,
+        "players": 10,
+        "medianGamesMissed": 2.5,
+        "baselinePpg": 5.1,
         "returnCurve": [
           {
             "label": "Games 1–2 back",
-            "n": 9,
-            "pct": 200
+            "n": 10,
+            "pct": 159
           },
           {
             "label": "Games 3–5",
@@ -430,6 +430,12 @@
             "missed": 5
           },
           {
+            "id": "mills",
+            "name": "Davis Mills",
+            "season": 2025,
+            "missed": 5
+          },
+          {
             "id": "coleman-k",
             "name": "Keon Coleman",
             "season": 2024,
@@ -438,12 +444,6 @@
           {
             "id": "daniels",
             "name": "Jayden Daniels",
-            "season": 2025,
-            "missed": 3
-          },
-          {
-            "id": "tucker",
-            "name": "Sean Tucker",
             "season": 2025,
             "missed": 3
           }
@@ -634,14 +634,14 @@
     },
     "hip": {
       "label": "Hip & groin",
-      "episodes": 93,
-      "players": 66,
-      "shareOfAll": 8.3,
+      "episodes": 94,
+      "players": 67,
+      "shareOfAll": 8.4,
       "reportedAs": [
         {
           "part": "Hip",
-          "episodes": 51,
-          "players": 39
+          "episodes": 52,
+          "players": 40
         },
         {
           "part": "Groin",
@@ -1253,14 +1253,14 @@
     },
     "foot": {
       "label": "Foot & toe",
-      "episodes": 90,
-      "players": 65,
-      "shareOfAll": 8.1,
+      "episodes": 89,
+      "players": 64,
+      "shareOfAll": 8,
       "reportedAs": [
         {
           "part": "Foot",
-          "episodes": 46,
-          "players": 39
+          "episodes": 45,
+          "players": 38
         },
         {
           "part": "Toe",

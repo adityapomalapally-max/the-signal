@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-curves.js",
-    "builtAt": "2026-09-09T02:39:28.823Z",
+    "builtAt": "2026-09-12T13:59:28.504Z",
     "seasons": [
       2023,
       2024,
@@ -328,6 +328,62 @@
         }
       ]
     },
+    "Arm / Hand": {
+      "absences": 10,
+      "players": 10,
+      "medianMissed": 2.5,
+      "medianBaseline": 5.1,
+      "curve": [
+        {
+          "label": "Games 1–2 back",
+          "n": 10,
+          "pct": 159
+        },
+        {
+          "label": "Games 3–5",
+          "n": 6,
+          "pct": 173
+        }
+      ],
+      "examples": [
+        {
+          "id": "corley",
+          "name": "Malachi Corley",
+          "season": 2024,
+          "missed": 5
+        },
+        {
+          "id": "mills",
+          "name": "Davis Mills",
+          "season": 2025,
+          "missed": 5
+        },
+        {
+          "id": "coleman-k",
+          "name": "Keon Coleman",
+          "season": 2024,
+          "missed": 4
+        },
+        {
+          "id": "daniels",
+          "name": "Jayden Daniels",
+          "season": 2025,
+          "missed": 3
+        },
+        {
+          "id": "tucker",
+          "name": "Sean Tucker",
+          "season": 2025,
+          "missed": 3
+        },
+        {
+          "id": "hurts",
+          "name": "Jalen Hurts",
+          "season": 2024,
+          "missed": 2
+        }
+      ]
+    },
     "Calf / Quad": {
       "absences": 9,
       "players": 6,
@@ -385,62 +441,6 @@
           "id": "walker",
           "name": "Kenneth Walker",
           "season": 2024,
-          "missed": 2
-        }
-      ]
-    },
-    "Arm / Hand": {
-      "absences": 9,
-      "players": 9,
-      "medianMissed": 2,
-      "medianBaseline": 4,
-      "curve": [
-        {
-          "label": "Games 1–2 back",
-          "n": 9,
-          "pct": 200
-        },
-        {
-          "label": "Games 3–5",
-          "n": 6,
-          "pct": 173
-        }
-      ],
-      "examples": [
-        {
-          "id": "corley",
-          "name": "Malachi Corley",
-          "season": 2024,
-          "missed": 5
-        },
-        {
-          "id": "coleman-k",
-          "name": "Keon Coleman",
-          "season": 2024,
-          "missed": 4
-        },
-        {
-          "id": "daniels",
-          "name": "Jayden Daniels",
-          "season": 2025,
-          "missed": 3
-        },
-        {
-          "id": "tucker",
-          "name": "Sean Tucker",
-          "season": 2025,
-          "missed": 3
-        },
-        {
-          "id": "hurts",
-          "name": "Jalen Hurts",
-          "season": 2024,
-          "missed": 2
-        },
-        {
-          "id": "tuten",
-          "name": "Bhayshul Tuten",
-          "season": 2025,
           "missed": 2
         }
       ]
