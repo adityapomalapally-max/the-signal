@@ -64,10 +64,75 @@ test('nothing outside the end zone scores on every catch', () => {
 });
 
 test('league actual and league expected are the same points counted twice', () => {
+  // ONLY WHEN THE SEASON PRICED ITSELF. Every price is then a mean over these
+  // same plays, so the two totals can differ only by what the thin-cell
+  // fallbacks smoothed, and a gap means the pricing and the attribution have
+  // come loose. Carried prices are means over ANOTHER season's plays, so the
+  // ratio stops being that check entirely: 2026's first week comes out 1.21x
+  // against 2025's prices, which is ten players clearing a season-scale
+  // opportunity floor after one game, not an error. Held to this tolerance it
+  // would have blocked the better number — the measured one, 1.9x closer to
+  // what those opportunities were really worth.
   const b = xfp.meta.build;
   assert.ok(b && Number.isFinite(b.leagueRatio), 'the file no longer states its own consistency check');
+  if (b.pricedFrom) return;
   assert.ok(Math.abs(b.leagueRatio - 1) <= 0.02,
     `league actual is ${b.leagueRatio}x league expected — the pricing and the attribution disagree`);
+});
+
+test('a borrowed season says whose prices these are, on the card as well as in the file', () => {
+  const b = xfp.meta.build;
+  if (!b.pricedFrom) return;   // nothing borrowed today; the rules below are about the state, not the date
+  assert.ok(Number(b.pricedFrom) < Number(b.season),
+    'a season cannot borrow prices from itself or from a season that has not happened');
+  assert.ok(b.fallbackPct <= 5,
+    `borrowing was supposed to FIX the fallback share and it is ${b.fallbackPct}% — publishing it anyway is the `
+    + 'thing the withholding rule exists to prevent');
+  assert.ok(b.selfFallbackPct > b.fallbackPct,
+    'the file has to record what self-pricing would have cost, or the reason it borrowed is unstated');
+  assert.strictEqual(b.unpriced, 0, 'opportunities the borrowed table has no cell for were silently dropped');
+
+  // THE PUBLISHED TABLE IS THE ONE THAT PRICED IT. buildXfp still builds the
+  // young season's own cells in pass one, and publishing those would hand a
+  // reader prices that priced nothing — every figure in the file unlookupable.
+  // A season's table is big; two weeks of one is not.
+  const n = Object.values(xfp.cells.targets).reduce((a, c) => a + c.n, 0);
+  assert.ok(n > 8000,
+    `the published target cells hold ${n} plays — that is not a season, so the table on file is not the one used`);
+
+  const caveats = JSON.stringify(xfp.meta.caveats);
+  assert.match(caveats, new RegExp(`THESE PRICES ARE ${b.pricedFrom}'S`), 'the file does not say whose prices these are');
+  assert.match(caveats, /qualified player/i, 'nothing warns that the early-season ratio is mostly who cleared the floor');
+
+  const profile = fs.readFileSync(path.join(__dirname, '..', 'assets', 'app-profile.js'), 'utf8');
+  assert.match(profile, /build\.pricedFrom/,
+    'the profile card can show borrowed prices without saying they are borrowed');
+});
+
+test('a table that priced another season is still borrowable the next morning', () => {
+  // THE FEATURE THAT WORKED EXACTLY ONCE. After the first borrowing run the
+  // file carries last season's prices under a build that says `season: 2026`,
+  // because 2026 is what they priced. Read as the table's own season, it is a
+  // season that has not finished and therefore unborrowable — so the second
+  // morning silently went back to withholding, on a path no run repeats until
+  // the following September.
+  const { borrowableTable } = require('../scripts/lib/xfp');
+  const cells = { targets: {}, carries: {}, targetsMarginal: {}, carriesMarginal: {} };
+
+  const afterBorrowing = { meta: { build: { season: 2026, pricedFrom: 2025 } }, cells };
+  assert.deepStrictEqual(borrowableTable(afterBorrowing, 2025), { season: 2025, cells },
+    'a borrowed table stopped being borrowable the moment it was used');
+
+  const selfPriced = { meta: { build: { season: 2025 } }, cells };
+  assert.strictEqual(borrowableTable(selfPriced, 2025).season, 2025);
+
+  // A young table pricing a young season is the problem wearing a different hat.
+  assert.strictEqual(borrowableTable({ meta: { build: { season: 2026 } }, cells }, 2025), null);
+  // And half the pricing rule is the marginals. A file written before they were
+  // published would price part of a board and drop the rest.
+  assert.strictEqual(borrowableTable({ meta: { build: { season: 2025 } }, cells: { targets: {}, carries: {} } }, 2025), null);
+  assert.strictEqual(borrowableTable(null, 2025), null);
+  assert.strictEqual(borrowableTable({ meta: {} }, 2025), null);
 });
 
 test('the grid still fits the data', () => {

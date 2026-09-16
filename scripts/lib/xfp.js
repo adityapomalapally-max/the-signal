@@ -139,9 +139,17 @@ function priceOf(cell) {
 
 /**
  * @param {string} csv raw play-by-play for one season
+ * @param {{priceTable?: Object}} [opts] price the opportunities off a table
+ *   built from ANOTHER season instead of this one's. A season builds its own
+ *   prices from its own plays, which is right once there are enough of them and
+ *   wrong in September: two weeks of 2026 priced 29.3% of opportunities off a
+ *   marginal cell and put league expected 10.9% away from league actual. The
+ *   table travels in the same shape it is published in — `cells` below — so the
+ *   prices a reader can look up are the prices that were used.
  * @returns {{players: Object, cells: Object, meta: Object}} players keyed by GSIS id
  */
-function buildXfp(csv) {
+function buildXfp(csv, opts) {
+  const supplied = (opts && opts.priceTable) || null;
   const lines = csv.split('\n');
   const header = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
   const idx = {};
@@ -235,16 +243,35 @@ function buildXfp(csv) {
   // PASS TWO: price each opportunity and attribute it to a player and a week.
   const by = new Map();
   let fellBack = 0;
+  // An opportunity a supplied table has no cell for at all. Its own season
+  // always has one — it was built from these plays — so this can only be
+  // non-zero when pricing off another year, and it is reported rather than
+  // silently dropped.
+  let unpriced = 0;
   for (const o of opps) {
     let cell, price;
-    if (o.kind === 'target') {
-      cell = tgtCells.get(`${o.depth}|${o.line}`);
-      if (!cell || cell.n < MIN_CELL) { cell = tgtMargin.get(o.line); fellBack++; }
+    // A SUPPLIED TABLE IS ALREADY PRICED. Its cells carry the mean they were
+    // built from, so there is nothing to recompute — and the fallback rule is
+    // the same rule, asked of the other season's sample.
+    if (supplied) {
+      const t = o.kind === 'target' ? supplied.targets : supplied.carries;
+      const m = o.kind === 'target' ? supplied.targetsMarginal : supplied.carriesMarginal;
+      const key = o.kind === 'target' ? `${o.depth}|${o.line}` : `${o.field}|${o.situation}`;
+      const marginKey = o.kind === 'target' ? o.line : o.field;
+      cell = (t && t[key]) || null;
+      if (!cell || cell.n < MIN_CELL) { cell = (m && m[marginKey]) || null; fellBack++; }
+      price = cell && Number.isFinite(cell.price) ? cell.price : null;
+      if (price === null) { unpriced++; continue; }
     } else {
-      cell = carCells.get(`${o.field}|${o.situation}`);
-      if (!cell || cell.n < MIN_CELL) { cell = carMargin.get(o.field); fellBack++; }
+      if (o.kind === 'target') {
+        cell = tgtCells.get(`${o.depth}|${o.line}`);
+        if (!cell || cell.n < MIN_CELL) { cell = tgtMargin.get(o.line); fellBack++; }
+      } else {
+        cell = carCells.get(`${o.field}|${o.situation}`);
+        if (!cell || cell.n < MIN_CELL) { cell = carMargin.get(o.field); fellBack++; }
+      }
+      price = priceOf(cell);
     }
-    price = priceOf(cell);
     if (price === null) continue;
 
     // What he actually got from this same play, on the same scoring, so the two
@@ -315,7 +342,20 @@ function buildXfp(csv) {
 
   return {
     players,
-    cells: { targets: shapeCells(tgtCells), carries: shapeCells(carCells) },
+    // THE CELL TABLE TRAVELS WITH THE NUMBERS IT PRODUCED, which means the
+    // SUPPLIED one when there is one. A season priced off another year's
+    // prices still builds its own cells in pass one, and publishing those
+    // would hand a reader a table that priced nothing — every figure in the
+    // file would be unlookupable, which is the failure this whole module is an
+    // argument against.
+    //
+    // THE MARGINALS TRAVEL TOO. They are half the pricing rule — every thin
+    // cell falls back to one — and a table published without them cannot price
+    // a season on its own, which is exactly what a young season borrows it for.
+    cells: supplied || {
+      targets: shapeCells(tgtCells), carries: shapeCells(carCells),
+      targetsMarginal: shapeCells(tgtMargin), carriesMarginal: shapeCells(carMargin),
+    },
     meta: {
       opportunities: opps.length,
       targets: opps.filter(o => o.kind === 'target').length,
@@ -329,6 +369,7 @@ function buildXfp(csv) {
       // cell. If this ever climbs, the grid has stopped fitting the data.
       fallbackPct: opps.length ? round(fellBack / opps.length * 100, 2) : null,
       skippedNoLine,
+      ...(supplied ? { pricedFromSuppliedTable: true, unpriced } : {}),
       // The self-consistency check, in the file rather than only in a test:
       // every price is a mean over these same plays, so the two totals differ
       // only by what the fallback cells smoothed. Far apart means the pricing
@@ -340,7 +381,37 @@ function buildXfp(csv) {
   };
 }
 
+/**
+ * Can the table in a published xfp.json price a season that cannot price
+ * itself? Returns { season, cells } or null, with `season` being the year whose
+ * PLAYS produced the cells.
+ *
+ * THE SEASON A TABLE BELONGS TO IS NOT THE SEASON IT PRICED. On the first
+ * borrowing morning the file carries last year's prices under a build that says
+ * `season: 2026`, because 2026 is what they priced. Read as the table's own
+ * season that makes it un-borrowable the next morning — the feature would have
+ * worked exactly once, on a path no daily run repeats until the following
+ * September.
+ *
+ * Three ways to be unborrowable, and each of them is a correct answer:
+ *   - the cells came from a season that has not finished, which would be a
+ *     young table pricing a young season: the problem wearing a different hat;
+ *   - the file predates marginal cells being published, so it cannot resolve
+ *     the fallback half of the pricing rule and would price part of a board and
+ *     drop the rest;
+ *   - there is no table at all.
+ */
+function borrowableTable(file, lastCompletedSeason) {
+  const build = (file && file.meta && file.meta.build) || null;
+  const cells = (file && file.cells) || null;
+  if (!build || !cells) return null;
+  if (!cells.targetsMarginal || !cells.carriesMarginal) return null;
+  const season = Number(build.pricedFrom || build.season || 0);
+  if (!season || season > Number(lastCompletedSeason)) return null;
+  return { season, cells };
+}
+
 module.exports = {
-  buildXfp, MIN_CELL, MIN_OPPORTUNITIES, MIN_PASSER_ATTEMPTS, PPR,
+  buildXfp, borrowableTable, MIN_CELL, MIN_OPPORTUNITIES, MIN_PASSER_ATTEMPTS, PPR,
   depthBand, targetLineBand, fieldBand, downBand, priceOf,
 };

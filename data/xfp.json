@@ -1,41 +1,44 @@
 {
   "meta": {
-    "generated": "2026-09-16T19:26:47.050Z",
+    "generated": "2026-09-16T20:52:39.414Z",
     "builtBy": "scripts/build-scheme.js via lib/xfp.js",
     "seasons": [
       2024,
-      2025
+      2025,
+      2026
     ],
     "source": "nflverse play-by-play. Every target priced by pass depth crossed with where the ball was aimed relative to the goal line; every carry by field position crossed with down and distance. REG season only.",
     "scoring": "Full PPR — 1 per reception, 0.1 per yard, 6 per touchdown — matching nflverse fantasy_points_ppr, which is what every other points figure on this site already is.",
-    "method": "EMPIRICAL, NOT FITTED. A cell's price is the mean fantasy points the plays in that cell actually produced in that same season. No regression, no coefficients, nothing trained — anyone with the same CSV recomputes the same number.",
+    "method": "EMPIRICAL, NOT FITTED. A cell's price is the mean fantasy points the plays in that cell actually produced. No regression, no coefficients, nothing trained — anyone with the same CSV recomputes the same number. A season prices itself once it has the plays to do it; until then it borrows the last finished season's table, and meta.build.pricedFrom says which season paid for the prices above.",
     "build": {
-      "opportunities": 30777,
-      "targets": 16609,
-      "carries": 14168,
-      "playersQualified": 306,
-      "passersDropped": 30,
+      "opportunities": 1783,
+      "targets": 941,
+      "carries": 842,
+      "playersQualified": 10,
+      "passersDropped": 0,
       "minPasserAttempts": 20,
       "minCell": 100,
       "minOpportunities": 20,
-      "fallbackPct": 0.95,
+      "fallbackPct": 0.79,
       "skippedNoLine": 0,
-      "leagueFp": 34052.9,
-      "leagueXfp": 34241.5,
-      "leagueRatio": 0.9945,
-      "season": 2025
+      "pricedFromSuppliedTable": true,
+      "unpriced": 0,
+      "leagueFp": 278.1,
+      "leagueXfp": 229.5,
+      "leagueRatio": 1.2118,
+      "selfFallbackPct": 29.33,
+      "season": 2026,
+      "pricedFrom": 2025
     },
     "caveats": [
+      "THESE PRICES ARE 2025'S. 2026 has not played enough football to price itself — its own table would put 29.33% of opportunities on a marginal cell against the 0.79% these prices manage — so every expectation here is what the same chance was worth in 2025. Measured on 2025: priced this way a two-week season lands 0.165 points a game from what those plays were really worth, against 0.313 priced off its own two weeks. It switches to its own table the moment that table fits.",
+      "EARLY IN A SEASON EVERY QUALIFIED PLAYER LOOKS GOOD, and that is the qualifier rather than the football. The floor is 20+ opportunities, which over a season admits a rotational player and after one week admits only the workhorses — who are the players getting that volume because they are producing. League actual against these prices (1.2118x) is computed over exactly those qualified players, so read it as who cleared the floor, not as the league scoring more than it did last year, and not as a consistency check: carried prices are not means over these plays.",
       "PASSING IS NOT PRICED, so quarterbacks are absent rather than wrong. A quarterback's points are overwhelmingly passing, and showing his rushing expectation beside his total would put every quarterback in the league hundreds of points \"over expected\".",
       "Fumbles lost and two-point conversions are excluded from BOTH sides. They are outcomes rather than opportunities and have no situation to price. Measured against stats.json, this leaves a median gap of 0.0 points across a season and a 10th-to-90th range of plus or minus 2 — which is one fumble, or one two-point conversion.",
       "THE GAP IS MOSTLY TOUCHDOWNS, AND TOUCHDOWNS DO NOT REPEAT. A player far over expected is usually not a player who will stay there. That is the reading this file is for.",
       "Expected points measure the value of the chances a player RECEIVED. They are not a claim about what he deserved: getting open on a deep ball is itself a skill, and it is priced here as an opportunity rather than credited as one.",
       "The price table travels with the numbers under `cells`, so any figure here can be looked up rather than taken on trust."
-    ],
-    "pending": {
-      "season": 2026,
-      "reason": "29.33% of opportunities would be priced off a marginal cell, over the 5% this grid needs to fit — league expected is 10.9% from league actual. The season needs more plays in it."
-    }
+    ]
   },
   "cells": {
     "targets": {
@@ -312,6 +315,90 @@
         "tdRate": 30,
         "price": 1.92,
         "thin": true
+      }
+    },
+    "targetsMarginal": {
+      "21+": {
+        "n": 12932,
+        "catchRate": 71.3,
+        "yardsPer": 7.66,
+        "tdRate": 0.5,
+        "price": 1.511,
+        "thin": false
+      },
+      "11-20": {
+        "n": 1429,
+        "catchRate": 63.8,
+        "yardsPer": 7.64,
+        "tdRate": 5.1,
+        "price": 1.709,
+        "thin": false
+      },
+      "1-5": {
+        "n": 541,
+        "catchRate": 51,
+        "yardsPer": 6.67,
+        "tdRate": 28.1,
+        "price": 2.863,
+        "thin": false
+      },
+      "endzone": {
+        "n": 1108,
+        "catchRate": 40.5,
+        "yardsPer": 4.37,
+        "tdRate": 40.5,
+        "price": 3.273,
+        "thin": false
+      },
+      "6-10": {
+        "n": 599,
+        "catchRate": 59.6,
+        "yardsPer": 6.61,
+        "tdRate": 11.5,
+        "price": 1.948,
+        "thin": false
+      }
+    },
+    "carriesMarginal": {
+      "back": {
+        "n": 7001,
+        "catchRate": 0,
+        "yardsPer": 4.99,
+        "tdRate": 0.4,
+        "price": 0.521,
+        "thin": false
+      },
+      "mid": {
+        "n": 4628,
+        "catchRate": 0,
+        "yardsPer": 4.74,
+        "tdRate": 1.2,
+        "price": 0.545,
+        "thin": false
+      },
+      "rz": {
+        "n": 1231,
+        "catchRate": 0,
+        "yardsPer": 3.87,
+        "tdRate": 4.5,
+        "price": 0.655,
+        "thin": false
+      },
+      "in10": {
+        "n": 543,
+        "catchRate": 0,
+        "yardsPer": 2.96,
+        "tdRate": 13.6,
+        "price": 1.114,
+        "thin": false
+      },
+      "gl": {
+        "n": 765,
+        "catchRate": 0,
+        "yardsPer": 1.09,
+        "tdRate": 39.3,
+        "price": 2.47,
+        "thin": false
       }
     }
   },
@@ -55744,6 +55831,208 @@
             "fp": 6.4,
             "xfp": 12.9,
             "opps": 14
+          }
+        ]
+      }
+    },
+    "2026": {
+      "00-0038542": {
+        "team": "ATL",
+        "games": 1,
+        "targets": 10,
+        "carries": 21,
+        "fp": 31.3,
+        "xfp": 24.7,
+        "diff": 6.6,
+        "fpPerG": 31.3,
+        "xfpPerG": 24.71,
+        "diffPerG": 6.59,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 31.3,
+            "xfp": 24.7,
+            "opps": 31
+          }
+        ]
+      },
+      "00-0036223": {
+        "team": "IND",
+        "games": 1,
+        "targets": 4,
+        "carries": 19,
+        "fp": 27.1,
+        "xfp": 22,
+        "diff": 5.1,
+        "fpPerG": 27.1,
+        "xfpPerG": 22.03,
+        "diffPerG": 5.07,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 27.1,
+            "xfp": 22,
+            "opps": 23
+          }
+        ]
+      },
+      "00-0032764": {
+        "team": "BAL",
+        "games": 1,
+        "targets": 1,
+        "carries": 24,
+        "fp": 35.3,
+        "xfp": 19.9,
+        "diff": 15.4,
+        "fpPerG": 35.3,
+        "xfpPerG": 19.94,
+        "diffPerG": 15.36,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 35.3,
+            "xfp": 19.9,
+            "opps": 25
+          }
+        ]
+      },
+      "00-0035685": {
+        "team": "HOU",
+        "games": 1,
+        "targets": 3,
+        "carries": 20,
+        "fp": 28.9,
+        "xfp": 22.8,
+        "diff": 6.1,
+        "fpPerG": 28.9,
+        "xfpPerG": 22.81,
+        "diffPerG": 6.09,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 28.9,
+            "xfp": 22.8,
+            "opps": 23
+          }
+        ]
+      },
+      "00-0038134": {
+        "team": "KC",
+        "games": 1,
+        "targets": 6,
+        "carries": 23,
+        "fp": 34.1,
+        "xfp": 24.2,
+        "diff": 9.9,
+        "fpPerG": 34.1,
+        "xfpPerG": 24.18,
+        "diffPerG": 9.91,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 34.1,
+            "xfp": 24.2,
+            "opps": 29
+          }
+        ]
+      },
+      "00-0040122": {
+        "team": "LV",
+        "games": 1,
+        "targets": 6,
+        "carries": 23,
+        "fp": 32.7,
+        "xfp": 23.9,
+        "diff": 8.8,
+        "fpPerG": 32.7,
+        "xfpPerG": 23.86,
+        "diffPerG": 8.84,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 32.7,
+            "xfp": 23.9,
+            "opps": 29
+          }
+        ]
+      },
+      "00-0036875": {
+        "team": "NE",
+        "games": 1,
+        "targets": 6,
+        "carries": 18,
+        "fp": 14.5,
+        "xfp": 17.6,
+        "diff": -3.1,
+        "fpPerG": 14.5,
+        "xfpPerG": 17.61,
+        "diffPerG": -3.11,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 14.5,
+            "xfp": 17.6,
+            "opps": 24
+          }
+        ]
+      },
+      "00-0039139": {
+        "team": "DET",
+        "games": 1,
+        "targets": 5,
+        "carries": 29,
+        "fp": 35.6,
+        "xfp": 32.5,
+        "diff": 3.1,
+        "fpPerG": 35.6,
+        "xfpPerG": 32.46,
+        "diffPerG": 3.14,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 35.6,
+            "xfp": 32.5,
+            "opps": 34
+          }
+        ]
+      },
+      "00-0038120": {
+        "team": "NYJ",
+        "games": 1,
+        "targets": 2,
+        "carries": 22,
+        "fp": 19.8,
+        "xfp": 18.7,
+        "diff": 1.1,
+        "fpPerG": 19.8,
+        "xfpPerG": 18.73,
+        "diffPerG": 1.07,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 19.8,
+            "xfp": 18.7,
+            "opps": 24
+          }
+        ]
+      },
+      "00-0038597": {
+        "team": "CIN",
+        "games": 1,
+        "targets": 6,
+        "carries": 16,
+        "fp": 18.8,
+        "xfp": 23.2,
+        "diff": -4.4,
+        "fpPerG": 18.8,
+        "xfpPerG": 23.21,
+        "diffPerG": -4.41,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 18.8,
+            "xfp": 23.2,
+            "opps": 22
           }
         ]
       }

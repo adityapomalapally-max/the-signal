@@ -1390,6 +1390,15 @@ function xfpHtml(player) {
   const row = xfpData.seasons[season] && xfpData.seasons[season][player.gsisId];
   if (!row || !row.weeks || row.weeks.length < 2) return '';
 
+  // WHOSE PRICES THESE ARE, WHEREVER THEY ARE NOT HIS OWN SEASON'S. A season
+  // too young to price itself borrows the last finished season's table, which
+  // is a different claim from the one this card usually makes and the reader is
+  // owed it on the card rather than in the JSON.
+  const build = (xfpData.meta && xfpData.meta.build) || {};
+  const borrowed = Number(build.season) === Number(season) && build.pricedFrom
+    ? `Prices are ${build.pricedFrom}'s — ${season} has not played enough football to price itself yet. `
+    : '';
+
   const over = row.diff > 0;
   const mag = Math.abs(row.diff).toFixed(1);
   const perG = Math.abs(row.diffPerG).toFixed(2);
@@ -1469,7 +1478,7 @@ function xfpHtml(player) {
       <summary style="font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;">The numbers</summary>
       <div style="overflow-x:auto;margin-top:8px;"><table style="width:100%;border-collapse:collapse;font-size:11.5px;font-family:var(--mono);">${table}</table></div>
     </details>
-    <div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.6;margin-top:10px;">Expected points measure the value of the chances he RECEIVED, not what he deserved — getting open is a skill, and it is priced here as an opportunity rather than credited as one. Passing is not priced, so quarterbacks are absent. Fumbles and two-point conversions are excluded from both sides.</div>
+    <div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.6;margin-top:10px;">${rankEsc(borrowed)}Expected points measure the value of the chances he RECEIVED, not what he deserved — getting open is a skill, and it is priced here as an opportunity rather than credited as one. Passing is not priced, so quarterbacks are absent. Fumbles and two-point conversions are excluded from both sides.</div>
   </div>`;
 }
 

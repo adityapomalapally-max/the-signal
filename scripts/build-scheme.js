@@ -32,7 +32,7 @@ const path = require('path');
 const { fetchCSV, parseCSV, parseCSVLine } = require('./lib/match');
 const { buildWeeklyUsage } = require('./lib/weekly');
 const { buildRushing } = require('./lib/rushing');
-const { buildXfp } = require('./lib/xfp');
+const { buildXfp, borrowableTable } = require('./lib/xfp');
 const { blankRoutes, tallyRoute, finishRoutes } = require('./lib/routes');
 const { poolCrosswalk } = require('./lib/ids');
 const season_lib = require('./lib/season');
@@ -507,7 +507,8 @@ function fieldmapPlayers(fm) {
   return ['passers', 'receivers', 'rushers'].reduce((n, k) => n + Object.keys(fm[k] || {}).length, 0);
 }
 
-async function buildSeason(season) {
+async function buildSeason(season, opts) {
+  const carried = (opts && opts.carriedPrices) || null;
   log(`fetching ${season}...`);
   const base = feeds.RELEASES;
   // ONE UNPUBLISHED FEED USED TO COST SEVEN OUTPUTS. These two were fetched in
@@ -712,10 +713,40 @@ async function buildSeason(season) {
   // 0.1%. Far apart means the pricing and the attribution have come loose from
   // each other, and every per-player diff on the site would be wrong by a
   // constant nobody could see.
-  const xfp = buildXfp(pbpCsv);
+  let xfp = buildXfp(pbpCsv);
   log(`  xfp: ${xfp.meta.playersQualified} players over ${xfp.meta.targets} targets and `
     + `${xfp.meta.carries} carries (${xfp.meta.fallbackPct}% priced off a marginal), `
     + `league ratio ${xfp.meta.leagueRatio}`);
+
+  // A YOUNG SEASON BORROWS THE LAST FINISHED SEASON'S PRICES. Measured in
+  // scripts/research-xfp-carryover.js: two weeks of 2025 priced off their own
+  // two weeks land 0.313 points a game from what those same plays were really
+  // worth, and priced off 2024's table 0.165 — 1.9x closer, with 1.2% of
+  // opportunities on a marginal cell instead of 21.6%, and the median player on
+  // exactly the right board position instead of one place out. Carried over a
+  // WHOLE season the table costs 0.085 points a game (2025 by 2024) and 0.215
+  // (2024 by 2023), so a year of price drift is small and worth a fifth of a
+  // point at the outside.
+  //
+  // It is a SEPARATE BUILD rather than a first guess because the decision needs
+  // the season's own fallback share, which only building it produces. On a
+  // young season that is a second parse of a very small file; on a season whose
+  // grid fits it never happens.
+  let xfpPricedFrom = null;
+  if (xfp.meta.fallbackPct > MAX_FALLBACK_FOR_RATIO_CHECK && carried) {
+    // WHAT IT WOULD HAVE COST TO SELF-PRICE, kept before it is thrown away. The
+    // file has to be able to say why it borrowed, and after the reprice every
+    // number in meta describes the borrowed table — the first draft of this
+    // published "its own table would put 0.79% of opportunities on a marginal
+    // cell", which is the borrowed table's figure and the opposite of the
+    // reason.
+    const selfFallbackPct = xfp.meta.fallbackPct;
+    xfp = buildXfp(pbpCsv, { priceTable: carried.cells });
+    xfp.meta.selfFallbackPct = selfFallbackPct;
+    xfpPricedFrom = carried.season;
+    log(`  xfp: repriced off ${carried.season}'s table — ${xfp.meta.fallbackPct}% off marginals now `
+      + `(${xfp.meta.unpriced} opportunities it has no cell for), league ratio ${xfp.meta.leagueRatio}`);
+  }
   // AND IT CAN ONLY BE ASKED OF A TABLE THAT HAS CELLS. The two sides differ by
   // exactly what the thin-cell fallbacks smoothed, so the tolerance is a
   // statement about the fallbacks, not about the pricing. Measured: a finished
@@ -728,7 +759,18 @@ async function buildSeason(season) {
   // So it fires where it means something and says so where it does not. This is
   // a check on the PRICING MECHANISM coming loose from the attribution, which
   // is a thing that can only be seen once most throws are priced off real cells.
-  if (xfp.meta.leagueRatio !== null && xfp.meta.fallbackPct > MAX_FALLBACK_FOR_RATIO_CHECK) {
+  //
+  // AND IT IS A QUESTION ABOUT A SELF-PRICED SEASON ONLY. Prices carried from
+  // another year are not means over these plays, so the two sides are not the
+  // same points counted twice and the ratio stops being a consistency check:
+  // 2025's first two weeks come out at 0.967 against 2024's prices, which is
+  // not an error, it is those weeks producing 3% more than last year's league
+  // did. Held to the self-priced tolerance it would block the better number.
+  if (xfpPricedFrom) {
+    log(`  xfp: league actual is ${xfp.meta.leagueRatio}x what ${xfpPricedFrom}'s prices expected, over the `
+      + `${xfp.meta.playersQualified} players clearing the floor — early in a season that is mostly WHO cleared it, `
+      + `and it is not a consistency check either way: carried prices are not means over these plays`);
+  } else if (xfp.meta.leagueRatio !== null && xfp.meta.fallbackPct > MAX_FALLBACK_FOR_RATIO_CHECK) {
     log(`  xfp: ${xfp.meta.fallbackPct}% of opportunities priced off a marginal, over the `
       + `${MAX_FALLBACK_FOR_RATIO_CHECK}% this check needs to mean anything — the league ratio of `
       + `${xfp.meta.leagueRatio} is what the fallbacks smoothed, not evidence either way`);
@@ -747,7 +789,7 @@ async function buildSeason(season) {
       + `${routes.meta.concepts.length} concepts`);
   }
 
-  return { participation, teams, league, usage, teamDropbacks, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage, weekly, rushing, xfp, routes };
+  return { participation, teams, league, usage, teamDropbacks, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage, weekly, rushing, xfp, xfpPricedFrom, routes };
 }
 
 function shapeDefense(d) {
@@ -824,6 +866,25 @@ async function main() {
   let xfpMetaLatest = (existingXfp.meta && existingXfp.meta.build) || null;
   const failures = [];
 
+  // THE TABLE ALREADY ON FILE IS THE ONE TO BORROW. xfp.json publishes the
+  // prices that produced its newest season, so the previous season's grid is
+  // sitting in data/ every September — no extra download, and the prices a
+  // reader can look up stay the prices that were used.
+  //
+  // Only from a season that FINISHED: borrowing a young season's own thin table
+  // would be the problem wearing a different hat. And only from a table that
+  // carries its marginal cells, which is half the pricing rule — a file written
+  // before they were published cannot price anything on its own, and says so
+  // rather than pricing two thirds of a board and dropping the rest.
+  const lastDone = await season.lastCompletedSeason();
+  const carriedPrices = borrowableTable(existingXfp, lastDone);
+  const tableSeason = Number(((existingXfp.meta || {}).build || {}).season || 0);
+  if (!carriedPrices && tableSeason) {
+    log(`the xfp table on file cannot be borrowed (built with ${tableSeason}, `
+      + `${(existingXfp.cells || {}).targetsMarginal ? 'no finished season behind it' : 'no marginal cells'}) `
+      + `— a young season is withheld rather than half-priced`);
+  }
+
   // WHY A SEASON IS ABSENT, WRITTEN WHERE THE ALARM CAN READ IT.
   //
   // These eight files all answer "what has happened this season", and early in
@@ -873,7 +934,8 @@ async function main() {
 
   for (const season of wanted) {
     try {
-      const { participation, teams, league: lg, usage, teamDropbacks, defenses, charting, fieldmap, fmCoverage, weekly, rushing, xfp, routes } = await buildSeason(season);
+      const { participation, teams, league: lg, usage, teamDropbacks, defenses, charting, fieldmap,
+              fmCoverage, weekly, rushing, xfp, xfpPricedFrom, routes } = await buildSeason(season, { carriedPrices });
       // THE pbp LAYERS FIRST, BECAUSE THEY DO NOT DEPEND ON THE ONE THAT IS
       // LATE. Everything from here to the participation block reads
       // play-by-play, snap counts or FTN charting, all of which nflverse
@@ -921,16 +983,18 @@ async function main() {
       const gridFits = xfp && xfp.meta.fallbackPct <= MAX_FALLBACK_FOR_RATIO_CHECK;
       if (xfp && Object.keys(xfp.players).length && !gridFits) {
         markPending(OUT_XFP, season, `${xfp.meta.fallbackPct}% of opportunities would be priced off a marginal `
-          + `cell, over the ${MAX_FALLBACK_FOR_RATIO_CHECK}% this grid needs to fit — league expected is `
-          + `${((xfp.meta.leagueRatio - 1) * 100).toFixed(1)}% from league actual. The season needs more plays in it.`);
-        log(`  xfp: ${season} withheld — the grid does not fit yet (${xfp.meta.fallbackPct}% off marginals)`);
+          + `cell, over the ${MAX_FALLBACK_FOR_RATIO_CHECK}% this grid needs to fit, and there is no finished `
+          + `season's table on file to borrow. The season needs more plays in it.`);
+        log(`  xfp: ${season} withheld — the grid does not fit and nothing is borrowable (${xfp.meta.fallbackPct}% off marginals)`);
       } else if (xfp && Object.keys(xfp.players).length) {
         xfpSeasons[season] = xfp.players;
         // The price table belongs to the newest season built, not to all of
         // them: the cells are means over ONE season's plays and a table blended
         // across years would price this year's throws at last year's rates.
+        // The table that PRICED this season, which is the borrowed one when it
+        // borrowed. buildXfp already hands back whichever it used.
         xfpCellsLatest = xfp.cells;
-        xfpMetaLatest = { ...xfp.meta, season };
+        xfpMetaLatest = { ...xfp.meta, season, ...(xfpPricedFrom ? { pricedFrom: xfpPricedFrom } : {}) };
       } else if (xfp) {
         markPending(OUT_XFP, season, 'no player has met the opportunity qualifier for this season yet');
       }
@@ -1270,10 +1334,29 @@ async function main() {
         scoring: 'Full PPR — 1 per reception, 0.1 per yard, 6 per touchdown — matching nflverse '
           + 'fantasy_points_ppr, which is what every other points figure on this site already is.',
         method: 'EMPIRICAL, NOT FITTED. A cell\'s price is the mean fantasy points the plays in that '
-          + 'cell actually produced in that same season. No regression, no coefficients, nothing '
-          + 'trained — anyone with the same CSV recomputes the same number.',
+          + 'cell actually produced. No regression, no coefficients, nothing trained — anyone with the '
+          + 'same CSV recomputes the same number. A season prices itself once it has the plays to do '
+          + 'it; until then it borrows the last finished season\'s table, and meta.build.pricedFrom '
+          + 'says which season paid for the prices above.',
         build: xfpMetaLatest,
         caveats: [
+          // THE PROVENANCE GOES FIRST, and only when it is true. A borrowed
+          // table is a different claim from a self-priced one and a reader is
+          // owed it before anything else in this list.
+          ...((xfpMetaLatest && xfpMetaLatest.pricedFrom) ? [
+            `THESE PRICES ARE ${xfpMetaLatest.pricedFrom}'S. ${xfpMetaLatest.season} has not played enough football to `
+            + `price itself — its own table would put ${xfpMetaLatest.selfFallbackPct}% of opportunities on a marginal `
+            + `cell against the ${xfpMetaLatest.fallbackPct}% these prices manage — so every expectation here is what `
+            + `the same chance was worth in ${xfpMetaLatest.pricedFrom}. Measured on 2025: priced this way a two-week `
+            + `season lands 0.165 points a game from what those plays were really worth, against 0.313 priced off its `
+            + `own two weeks. It switches to its own table the moment that table fits.`,
+            `EARLY IN A SEASON EVERY QUALIFIED PLAYER LOOKS GOOD, and that is the qualifier rather than the football. `
+            + `The floor is ${xfpMetaLatest.minOpportunities}+ opportunities, which over a season admits a rotational player and after `
+            + `one week admits only the workhorses — who are the players getting that volume because they are `
+            + `producing. League actual against these prices (${xfpMetaLatest.leagueRatio}x) is computed over exactly `
+            + `those qualified players, so read it as who cleared the floor, not as the league scoring more than it `
+            + `did last year, and not as a consistency check: carried prices are not means over these plays.`,
+          ] : []),
           'PASSING IS NOT PRICED, so quarterbacks are absent rather than wrong. A quarterback\'s points '
           + 'are overwhelmingly passing, and showing his rushing expectation beside his total would put '
           + 'every quarterback in the league hundreds of points "over expected".',

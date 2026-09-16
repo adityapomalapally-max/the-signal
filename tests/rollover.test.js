@@ -213,9 +213,23 @@ test('every per-season fetch knows a new season is not published on day one', ()
   //
   // The rule is in lib/season.js now, and this is what stops a fifth script
   // building a per-season URL without it.
+  //
+  // WHICH SCRIPTS THE RULE IS ABOUT: the ones that can be asked for the season
+  // being played. That is everything the daily Action runs — whatever it
+  // imports — plus anything that takes its season from lib/season.js, which is
+  // the only way a script learns what the live season IS. A research script
+  // that names three finished seasons on purpose cannot be surprised by a
+  // rollover, and the sibling test above already draws that line; this one read
+  // every file in scripts/ and flagged research-xfp-carryover.js for fetching
+  // play_by_play_2024. Guarding that with notPublishedYet would have been dead
+  // code written to satisfy a regular expression.
   const offenders = [];
-  for (const name of fs.readdirSync(SCRIPTS).filter(f => f.endsWith('.js'))) {
+  const candidates = fs.readdirSync(SCRIPTS).filter(f => f.endsWith('.js'));
+  for (const name of candidates) {
     const src = fs.readFileSync(path.join(SCRIPTS, name), 'utf8');
+    const inDailyAction = dailyScripts.includes(name.replace(/\.js$/, ''));
+    const asksTheCalendar = /require\('\.\/lib\/season'\)/.test(src);
+    if (!inDailyAction && !asksTheCalendar) continue;
     const body = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
     // A URL built per season. THE FIRST VERSION OF THIS ANCHORED ON `http` and
     // therefore missed build-scheme, whose path is assembled from a `${base}`

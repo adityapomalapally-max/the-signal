@@ -181,7 +181,20 @@ async function main() {
     // stops appearing the first season after the one it names — the same shape
     // as the test that pinned projections-2026.json behind a silent return.
     if (has(`projections-${target}.json`)) {
-      notes.push('projections are preseason season-long medians; in-season the useful number is rest-of-season, which nothing generates yet');
+      // WHAT THIS NOTE SAID WAS TRUE THE DAY IT WAS WRITTEN AND FALSE EVERY
+      // MORNING SINCE build-ros.js LANDED. It claimed rest-of-season was "the
+      // useful number, which nothing generates yet" while ros.json was being
+      // rebuilt daily and read by the profile card. Prose in a checker is not
+      // tested by anything, so a line like that goes on being printed for as
+      // long as nobody reads it carefully — which is the same failure as the
+      // alarm nobody can act on, in the quietest possible form.
+      const ros = has('ros.json') ? read('ros.json') : null;
+      const rosMeta = (ros && ros.meta) || null;
+      notes.push(rosMeta
+        ? `projections are preseason season-long medians; the in-season number is rest-of-season, and `
+          + `ros.json has it through week ${rosMeta.throughWeek} for ${(rosMeta.coverage || {}).projected} players `
+          + `(${rosMeta.gamesRemaining} games left)`
+        : 'projections are preseason season-long medians; nothing on disk carries a rest-of-season number');
     }
   }
 

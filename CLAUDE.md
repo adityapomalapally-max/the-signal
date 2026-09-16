@@ -1509,3 +1509,41 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   the pair on the alarm's own definition of stale: red -> green is the pipeline doing its job,
   red -> red is a rollover it cannot complete, green -> green is a rehearsal with nothing to
   rehearse. Same shape as the health report counting its own ringing.
+
+## A season too young to price itself borrows last year's prices
+- MEASURED, NOT ASSUMED — `scripts/research-xfp-carryover.js`, and the numbers are the argument.
+  Take 2025's first two weeks and price them three ways: off their own two weeks (what the build
+  used to do), off 2024's full table (the proposal), and off 2025's own full table (what those plays
+  were REALLY worth, known only in hindsight). Against that truth the proposal lands **0.165 points
+  a game out and the status quo 0.313 — 1.9x closer** — with **1.2% of opportunities on a marginal
+  cell instead of 21.6%**, and the median player on exactly the right board position instead of one
+  place out.
+- CARRIED OVER A WHOLE SEASON THE TABLE COSTS ALMOST NOTHING: 2025 priced by 2024 is 0.085 points a
+  game from 2025 priced by itself (r = 0.9998, median 1 place of board movement); 2024 by 2023 is
+  0.215 (r = 0.9994, median 2 places). A year of price drift is worth about a fifth of a point at
+  the outside, and no opportunity went unpriced — last year's grid covers every cell this year's
+  plays land in.
+- THE TABLE COMES OFF DISK, NOT OFF THE WIRE. xfp.json publishes the prices that produced its newest
+  season, so last season's grid is already in data/ every September. `borrowableTable()` in
+  lib/xfp.js is the one rule for whether it can be used.
+- WHICH SEASON A TABLE BELONGS TO IS NOT WHICH SEASON IT PRICED. After the first borrowing morning
+  the file carries 2025's prices under a build that says `season: 2026`, because 2026 is what they
+  priced. Read as the table's own season that makes it unborrowable the NEXT morning — the feature
+  would have worked exactly once, on a path no daily run repeats until the following September.
+  `meta.build.pricedFrom` names where the cells came from and wins when it is there.
+- THE MARGINALS ARE HALF THE PRICING RULE. Every thin cell falls back to one, so a table published
+  without them cannot price a season on its own — it would price part of a board and drop the rest.
+  They are published now, and a file written before they were is refused rather than half-used.
+- THE PUBLISHED CELLS ARE THE ONES THAT PRICED IT. A borrowed season still builds its own table in
+  pass one and publishing that would hand a reader prices that priced nothing — every figure in the
+  file unlookupable, which is what this module exists to prevent. `buildXfp` returns the supplied
+  table when there is one, and a test asserts the published cells hold a season's worth of plays.
+- THE LEAGUE RATIO IS NOT A CONSISTENCY CHECK FOR A BORROWED SEASON. Self-priced, the two sides are
+  the same plays counted twice and a gap means the pricing and the attribution came loose. Carried,
+  the prices are means over ANOTHER season's plays: 2026's first week reads 1.21x, which is ten
+  players clearing a season-scale opportunity floor after one game — mostly WHO cleared it. Held to
+  the self-priced tolerance it would have blocked the better number. Both the build check and the
+  test are scoped on `pricedFrom`.
+- AND THE READER IS TOLD, on the card and not only in the JSON: "Prices are 2025's — 2026 has not
+  played enough football to price itself yet." Note the profile card needs two weeks before it draws
+  at all, so a borrowed season is invisible until the second one.
