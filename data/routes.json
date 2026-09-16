@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-09-11T19:32:04.512Z",
+    "generated": "2026-09-16T19:33:45.655Z",
     "builtBy": "scripts/build-scheme.js via lib/routes.js",
     "seasons": [
       2025
@@ -9,7 +9,7 @@
     "build": {
       "passPlays": 20922,
       "charted": 17893,
-      "attributed": 12742,
+      "attributed": 12736,
       "chartedPct": 85.5,
       "minChartedTargets": 25,
       "minConcept": 2,
@@ -35,7 +35,11 @@
       "About 10% of pass plays carry no route, and a charted play with no receiver_player_id counts for the league baseline and for nobody in particular — the same split charting makes.",
       "The league baseline is built from EVERY charted throw, not only those reaching a pool player. A baseline drawn from the 350 tracked players would be the pool's own habits and would flatter everybody toward the middle.",
       "A share is of his CHARTED targets, so it is a share of the throws that came his way and not of the routes he ran. Two players with the same mix can have had very different jobs."
-    ]
+    ],
+    "pending": {
+      "season": 2026,
+      "reason": "nflverse has not published participation for 2026 yet — it lands after a season ends, so this layer waits (HTTP 404 for https://github.com/nflverse/nflverse-data/releases/download/pbp_participation/pbp_participation_2026.csv)"
+    }
   },
   "league": {
     "HITCH/CURL": {

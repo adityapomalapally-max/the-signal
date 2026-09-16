@@ -1,10 +1,11 @@
 {
   "meta": {
-    "generated": "2026-08-24T03:37:15.710Z",
+    "generated": "2026-09-16T19:21:15.693Z",
     "builtBy": "scripts/build-scheme.js via lib/rushing.js",
     "source": "nflverse play-by-play — EPA and yards on run plays, keyed on rusher_player_id",
     "seasons": [
-      2025
+      2025,
+      2026
     ],
     "minCarries": 20,
     "caveats": [
@@ -869,6 +870,57 @@
         "epaPerCarry": -0.209,
         "successRate": 25.6,
         "ypc": 4.49
+      }
+    },
+    "2026": {
+      "00-0038542": {
+        "carries": 21,
+        "team": "ATL",
+        "epaPerCarry": -0.098,
+        "successRate": 47.6,
+        "ypc": 3.95
+      },
+      "00-0032764": {
+        "carries": 24,
+        "team": "BAL",
+        "epaPerCarry": 0.282,
+        "successRate": 50,
+        "ypc": 6
+      },
+      "00-0035685": {
+        "carries": 20,
+        "team": "HOU",
+        "epaPerCarry": -0.015,
+        "successRate": 40,
+        "ypc": 3
+      },
+      "00-0038134": {
+        "carries": 23,
+        "team": "KC",
+        "epaPerCarry": 0.439,
+        "successRate": 47.8,
+        "ypc": 7.52
+      },
+      "00-0040122": {
+        "carries": 23,
+        "team": "LV",
+        "epaPerCarry": -0.032,
+        "successRate": 43.5,
+        "ypc": 4.43
+      },
+      "00-0039139": {
+        "carries": 29,
+        "team": "DET",
+        "epaPerCarry": 0.05,
+        "successRate": 55.2,
+        "ypc": 5.38
+      },
+      "00-0038120": {
+        "carries": 22,
+        "team": "NYJ",
+        "epaPerCarry": 0.107,
+        "successRate": 50,
+        "ypc": 4.64
       }
     }
   }

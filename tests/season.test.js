@@ -178,66 +178,38 @@ test('the fallback is conservative in the direction that matters', () => {
   assert.strictEqual(earlySept.phase, 'pre');
 });
 
-test('THE ALARM RINGS: today\'s data would fail a Week 2 check', async () => {
-  // The whole point. Today the data is correct for the preseason, so the check
-  // passes — which proves nothing on its own. Drive the calendar to Week 2 with
-  // the SAME data on disk and it has to go red, or it would never have caught
-  // the rollover it exists for.
+test('TODAY\'S DATA PASSES ITS OWN ALARM, and the alarm watches every in-season layer', async () => {
+  // The end-to-end half, against the real files. The states the alarm can be
+  // in are exercised in tests/pending-layers.test.js, where each one can be
+  // built on purpose; what cannot be built there is THIS — that the data this
+  // repo actually ships agrees with the check that guards it.
   //
-  // WEEK 2, NOT WEEK 1. In Week 1 there is nothing to have rolled over to:
-  // nflverse builds a season's file after its first games, so a pipeline that
-  // has not moved is indistinguishable from one with nothing to move to. Asking
-  // in Week 1 is what reddened eleven consecutive daily runs in 2026.
+  // It went red for five days in September 2026 and this test could not say
+  // so, because it asserted the opposite: it forced the calendar to Week 2 and
+  // demanded a failure, which was true only while every layer was still stuck
+  // on the preseason. Four of those layers were not stale at all — they were
+  // waiting on pbp_participation, which nflverse publishes after a season
+  // ends, so the run was red every morning over a file nobody could make
+  // appear. An alarm nobody can act on is one people learn to scroll past.
   const { execFileSync } = require('node:child_process');
   const path = require('node:path');
   const fs = require('node:fs');
   const ROOT = path.join(__dirname, '..');
 
-  // Today, unmodified: expected to pass.
   execFileSync('node', ['scripts/check-season.js'], { cwd: ROOT });
-
-  // Now pretend the season started, with today's (2025-latest) data still on disk.
-  let failed = false, output = '';
-  try {
-    execFileSync('node', ['-e', `
-      const season = require('./scripts/lib/season');
-      season.__setState({ season: 2026, previousSeason: 2025, week: 2, phase: 'regular', seasonStartDate: '2026-09-01', source: 'test' });
-      require('./scripts/check-season.js');
-    `], { cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'] });
-  } catch (e) {
-    failed = true;
-    output = (e.stdout || '').toString() + (e.stderr || '').toString();
-  }
-  assert.strictEqual(failed, true,
-    'with the season under way and only 2025 data on disk, the check MUST fail — otherwise it would never fire');
-  assert.match(output, /no 2026 rows|stale|ADP/i, 'and it has to say what is stale');
 
   // EVERY LAYER THE IN-SEASON SECTION READS HAS TO BE NAMED. The section exists
   // to be used during the season, which makes a silent rollover there the worst
   // case on the site: the matchup board would go on showing last year's
   // defences under a banner that says "preseason" and look entirely correct.
   // A layer missing from this list is a layer that can go stale in silence.
-  //
-  // WHAT IS ASSERTED IS THAT THE CHECK WATCHES EACH LAYER, NOT THAT EACH LAYER
-  // IS BEHIND TODAY. Those were the same sentence while every layer was stuck
-  // on 2025, and they came apart on 2026-09-10: build-matchups reads the weekly
-  // shards, which nflverse fills the morning after Week 1, so matchups.json had
-  // a 2026 season while scheme, charting, fieldmap and weekly-usage — all of
-  // them downstream of pbp_participation, which nflverse publishes days later —
-  // did not. The alarm was working perfectly and this test failed it for naming
-  // three layers instead of four.
-  //
-  // A layer dropped from check-season's list is still the failure worth
-  // catching, so that is read off the list itself, and the alarm still has to
-  // ring and name something for the mechanism to count as exercised.
   const watched = fs.readFileSync(path.join(ROOT, 'scripts', 'check-season.js'), 'utf8');
-  const layers = ['matchups.json', 'weekly-usage.json', 'fieldmap.json', 'charting.json'];
+  const layers = ['matchups.json', 'weekly-usage.json', 'fieldmap.json', 'charting.json',
+                  'scheme.json', 'player-usage.json', 'routes.json'];
   for (const layer of layers) {
     assert.match(watched, new RegExp(`file:\\s*'${layer.replace('.', '\\.')}'`),
       `check-season no longer watches ${layer} — it can go a year stale without reddening the run`);
   }
-  assert.ok(layers.some(l => output.includes(l)),
-    `the alarm rang but named none of the in-season layers.\n\nGot:\n${output}`);
 });
 
 test('AND IT STAYS QUIET before anyone has kicked off', async () => {

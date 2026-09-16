@@ -20,8 +20,17 @@
 const fs = require('fs');
 const path = require('path');
 const season = require('./lib/season');
+const feeds = require('./lib/feeds');
 
-const DATA = path.join(__dirname, '..', 'data');
+// THE ALARM HAS TO BE POINTABLE AT A STATE ON PURPOSE. Every branch below is
+// about data that is missing, old or pending, and the only way to reach one
+// from a test was to put the repo's real data into that state — so the only
+// state ever exercised was whatever this morning happened to look like, and
+// the one that mattered (a layer excused by a stamp while its feed had already
+// published) had never run at all. Same lesson as judgeRuns in health-report.
+const DATA = process.env.SIGNAL_DATA_DIR
+  ? path.resolve(process.env.SIGNAL_DATA_DIR)
+  : path.join(__dirname, '..', 'data');
 const read = (f) => JSON.parse(fs.readFileSync(path.join(DATA, f), 'utf8'));
 
 const problems = [];
@@ -77,8 +86,21 @@ async function main() {
     // EXISTS TO BE USED DURING THE SEASON, which makes a silent rollover there
     // worse than anywhere else on the site: the page would go on showing last
     // year's defences under a banner that says "preseason" and look correct.
+    //
+    // A LAYER WHOSE FEED HAS NOT PUBLISHED IS PENDING, NOT BEHIND, AND THE
+    // DIFFERENCE IS ASKED RATHER THAN ASSUMED. nflverse publishes pbp, snap
+    // counts and FTN charting the morning after a game and pbp_participation
+    // long after that — 2026 was still a 404 in Week 2 — so the three layers
+    // built on participation cannot be there and the rest can. Reading them
+    // the same way reddened the daily run four problems at a time, every
+    // morning, over a file nobody here can make appear; and it would have gone
+    // on doing so when the feed DID land and the build failed to pick it up,
+    // because the message would not have changed. `feed` marks the gated ones
+    // and lib/feeds.js asks the source which case this is.
     const metaSeasoned = [
-      { file: 'scheme.json', label: 'personnel and identity' },
+      { file: 'scheme.json', label: 'personnel and identity', feed: 'pbp_participation' },
+      { file: 'player-usage.json', label: 'personnel usage by player', feed: 'pbp_participation' },
+      { file: 'routes.json', label: 'route concepts', feed: 'pbp_participation' },
       { file: 'charting.json', label: 'first reads and checkdowns' },
       { file: 'fieldmap.json', label: 'the field maps' },
       { file: 'matchups.json', label: 'the matchup board' },
@@ -88,11 +110,37 @@ async function main() {
       if (!has(m.file)) { problems.push(`${m.file} is missing entirely`); continue; }
       const j = read(m.file);
       const years = ((j.meta && j.meta.seasons) || []).map(String);
-      if (!years.includes(String(latest))) {
-        problems.push(
-          `${m.label} (${m.file}) has no ${latest} — the season is under way and this layer still ends at `
-          + `${years[years.length - 1] || 'nothing'}.`);
+      const hasSeason = years.includes(String(latest));
+      if (hasSeason) continue;
+      if (m.feed) {
+        const verdict = feeds.judgeGatedLayer({
+          label: m.label, file: m.file, season: latest, feed: m.feed,
+          hasSeason, published: await feeds.participationPublished(latest),
+        });
+        (verdict.level === 'problem' ? problems : notes).push(verdict.message);
+        continue;
       }
+      // A LAYER CAN BE EMPTY BECAUSE THE SEASON IS YOUNG, and only the build
+      // knows it. The field map qualifies a passer at 200 attempts; nobody has
+      // thrown 200 by Week 2, so it honestly has no 2026 until about Week 6.
+      // That is indistinguishable, from here, from a build that stopped
+      // running — so build-scheme writes the reason into the file's own meta
+      // and this reads it back. The stamp is only honoured for the season
+      // being played: come next September a 2026 stamp says nothing about
+      // 2027 and the alarm rings again.
+      //
+      // IT IS NOT HONOURED FOR A FEED-GATED LAYER, which is why that branch is
+      // above this one. That answer comes from nflverse rather than from us,
+      // and a stamp left behind by a build that is no longer running would go
+      // on excusing a layer the feed had already published.
+      const stamped = (j.meta && j.meta.pending) || null;
+      if (stamped && Number(stamped.season) === Number(latest)) {
+        notes.push(`${m.label} (${m.file}) has no ${latest} yet and says why: ${stamped.reason}`);
+        continue;
+      }
+      problems.push(
+        `${m.label} (${m.file}) has no ${latest} — the season is under way and this layer still ends at `
+        + `${years[years.length - 1] || 'nothing'}.`);
     }
   } else if (inSeason) {
     notes.push(`week ${st.week || 0}: ${target} stat rows are not published yet, which is correct this early`);
@@ -129,7 +177,10 @@ async function main() {
       const sos = read('sos.json');
       notes.push(`SOS was built for ${sos.meta.season} off ${sos.meta.defenseSeason} defences — decays every week now that ${latest} defences are playing`);
     }
-    if (has('projections-2026.json')) {
+    // DERIVED, NOT TYPED. A hardcoded file name here is a note that quietly
+    // stops appearing the first season after the one it names — the same shape
+    // as the test that pinned projections-2026.json behind a silent return.
+    if (has(`projections-${target}.json`)) {
       notes.push('projections are preseason season-long medians; in-season the useful number is rest-of-season, which nothing generates yet');
     }
   }

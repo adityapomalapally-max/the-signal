@@ -109,6 +109,21 @@ function snapshotSeasons(dataDir) {
   return out;
 }
 
+// The alarm, run against a sandbox on a stated calendar. Two callers, one
+// definition — the pair of answers is what the rehearsal reports.
+function runAlarm(sandbox, state) {
+  try {
+    const output = execFileSync(process.execPath, [path.join(sandbox, 'scripts', 'check-season.js')], {
+      cwd: sandbox,
+      env: { ...process.env, SIGNAL_SEASON_STATE: state, CI: '', GITHUB_ACTIONS: '' },
+      encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    return { code: 0, output };
+  } catch (e) {
+    return { code: e.status || 1, output: `${e.stdout || ''}${e.stderr || ''}` };
+  }
+}
+
 async function main() {
   const target = await season.targetSeason();
   // seasonStartDate has to be in the PAST or lib/season.js correctly reports
@@ -126,6 +141,21 @@ async function main() {
   }
   const dataDir = path.join(sandbox, 'data');
   const before = snapshotSeasons(dataDir);
+
+  // THE ALARM IS RUN TWICE, AND THE PAIR IS THE RESULT.
+  //
+  // This script was written in August against a repo that still held last
+  // season, so a green alarm at the end could only mean it was blind. Run after
+  // the rollover has actually happened — every run from here on — the sandbox
+  // begins with the current season already built, there is nothing left to
+  // catch, and green is the correct answer. The old verdict called that
+  // blindness, and would have sent somebody hunting a bug in a healthy repo.
+  //
+  // Asking BEFORE the steps settles it on the alarm's own definition of stale
+  // rather than a second one invented here: red -> green is the pipeline doing
+  // its job, red -> red is a rollover it cannot complete, green -> green is a
+  // rehearsal with nothing to rehearse.
+  const alarmBefore = runAlarm(sandbox, state);
 
   console.log(`[dry-run] the league is now: ${target} regular week ${WEEK}\n`);
 
@@ -234,19 +264,16 @@ async function main() {
 
   // ---- The alarm has to ring ---------------------------------------------
   console.log(`\n${'='.repeat(78)}\nTHE ALARM`);
-  let alarmCode = 0, alarmOut = '';
-  try {
-    alarmOut = execFileSync(process.execPath, [path.join(sandbox, 'scripts', 'check-season.js')], {
-      cwd: sandbox,
-      env: { ...process.env, SIGNAL_SEASON_STATE: state, CI: '', GITHUB_ACTIONS: '' },
-      encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'],
-    });
-  } catch (e) {
-    alarmCode = e.status || 1;
-    alarmOut = `${e.stdout || ''}${e.stderr || ''}`;
-  }
+  const { code: alarmCode, output: alarmOut } = runAlarm(sandbox, state);
   console.log(alarmOut.trim().split('\n').map(l => '  ' + l).join('\n'));
-  console.log(`\n  check-season exit ${alarmCode} — ${alarmCode ? 'RED, which is correct: it can see the rollover' : 'GREEN, which means the alarm cannot see what just happened'}`);
+  const verdict = alarmCode && alarmBefore.code
+      ? 'RED, and it was red before the steps ran too — the pipeline cannot complete this rollover'
+    : alarmCode ? 'RED, which is correct: it can see the rollover'
+    : alarmBefore.code ? 'GREEN, and it was RED before the steps ran — the pipeline completed the rollover, which is the whole point'
+    : `GREEN, and it was green before the steps ran: this sandbox began with ${y} already built, so the `
+      + 'rehearsal had no rollover left to catch. That is a healthy repo, not a blind alarm — to make it '
+      + 'ring, run this against a checkout from before kickoff.';
+  console.log(`\n  check-season exit ${alarmCode} — ${verdict}`);
 
   if (KEEP) console.log(`\n[dry-run] sandbox kept at ${sandbox}`);
   else { fs.rmSync(sandbox, { recursive: true, force: true }); console.log('\n[dry-run] sandbox removed'); }

@@ -1446,3 +1446,66 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   those three strings plus a re-run of the three builders — not an edit across nine HTML files.
 - The `.vercel.app` address must keep serving and 301 to the new one. Links to a five-month-old
   analytics site do not get resent.
+
+## One late feed must not take seven layers with it
+- nflverse DOES NOT PUBLISH A SEASON'S FILES TOGETHER. Play-by-play, snap counts and FTN charting
+  land the morning after a game; `pbp_participation` lands after the season ENDS — 2025's file
+  appeared in February 2026, and 2026 was still a 404 in Week 2. Anything written on the assumption
+  that "nflverse has not built this season's file yet" is a state that lasts days is wrong: for
+  participation it lasts the whole season.
+- `build-scheme.js` fetched participation and pbp in ONE `Promise.all`, so the 404 rejected the
+  whole season and all seven outputs went dark. Only personnel, player-usage and routes read
+  participation. The field maps, first reads, weekly snap and target share, rushing and expected
+  points had every row they needed and were skipped anyway, in season, when they are the numbers
+  people come for. Fetch them apart; let the optional half be optional.
+- AND THE ALARM RANG FOR IT EVERY MORNING. check-season read all five in-season layers the same way
+  and reddened the daily run four problems at a time over a file nobody here can make appear —
+  five days of red runs, and a Health Report issue each morning. An alarm nobody can act on is the
+  one people learn to scroll past, which is the same lesson as the banner on a healthy morning and
+  the report that counted its own ringing.
+- A LAYER WITH NO CURRENT SEASON IS ONE OF THREE THINGS. **Behind** — the feed published and we did
+  not build it, the year-stale failure this alarm exists for. **Pending** — the feed has not
+  published. **Young** — the data is there and nobody has met the qualifier yet. Only the first is
+  a problem, and telling them apart takes two facts that are not in the file.
+- THE FEED IS ASKED, NOT ASSUMED. `scripts/lib/feeds.js` holds the one definition of the
+  participation URL and asks GitHub whether the season exists — one HEAD request a day. A stamp on
+  disk saying "not published" would need a freshness rule of its own, and the day its only writer
+  stopped running the alarm would go quiet for good. `published: null` means COULD NOT ASK and is
+  never folded into "no".
+- WHY A LAYER IS EMPTY IS WRITTEN WHERE THE ALARM CAN READ IT. The field map qualifies a passer at
+  200 attempts, which is about Week 6, so it honestly has no current season until then — and from
+  outside that is identical to a build that stopped running. build-scheme stamps `meta.pending =
+  { season, reason }` on the file it is about; check-season reads it back and quotes the reason.
+  Same bargain as a frozen ADP row: a series that stops on purpose has to say so IN THE DATA.
+- OUR STAMP DOES NOT OUTRANK THE FEED. For a feed-gated layer the published answer wins, or a stamp
+  left behind by a build that is no longer running would excuse the layer for the rest of the
+  season. A stamp is also about ONE season: next September a 2026 stamp excuses nothing.
+- PENDING AND PUBLISHED ARE OPPOSITES. Every seasons map in build-scheme starts as a copy of what is
+  on disk, so a season published yesterday survives a run that decides against it today —
+  `markPending` deletes it. A test asserts no file has the same season in both.
+- A CHECK CALIBRATED ON A FINISHED SEASON FIRES ALL SEPTEMBER. xfp's league self-consistency check
+  compares two means over the same plays, so the two can only differ by what the thin-cell fallbacks
+  smoothed: a finished 2025 prices 0.95% of opportunities off a marginal and lands 0.55% apart; two
+  weeks of 2026 prices 29.3% off marginals and lands 10.9% apart. The check now states its own
+  precondition (`MAX_FALLBACK_FOR_RATIO_CHECK`) instead of throwing, and the season is WITHHELD
+  rather than published off a grid that does not fit — this is the one file where being wrong looks
+  exactly like being right. Pricing a young season off the last finished season's table is the
+  better answer and needs a decision, not an assumption.
+- `SIGNAL_DATA_DIR` POINTS check-season AT A STATE ON PURPOSE. Every branch in it is about data that
+  is missing, old or pending, and the only way to reach one used to be to put the real data into
+  that state — so the case that mattered most, a stamp excusing a layer whose feed had published,
+  had never run. tests/pending-layers.test.js builds each state and runs the real script.
+- SIX TESTS WENT RED THE MORNING THE IN-SEASON LAYERS FIRST BUILT, all of them correct about the
+  data and wrong about what it meant: 27 dropbacks is a team that has played once, not a denominator
+  that has become all snaps. `tests/lib/sample.js` splits them — a young season is not exempt from
+  being CONSISTENT (a rate is its numerator over its denominator, buckets sum to the total), only
+  from being BIG, and the scale half asks the newest FINISHED season. Same class as the six tests
+  pinned to the preseason on 2026-09-10.
+- AND THE REHEARSAL ITSELF PRINTED A FALSE CONCLUSION. `dry-run-rollover.js` ended with "GREEN,
+  which means the alarm cannot see what just happened" — true in August, when data/ still held last
+  season and green could only mean blindness. After the rollover the sandbox begins with the season
+  already built, so there is nothing left to catch and green is correct; the line would have sent
+  somebody hunting a bug in a healthy repo. It runs the alarm BEFORE the steps as well, and reports
+  the pair on the alarm's own definition of stale: red -> green is the pipeline doing its job,
+  red -> red is a rollover it cannot complete, green -> green is a rehearsal with nothing to
+  rehearse. Same shape as the health report counting its own ringing.

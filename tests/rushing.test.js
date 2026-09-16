@@ -30,10 +30,19 @@ const ngs = read('ngs.json');
 const NGS_SRC = fs.readFileSync(path.join(ROOT, 'scripts', 'fetch-ngs.js'), 'utf8');
 const LIB = fs.readFileSync(path.join(ROOT, 'scripts', 'lib', 'rushing.js'), 'utf8');
 
+const { completedSeason } = require('./lib/sample');
+
 const latest = Math.max(...Object.keys(rushing.seasons).map(Number));
 const backs = rushing.seasons[String(latest)];
 
-test('the percentage form is derived, not the column that shares its name', () => {
+// THE SEASON A HUNDRED-CARRY BACK EXISTS IN. Both tests below qualify on 100
+// carries, which nobody reaches until about Week 8 — so in September they
+// found no rows at all and reported it as a broken GSIS join. The join is
+// asserted where it can be seen; the young season is checked for consistency
+// by the tests that do not need a sample.
+const fullSeason = () => completedSeason(Object.keys(rushing.seasons));
+
+test('the percentage form is derived, not the column that shares its name', async () => {
   // `rush_pct_over_expected` runs 0.34 to 0.49 across qualified backs: it is
   // the SHARE OF CARRIES that beat their expectation, a consistency measure.
   // Read as "RYOE as a percentage" it would have put 0.4% beside a season James
@@ -43,8 +52,12 @@ test('the percentage form is derived, not the column that shares its name', () =
   assert.match(NGS_SRC, /ryoePct: pct\(r\.rush_yards_over_expected, r\.expected_rush_yards\)/,
     'the percentage form is no longer derived from RYOE over the expectation');
 
-  // And it has to come out in the right range on real data.
-  const rows = Object.values(ngs).map((p) => (p && p[String(latest)] && p[String(latest)].rush) || null)
+  // And it has to come out in the right range on real data — a finished
+  // season's, because the range is a claim about qualified backs and the
+  // qualifier is 100 carries.
+  const full = await fullSeason();
+  assert.ok(full, 'ngs holds no finished season to check the percentage against');
+  const rows = Object.values(ngs).map((p) => (p && p[String(full)] && p[String(full)].rush) || null)
     .filter((r) => r && r.ryoePct !== null && r.attempts >= 100);
   assert.ok(rows.length >= 10, `only ${rows.length} backs with a percentage to check`);
   for (const r of rows) {
@@ -79,13 +92,16 @@ test('success rate travels with EPA per carry', () => {
   }
 });
 
-test('the three legs are allowed to disagree, and do', () => {
+test('the three legs are allowed to disagree, and do', async () => {
   // If they ever ranked backs the same way, two of them would be decoration.
+  const full = await fullSeason();
+  assert.ok(full, 'rushing holds no finished season to compare the legs over');
+  const fullBacks = rushing.seasons[String(full)];
   const players = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'players.json'), 'utf8'));
   const rows = [];
   for (const p of players) {
-    const n = ngs[p.id] && ngs[p.id][String(latest)] && ngs[p.id][String(latest)].rush;
-    const r = p.gsisId && backs[p.gsisId];
+    const n = ngs[p.id] && ngs[p.id][String(full)] && ngs[p.id][String(full)].rush;
+    const r = p.gsisId && fullBacks[p.gsisId];
     if (!n || !r || n.ryoePct === null || n.attempts < 100) continue;
     rows.push({ name: p.name, ryoePct: n.ryoePct, epa: r.epaPerCarry });
   }

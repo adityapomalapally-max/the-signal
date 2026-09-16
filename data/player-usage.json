@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-09-11T19:29:43.677Z",
+    "generated": "2026-09-16T19:33:45.580Z",
     "seasons": [
       2023,
       2024,
@@ -10,7 +10,11 @@
     "source": "nflverse pbp_participation offense_players, joined to the pool on GSIS id",
     "qualifier": "Players with at least 100 charted snaps in a season",
     "caveats": "Share of the player's OWN snaps, not his team's. A player is only counted on snaps where the offensive personnel could be read, and only if the pool carries his GSIS id.",
-    "routes": "ROUTES ARE AN ESTIMATE, NOT A COUNT. Route participation is charted by PFF and FTN and is in no free feed. What participation gives is who was on the field for a dropback and what each of them lined up as, so a skill player on the field for a dropback is counted as having run a route. It cannot see BLOCKING: a back who stayed in to protect is counted as though he ran one. Measured against published distributions, receivers and tight ends land on them (median YPRR 1.49 and 1.24 against a public 1.4-1.6 and 1.1-1.3) and backs come in low at 0.82 against a public 1.0-1.3 — that gap is the pass protection this cannot see, so a back's per-route rates are the ones to trust least. Route share is against the dropbacks of the team he played them for."
+    "routes": "ROUTES ARE AN ESTIMATE, NOT A COUNT. Route participation is charted by PFF and FTN and is in no free feed. What participation gives is who was on the field for a dropback and what each of them lined up as, so a skill player on the field for a dropback is counted as having run a route. It cannot see BLOCKING: a back who stayed in to protect is counted as though he ran one. Measured against published distributions, receivers and tight ends land on them (median YPRR 1.49 and 1.24 against a public 1.4-1.6 and 1.1-1.3) and backs come in low at 0.82 against a public 1.0-1.3 — that gap is the pass protection this cannot see, so a back's per-route rates are the ones to trust least. Route share is against the dropbacks of the team he played them for.",
+    "pending": {
+      "season": 2026,
+      "reason": "nflverse has not published participation for 2026 yet — it lands after a season ends, so this layer waits (HTTP 404 for https://github.com/nflverse/nflverse-data/releases/download/pbp_participation/pbp_participation_2026.csv)"
+    }
   },
   "seasons": {
     "2023": {
@@ -5385,19 +5389,6 @@
         "routes": 623,
         "routeShare": 92.4
       },
-      "thrash": {
-        "name": "Jamari Thrash",
-        "pos": "WR",
-        "snaps": 221,
-        "mix": {
-          "11": 75.6,
-          "12": 19.9,
-          "02": 3.6
-        },
-        "team": "CLE",
-        "routes": 145,
-        "routeShare": 21.5
-      },
       "mahomes": {
         "name": "Patrick Mahomes",
         "pos": "QB",
@@ -5841,6 +5832,19 @@
         "team": "LV",
         "routes": 613,
         "routeShare": 96.7
+      },
+      "thomas-i": {
+        "name": "Ian Thomas",
+        "pos": "TE",
+        "snaps": 321,
+        "mix": {
+          "11": 21.8,
+          "12": 59.5,
+          "13": 17.1
+        },
+        "team": "LV",
+        "routes": 155,
+        "routeShare": 24.4
       },
       "maye": {
         "name": "Drake Maye",
@@ -7449,22 +7453,6 @@
         "team": "BAL",
         "routes": 173,
         "routeShare": 32.5
-      },
-      "wallace": {
-        "name": "Tylan Wallace",
-        "pos": "WR",
-        "snaps": 188,
-        "mix": {
-          "11": 57.4,
-          "12": 16.5,
-          "13": 9.6,
-          "21": 3.2,
-          "22": 12.2,
-          "31": 1.1
-        },
-        "team": "BAL",
-        "routes": 94,
-        "routeShare": 17.6
       },
       "mccarthy": {
         "name": "J.J. McCarthy",

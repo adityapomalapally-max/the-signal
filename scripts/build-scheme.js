@@ -36,9 +36,16 @@ const { buildXfp } = require('./lib/xfp');
 const { blankRoutes, tallyRoute, finishRoutes } = require('./lib/routes');
 const { poolCrosswalk } = require('./lib/ids');
 const season_lib = require('./lib/season');
+const feeds = require('./lib/feeds');
 const season = season_lib;
 const { buildFieldMap, finishFieldMap, DEPTH_BANDS, GAPS,
         MIN_ATTEMPTS, MIN_TARGETS, MIN_CARRIES, MIN_CELL, MIN_CELL_STRIP } = require('./lib/fieldmap');
+
+// Above a finished season's 0.95% and far below a two-week 29.3%: the share of
+// opportunities priced off a marginal cell, past which the league
+// self-consistency check below is measuring the fallbacks rather than the
+// pricing. See the comment at the check itself.
+const MAX_FALLBACK_FOR_RATIO_CHECK = 5;
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA_DIR, 'scheme.json');
@@ -493,18 +500,46 @@ async function buildCharting(season, plays, gsisIndex) {
   return { players, teams };
 }
 
+// Does a built field map contain anybody at all? Three role buckets, each
+// keyed by player, and all three are empty until someone clears the qualifier.
+function fieldmapPlayers(fm) {
+  if (!fm) return 0;
+  return ['passers', 'receivers', 'rushers'].reduce((n, k) => n + Object.keys(fm[k] || {}).length, 0);
+}
+
 async function buildSeason(season) {
   log(`fetching ${season}...`);
-  const base = 'https://github.com/nflverse/nflverse-data/releases/download';
-  const [partCsv, pbpCsv] = await Promise.all([
-    // participation ships uncompressed only — there is no .csv.gz asset.
-    fetchCSV(`${base}/pbp_participation/pbp_participation_${season}.csv`),
+  const base = feeds.RELEASES;
+  // ONE UNPUBLISHED FEED USED TO COST SEVEN OUTPUTS. These two were fetched in
+  // a single Promise.all, so participation's 404 rejected the whole season and
+  // everything below went with it — including the five layers that never touch
+  // participation and had the rows to be built. nflverse does not publish these
+  // files together: pbp, snap counts and FTN charting land the morning after a
+  // game, participation does not, and in Week 2 of 2026 the other three carried
+  // the season while participation was still a 404.
+  //
+  // pbp is REQUIRED — a throw here is the caller's business, and for a finished
+  // season it is a real failure. Participation is allowed to be absent while the
+  // season is unfinished, and lib/feeds.js decides which case this is.
+  const [partRes, pbpCsv] = await Promise.all([
+    fetchCSV(feeds.participationUrl(season)).then(csv => ({ csv }), error => ({ error })),
     fetchCSV(`${base}/pbp/play_by_play_${season}.csv.gz`),
   ]);
 
   const plays = leanPbp(pbpCsv);
-  const part = parseCSV(partCsv);
-  log(`  ${part.length} participation rows, ${plays.size} plays`);
+  const part = partRes.csv ? parseCSV(partRes.csv) : [];
+  const participation = feeds.participationGate({
+    rows: part.length,
+    error: partRes.error,
+    seasonFinished: !(await season_lib.notPublishedYet(season)),
+  });
+  if (participation.fatal) throw new Error(participation.reason);
+  if (participation.available) {
+    log(`  ${part.length} participation rows, ${plays.size} plays`);
+  } else {
+    log(`  ${plays.size} plays; participation is pending (${participation.reason}) — personnel, `
+      + `usage and routes wait for it, the pbp layers do not`);
+  }
 
   const pool = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'players.json'), 'utf8'));
   const gsisIndex = new Map(pool.filter(p => p.gsisId).map(p => [p.gsisId, p]));
@@ -608,8 +643,13 @@ async function buildSeason(season) {
   }
 
   // Every counted snap should find its play. A gap here means the join key moved.
-  log(`  ${counted} scrimmage snaps, ${joined} joined to pbp (${(joined / counted * 100).toFixed(1)}%), ${skipped} skipped as non-offense`);
-  if (joined / counted < 0.99) throw new Error(`only ${(joined / counted * 100).toFixed(1)}% of snaps joined to pbp — the join key moved`);
+  // ONLY WHEN THERE WERE SNAPS TO COUNT: with participation pending the loop
+  // above never ran, and `0 / 0` is NaN, which is under no threshold and over
+  // none either. A check that cannot fire must not look like one that passed.
+  if (participation.available) {
+    log(`  ${counted} scrimmage snaps, ${joined} joined to pbp (${(joined / counted * 100).toFixed(1)}%), ${skipped} skipped as non-offense`);
+    if (joined / counted < 0.99) throw new Error(`only ${(joined / counted * 100).toFixed(1)}% of snaps joined to pbp — the join key moved`);
+  }
 
   // Rides along on the pbp map already in memory — see the FTN block above.
   const charting = await buildCharting(season, plays, gsisIndex);
@@ -676,16 +716,38 @@ async function buildSeason(season) {
   log(`  xfp: ${xfp.meta.playersQualified} players over ${xfp.meta.targets} targets and `
     + `${xfp.meta.carries} carries (${xfp.meta.fallbackPct}% priced off a marginal), `
     + `league ratio ${xfp.meta.leagueRatio}`);
-  if (xfp.meta.leagueRatio !== null && Math.abs(xfp.meta.leagueRatio - 1) > 0.02) {
+  // AND IT CAN ONLY BE ASKED OF A TABLE THAT HAS CELLS. The two sides differ by
+  // exactly what the thin-cell fallbacks smoothed, so the tolerance is a
+  // statement about the fallbacks, not about the pricing. Measured: a finished
+  // 2025 prices 0.95% of opportunities off a marginal and lands 0.55% apart;
+  // two weeks of 2026 prices 29.3% off marginals and lands 10.9% apart. Held to
+  // the full-season tolerance the check throws every September — and it did,
+  // taking the whole season build down with it on the first morning the layers
+  // below were allowed to build without participation.
+  //
+  // So it fires where it means something and says so where it does not. This is
+  // a check on the PRICING MECHANISM coming loose from the attribution, which
+  // is a thing that can only be seen once most throws are priced off real cells.
+  if (xfp.meta.leagueRatio !== null && xfp.meta.fallbackPct > MAX_FALLBACK_FOR_RATIO_CHECK) {
+    log(`  xfp: ${xfp.meta.fallbackPct}% of opportunities priced off a marginal, over the `
+      + `${MAX_FALLBACK_FOR_RATIO_CHECK}% this check needs to mean anything — the league ratio of `
+      + `${xfp.meta.leagueRatio} is what the fallbacks smoothed, not evidence either way`);
+  } else if (xfp.meta.leagueRatio !== null && Math.abs(xfp.meta.leagueRatio - 1) > 0.02) {
     throw new Error(`league actual and expected points differ by ${((xfp.meta.leagueRatio - 1) * 100).toFixed(1)}% — the pricing and the attribution disagree`);
   }
 
-  const routes = finishRoutes(routeAcc);
-  log(`  routes: ${routes.meta.chartedPct}% of pass plays charted, `
-    + `${Object.keys(routes.players).length} players at ${routes.meta.minChartedTargets}+ charted targets, `
-    + `${routes.meta.concepts.length} concepts`);
+  // Routes ride on the participation loop, so with participation pending there
+  // is nothing to finish. finishRoutes on an empty accumulator would divide a
+  // count of nothing by a count of nothing and print a percentage of NaN.
+  let routes = null;
+  if (participation.available) {
+    routes = finishRoutes(routeAcc);
+    log(`  routes: ${routes.meta.chartedPct}% of pass plays charted, `
+      + `${Object.keys(routes.players).length} players at ${routes.meta.minChartedTargets}+ charted targets, `
+      + `${routes.meta.concepts.length} concepts`);
+  }
 
-  return { teams, league, usage, teamDropbacks, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage, weekly, rushing, xfp, routes };
+  return { participation, teams, league, usage, teamDropbacks, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage, weekly, rushing, xfp, routes };
 }
 
 function shapeDefense(d) {
@@ -762,9 +824,133 @@ async function main() {
   let xfpMetaLatest = (existingXfp.meta && existingXfp.meta.build) || null;
   const failures = [];
 
+  // WHY A SEASON IS ABSENT, WRITTEN WHERE THE ALARM CAN READ IT.
+  //
+  // These eight files all answer "what has happened this season", and early in
+  // one, several of them honestly answer "not enough yet": the field map
+  // qualifies a passer at 200 attempts and nobody has thrown 200 by Week 2.
+  // check-season cannot tell that apart from a build that stopped running, and
+  // the difference is not in the data — a missing season looks the same either
+  // way. So the producer states it. The same bargain as a frozen ADP row: a
+  // series that stops on purpose has to say so IN THE DATA, or the next reader
+  // is a build log nobody kept.
+  //
+  // It is about the LIVE season only, and a run that did not attempt the live
+  // season must not erase what a run that did wrote down.
+  const pending = {};
+  const outputs = [[OUT, existing], [OUT_USAGE, existingUsage], [OUT_CHARTING, existingCharting],
+                   [OUT_FIELDMAP, existingFieldmap], [OUT_WEEKLY, existingWeekly],
+                   [OUT_RUSHING, existingRushing], [OUT_ROUTES, existingRoutes], [OUT_XFP, existingXfp]];
+  if (!wanted.includes(live)) {
+    for (const [file, obj] of outputs) {
+      const p = obj && obj.meta && obj.meta.pending;
+      if (p && Number(p.season) === Number(live)) pending[file] = p;
+    }
+  }
+  // A SEASON THAT NO LONGER QUALIFIES HAS TO LEAVE. Every one of these maps
+  // starts as a copy of what is already on disk, so a season published
+  // yesterday survives a run that decides against it today — which is how a
+  // two-week xfp table, withheld by the check above, still went out under the
+  // heading "10 players in 2026". Pending and published are opposites; nothing
+  // may be both.
+  const seasonMaps = {
+    [OUT]: seasons, [OUT_USAGE]: usageSeasons, [OUT_CHARTING]: chartingSeasons,
+    [OUT_FIELDMAP]: fieldmapSeasons, [OUT_WEEKLY]: weeklySeasons,
+    [OUT_RUSHING]: rushingSeasons, [OUT_ROUTES]: routeSeasons, [OUT_XFP]: xfpSeasons,
+  };
+  const markPending = (file, s, reason) => {
+    if (Number(s) !== Number(live)) return;
+    pending[file] = { season: Number(s), reason };
+    if (seasonMaps[file]) delete seasonMaps[file][s];
+    if (file === OUT) delete league[s];
+  };
+  // The stamp goes on at write time rather than being threaded through eight
+  // meta blocks — and it goes on the file it is about, so a reader who opens
+  // fieldmap.json in September finds the reason there rather than in a log.
+  const writeOut = (file, obj) => writeJSONIfChanged(file, pending[file]
+    ? { ...obj, meta: { ...obj.meta, pending: pending[file] } }
+    : obj);
+
   for (const season of wanted) {
     try {
-      const { teams, league: lg, usage, teamDropbacks, defenses, charting, fieldmap, fmCoverage, weekly, rushing, xfp, routes } = await buildSeason(season);
+      const { participation, teams, league: lg, usage, teamDropbacks, defenses, charting, fieldmap, fmCoverage, weekly, rushing, xfp, routes } = await buildSeason(season);
+      // THE pbp LAYERS FIRST, BECAUSE THEY DO NOT DEPEND ON THE ONE THAT IS
+      // LATE. Everything from here to the participation block reads
+      // play-by-play, snap counts or FTN charting, all of which nflverse
+      // publishes the morning after a game. They used to sit below a personnel
+      // block that threw, and a season of field maps, first reads, weekly
+      // shares, rushing and expected points was lost to a file none of them
+      // read.
+      if (charting) chartingSeasons[season] = charting;
+      else markPending(OUT_CHARTING, season, 'FTN has charted no plays for this season yet');
+      // A SEASON WITH NOBODY IN IT IS NOT A SEASON. The map qualifies a passer
+      // at 200 attempts, a receiver at 50 targets and a rusher at 100 carries,
+      // which nobody meets until around Week 6 — and the Lab's season picker is
+      // built from meta.seasons, so writing the empty year would offer a tab
+      // that draws nothing and select it by default.
+      if (fieldmap && fieldmapPlayers(fieldmap)) { fieldmapSeasons[season] = fieldmap; fmCoverageLatest = fmCoverage; }
+      else markPending(OUT_FIELDMAP, season, `no passer at ${MIN_ATTEMPTS}+ attempts, receiver at ${MIN_TARGETS}+ `
+        + `targets or rusher at ${MIN_CARRIES}+ carries yet — the map needs a season's volume and this one is young`);
+      if (weekly && Object.keys(weekly).length) weeklySeasons[season] = weekly;
+      else markPending(OUT_WEEKLY, season, 'no snap counts or targets published for this season yet');
+      if (rushing && Object.keys(rushing.players).length) rushingSeasons[season] = rushing.players;
+      else markPending(OUT_RUSHING, season, `no back has met the carry qualifier for this season yet`);
+      if (routes && Object.keys(routes.players).length) {
+        routeSeasons[season] = routes.players;
+        // The baseline belongs to the newest season built, like the xfp price
+        // table: a league share blended across years is nobody's season.
+        routeLeagueLatest = routes.league;
+        routeMetaLatest = { ...routes.meta, season };
+      } else if (routes) {
+        markPending(OUT_ROUTES, season, 'no receiver has met the charted-target qualifier for this season yet');
+      }
+      // A SEASON IS NOT PUBLISHED OFF A PRICE TABLE ITS OWN CHECK SAYS DOES NOT
+      // FIT. Every expected point in a season is a mean over that season's own
+      // plays, so a young one prices most opportunities off a marginal — two
+      // weeks of 2026 put 29.3% of them there and landed league expected 10.9%
+      // away from league actual. Those are not small errors in a plausible
+      // number; they are the number. This is the one file on the site where
+      // being wrong looks exactly like being right, so it waits until the grid
+      // fits, and says so in the meantime.
+      //
+      // Pricing a young season off the last finished season's table is the
+      // other answer and a better one — it needs buildXfp to take a table
+      // rather than always build its own, and it is a judgement about whether
+      // last year's prices describe this year's league. Left for a decision
+      // rather than assumed here.
+      const gridFits = xfp && xfp.meta.fallbackPct <= MAX_FALLBACK_FOR_RATIO_CHECK;
+      if (xfp && Object.keys(xfp.players).length && !gridFits) {
+        markPending(OUT_XFP, season, `${xfp.meta.fallbackPct}% of opportunities would be priced off a marginal `
+          + `cell, over the ${MAX_FALLBACK_FOR_RATIO_CHECK}% this grid needs to fit — league expected is `
+          + `${((xfp.meta.leagueRatio - 1) * 100).toFixed(1)}% from league actual. The season needs more plays in it.`);
+        log(`  xfp: ${season} withheld — the grid does not fit yet (${xfp.meta.fallbackPct}% off marginals)`);
+      } else if (xfp && Object.keys(xfp.players).length) {
+        xfpSeasons[season] = xfp.players;
+        // The price table belongs to the newest season built, not to all of
+        // them: the cells are means over ONE season's plays and a table blended
+        // across years would price this year's throws at last year's rates.
+        xfpCellsLatest = xfp.cells;
+        xfpMetaLatest = { ...xfp.meta, season };
+      } else if (xfp) {
+        markPending(OUT_XFP, season, 'no player has met the opportunity qualifier for this season yet');
+      }
+      // THE PARTICIPATION HALF, AND IT WAITS BY BEING ABSENT. Personnel, the
+      // defensive shell and per-player usage are the three things only
+      // pbp_participation can answer. When it has not published, this season
+      // simply does not appear in those files — it is never carried forward
+      // from last year under this year's number, which is the silent failure
+      // every check in this repo is pointed at. check-season reads the same
+      // feed and says so out loud rather than reddening the run.
+      if (!participation.available) {
+        log(`  ${season}: personnel, usage and routes are pending — ${participation.reason}`);
+        // The stamp is read by a person as often as by check-season, so it says
+        // what happened before it says what the socket said.
+        for (const file of [OUT, OUT_USAGE, OUT_ROUTES]) {
+          markPending(file, season, `nflverse has not published participation for ${season} yet `
+            + `— it lands after a season ends, so this layer waits (${participation.reason})`);
+        }
+        continue;
+      }
       if (!Object.keys(teams).length) throw new Error('no team rows produced');
       const shaped = {};
       for (const [team, raw] of Object.entries(teams)) shaped[team] = shapeTeam(raw);
@@ -781,25 +967,6 @@ async function main() {
         for (const [k, v] of Object.entries(d.shell)) leagueDef.shell[k] = (leagueDef.shell[k] || 0) + v;
       }
       seasons[season] = shaped;
-      if (charting) chartingSeasons[season] = charting;
-      if (fieldmap) { fieldmapSeasons[season] = fieldmap; fmCoverageLatest = fmCoverage; }
-      if (weekly && Object.keys(weekly).length) weeklySeasons[season] = weekly;
-      if (rushing && Object.keys(rushing.players).length) rushingSeasons[season] = rushing.players;
-      if (routes && Object.keys(routes.players).length) {
-        routeSeasons[season] = routes.players;
-        // The baseline belongs to the newest season built, like the xfp price
-        // table: a league share blended across years is nobody's season.
-        routeLeagueLatest = routes.league;
-        routeMetaLatest = { ...routes.meta, season };
-      }
-      if (xfp && Object.keys(xfp.players).length) {
-        xfpSeasons[season] = xfp.players;
-        // The price table belongs to the newest season built, not to all of
-        // them: the cells are means over ONE season's plays and a table blended
-        // across years would price this year's throws at last year's rates.
-        xfpCellsLatest = xfp.cells;
-        xfpMetaLatest = { ...xfp.meta, season };
-      }
       league[season] = shapeTeam(lg);
       league[season].defense = shapeDefense(leagueDef);
       // Share of his own snaps, per grouping. A raw count says how much he
@@ -875,7 +1042,7 @@ async function main() {
     seasons,
   };
 
-  const wrote_scheme = writeJSONIfChanged(OUT, out);
+  const wrote_scheme = writeOut(OUT, out);
   const kb = Math.round(fs.statSync(OUT).size / 1024);
   log(`${wrote_scheme ? 'wrote' : 'unchanged —'} scheme.json: ${years.join(', ')} — ${kb}KB`);
 
@@ -910,7 +1077,7 @@ async function main() {
     },
     seasons: usageSeasons,
   };
-  const wrote_player_usage = writeJSONIfChanged(OUT_USAGE, usageOut);
+  const wrote_player_usage = writeOut(OUT_USAGE, usageOut);
   const latestUsage = usageSeasons[years[years.length - 1]] || {};
   log(`${wrote_player_usage ? 'wrote' : 'unchanged —'} player-usage.json: ${Object.keys(latestUsage).length} players in ${years[years.length - 1]} — ${Math.round(fs.statSync(OUT_USAGE).size / 1024)}KB`);
 
@@ -983,7 +1150,7 @@ async function main() {
       },
       seasons: chartingSeasons,
     };
-    const wrote_charting = writeJSONIfChanged(OUT_CHARTING, chartingOut);
+    const wrote_charting = writeOut(OUT_CHARTING, chartingOut);
     const latestChart = chartingSeasons[chartYears[chartYears.length - 1]] || { players: {} };
     log(`${wrote_charting ? 'wrote' : 'unchanged —'} charting.json: ${Object.keys(latestChart.players).length} players in ${chartYears[chartYears.length - 1]} — ${Math.round(fs.statSync(OUT_CHARTING).size / 1024)}KB`);
   }
@@ -1023,7 +1190,7 @@ async function main() {
       },
       seasons: fieldmapSeasons,
     };
-    const wrote_fieldmap = writeJSONIfChanged(OUT_FIELDMAP, fieldmapOut);
+    const wrote_fieldmap = writeOut(OUT_FIELDMAP, fieldmapOut);
     const latestFm = fieldmapSeasons[fmYears[fmYears.length - 1]] || {};
     log(`${wrote_fieldmap ? 'wrote' : 'unchanged —'} fieldmap.json: ${Object.keys(latestFm.passers || {}).length} passers, `
       + `${Object.keys(latestFm.receivers || {}).length} receivers, ${Object.keys(latestFm.rushers || {}).length} rushers `
@@ -1059,7 +1226,7 @@ async function main() {
       },
       seasons: weeklySeasons,
     };
-    const wroteWeekly = writeJSONIfChanged(OUT_WEEKLY, weeklyOut);
+    const wroteWeekly = writeOut(OUT_WEEKLY, weeklyOut);
     const latestWk = weeklySeasons[wkYears[wkYears.length - 1]] || {};
     log(`${wroteWeekly ? 'wrote' : 'unchanged —'} weekly-usage.json: ${Object.keys(latestWk).length} players in `
       + `${wkYears[wkYears.length - 1]} — ${Math.round(fs.statSync(OUT_WEEKLY).size / 1024)}KB`);
@@ -1083,7 +1250,7 @@ async function main() {
       },
       seasons: rushingSeasons,
     };
-    const wroteRushing = writeJSONIfChanged(OUT_RUSHING, rushingOut);
+    const wroteRushing = writeOut(OUT_RUSHING, rushingOut);
     const latestRush = rushingSeasons[rushYears[rushYears.length - 1]] || {};
     log(`${wroteRushing ? 'wrote' : 'unchanged —'} rushing.json: ${Object.keys(latestRush).length} backs in `
       + `${rushYears[rushYears.length - 1]} — ${Math.round(fs.statSync(OUT_RUSHING).size / 1024)}KB`);
@@ -1126,7 +1293,7 @@ async function main() {
       cells: xfpCellsLatest,
       seasons: xfpSeasons,
     };
-    const wroteXfp = writeJSONIfChanged(OUT_XFP, xfpOut);
+    const wroteXfp = writeOut(OUT_XFP, xfpOut);
     const latestXfp = xfpSeasons[xfpYears[xfpYears.length - 1]] || {};
     log(`${wroteXfp ? 'wrote' : 'unchanged —'} xfp.json: ${Object.keys(latestXfp).length} players in `
       + `${xfpYears[xfpYears.length - 1]} — ${Math.round(fs.statSync(OUT_XFP).size / 1024)}KB`);
@@ -1160,7 +1327,7 @@ async function main() {
       league: routeLeagueLatest,
       seasons: routeSeasons,
     };
-    const wroteRoutes = writeJSONIfChanged(OUT_ROUTES, routesOut);
+    const wroteRoutes = writeOut(OUT_ROUTES, routesOut);
     const latestRoutes = routeSeasons[routeYears[routeYears.length - 1]] || {};
     log(`${wroteRoutes ? 'wrote' : 'unchanged —'} routes.json: ${Object.keys(latestRoutes).length} players in `
       + `${routeYears[routeYears.length - 1]} — ${Math.round(fs.statSync(OUT_ROUTES).size / 1024)}KB`);
