@@ -930,6 +930,13 @@
 
 <!-- Classic scripts, loaded in this exact order and sharing one global scope,
      because the markup above uses inline onclick handlers. See assets/app-core.js. -->
+<!-- COUNTING. The queue first, from our own origin (see assets/analytics.js for why
+     it is not the inline snippet Vercel ships), then the deferred collector. The
+     collector 404s until Web Analytics is enabled on the project, which is a dead
+     tag rather than a broken page — and vercel.json keeps the SPA rewrite off
+     /_vercel/ so the browser gets that 404 instead of index.html served as JS. -->
+<script src="/assets/analytics.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
 <script src="/assets/app-actions.js"></script>
 <script src="/assets/app-core.js"></script>
 <script src="/assets/app-export.js"></script>
