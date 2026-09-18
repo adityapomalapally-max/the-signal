@@ -1547,3 +1547,29 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - AND THE READER IS TOLD, on the card and not only in the JSON: "Prices are 2025's — 2026 has not
   played enough football to price itself yet." Note the profile card needs two weeks before it draws
   at all, so a borrowed season is invisible until the second one.
+
+## Counting readers
+- `assets/analytics.js` + a deferred `/_vercel/insights/script.js` in index.html, and both go in EVERY
+  shell — re-run `build-page-shells.js`. Vercel Web Analytics, enabled on the project; the routes it
+  adds only appear after the next deployment, so enabling and deploying are two steps in that order.
+- NOT THE VENDOR SNIPPET AND NOT THE PACKAGE. Vercel's HTML instructions inline the queue in a
+  `<script>` block, which `script-src 'self'` refuses — and the failure is not the missing count, it
+  is somebody restoring `'unsafe-inline'` to fix it and handing back the directive that made the
+  August XSS exploitable. The queue is a first-party file instead: same behaviour, policy untouched,
+  and `connect-src` untouched too because the beacon is same-origin. The npm package is the other
+  wrong door: no build step here, and an ESM import breaks the shared global scope every handler
+  depends on.
+- THE SPA CATCH-ALL WAS ANSWERING THE COLLECTOR'S OWN URL. Measured before any of this:
+  `/_vercel/insights/script.js` returned 200 and 51,496 bytes of index.html, so a `<script src>`
+  there would have parsed the home page as JavaScript. The rewrite excludes `/_vercel/` now. THIS IS
+  THE THIRD TIME the catch-all has swallowed something — `/data/*` and `/assets/*` survive only
+  because the filesystem is checked first, and a platform path has no such protection. Anything
+  served by Vercel rather than by this repo needs an exclusion.
+- The test runs the rewrite's own regex against both platform paths and app routes rather than
+  matching its spelling, so a different way of writing the same exclusion keeps passing.
+- `/_vercel/insights/` IS A BLOCKED PATH IN EVERY MAJOR AD BLOCKER, and this site's readers are the
+  people who run them, so the count is a floor and not a total. The dashboard's HTML tab gives a
+  project-specific alias (`/<unique-path>/script.js`) that blockers do not know; swapping it in is a
+  one-line change and the only thing that moves the number.
+- Cookieless, no custom events (a Pro feature), and the stub passes nothing — what is recorded is
+  which page was viewed, not who viewed it.
