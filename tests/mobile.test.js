@@ -105,13 +105,26 @@ test('every form control on the site is 16px on a phone', () => {
   assert.ok(rule, 'nothing sets a 16px font size on a phone');
   const covered = rule[1];
 
+  // THE MARKUP IS NOT THE ONLY PLACE CONTROLS COME FROM. This scanned
+  // index.html alone, so a control a script writes into the page — the
+  // start/sit player pickers, written by renderStartSit — was exempt from the
+  // rule without anything saying so. Same hole the CSP test closed when it
+  // started scanning assets/ for generated inline handlers.
+  const fs2 = require('node:fs');
+  const path2 = require('node:path');
+  const sources = [HTML, ...fs2.readdirSync(path2.join(__dirname, '..', 'assets'))
+    .filter(f => f.endsWith('.js'))
+    .map(f => fs2.readFileSync(path2.join(__dirname, '..', 'assets', f), 'utf8'))];
+
   const classes = new Set();
   const re = /<(input|select|textarea)\b[^>]*>/g;
-  let m;
-  while ((m = re.exec(HTML))) {
-    const cls = (m[0].match(/class="([^"]+)"/) || [])[1];
-    if (cls) cls.split(/\s+/).forEach(c => classes.add(c));
-    else classes.add(`${m[1]} (no class)`);
+  for (const src of sources) {
+    let m;
+    while ((m = re.exec(src))) {
+      const cls = (m[0].match(/class="([^"]+)"/) || [])[1];
+      if (cls) cls.split(/\s+/).forEach(c => classes.add(c));
+      else classes.add(`${m[1]} (no class)`);
+    }
   }
   assert.ok(classes.size >= 3, 'no form controls found — has the markup moved?');
 

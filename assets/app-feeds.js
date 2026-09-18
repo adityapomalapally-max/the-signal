@@ -902,6 +902,11 @@ function handleRoute() {
     // SEASON_VIEWS is defined in app-pages.js and is the same list the toggle
     // is built from, so the nth-child index cannot drift from the view names.
     const idx = Math.max(0, SEASON_VIEWS.indexOf(parts[1]));
+    // /season/startsit/<a>/<b> — the two players are part of the address, so an
+    // incoming link opens on the comparison somebody sent rather than on an
+    // empty pair of dropdowns. Set BEFORE the view renders, or the first paint
+    // is the empty one and the ids arrive too late to be drawn.
+    if (SEASON_VIEWS[idx] === 'startsit') { ssA = parts[2] || null; ssB = parts[3] || null; }
     setSeasonView(SEASON_VIEWS[idx], document.querySelector(`#seasonViewToggle .pos-btn:nth-child(${idx + 1})`));
     return;
   }
@@ -965,6 +970,10 @@ const ROUTE_META = {
     title: 'Weekly Usage — The Signal',
     description: 'Snap share, target share and WOPR week by week, each measured against that player\'s own recent weeks rather than against the league.',
   },
+  'season/startsit': {
+    title: 'Start / Sit — The Signal',
+    description: 'Two players, one week: the rest-of-season projection, the rank, this week\'s opponent and today\'s status side by side — and where they disagree.',
+  },
   'draft/film': {
     title: 'Film Room — The Signal',
     description: 'Breakdowns from game film rather than from the box score, alongside the draft model they inform.',
@@ -1017,6 +1026,21 @@ function metaForRoute(route) {
   // it was fixed one page at a time; this fixes the shape of it.
   const joined = parts.join('/');
   if (ROUTE_META[joined]) return ROUTE_META[joined];
+
+  // A START/SIT LINK IS THE QUESTION, so the card that unfurls in a group chat
+  // has to be the question rather than the section it lives in. Falls back to
+  // the view's own meta when either id is not a player, which is what a mistyped
+  // link is.
+  if (parts[0] === 'season' && parts[1] === 'startsit') {
+    const a = playersDB.find(x => x.id === parts[2]);
+    const b = playersDB.find(x => x.id === parts[3]);
+    if (!a || !b) return ROUTE_META['season/startsit'];
+    return {
+      title: `${a.name} or ${b.name}? — The Signal`,
+      description: `${a.name} and ${b.name} side by side for this week: rest-of-season projection, rank, opponent `
+        + `and today's status — and where those disagree.`,
+    };
+  }
 
   const POS = { qb: 'Quarterback', rb: 'Running Back', wr: 'Wide Receiver', te: 'Tight End', overall: 'Overall' };
 

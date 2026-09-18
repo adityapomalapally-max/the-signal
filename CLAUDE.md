@@ -1573,3 +1573,47 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   one-line change and the only thing that moves the number.
 - Cookieless, no custom events (a Pro feature), and the stub passes nothing — what is recorded is
   which page was viewed, not who viewed it.
+
+## Start / Sit — the page that answers instead of showing
+- `/season/startsit`, a fourth view on In Season, and `/season/startsit/<a>/<b>` opens on two named
+  players. A comparison somebody wants settled is the thing they send to a leaguemate, so the pick is
+  part of the address and `metaForRoute` turns it into "Gibbs or Robinson? — The Signal" for the
+  unfurl. `setSeasonView` builds its route through `seasonRoute()` so the toggle cannot discard the
+  deeper one — the same discard `switchPage` used to make with `/teams/sea`.
+- IT INVENTS NOTHING, AND THAT IS WHAT MAKES IT SAFE TO BUILD. Every figure is already published here
+  with its own method: the projection from ros.json, the rank from rankings.json, the opponent from
+  the schedule, the status from the daily feed. A score computed on this page would be a fourth
+  opinion beside three published ones with nothing to check it against. What it adds is the two side
+  by side and a sentence naming where they disagree.
+- ros.json's own meta says it "is not a re-ranking of the board" and is allowed to order players
+  differently. So when the projection and the rank disagree the page prints BOTH and names it. It is
+  never resolved silently in favour of either, and the ranks stay the analyst's.
+- AVAILABILITY OUTRANKS THE GAP and a bye settles it before the projection is consulted. Points per
+  game says nothing about whether there will be a game — ros.json's caveats say so — and a player who
+  does not play scores nothing, which is a bigger number than any gap on the page.
+- `startSitModel(a, b, src)` is pure and takes every file it reads, so a bye, a missing projection, a
+  flag on the favoured player and a board that disagrees are all built in tests rather than waited
+  for. THE RANK IS PARSED, NEVER COMPARED AS TEXT: "RB12" < "RB9" is true of strings and false of
+  ranks, and would print the disagreement exactly backwards.
+- The pickers are `<select>`s carrying pool ids, which is a join decision and not a UI one — a search
+  box would have to turn typed text into a player, and names are never a join key here.
+- A WEEK 3 MATCHUP CANNOT BE READ AND THE PAGE SAYS SO. A defence needs four games against a position
+  before its figure qualifies, so for the first month the matchup leg does not exist; a tool that
+  silently omitted it would read as one that had considered it.
+
+## Prose is tested by nothing
+- THE SEASON BANNER SAID "No games have been played this year" THROUGH WEEK 3, hardcoded, on the page
+  whose whole job is to describe a season in progress. Same week check-season was found claiming
+  nothing generated a rest-of-season number while ros.json was rebuilt every morning and read by a
+  profile card. A sentence written on a true day stays true-looking forever.
+- It is derived from the board's own rows now (`seasonBoardState`), and the state that was missing is
+  the middle one: games played, no defence qualified yet. That is most of September and it is exactly
+  when a reader needs telling that the board below is not about this season.
+- WHEN A TEST PINS THE SPELLING IT BLOCKS THE FIX. Two tests here asserted the literal condition
+  `view === 'wire' ? 'none'` and the literal `seasonView !== 'wire'` in renderSeasonPage, and both
+  went red on a change that preserved every bit of the behaviour they guarded. They run the real
+  functions now — `seasonControls`, `seasonBannerApplies`, `seasonBoardState` — through the page
+  harness. Third time this lesson has been paid for.
+- A control a SCRIPT writes into the page was exempt from the 16px phone rule, because the test
+  scanned index.html only. It scans assets/*.js too now — the same hole the CSP test closed when it
+  started looking for generated inline handlers.

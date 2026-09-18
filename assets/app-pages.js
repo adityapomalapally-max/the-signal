@@ -3197,14 +3197,65 @@ function setMuSeason(year, el) {
 // What the page says about itself before Week 1. A matchup board built from
 // last season's defences is genuinely useful for planning and genuinely not a
 // forecast, and the difference has to be on the page rather than assumed.
-function seasonStateHtml(meta) {
-  const live = meta && meta.latestSeasonWithGames;
+// WHICH VIEWS THE BANNER IS ABOUT. It describes the matchup board's sample and
+// the season selector underneath it, so it belongs to the two views that have
+// those. The wire is one morning's adds and start/sit is two players this week;
+// neither has a sample floor to explain, and a caveat that does not apply to
+// what is on screen teaches the reader to skip the ones that do.
+const SEASON_BANNER_VIEWS = ['matchups', 'usage'];
+function seasonBannerApplies(view) { return SEASON_BANNER_VIEWS.includes(view); }
+
+/**
+ * WHAT THIS BANNER SAID WAS TRUE IN AUGUST AND FALSE EVERY SUNDAY SINCE.
+ *
+ * It was hardcoded: "No games have been played this year", printed unchanged
+ * through Week 3 of a season on a page whose entire job is to describe one.
+ * Nothing tests prose, so a sentence written on a true day goes on being
+ * published for as long as nobody reads it carefully — the same failure as
+ * check-season claiming nothing generated a rest-of-season number while
+ * ros.json was being rebuilt every morning.
+ *
+ * It is derived from the board's own rows now. There are three states and the
+ * middle one is the one that was missing: games have been played, and no
+ * defence has faced a position often enough for its figure to qualify. That is
+ * most of September, and it is the state a reader most needs explained —
+ * because the board below looks like it is about this season and is not.
+ */
+function seasonBoardState(data) {
+  const meta = (data && data.meta) || {};
+  const live = meta.latestSeasonWithGames;
+  const rows = (((data && data.seasons) || {})[String(live)] || {}).defenses || {};
+  let weeks = 0, qualified = 0, cells = 0;
+  for (const byPos of Object.values(rows)) {
+    for (const c of Object.values(byPos)) {
+      weeks = Math.max(weeks, Number(c.gamesPlayed) || 0);
+      cells++;
+      if (!c.thin) qualified++;
+    }
+  }
+  return { live, weeks, qualified, cells };
+}
+
+function seasonStateHtml(data) {
+  const { live, weeks, qualified, cells } = seasonBoardState(data);
   const rosReady = typeof rosData !== 'undefined' && rosData;
   let h = `<div style="padding:0 var(--page-gutter) 4px;"><div class="season-state">`;
-  h += `<span class="season-state-tag">Preseason</span>`;
-  h += `<span>No games have been played this year, so every board here is built from ${rankEsc(String(live || 'last season'))}. `
-    + `Defensive personnel changes completely across an offseason — a figure from a past season describes that season's defence, `
-    + `not the one lining up in September. These fill in weekly from Week 1.</span>`;
+  if (!weeks) {
+    h += `<span class="season-state-tag">Preseason</span>`;
+    h += `<span>No games have been played this year, so every board here is built from ${rankEsc(String(live || 'last season'))}. `
+      + `Defensive personnel changes completely across an offseason — a figure from a past season describes that season's defence, `
+      + `not the one lining up in September. These fill in weekly from Week 1.</span>`;
+  } else if (!qualified) {
+    h += `<span class="season-state-tag">In season</span>`;
+    h += `<span>${rankEsc(String(live))} is under way, and no defence has yet faced a position often enough for its `
+      + `figure to qualify — four games is the floor, and the league has played ${rankEsc(String(weeks))}. `
+      + `A season selector below still reaches last season, which is the only evidence that exists this early and `
+      + `describes a different set of players.</span>`;
+  } else {
+    h += `<span class="season-state-tag">In season</span>`;
+    h += `<span>${rankEsc(String(qualified))} of ${rankEsc(String(cells))} team-position figures now clear the sample `
+      + `floor in ${rankEsc(String(live))}. The rest are still short of it and are absent rather than published thin.</span>`;
+  }
   h += `</div>`;
   if (rosReady) {
     h += `<div class="season-state" style="margin-top:8px;"><span class="season-state-tag">Live</span>`
@@ -3227,9 +3278,29 @@ function renderSeasonPage() {
   // skip the ones that do.
   const stateHost = document.getElementById('seasonState');
   if (stateHost) {
-    stateHost.innerHTML = (seasonView !== 'wire' && matchupData) ? seasonStateHtml(matchupData.meta || {}) : '';
+    stateHost.innerHTML = (seasonBannerApplies(seasonView) && matchupData) ? seasonStateHtml(matchupData) : '';
   }
   seasonControls(seasonView);
+
+  if (seasonView === 'startsit') {
+    // Two files, and the page is honest about needing both: ros.json is absent
+    // out of season by design, and the usage is a 1.5MB fetch nothing else on
+    // this view blocks on.
+    if (!rosChecked || !weeklyUsage) {
+      board.innerHTML = `<div class="medical-card"><div class="medical-detail">Loading this season…</div></div>`;
+      Promise.all([ensureRos(), ensureWeeklyUsage(), ensureTeams()]).then(() => {
+        // Guarded on the DATA, never on the page still being open: the cached
+        // promise resolves on the next microtask and a DOM test cannot tell the
+        // first pass from the thousandth.
+        if (rosChecked && weeklyUsage) renderSeasonPage();
+        else board.innerHTML = `<div class="medical-card"><div class="medical-detail">`
+          + `This season's numbers could not be loaded. Nothing is shown rather than a comparison built from part of them.</div></div>`;
+      });
+      return;
+    }
+    renderStartSit(board);
+    return;
+  }
 
   if (seasonView === 'wire') {
     if (!wireData) {
@@ -3528,13 +3599,364 @@ function renderWireBoard(host) {
 // default view addressed itself as /season/matchups — a path isKnownRoute does
 // not recognise, which put a `noindex` on the page and gave it the fallback
 // canonical. The first entry is the default and carries no suffix.
-const SEASON_VIEWS = ['matchups', 'usage', 'wire'];
+/* ═══════════════════════════════════════════════════════════════════════════
+   START / SIT — two players, one week
+   ═══════════════════════════════════════════════════════════════════════════
+
+   THE QUESTION EVERY OTHER BOARD HERE ANSWERS SIDEWAYS. The rankings say who
+   is better over a season; the ROS view says what is left; the matchup board
+   says which defences cost points. A reader on Sunday morning has two names and
+   one slot, and has to hold three boards in their head to get at it.
+
+   IT IS NOT A NEW OPINION, AND IT MUST NOT BECOME ONE. Every number below is
+   already published somewhere on this site with its own stated method:
+   projectedPpg from ros.json, the rank from rankings.json, the live status from
+   players.json, the opponent from teams.json's schedule. Nothing here is
+   computed that is not already computed, no weights are chosen, and there is no
+   score. What this adds is putting them in one place and SAYING WHERE THEY
+   DISAGREE — which is the part a reader cannot do from three separate pages.
+
+   ros.json is allowed to order players differently from the board and says so
+   in its own meta: "a re-ranking of the board. rankings.json is untouched; the
+   medians there are the analyst's call." So when the projection and the board
+   disagree, both are printed and the disagreement is named. It is never
+   resolved silently in favour of either.
+
+   THE FLOOR IS AVAILABILITY, NOT POINTS. ros.json is points per game and its
+   own caveats say it "says nothing about availability" — so a status flag
+   outranks any gap in the projection, because a player who does not play scores
+   nothing at all. Same for a bye, which is the one answer on this page that is
+   certain.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+let ssA = null, ssB = null;
+
+// THE PICK GOES IN THE URL, because a comparison somebody wants to settle is
+// exactly the thing they send to a leaguemate. Anything worth reading is worth
+// linking, and a decision aid addressed only by two dropdowns has nothing to
+// send. /season/startsit/gibbs/cook-j opens on the same two players.
+function setStartSitPick(side, id) {
+  if (side === 'a') ssA = id || null; else ssB = id || null;
+  setRoute(seasonRoute());
+  renderSeasonPage();
+}
+
+/**
+ * The comparison, with no DOM in it.
+ *
+ * `src` is every file this reads, passed in rather than reached for, so the
+ * decision can be exercised against a state that has not happened yet — a bye,
+ * a missing projection, a board that disagrees — instead of only against
+ * whatever this morning's data happens to be.
+ */
+function startSitModel(aId, bId, src) {
+  const pool = src.pool || [];
+  const ros = (src.ros && src.ros.players) || {};
+  const rosMeta = (src.ros && src.ros.meta) || {};
+  const teams = (src.teams && src.teams.teams) || {};
+  const usage = src.usage || null;
+
+  // The week being decided is the one AFTER the last one with results in it.
+  // Taken from ros.json rather than from the calendar, because that is the file
+  // the numbers come from and a page that disagrees with its own source about
+  // which week it is would be worse than one with no week on it at all.
+  const week = Number(rosMeta.throughWeek || 0) + 1;
+
+  const side = (id) => {
+    if (!id) return null;
+    const p = pool.find(x => x.id === id);
+    if (!p) return null;
+    const r = ros[id] || null;
+    const team = teams[p.team] || null;
+    const game = team && Array.isArray(team.schedule)
+      ? team.schedule.find(g => Number(g.week) === week) : null;
+    // A team with a schedule and no row for this week is on bye. A team with no
+    // schedule at all is a missing file, which is a different thing and must not
+    // read as a bye.
+    const bye = !!(team && Array.isArray(team.schedule) && !game);
+    return {
+      id, name: p.name, pos: p.pos, team: p.team,
+      // Status arrives with its detail already in it — "Questionable (Back)" —
+      // because lib/status.js puts it there rather than dropping the body part,
+      // which for a season made a knee ligament render identically to a rest day.
+      status: p.status || null,
+      // fRank is "WR12", a positional rank as a STRING. Parsed rather than
+      // compared as text: "WR12" < "WR9" is true of strings and false of ranks.
+      rank: parseFRank(p.fRank),
+      ros: r,
+      opp: game ? { team: game.opp, home: !!game.home, date: game.date || null } : null,
+      bye,
+      usage: usageTrendFor(p, usage),
+    };
+  };
+
+  const a = side(aId), b = side(bId);
+  const model = { week, a, b, lead: null, gapPpg: null, notes: [], blocked: null };
+  if (!a || !b) return model;
+
+  // ---- Things that settle it before the projection is consulted -----------
+  if (a.bye || b.bye) {
+    const out = a.bye ? a : b, playing = a.bye ? b : a;
+    model.lead = a.bye ? 'b' : 'a';
+    model.blocked = `${out.name} is on bye in week ${week}. ${playing.name} is the only one of the two who plays.`;
+    return model;
+  }
+
+  const bothProjected = a.ros && b.ros;
+  if (!bothProjected) {
+    const missing = !a.ros ? a : b;
+    model.notes.push({
+      kind: 'missing',
+      text: `${missing.name} has no rest-of-season projection, so there is no number to compare. `
+        + `The file holds the ${Object.keys(ros).length} players with a game log this season and a preseason `
+        + `median to blend it with; anyone signed, promoted or hurt into a new role this month is not in it yet.`,
+    });
+    return model;
+  }
+
+  model.lead = a.ros.projectedPpg >= b.ros.projectedPpg ? 'a' : 'b';
+  model.gapPpg = Math.round(Math.abs(a.ros.projectedPpg - b.ros.projectedPpg) * 100) / 100;
+  const leader = model.lead === 'a' ? a : b;
+  const other = model.lead === 'a' ? b : a;
+
+  // ---- What the gap is made of -------------------------------------------
+  // A projection that is mostly the preseason median is a different claim from
+  // one that is mostly this season, and the reader is owed which they are
+  // looking at. The weight is fitted in build-ros-weights.js, not chosen.
+  model.notes.push({
+    kind: 'made-of',
+    text: `${Math.round(leader.ros.weightOnActual * 100)}% of ${leader.name}'s number is this season's `
+      + `${leader.ros.gamesPlayed} game${leader.ros.gamesPlayed === 1 ? '' : 's'} and the rest is his preseason median; `
+      + `for ${other.name} it is ${Math.round(other.ros.weightOnActual * 100)}%. That weight is fitted against past `
+      + `seasons rather than chosen, because a handful of games is a handful of games.`,
+  });
+
+  // ---- What contradicts the lead -----------------------------------------
+  // AVAILABILITY OUTRANKS THE PROJECTION, because points per game says nothing
+  // about whether there will be a game. ros.json's own caveats say so.
+  if (leader.status && !/^healthy$/i.test(leader.status)) {
+    model.notes.push({
+      kind: 'against',
+      text: `${leader.name} is listed ${leader.status}. `
+        + `The projection is points per game and says nothing about availability — a player who does not play `
+        + `scores nothing, and that is a bigger number than ${model.gapPpg} a game.`,
+    });
+  }
+  if (other.status && !/^healthy$/i.test(other.status)) {
+    model.notes.push({
+      kind: 'for',
+      text: `${other.name} is listed ${other.status}, which widens the gap rather than closing it.`,
+    });
+  }
+
+  // THE BOARD AND THE PROJECTION ARE ALLOWED TO DISAGREE, and when they do, the
+  // reader gets both. Ranks are the analyst's call over a season; the
+  // projection is this season's evidence blended into it.
+  if (leader.rank && other.rank && leader.rank.pos === other.rank.pos && other.rank.n < leader.rank.n) {
+    model.notes.push({
+      kind: 'against',
+      text: `The board has ${other.name} ahead — ${other.rank.label} against ${leader.rank.label} — `
+        + `so this is the season so far disagreeing with the preseason call rather than the two agreeing.`,
+    });
+  }
+
+  if (leader.pos !== other.pos) {
+    model.notes.push({
+      kind: 'caveat',
+      text: `These are different positions (${leader.pos} and ${other.pos}). The comparison only means something `
+        + `if the slot takes both, and points per game is not scaled by position scarcity.`,
+    });
+  }
+
+  // Usage is the leading indicator the projection lags: a share that has moved
+  // shows up in the points weeks later.
+  for (const p of [leader, other]) {
+    if (p.usage && p.usage.direction) {
+      model.notes.push({
+        kind: p === leader ? (p.usage.direction === 'down' ? 'against' : 'for')
+                           : (p.usage.direction === 'up' ? 'against' : 'for'),
+        text: `${p.name}'s snap share went ${p.usage.direction}, from ${p.usage.from}% to ${p.usage.to}% `
+          + `between weeks ${p.usage.fromWeek} and ${p.usage.toWeek}.`,
+      });
+    }
+  }
+
+  return model;
+}
+
+// "WR12" -> { pos: 'WR', n: 12, label: 'WR12' }. Anything else is no rank
+// rather than a guessed one.
+function parseFRank(v) {
+  const m = /^([A-Z]{1,3})(\d{1,3})$/.exec(String(v || '').trim());
+  return m ? { pos: m[1], n: Number(m[2]), label: `${m[1]}${m[2]}` } : null;
+}
+
+/**
+ * THE PICKERS ARE SELECTS, AND THAT IS A JOIN DECISION RATHER THAN A UI ONE.
+ * A search box would have to turn what somebody typed into a player, and names
+ * are never a join key here — full names are not unique, every feed writes
+ * suffixes differently, and the Ask engine already refuses rather than guess
+ * between a Brady Cook and a James Cook III. A select carries the pool id, so
+ * there is nothing to resolve.
+ */
+function ssOptions(selectedId) {
+  const rows = playersDB
+    .filter(p => rosData && rosData.players && rosData.players[p.id])
+    .sort((a, b) => (a.pos || '').localeCompare(b.pos || '') || a.name.localeCompare(b.name));
+  return `<option value="">Choose a player…</option>` + rows.map(p =>
+    `<option value="${jsAttr(p.id)}"${p.id === selectedId ? ' selected' : ''}>`
+    + `${rankEsc(p.name)} — ${rankEsc(p.pos || '')} ${rankEsc(p.team || '')}</option>`).join('');
+}
+
+function ssColumn(side, model) {
+  const p = side === 'a' ? model.a : model.b;
+  const picked = side === 'a' ? ssA : ssB;
+  const leads = model.lead === side && !!p;
+  const head = `<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px;">
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);">${side === 'a' ? 'Player A' : 'Player B'}</span>
+      ${leads ? '<span style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">The higher projection</span>' : ''}
+    </div>
+    <select class="ss-select" data-change="ss-pick" data-arg="${side}" aria-label="${side === 'a' ? 'First' : 'Second'} player">${ssOptions(picked)}</select>`;
+
+  if (!p) return `<div class="medical-card"${leads ? ' style="border-left:2px solid var(--gold);"' : ''}>${head}</div>`;
+
+  const r = p.ros;
+  const statusLine = p.status && !/^healthy$/i.test(p.status)
+    ? `<div style="font-size:12px;color:var(--red);margin-top:8px;">${rankEsc(p.status)}</div>` : '';
+  const oppLine = p.bye
+    ? `<div style="font-size:12.5px;color:var(--text-secondary);margin-top:8px;">On bye in week ${model.week}.</div>`
+    : p.opp
+      ? `<div style="font-size:12.5px;color:var(--text-secondary);margin-top:8px;">Week ${model.week}: ${p.opp.home ? 'vs' : 'at'} <strong style="color:var(--text);">${rankEsc(p.opp.team)}</strong></div>`
+      : `<div style="font-size:12.5px;color:var(--text-muted);margin-top:8px;">No week ${model.week} game on file.</div>`;
+
+  const stats = r ? `<div class="season-headline-grid" style="margin-top:12px;">
+      <div><div class="season-headline-value">${r.projectedPpg}</div><div class="season-headline-label">Projected /g</div></div>
+      <div><div class="season-headline-value">${r.actualPpg}</div><div class="season-headline-label">So far /g</div></div>
+      <div><div class="season-headline-value">${r.restOfSeasonPoints}</div><div class="season-headline-label">Rest of season</div></div>
+    </div>`
+    : `<div style="font-size:12.5px;color:var(--text-muted);margin-top:12px;">No rest-of-season projection on file.</div>`;
+
+  const usage = p.usage
+    ? `<div style="font-size:11.5px;color:var(--text-muted);font-family:var(--mono);margin-top:10px;">SNAP SHARE ${p.usage.from}% → ${p.usage.to}% (WK ${p.usage.fromWeek}–${p.usage.toWeek})</div>`
+    : `<div style="font-size:11.5px;color:var(--text-muted);font-family:var(--mono);margin-top:10px;">NOT ENOUGH WEEKS FOR A SNAP-SHARE READING</div>`;
+
+  return `<div class="medical-card"${leads ? ' style="border-left:2px solid var(--gold);"' : ''}>
+    ${head}
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:12px;">
+      <a href="/player/${jsAttr(p.id)}" data-click="nav" data-arg="player/${jsAttr(p.id)}" style="font-size:17px;font-weight:600;color:var(--text);">${rankEsc(p.name)}</a>
+      <span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);">${rankEsc(p.rank ? p.rank.label : (p.pos || ''))} · ${rankEsc(p.team || '')}</span>
+    </div>
+    ${oppLine}${statusLine}${stats}${usage}
+  </div>`;
+}
+
+/**
+ * The verdict, which is a sentence and never a score.
+ *
+ * A number invented here would be a fourth opinion sitting beside three
+ * published ones, and the reader could not check it against anything. What this
+ * says is which published number is higher, by how much, and what in the other
+ * files argues with it.
+ */
+function renderStartSit(board) {
+  const model = startSitModel(ssA, ssB, {
+    pool: playersDB, ros: rosData, teams: teamsData, usage: weeklyUsage,
+  });
+
+  const cols = `<div class="ss-grid">${ssColumn('a', model)}${ssColumn('b', model)}</div>`;
+
+  let verdict = '';
+  if (!model.a || !model.b) {
+    verdict = `<div class="lab-sub" style="max-width:900px;">Pick two players and this says which one the published
+      numbers favour for week ${model.week}, by how much, and what argues against it.</div>`;
+  } else if (model.blocked) {
+    verdict = `<div class="medical-card" style="border-left:2px solid var(--gold);"><div style="font-size:13.5px;color:var(--text);line-height:1.7;">${rankEsc(model.blocked)}</div></div>`;
+  } else if (model.lead) {
+    const leader = model.lead === 'a' ? model.a : model.b;
+    const against = model.notes.filter(n => n.kind === 'against');
+    verdict = `<div class="medical-card" style="border-left:2px solid var(--gold);">
+      <div style="font-size:13.5px;color:var(--text);line-height:1.7;">
+        <strong style="color:var(--gold);">${rankEsc(leader.name)}</strong>, by
+        <strong style="color:var(--text);">${model.gapPpg}</strong> points a game of rest-of-season projection${
+          against.length === 0 ? ', with nothing below arguing against it'
+          : against.length === 1 ? ' — with one thing arguing against it'
+          : ` — with ${against.length} things arguing against it`}.
+      </div>
+      <ul style="margin:10px 0 0;padding-left:18px;font-size:12.5px;color:var(--text-secondary);line-height:1.7;">
+        ${[...model.notes].sort((x, y) => (x.kind === 'against' ? 0 : 1) - (y.kind === 'against' ? 0 : 1)).map(n => `<li style="margin-bottom:6px;${n.kind === 'against' ? 'color:var(--text);' : ''}">${rankEsc(n.text)}</li>`).join('')}
+      </ul>
+    </div>`;
+  } else {
+    verdict = `<div class="medical-card"><div class="medical-detail">${model.notes.map(n => rankEsc(n.text)).join(' ')}</div></div>`;
+  }
+
+  // WHAT THIS CANNOT SEE YET, said rather than left out. A defence needs about
+  // four games before its figure clears the sample floor, so for the first month
+  // of a season the matchup leg of a start/sit decision does not exist here —
+  // and a tool that silently omits it reads as one that considered it.
+  const muMeta = (matchupData && matchupData.meta) || null;
+  const pending = model.week <= 4
+    ? `<div class="rank-note">Strength of the week ${model.week} matchup is not in this: a defence needs four
+       games against a position before its figure clears the sample floor, and the league has played
+       ${Math.max(0, model.week - 1)}. The <a href="/season" data-click="nav" data-arg="season">matchup board</a>
+       shows last season's, which is the only evidence that exists this early and is a different claim.</div>`
+    : `<div class="rank-note">Matchup strength is on the <a href="/season" data-click="nav" data-arg="season">matchup board</a>,
+       which states its own qualifier${muMeta && muMeta.qualifiers ? '' : ''}.</div>`;
+
+  board.innerHTML = `<div style="padding:0 var(--page-gutter) 12px;">
+      <div class="lab-head" style="margin-bottom:6px;">
+        <span class="lab-title">Start / Sit — week ${model.week}</span>
+        <span class="lab-qual">FROM ros.json, rankings.json, the schedule and today's status</span>
+      </div>
+      <div class="lab-sub" style="max-width:900px;">Nothing here is a new number. Every figure is one this site already
+        publishes with its own method — what this adds is the two side by side and where they disagree. The
+        <a href="/rankings" data-click="nav" data-arg="rankings">rest-of-season board</a> has the same projection for everybody.</div>
+      ${cols}
+      ${verdict}
+      ${pending}
+    </div>`;
+}
+
+/**
+ * The player's own snap share, first week to last. Two games is not a trend and
+ * is not called one — it is stated as the two numbers it is, which is what the
+ * weekly usage board does with the same data.
+ */
+function usageTrendFor(player, usage) {
+  if (!usage || !usage.seasons || !player || !player.gsisId) return null;
+  const years = Object.keys(usage.seasons).map(Number).sort();
+  const year = years[years.length - 1];
+  const row = usage.seasons[String(year)] && usage.seasons[String(year)][player.gsisId];
+  const weeks = row && Array.isArray(row.weeks) ? row.weeks.filter(w => typeof w.snapPct === 'number') : [];
+  if (weeks.length < 2) return null;
+  const first = weeks[0], last = weeks[weeks.length - 1];
+  const move = last.snapPct - first.snapPct;
+  return {
+    from: first.snapPct, to: last.snapPct, fromWeek: first.week, toWeek: last.week,
+    // A point or two either way is the same role played twice, not a change.
+    direction: move >= 5 ? 'up' : move <= -5 ? 'down' : null,
+  };
+}
+
+const SEASON_VIEWS = ['matchups', 'usage', 'wire', 'startsit'];
+
+// One definition of this page's address, so the toggle and the pickers cannot
+// disagree about it.
+function seasonRoute() {
+  if (seasonView === SEASON_VIEWS[0]) return 'season';
+  if (seasonView === 'startsit' && ssA && ssB) return `season/startsit/${ssA}/${ssB}`;
+  return `season/${seasonView}`;
+}
 
 function setSeasonView(view, el) {
   seasonView = SEASON_VIEWS.includes(view) ? view : SEASON_VIEWS[0];
   document.querySelectorAll('#seasonViewToggle .pos-btn').forEach(b => b.classList.remove('active'));
   if (el) el.classList.add('active');
-  setRoute(seasonView === SEASON_VIEWS[0] ? 'season' : `season/${seasonView}`);
+  // THE DEEPER ROUTE SURVIVES THE TOGGLE. A bare `season/<view>` here would
+  // throw away the two players the reader picked — the same discard switchPage
+  // used to make with /teams/sea, and the reason that function stopped
+  // rewriting the URL unless the page itself changed.
+  setRoute(seasonRoute());
   renderSeasonPage();
 }
 
@@ -3545,8 +3967,9 @@ function setSeasonView(view, el) {
 function seasonControls(view) {
   const pos = document.getElementById('muPosControl');
   const season = document.getElementById('muSeasonControl');
-  if (pos) pos.style.display = view === 'wire' ? 'none' : '';
-  if (season) season.style.display = view === 'wire' ? 'none' : '';
+  const bare = view === 'wire' || view === 'startsit';
+  if (pos) pos.style.display = bare ? 'none' : '';
+  if (season) season.style.display = bare ? 'none' : '';
 }
 
 // The comparison is a player against HIMSELF, not against the league. A 60%

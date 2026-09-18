@@ -2755,7 +2755,7 @@ a { color: inherit; text-decoration: none; }
    nothing. Every control on the site is one of these three classes; a fourth
    one added later is caught by the test rather than by a reader's zoom. */
 @media (max-width: 768px) {
-  .players-search-input, .filter-select, .ask-input,
+  .players-search-input, .filter-select, .ask-input, .ss-select,
   .mobile-nav-search input { font-size: 16px; }
   /* The select's text is 5px bigger, so it gives back some padding to stay
      the same size on screen. */
@@ -3036,3 +3036,29 @@ a.wire-name:hover { color: var(--gold); }
    CSP, and a background change on hover was never JavaScript's job. */
 .hover-card { transition: background .15s; }
 .hover-card:hover, .hover-card:focus-visible { background: var(--bg-card-hover); outline: none; }
+
+/* ── Start / Sit ─────────────────────────────────────────────────────────────
+   Two columns that become one at phone width. minmax(min(300px,100%),1fr) and
+   not a bare 300px: a track wider than the container scrolls the whole
+   document sideways, and this page keeps 48px of gutter a side. */
+.ss-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+
+/* 16px, because anything smaller makes iOS zoom the whole page on focus and
+   leave the reader scrolled somewhere they did not ask to be. */
+.ss-select {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 16px;
+  padding: 10px 12px;
+  min-height: 44px;
+  color: var(--text);
+  background: var(--bg-deep, var(--bg-card));
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.ss-select:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }

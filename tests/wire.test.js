@@ -182,26 +182,77 @@ test('first sightings are not moves', () => {
   }
 });
 
-test('the wire view drops the controls that do not reach it', () => {
-  // One morning's adds have neither a position filter nor a season. A control
-  // that changes nothing invites a click that does nothing.
-  assert.match(PAGES, /function seasonControls/, 'the season controls are no longer hidden per view');
-  // Naming the element is not hiding it. The first version of this test looked
-  // for the id and passed with the line that hides it deleted.
-  const fn = PAGES.slice(PAGES.indexOf('function seasonControls'), PAGES.indexOf('function seasonControls') + 600);
-  for (const control of ['pos', 'season']) {
-    const re = new RegExp(`${control}\\.style\\.display = view === 'wire' \\? 'none'`);
-    assert.match(fn, re, `the ${control} filter is not hidden on the wire, where it reaches nothing`);
+test('a view only keeps the controls that reach it', () => {
+  // One morning's adds have neither a position filter nor a season, and neither
+  // has a two-player comparison. A control that changes nothing invites a click
+  // that does nothing.
+  //
+  // THE PROPERTY, NOT THE SPELLING. This used to assert the exact line —
+  // `pos.style.display = view === 'wire' ? 'none'` — and went red the moment a
+  // second view needed the same treatment, on a change that kept every bit of
+  // the behaviour it was guarding. It runs the real function now, so any
+  // rewrite that still hides the right controls passes and any that stops
+  // hiding them does not. Matchups and usage are the two boards that read a
+  // position and a season; everything else on this page reads neither.
+  const { loadPages, evalIn } = require('./lib/pageharness');
+  const ctx = loadPages();
+  const els = { muPosControl: { style: {} }, muSeasonControl: { style: {} } };
+  ctx.document.getElementById = (id) => els[id] || null;
+
+  const views = evalIn(ctx, 'SEASON_VIEWS');
+  assert.ok(views.includes('wire'), 'the wire is no longer one of the season views');
+  for (const view of views) {
+    evalIn(ctx, `seasonControls(${JSON.stringify(view)})`);
+    const reaches = view === 'matchups' || view === 'usage';
+    for (const [id, el] of Object.entries(els)) {
+      const hidden = el.style.display === 'none';
+      assert.strictEqual(hidden, !reaches,
+        `on the ${view} view, ${id} is ${hidden ? 'hidden' : 'shown'} and should be ${reaches ? 'shown' : 'hidden'}`);
+    }
   }
 });
 
-test('the preseason banner does not claim the wire is last season', () => {
-  // It says every board here is built from last season. True of the matchup
-  // board in August, false of a list of adds from this morning — and a caveat
-  // that does not apply teaches the reader to skip the ones that do.
+test('the board-sample banner only runs on the boards it is about', () => {
+  // It explains the matchup board's sample floor and the season selector under
+  // it. On a list of this morning's adds, or a two-player comparison for this
+  // week, it is a caveat about something not on screen — and those teach a
+  // reader to skip the ones that matter.
+  //
+  // THE PROPERTY, NOT THE SPELLING: this used to match the exact condition in
+  // renderSeasonPage and went red when a second view needed excluding, on a
+  // change that kept the behaviour intact.
+  const { loadPages, evalIn } = require('./lib/pageharness');
+  const ctx = loadPages();
+  const applies = evalIn(ctx, 'seasonBannerApplies');
+  assert.strictEqual(applies('wire'), false, 'the banner renders on the wire, where it is not true');
+  assert.strictEqual(applies('startsit'), false, 'the banner renders on start/sit, which has no sample floor to explain');
+  assert.strictEqual(applies('matchups'), true, 'the banner stopped rendering on the board it describes');
   const render = PAGES.slice(PAGES.indexOf('function renderSeasonPage'), PAGES.indexOf('function renderSeasonPage') + 1200);
-  assert.match(render, /seasonView !== 'wire'[^;]*seasonStateHtml|seasonStateHtml[^;]*seasonView !== 'wire'/,
-    'the preseason banner renders on the wire, where it is not true');
+  assert.match(render, /seasonBannerApplies\(seasonView\)/,
+    'the banner is no longer gated on which view is showing');
+});
+
+test('the banner says which of the three states the season is in', () => {
+  // HARDCODED "No games have been played this year" was published through week
+  // three of a season. Prose is tested by nothing, so a sentence written on a
+  // true day stays on the page until somebody reads it carefully.
+  const { loadPages, evalIn } = require('./lib/pageharness');
+  const ctx = loadPages();
+  const state = evalIn(ctx, 'seasonBoardState');
+  const board = (cells) => ({ meta: { latestSeasonWithGames: 2026 }, seasons: { 2026: { defenses: { BUF: { WR: cells } } } } });
+
+  assert.strictEqual(state(board({ gamesPlayed: 0, thin: true })).weeks, 0, 'no games played is still no games played');
+  const young = state(board({ gamesPlayed: 2, thin: true }));
+  assert.strictEqual(young.weeks, 2);
+  assert.strictEqual(young.qualified, 0, 'a thin figure was counted as qualified');
+  const ready = state(board({ gamesPlayed: 6, thin: false }));
+  assert.strictEqual(ready.qualified, 1);
+
+  const html = evalIn(ctx, 'seasonStateHtml');
+  assert.match(html(board({ gamesPlayed: 0, thin: true })), /No games have been played/);
+  assert.doesNotMatch(html(board({ gamesPlayed: 2, thin: true })), /No games have been played/,
+    'week 2 of a season is still being described as the preseason');
+  assert.match(html(board({ gamesPlayed: 2, thin: true })), /four games is the floor/);
 });
 
 test('a route key with a slash in it actually resolves', () => {

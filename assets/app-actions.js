@@ -130,6 +130,7 @@
     'player-filter':  (el, ev, a) => setPlayerFilter(a, el.value),
     'profile-compare':(el) => setProfileCompare(el.value),
     'med-sort':       (el) => setMedSort(el.value),
+    'ss-pick':        (el, ev, a) => setStartSitPick(a, el.value),
   };
 
   // Hover, for the one control that arms on pointer rather than on click.

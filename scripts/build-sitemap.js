@@ -71,6 +71,11 @@ function build() {
 
   // The wire is its own page with its own title, and it changes every morning.
   urls.push(url(`${ORIGIN}/season/wire`, { priority: 0.7, changefreq: 'daily', lastmod: dataDate }));
+  // So is Start/Sit, and it answers a question people type into a search box
+  // every Sunday. The bare view only — a URL per pair of players would be a
+  // hundred thousand thin pages saying the same thing, which is the shape
+  // search engines are right to ignore.
+  urls.push(url(`${ORIGIN}/season/startsit`, { priority: 0.7, changefreq: 'daily', lastmod: dataDate }));
 
   for (const tab of ['overall', 'qb', 'rb', 'wr', 'te']) {
     urls.push(url(`${ORIGIN}/rankings/${tab}`, { priority: 0.8, changefreq: 'daily', lastmod: dataDate }));
