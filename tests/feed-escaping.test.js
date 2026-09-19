@@ -138,6 +138,38 @@ test('the Substack sidebar treats the proxy payload as text', () => {
   assert.ok(!/\$\{item\.title\}/.test(b), 'item.title still has an unescaped interpolation');
 });
 
+test('the medical pages treat their own data as text too, and the search box as untrusted', () => {
+  // NOT A FEED, AND IT STILL HAS TO BE ESCAPED. medicals.json is hand-written
+  // here, so the risk is not that somebody attacks it — it is that the rule
+  // "text is text" held on three renderers and nowhere else, and the exception
+  // was invisible. Found in a review, not by anything failing.
+  //
+  // THE SEARCH BOX IS THE REAL ONE. `No medical profiles found for "${query}"`
+  // put a reader's own keystrokes into innerHTML unescaped. Not reachable by a
+  // link and not executable under this CSP — and the CSP is the second layer,
+  // never the fix. The August hole was live WITH a CSP enforced.
+  const cases = {
+    searchInjuryPlayer: ['query', 'player.name', 'player.team', 'player.currentStatus', 'inj.title', 'inj.severity'],
+    showInjuryDetail: ['inj.name', 'inj.fantasyImpact', 'inj.careerImpact', 'p.name', 'p.injury', 'inj.sources'],
+  };
+  for (const [fn, fields] of Object.entries(cases)) {
+    const b = block(fn);
+    for (const f of fields) {
+      const esc = f.replace(/[.]/g, '\\.');
+      assert.ok(new RegExp('\\$\\{rankEsc\\(' + esc + '\\)\\}').test(b),
+        `${fn}: ${f} is not escaped where it is rendered`);
+      assert.ok(!new RegExp('\\$\\{' + esc + '\\}').test(b),
+        `${fn}: ${f} still has a raw interpolation somewhere in the function`);
+    }
+    // An id reaching a data-arg goes through the attribute escaper, not the
+    // text one — two different jobs, and jsAttr closes both layers.
+    for (const m of b.matchAll(/data-arg="\$\{([^}]+)\}"/g)) {
+      assert.ok(/^(jsAttr|rankEsc)\(/.test(m[1]),
+        `${fn}: data-arg="${m[1]}" is interpolated raw into an attribute`);
+    }
+  }
+});
+
 test('no feed link is opened from script without being checked first', () => {
   // window.open does NOT imply noopener the way target=_blank now does, and it
   // took a javascript: url before openExternal existed.

@@ -195,18 +195,18 @@ function showInjuryDetail(key) {
   results.innerHTML = `
     <div style="margin-bottom:32px;">
       <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
-        <span style="font-size:40px;">${inj.icon}</span>
+        <span style="font-size:40px;">${rankEsc(inj.icon)}</span>
         <div>
-          <h2 style="font-family:var(--serif);font-size:28px;font-weight:700;">${inj.name}</h2>
-          <p style="font-size:14px;color:var(--text-secondary);">Average return: ${inj.avgReturn}</p>
+          <h2 style="font-family:var(--serif);font-size:28px;font-weight:700;">${rankEsc(inj.name)}</h2>
+          <p style="font-size:14px;color:var(--text-secondary);">Average return: ${rankEsc(inj.avgReturn)}</p>
         </div>
       </div>
 
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;">
         ${inj.keyStats.map(s => `
           <div class="medical-card" style="text-align:center;padding:16px;">
-            <div style="font-family:var(--serif);font-size:26px;font-weight:700;color:var(--gold);">${s.value}</div>
-            <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-top:4px;">${s.label}</div>
+            <div style="font-family:var(--serif);font-size:26px;font-weight:700;color:var(--gold);">${rankEsc(s.value)}</div>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-top:4px;">${rankEsc(s.label)}</div>
           </div>
         `).join('')}
       </div>
@@ -214,48 +214,48 @@ function showInjuryDetail(key) {
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
         <div class="medical-card">
           <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Return to Play</div>
-          <div class="impact-bar" style="margin-bottom:8px;"><div class="impact-fill ${inj.returnRate > 80 ? 'low' : inj.returnRate > 50 ? 'moderate' : 'high'}" style="width:${inj.returnRate}%"></div></div>
-          <div style="font-size:13px;color:var(--text-secondary);">${inj.returnRateLabel}</div>
+          <div class="impact-bar" style="margin-bottom:8px;"><div class="impact-fill ${inj.returnRate > 80 ? 'low' : inj.returnRate > 50 ? 'moderate' : 'high'}" style="width:${rankEsc(inj.returnRate)}%"></div></div>
+          <div style="font-size:13px;color:var(--text-secondary);">${rankEsc(inj.returnRateLabel)}</div>
         </div>
         <div class="medical-card">
           <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Re-Injury Risk</div>
           <div class="impact-bar" style="margin-bottom:8px;"><div class="impact-fill ${inj.reinjuryRisk > 20 ? 'high' : inj.reinjuryRisk > 10 ? 'moderate' : 'low'}" style="width:${inj.reinjuryRisk * 2}%"></div></div>
-          <div style="font-size:13px;color:var(--text-secondary);">${inj.reinjuryLabel}</div>
+          <div style="font-size:13px;color:var(--text-secondary);">${rankEsc(inj.reinjuryLabel)}</div>
         </div>
       </div>
 
       <div class="medical-card" style="margin-bottom:16px;">
         <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Performance Impact</div>
-        <div style="font-size:15px;line-height:1.7;color:var(--text-secondary);">${inj.performanceLabel}</div>
+        <div style="font-size:15px;line-height:1.7;color:var(--text-secondary);">${rankEsc(inj.performanceLabel)}</div>
       </div>
 
       <div class="medical-card" style="border-left:3px solid var(--gold);margin-bottom:16px;">
         <div style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Fantasy Impact</div>
-        <div style="font-size:15px;line-height:1.7;color:var(--text-secondary);">${inj.fantasyImpact}</div>
+        <div style="font-size:15px;line-height:1.7;color:var(--text-secondary);">${rankEsc(inj.fantasyImpact)}</div>
       </div>
 
       <div class="medical-card" style="margin-bottom:16px;">
         <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Career Impact</div>
-        <div style="font-size:15px;line-height:1.7;color:var(--text-secondary);">${inj.careerImpact}</div>
+        <div style="font-size:15px;line-height:1.7;color:var(--text-secondary);">${rankEsc(inj.careerImpact)}</div>
       </div>
 
       ${affectedPlayers.length > 0 ? `
         <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin:24px 0 12px;">Players in Our Database With This Injury (${affectedPlayers.length})</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;">
           ${affectedPlayers.map(p => `
-            <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:background 0.2s;" data-click="open-profile" data-arg="${p.id}" class="hover-card">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:background 0.2s;" data-click="open-profile" data-arg="${jsAttr(p.id)}" class="hover-card">
               ${renderAvatar(p, 34, 11)}
               <div style="flex:1;min-width:0;">
-                <div style="font-weight:600;font-size:13px;">${p.name}</div>
-                <div style="font-size:11px;color:var(--text-muted);">${p.injury}</div>
+                <div style="font-weight:600;font-size:13px;">${rankEsc(p.name)}</div>
+                <div style="font-size:11px;color:var(--text-muted);">${rankEsc(p.injury)}</div>
               </div>
-              <span class="severity ${p.severity}" style="font-size:9px;">${p.severityLabel.split(' ')[0]}</span>
+              <span class="severity ${rankEsc(p.severity)}" style="font-size:9px;">${rankEsc(p.severityLabel.split(' ')[0])}</span>
             </div>
           `).join('')}
         </div>
       ` : ''}
 
-      <div style="margin-top:20px;font-size:12px;color:var(--text-muted);">Sources: ${inj.sources}</div>
+      <div style="margin-top:20px;font-size:12px;color:var(--text-muted);">Sources: ${rankEsc(inj.sources)}</div>
 
       <div style="margin-top:16px;"><span style="font-size:13px;color:var(--gold);cursor:pointer;" data-click="injury-reset">← Back to all injury types</span></div>
     </div>
@@ -286,7 +286,7 @@ function searchInjuryPlayer(query) {
   );
 
   if (results.length === 0) {
-    container.innerHTML = `<p style="color:var(--text-muted);font-size:13px;">No medical profiles found for "${query}". Try another name.</p>`;
+    container.innerHTML = `<p style="color:var(--text-muted);font-size:13px;">No medical profiles found for "${rankEsc(query)}". Try another name.</p>`;
     return;
   }
 
@@ -301,15 +301,15 @@ function searchInjuryPlayer(query) {
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
         ${renderAvatar(player, 44, 14)}
         <div style="flex:1;">
-          <div style="font-family:var(--serif);font-size:20px;font-weight:600;">${player.name}</div>
-          <div style="font-size:12px;color:var(--text-secondary);">${player.team}</div>
+          <div style="font-family:var(--serif);font-size:20px;font-weight:600;">${rankEsc(player.name)}</div>
+          <div style="font-size:12px;color:var(--text-secondary);">${rankEsc(player.team)}</div>
         </div>
         <div style="text-align:center;">
           <div style="font-family:var(--serif);font-size:24px;font-weight:700;color:${riskColor};">${riskLevel}</div>
           <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);text-transform:uppercase;">Injury Risk</div>
         </div>
       </div>
-      ${player.currentStatus ? `<div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:16px;padding:12px;background:var(--bg-elevated);border-radius:6px;">${player.currentStatus}</div>` : ''}
+      ${player.currentStatus ? `<div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:16px;padding:12px;background:var(--bg-elevated);border-radius:6px;">${rankEsc(player.currentStatus)}</div>` : ''}
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;">
         <div style="text-align:center;padding:12px;background:var(--bg-elevated);border-radius:6px;">
           <div style="font-family:var(--serif);font-size:20px;font-weight:700;">${totalInjuries}</div>
@@ -328,13 +328,13 @@ function searchInjuryPlayer(query) {
       ${player.injuries.map(inj => `
         <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-subtle);">
           <div>
-            <div style="font-size:13px;font-weight:600;">${inj.title}</div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Impact: ${inj.impact}%</div>
+            <div style="font-size:13px;font-weight:600;">${rankEsc(inj.title)}</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Impact: ${rankEsc(inj.impact)}%</div>
           </div>
-          <span class="severity ${inj.severity}" style="font-size:9px;">${inj.severityLabel.split('—')[0].trim()}</span>
+          <span class="severity ${rankEsc(inj.severity)}" style="font-size:9px;">${rankEsc(inj.severityLabel.split('—')[0].trim())}</span>
         </div>
       `).join('')}
-      <div style="margin-top:12px;"><span style="font-size:13px;color:var(--gold);cursor:pointer;" data-click="open-profile" data-arg="${id}">View full medical profile →</span></div>
+      <div style="margin-top:12px;"><span style="font-size:13px;color:var(--gold);cursor:pointer;" data-click="open-profile" data-arg="${jsAttr(id)}">View full medical profile →</span></div>
     </div>`;
   }).join('');
 }

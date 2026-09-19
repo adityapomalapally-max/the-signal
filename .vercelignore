@@ -1,0 +1,28 @@
+# WHAT THE WEBSITE IS, AS OPPOSED TO WHAT THE REPOSITORY IS.
+#
+# Every file in this repo was being served as part of the site: /CLAUDE.md,
+# /scripts/build-scheme.js, /tests/csp.test.js and /.github/workflows/*.yml all
+# returned 200. Nothing secret is in them and the repo is public, so this
+# disclosed nothing — but it is the day the repo goes private that it would,
+# silently, because the deployment would go on serving what the repository had
+# stopped sharing. A deployment should carry what the site needs and nothing
+# else.
+#
+# WHAT STAYS, and why each one has to:
+#   index.html + the section shells   the site
+#   assets/                           styles and scripts
+#   data/                             fetched by the browser AND required by
+#                                     api/_lib/retrieve.js at request time
+#   api/                              the answer engine
+#   sitemap.xml robots.txt og-image.png vercel.json
+#
+# Verified after deploying, not assumed: the docs are clear that Vercel's own
+# default ignore list is a CLI concept, so whether this file reaches a
+# Git-connected deployment is a question to answer with a request rather than a
+# reading. If /scripts/build-scheme.js still answers 200, the fallback is a
+# redirect rule in vercel.json, which is evaluated ahead of the filesystem.
+
+scripts/
+tests/
+.github/
+CLAUDE.md
