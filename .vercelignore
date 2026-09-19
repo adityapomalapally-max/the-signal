@@ -16,11 +16,16 @@
 #   api/                              the answer engine
 #   sitemap.xml robots.txt og-image.png vercel.json
 #
-# Verified after deploying, not assumed: the docs are clear that Vercel's own
-# default ignore list is a CLI concept, so whether this file reaches a
-# Git-connected deployment is a question to answer with a request rather than a
-# reading. If /scripts/build-scheme.js still answers 200, the fallback is a
-# redirect rule in vercel.json, which is evaluated ahead of the filesystem.
+# THIS FILE DOES NOT REACH A GIT DEPLOYMENT, AND THAT WAS MEASURED. Pushed,
+# waited for the deploy to carry an unrelated change from the same commit, and
+# asked: /scripts/build-scheme.js still answered 200. The docs say only that
+# Vercel's DEFAULT ignore list is "relevant when using Vercel CLI"; the same is
+# true of this file. It is kept because it IS obeyed by `vercel deploy` from a
+# terminal, which is the other way this site could be published.
+#
+# WHAT ACTUALLY EXCLUDES THEM is the redirect block in vercel.json. Redirects
+# are evaluated ahead of the filesystem, which is why they win where a rewrite
+# would lose — the filesystem is checked first, and these files exist.
 
 scripts/
 tests/

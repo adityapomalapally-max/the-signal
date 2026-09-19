@@ -90,6 +90,26 @@
   ],
   "redirects": [
     {
+      "source": "/scripts/(.*)",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/tests/(.*)",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/.github/(.*)",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/CLAUDE.md",
+      "destination": "/",
+      "permanent": false
+    },
+    {
       "source": "/compare",
       "destination": "/players",
       "permanent": true

@@ -68,6 +68,36 @@ test("the policy does not allow inline script", () => {
   assert.ok(!scriptSrc.includes("'unsafe-eval'"), 'nothing here needs eval');
 });
 
+test('the deployment serves the site, not the repository', () => {
+  // /CLAUDE.md, /scripts/build-scheme.js, /tests/csp.test.js and
+  // /.github/workflows/daily-update.yml all answered 200 in production. The
+  // repo is public, so nothing was disclosed — the problem is the day it is
+  // not, when the deployment would go on serving what the repository had
+  // stopped sharing and nothing would say so.
+  //
+  // .vercelignore DOES NOT DO THIS on a Git deployment. That was measured
+  // rather than read: pushed, waited for the deploy to carry an unrelated
+  // change from the same commit, asked again, still 200. Redirects are
+  // evaluated ahead of the filesystem, which is why they win where a rewrite
+  // loses — the filesystem is checked first and these files exist.
+  //
+  // THE RULES ARE RUN, NOT MATCHED AS TEXT, so any rewording that still covers
+  // the paths keeps passing.
+  const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8'));
+  const rules = (cfg.redirects || []).map(r => new RegExp(`^${r.source}$`));
+  const covered = (p) => rules.some(re => re.test(p));
+
+  for (const p of ['/CLAUDE.md', '/scripts/build-scheme.js', '/scripts/lib/season.js',
+                   '/tests/csp.test.js', '/.github/workflows/daily-update.yml']) {
+    assert.ok(covered(p), `${p} is served as part of the website`);
+  }
+  // And the site itself still reaches the site.
+  for (const p of ['/', '/players', '/data/rankings.json', '/assets/app-core.js',
+                   '/player/nabers', '/season/startsit']) {
+    assert.ok(!covered(p), `${p} is redirected away — the exclusion is too wide`);
+  }
+});
+
 test('every action the markup asks for exists', () => {
   // A data-click naming an action nobody wrote is a button that does nothing,
   // and unlike a broken onclick it throws no error in the console.
