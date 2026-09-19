@@ -1617,3 +1617,30 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - A control a SCRIPT writes into the page was exempt from the 16px phone rule, because the test
   scanned index.html only. It scans assets/*.js too now — the same hole the CSP test closed when it
   started looking for generated inline handlers.
+
+## The deployment is the site, not the repository
+- /CLAUDE.md, /scripts/build-scheme.js, /tests/csp.test.js and /.github/workflows/*.yml all answered
+  200 in production. The repo is public so nothing was disclosed — the failure is the day it is not
+  public, when the deployment goes on serving what the repository stopped sharing and nothing says so.
+- **`.vercelignore` DOES NOT DO THIS on a Git deployment.** Measured, not read: pushed it, waited for
+  the deploy to carry an unrelated change from the same commit, asked again, still 200. The docs say
+  only that Vercel's DEFAULT ignore list is "relevant when using Vercel CLI", and the same is true of
+  the file. It is kept because `vercel deploy` from a terminal does obey it — with a comment saying
+  what was measured, because a file that looks like it does something it does not is worse than none.
+- **Redirects are evaluated AHEAD of the filesystem**, which is why they work here where a rewrite
+  cannot: the filesystem is checked before rewrites and these files exist. The exclusions are four
+  `redirects` entries, and the test runs their regexes against both the paths that must be excluded
+  and the paths that must still reach the site.
+
+## Escaping is the defence; the CSP is the layer behind it
+- THE MEDICAL SEARCH BOX PUT A READER'S KEYSTROKES INTO innerHTML RAW — `No medical profiles found
+  for "${query}"`. Not reachable by a link (the value is the reader's own typing) and not executable
+  under `script-src 'self'`. Neither is a reason to leave it: the August hole was live WITH a CSP
+  enforced, and that is the whole reason the rule is "escape at the render site".
+- AND THE RULE ONLY HELD WHERE A TEST HELD IT. showInjuryDetail and searchInjuryPlayer interpolated
+  26 values raw — names, teams, injury titles, the prose in `fantasyImpact` and `careerImpact`, and
+  an id reaching a `data-arg` without the attribute escaper. medicals.json is hand-written, so the
+  risk was low and the inconsistency total: "text is text" was enforced on the three feed renderers
+  and nowhere else. tests/feed-escaping.test.js covers both functions now, every `data-arg` in them
+  included, and each hole was put back to watch it ring.
+- Data being FIRST-PARTY is not a reason to skip the escaper. It is a reason nobody notices for a year.
