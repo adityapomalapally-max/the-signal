@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-anatomy.js",
-    "builtAt": "2026-09-20T14:41:25.968Z",
+    "builtAt": "2026-09-21T17:00:07.647Z",
     "layers": {
       "frequency": "counted from data/injuries.json — the official NFL injury reports for this pool",
       "recovery": "from data/injury-curves.json, derived from those same reports",
@@ -12,7 +12,7 @@
       "A named condition without a research entry is listed because it genuinely occurs at that region, NOT because we have data on it. The page says so rather than printing a timeline nobody can check.",
       "Recovery figures are the median across this pool over three seasons, not a prognosis for any individual. Sample sizes are stated and several are small."
     ],
-    "totalEpisodes": 1157,
+    "totalEpisodes": 1153,
     "unmappedParts": [
       {
         "part": "Undisclosed",
@@ -44,8 +44,8 @@
       }
     ],
     "coverage": {
-      "mappedEpisodes": 986,
-      "totalEpisodes": 1157,
+      "mappedEpisodes": 982,
+      "totalEpisodes": 1153,
       "pct": 85.2
     }
   },
@@ -179,14 +179,14 @@
     },
     "shoulder": {
       "label": "Shoulder",
-      "episodes": 85,
-      "players": 66,
-      "shareOfAll": 7.3,
+      "episodes": 83,
+      "players": 65,
+      "shareOfAll": 7.2,
       "reportedAs": [
         {
           "part": "Shoulder",
-          "episodes": 77,
-          "players": 60
+          "episodes": 75,
+          "players": 59
         },
         {
           "part": "Right Shoulder",
@@ -639,9 +639,9 @@
     },
     "hip": {
       "label": "Hip & groin",
-      "episodes": 100,
-      "players": 73,
-      "shareOfAll": 8.6,
+      "episodes": 98,
+      "players": 72,
+      "shareOfAll": 8.5,
       "reportedAs": [
         {
           "part": "Hip",
@@ -650,8 +650,8 @@
         },
         {
           "part": "Groin",
-          "episodes": 41,
-          "players": 32
+          "episodes": 39,
+          "players": 31
         },
         {
           "part": "Glute",
@@ -662,20 +662,20 @@
       "recovery": {
         "source": "injury-curves.json",
         "bucket": "Hip / Groin",
-        "absences": 9,
-        "players": 9,
+        "absences": 8,
+        "players": 8,
         "medianGamesMissed": 3,
-        "baselinePpg": 7.3,
+        "baselinePpg": 8,
         "returnCurve": [
           {
             "label": "Games 1–2 back",
-            "n": 9,
-            "pct": 72
+            "n": 8,
+            "pct": 70
           },
           {
             "label": "Games 3–5",
-            "n": 8,
-            "pct": 91
+            "n": 7,
+            "pct": 90
           },
           {
             "label": "Games 6–8",
@@ -691,12 +691,6 @@
             "missed": 11
           },
           {
-            "id": "morris",
-            "name": "Quintin Morris",
-            "season": 2025,
-            "missed": 9
-          },
-          {
             "id": "vaki",
             "name": "Sione Vaki",
             "season": 2025,
@@ -707,6 +701,12 @@
             "name": "Brenton Strange",
             "season": 2025,
             "missed": 5
+          },
+          {
+            "id": "kamara",
+            "name": "Alvin Kamara",
+            "season": 2024,
+            "missed": 3
           }
         ]
       },
@@ -758,7 +758,7 @@
       "label": "Hamstring, quad & thigh",
       "episodes": 123,
       "players": 90,
-      "shareOfAll": 10.6,
+      "shareOfAll": 10.7,
       "reportedAs": [
         {
           "part": "Hamstring",
@@ -873,14 +873,14 @@
     },
     "knee": {
       "label": "Knee",
-      "episodes": 157,
-      "players": 99,
-      "shareOfAll": 13.6,
+      "episodes": 158,
+      "players": 100,
+      "shareOfAll": 13.7,
       "reportedAs": [
         {
           "part": "Knee",
-          "episodes": 157,
-          "players": 99
+          "episodes": 158,
+          "players": 100
         }
       ],
       "recovery": {
@@ -1141,14 +1141,14 @@
     },
     "ankle": {
       "label": "Ankle",
-      "episodes": 159,
-      "players": 114,
+      "episodes": 158,
+      "players": 113,
       "shareOfAll": 13.7,
       "reportedAs": [
         {
           "part": "Ankle",
-          "episodes": 159,
-          "players": 114
+          "episodes": 158,
+          "players": 113
         }
       ],
       "recovery": {
