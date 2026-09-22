@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-09-21T17:01:12.130Z",
+    "generated": "2026-09-22T15:32:33.652Z",
     "builtBy": "scripts/build-scheme.js via lib/xfp.js",
     "seasons": [
       2024,
@@ -11,28 +11,28 @@
     "scoring": "Full PPR — 1 per reception, 0.1 per yard, 6 per touchdown — matching nflverse fantasy_points_ppr, which is what every other points figure on this site already is.",
     "method": "EMPIRICAL, NOT FITTED. A cell's price is the mean fantasy points the plays in that cell actually produced. No regression, no coefficients, nothing trained — anyone with the same CSV recomputes the same number. A season prices itself once it has the plays to do it; until then it borrows the last finished season's table, and meta.build.pricedFrom says which season paid for the prices above.",
     "build": {
-      "opportunities": 3472,
-      "targets": 1844,
-      "carries": 1628,
-      "playersQualified": 42,
+      "opportunities": 3580,
+      "targets": 1906,
+      "carries": 1674,
+      "playersQualified": 45,
       "passersDropped": 0,
       "minPasserAttempts": 20,
       "minCell": 100,
       "minOpportunities": 20,
-      "fallbackPct": 0.95,
+      "fallbackPct": 0.92,
       "skippedNoLine": 0,
       "pricedFromSuppliedTable": true,
       "unpriced": 0,
-      "leagueFp": 1272.2,
-      "leagueXfp": 1259.5,
-      "leagueRatio": 1.0101,
-      "selfFallbackPct": 21.72,
+      "leagueFp": 1344.6,
+      "leagueXfp": 1324.1,
+      "leagueRatio": 1.0155,
+      "selfFallbackPct": 21.56,
       "season": 2026,
       "pricedFrom": 2025
     },
     "caveats": [
-      "THESE PRICES ARE 2025'S. 2026 has not played enough football to price itself — its own table would put 21.72% of opportunities on a marginal cell against the 0.95% these prices manage — so every expectation here is what the same chance was worth in 2025. Measured on 2025: priced this way a two-week season lands 0.165 points a game from what those plays were really worth, against 0.313 priced off its own two weeks. It switches to its own table the moment that table fits.",
-      "EARLY IN A SEASON EVERY QUALIFIED PLAYER LOOKS GOOD, and that is the qualifier rather than the football. The floor is 20+ opportunities, which over a season admits a rotational player and after one week admits only the workhorses — who are the players getting that volume because they are producing. League actual against these prices (1.0101x) is computed over exactly those qualified players, so read it as who cleared the floor, not as the league scoring more than it did last year, and not as a consistency check: carried prices are not means over these plays.",
+      "THESE PRICES ARE 2025'S. 2026 has not played enough football to price itself — its own table would put 21.56% of opportunities on a marginal cell against the 0.92% these prices manage — so every expectation here is what the same chance was worth in 2025. Measured on 2025: priced this way a two-week season lands 0.165 points a game from what those plays were really worth, against 0.313 priced off its own two weeks. It switches to its own table the moment that table fits.",
+      "EARLY IN A SEASON EVERY QUALIFIED PLAYER LOOKS GOOD, and that is the qualifier rather than the football. The floor is 20+ opportunities, which over a season admits a rotational player and after one week admits only the workhorses — who are the players getting that volume because they are producing. League actual against these prices (1.0155x) is computed over exactly those qualified players, so read it as who cleared the floor, not as the league scoring more than it did last year, and not as a consistency check: carried prices are not means over these plays.",
       "PASSING IS NOT PRICED, so quarterbacks are absent rather than wrong. A quarterback's points are overwhelmingly passing, and showing his rushing expectation beside his total would put every quarterback in the league hundreds of points \"over expected\".",
       "Fumbles lost and two-point conversions are excluded from BOTH sides. They are outcomes rather than opportunities and have no situation to price. Measured against stats.json, this leaves a median gap of 0.0 points across a season and a 10th-to-90th range of plus or minus 2 — which is one fumble, or one two-point conversion.",
       "THE GAP IS MOSTLY TOUCHDOWNS, AND TOUCHDOWNS DO NOT REPEAT. A player far over expected is usually not a player who will stay there. That is the reading this file is for.",
@@ -56356,6 +56356,32 @@
           }
         ]
       },
+      "00-0040715": {
+        "team": "NYG",
+        "games": 2,
+        "targets": 4,
+        "carries": 30,
+        "fp": 23.6,
+        "xfp": 25.7,
+        "diff": -2.1,
+        "fpPerG": 11.8,
+        "xfpPerG": 12.87,
+        "diffPerG": -1.07,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 14.1,
+            "xfp": 13.4,
+            "opps": 18
+          },
+          {
+            "week": 2,
+            "fp": 9.5,
+            "xfp": 12.4,
+            "opps": 16
+          }
+        ]
+      },
       "00-0038134": {
         "team": "KC",
         "games": 2,
@@ -56746,6 +56772,32 @@
           }
         ]
       },
+      "00-0037840": {
+        "team": "LA",
+        "games": 2,
+        "targets": 5,
+        "carries": 23,
+        "fp": 33.2,
+        "xfp": 26.1,
+        "diff": 7.1,
+        "fpPerG": 16.6,
+        "xfpPerG": 13.04,
+        "diffPerG": 3.56,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 15.5,
+            "xfp": 14.6,
+            "opps": 14
+          },
+          {
+            "week": 2,
+            "fp": 17.7,
+            "xfp": 11.5,
+            "opps": 14
+          }
+        ]
+      },
       "00-0033280": {
         "team": "SF",
         "games": 2,
@@ -56795,6 +56847,32 @@
             "fp": 2.5,
             "xfp": 4.2,
             "opps": 7
+          }
+        ]
+      },
+      "00-0039738": {
+        "team": "LA",
+        "games": 2,
+        "targets": 1,
+        "carries": 22,
+        "fp": 15.6,
+        "xfp": 12.8,
+        "diff": 2.8,
+        "fpPerG": 7.8,
+        "xfpPerG": 6.4,
+        "diffPerG": 1.4,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 5.4,
+            "xfp": 5.2,
+            "opps": 10
+          },
+          {
+            "week": 2,
+            "fp": 10.2,
+            "xfp": 7.6,
+            "opps": 13
           }
         ]
       },
