@@ -79,7 +79,7 @@
 <!-- ===== NAVIGATION ===== -->
 <nav class="nav">
   <div class="nav-main">
-    <a class="nav-logo" data-click="page" data-arg="home">
+    <a class="nav-logo" href="/" data-click="page" data-arg="home">
       <span class="logo-the">THE</span>
       <span class="logo-signal">Sign<em>al</em></span>
     </a>
@@ -100,7 +100,7 @@
         <span>Search players...</span>
         <kbd>⌘K</kbd>
       </div>
-      <a class="nav-subscribe" href="https://adityapomalapally.substack.com" target="_blank">Substack</a>
+      <a class="nav-subscribe" href="https://adityapomalapally.substack.com" target="_blank" rel="noopener noreferrer">Substack</a>
       <div class="hamburger" id="hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="mobileNavDrawer" data-click="nav-toggle">
         <span></span><span></span><span></span>
       </div>
@@ -140,7 +140,7 @@
     <a class="mobile-nav-link" data-page="ask" href="/ask" data-click="page-nav" data-arg="ask">Ask</a>
   </div>
   <div style="padding:16px 28px;border-top:1px solid var(--border);">
-    <a href="https://adityapomalapally.substack.com" target="_blank" class="nav-subscribe" style="display:block;text-align:center;">Substack</a>
+    <a href="https://adityapomalapally.substack.com" target="_blank" rel="noopener noreferrer" class="nav-subscribe" style="display:block;text-align:center;">Substack</a>
   </div>
 </div>
 
@@ -151,7 +151,7 @@
 
   <!-- HERO -->
   <div class="hero-layout">
-    <a class="hero-feature" href="https://adityapomalapally.substack.com" target="_blank" id="heroLink">
+    <a class="hero-feature" href="https://adityapomalapally.substack.com" target="_blank" rel="noopener noreferrer" id="heroLink">
       <!-- Post artwork from the Substack feed. Stays invisible until it
            actually decodes, so a missing or blocked image leaves the
            original pattern rather than a broken frame. -->
@@ -318,7 +318,7 @@
   </div>
 
   <div class="tools-strip fade-in">
-    <a href="https://sleeper-analytics.vercel.app" class="tool-item" target="_blank">
+    <a href="https://sleeper-analytics.vercel.app" class="tool-item" target="_blank" rel="noopener noreferrer">
       <h4>Sleeper Analytics</h4>
       <p>Power rankings, AI trade advice, what-if scenarios, optimal lineups.</p>
       <span class="tool-badge badge-live">● Live</span>
@@ -572,20 +572,40 @@
 
 <div class="page-section" id="page-fantasy">
   <div class="page-shell">
+    <!-- THE PAGE FOLLOWS THE SEASON. It led with the Value Board — a draft
+         tool, against a market that closed on the ninth of September — for the
+         first three weeks of football, because nothing moved it. What a reader
+         wants in October is the lineup they are setting on Sunday; the draft
+         board is a record now, and it is listed as one. -->
     <div class="players-header">
       <h1>Fantasy Football</h1>
-      <p>Draft and in-season tools built on the same data as the rest of the site. The Value Board compares these rankings against consensus ADP; Sleeper Analytics is a separate application for league management.</p>
+      <p>In-season first: who to start this week, who the room is adding, and what is left of the season rather than all of it. The draft tools are still here and still honest about being a record of a market that has closed.</p>
     </div>
     <div class="tools-strip" style="border-top:1px solid var(--border);">
-      <a href="https://sleeper-analytics.vercel.app" class="tool-item" target="_blank">
+      <a href="/season/startsit" class="tool-item" data-click="nav" data-arg="season/startsit">
+        <h4>Start / Sit</h4>
+        <p>Two players, one week. The rest-of-season projection, the rank, this week's opponent and today's status side by side — and where they disagree.</p>
+        <span class="tool-badge badge-live">● In season</span>
+      </a>
+      <a href="/season/wire" class="tool-item" data-click="nav" data-arg="season/wire">
+        <h4>Waiver Wire</h4>
+        <p>Who the room is adding, where he sits on his own team's depth chart, and which way the count is moving.</p>
+        <span class="tool-badge badge-live">● In season</span>
+      </a>
+      <a href="/rankings/overall" class="tool-item" data-click="nav" data-arg="rankings/overall">
+        <h4>Rest-of-season ranks</h4>
+        <p>The board reordered by what is left rather than by the season as a whole. The preseason order is one toggle away.</p>
+        <span class="tool-badge badge-live">● In season</span>
+      </a>
+      <a href="https://sleeper-analytics.vercel.app" class="tool-item" target="_blank" rel="noopener noreferrer">
         <h4>Sleeper Analytics</h4>
         <p>League power rankings, trade evaluation, what-if scenarios and lineup optimisation. Opens in a new tab.</p>
         <span class="tool-badge badge-live">● Live — Open Tool</span>
       </a>
       <div class="tool-item" data-click="scroll-to" data-arg="valueBoardTop">
         <h4>Value Board</h4>
-        <p>Where these ranks disagree with what the room is actually doing, by consensus ADP.</p>
-        <span class="tool-badge badge-live">● Live — Below</span>
+        <p>Where these ranks disagreed with the room in August, by consensus ADP. A record of a closed market, kept for what it showed.</p>
+        <span class="tool-badge badge-archive">● Draft — a record, below</span>
       </div>
     </div>
 
@@ -594,10 +614,14 @@
         <span class="lab-title">Value Board — The Signal vs the room</span>
         <span class="lab-qual" id="valueBoardMeta"></span>
       </div>
+      <!-- TENSE-NEUTRAL ON PURPOSE. This is static markup and cannot know whether
+           the market is open; the caveat block under the board reads
+           adp.json's own meta and says which. Written in the present — "the
+           pick you take" — it spent three weeks of the season describing a
+           market that had closed. -->
       <div class="lab-sub" style="max-width:900px;">
-        Every ranked player against his average draft position. A positive edge means the room
-        is letting him fall past where these ranks have him — the pick you take. A negative edge
-        means the room likes him more than we do.
+        Every ranked player against his average draft position. A positive edge is a player the
+        room drafted later than these ranks have him; a negative edge is one the room took earlier.
       </div>
       <div class="players-search-bar" style="justify-content:space-between;flex-wrap:wrap;gap:12px;padding:0;border:none;">
         <div class="position-filter" id="vbPosFilter">
@@ -847,7 +871,7 @@
 <div class="page-section" id="page-article">
   <div class="page-shell">
     <div class="article-page">
-      <div class="article-back" data-click="page" data-arg="home">← Back to Home</div>
+      <a class="article-back" href="/" data-click="page" data-arg="home">← Back to Home</a>
       <div class="article-page-header">
         <span class="article-page-tag" id="articlePageTag">Medical Intel</span>
         <h1 class="article-page-title" id="articlePageTitle">Loading...</h1>
@@ -892,38 +916,52 @@
 <div class="site-footer">
   <div class="footer-main">
     <div class="footer-brand">
-      <a class="nav-logo" data-click="page" data-arg="home" style="cursor:pointer;">
+      <a class="nav-logo" href="/" data-click="page" data-arg="home" style="cursor:pointer;">
         <span class="logo-the">THE</span>
         <span class="logo-signal">Sign<em>al</em></span>
       </a>
       <p>Curating the smartest voices in football. Signal over noise, always.</p>
     </div>
+    <!-- EVERY LINK HERE CARRIES ITS REAL ADDRESS. The nav above has done this
+         since routing moved to paths; the footer was still `href="#"` with the
+         data-click doing all the work, which means no middle-click, no open in
+         a new tab, nothing for a crawler to follow, and a status bar that says
+         nothing on hover. The handler still runs — it is the SPA transition —
+         but the href is what the link IS. -->
     <div class="footer-col">
       <h5>Sections</h5>
-      <a href="#" data-click="page" data-arg="home">Home</a>
-      <a href="#" data-click="page" data-arg="players">Player Profiles</a>
-      <a href="#" data-click="page" data-arg="medicals">Medical Database</a>
-      <a href="#" data-click="page" data-arg="draft">Draft Lab</a>
+      <a href="/" data-click="page" data-arg="home">Home</a>
+      <a href="/players" data-click="page" data-arg="players">Player Profiles</a>
+      <a href="/medicals" data-click="page" data-arg="medicals">Medical Database</a>
+      <a href="/teams" data-click="page" data-arg="teams">Teams</a>
+      <a href="/draft" data-click="page" data-arg="draft">Draft Lab</a>
     </div>
+    <!-- IN SEASON FIRST, because it is. This column listed a Trade Analyzer
+         that does not exist on this site — the link went to the Fantasy page,
+         which has never had one — and a "Rankings" entry pointing at the same
+         wrong place. Sleeper Analytics is where trades are actually evaluated
+         and it is already named below. -->
     <div class="footer-col">
       <h5>Fantasy</h5>
-      <a href="https://sleeper-analytics.vercel.app" target="_blank">Sleeper Analytics</a>
-      <a href="#" data-click="page" data-arg="fantasy">Trade Analyzer</a>
-      <a href="#" data-click="page" data-arg="fantasy">Rankings</a>
+      <a href="/season/startsit" data-click="nav" data-arg="season/startsit">Start / Sit</a>
+      <a href="/season/wire" data-click="nav" data-arg="season/wire">Waiver Wire</a>
+      <a href="/rankings" data-click="page" data-arg="rankings">Rankings</a>
+      <a href="/fantasy" data-click="page" data-arg="fantasy">Value Board</a>
+      <a href="https://sleeper-analytics.vercel.app" target="_blank" rel="noopener noreferrer">Sleeper Analytics</a>
     </div>
+    <!-- A LINK TO NOTHING IS WORSE THAN NO LINK. "Twitter / X" and "Instagram"
+         were href="#" — they looked like somewhere to go and went nowhere, on
+         every page of the site. Gone until there is an address to put in them. -->
     <div class="footer-col">
       <h5>Connect</h5>
-      <a href="https://adityapomalapally.substack.com" target="_blank">Substack</a>
-      <a href="#">Twitter / X</a>
-      <a href="#">Instagram</a>
+      <a href="https://adityapomalapally.substack.com" target="_blank" rel="noopener noreferrer">Substack</a>
+      <a href="/ask" data-click="page" data-arg="ask">Ask The Signal</a>
     </div>
   </div>
   <div class="footer-bottom">
     <span class="footer-copy">© 2026 The Signal. Built with intention by Adi. <span id="footerLastUpdate" style="color:var(--text-muted);"></span></span>
     <div class="footer-socials">
-      <div class="social-link">𝕏</div>
-      <div class="social-link">📸</div>
-      <a class="social-link" href="https://adityapomalapally.substack.com" target="_blank" style="text-decoration:none;">📝</a>
+      <a class="social-link" href="https://adityapomalapally.substack.com" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">📝</a>
     </div>
   </div>
 </div>

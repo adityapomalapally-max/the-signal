@@ -2128,7 +2128,8 @@ function renderValueBoard() {
     return;
   }
   const m = vbAdp.meta;
-  if (metaEl) metaEl.textContent = `${m.format} · ${m.teams}-TEAM · ${m.totalDrafts ? m.totalDrafts.toLocaleString() + ' DRAFTS' : ''}`;
+  if (metaEl) metaEl.textContent = `${m.format} · ${m.teams}-TEAM · ${m.totalDrafts ? m.totalDrafts.toLocaleString() + ' DRAFTS' : ''}`
+    + `${m.historical ? ` · CLOSED ${String(m.closedAt || '').slice(0, 10)}` : ''}`;
 
   let rows = valueBoardRows();
   if (vbPos !== 'all') rows = rows.filter(r => r.pos === vbPos);
@@ -2175,10 +2176,22 @@ function renderValueBoard() {
   // Four things, so four blocks — and the two that are derivation rather than
   // instruction sit behind a disclosure, the same treatment the Rankings
   // methodology gets.
+  // THE TENSE HAS TO MATCH THE MARKET. Every sentence here was written in
+  // August and reads in the present — "when he actually goes" — about a market
+  // that shut on the ninth of September. fetch-adp freezes the file and stamps
+  // meta.historical and meta.closedAt precisely so that a reader in October is
+  // told what they are looking at; nothing was reading them back.
+  const closed = m.historical
+    ? `THIS IS A RECORD, NOT A LIVE MARKET. The draft market closed on `
+      + `${String(m.closedAt || m.fetchedAt || '').slice(0, 10)} and this board has not moved since. It is kept for `
+      + `what it showed in August — where these ranks disagreed with the room — and it says nothing about this week. `
+      + `For that, the rest-of-season board and Start / Sit are the in-season versions of the question.`
+    : null;
   const upfront = [
+    ...(closed ? [closed] : []),
     `Showing ${shown.length} of ${total} ranked players with an ADP.`,
     `The edge is a disagreement, not a projection: it says where these ranks differ from the room, `
-    + `never who is right. Pick is the average draft slot, for knowing when he actually goes.`,
+    + `never who is right. Pick is the average draft slot${closed ? ' he went at' : ', for knowing when he actually goes'}.`,
   ];
   const deeper = [
     `Both sides are positional ranks — his rank here against his rank among players at his position `

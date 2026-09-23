@@ -1028,6 +1028,11 @@ a { color: inherit; text-decoration: none; }
 
 .badge-live { background: var(--green-muted); color: var(--green); }
 .badge-new { background: var(--teal-muted); color: var(--teal); }
+/* A TOOL THAT IS A RECORD RATHER THAN A LIVE BOARD. The draft market closed on
+   September 9th and the Value Board wore a green "live" dot for three weeks of
+   football afterwards. A badge with no variant class had no background at all,
+   so "not live" had no way to be said. */
+.badge-archive { background: var(--bg-elevated); color: var(--text-muted); border: 1px solid var(--border); }
 
 /* ===== PLAYERS PAGE ===== */
 .players-header {
@@ -1419,7 +1424,12 @@ a { color: inherit; text-decoration: none; }
   padding: 40px 24px 80px;
 }
 
+/* An anchor now, not a div: it is a link home and had no address, no
+   middle-click and no keyboard. `display:inline-block` so the margin below it
+   still applies, and the underline stays off. */
 .article-back {
+  display: inline-block;
+  text-decoration: none;
   font-size: 13px;
   color: var(--text-muted);
   cursor: pointer;
