@@ -1644,3 +1644,33 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   and nowhere else. tests/feed-escaping.test.js covers both functions now, every `data-arg` in them
   included, and each hole was put back to watch it ring.
 - Data being FIRST-PARTY is not a reason to skip the escaper. It is a reason nobody notices for a year.
+
+## A link is its address
+- TWO WAYS A LINK LIES and the footer had both, on every page. One goes NOWHERE — `href="#"` on
+  "Twitter / X" and "Instagram", plus two social glyphs that were `<div>`s dressed as links. One
+  goes somewhere REAL AND WRONG — "Trade Analyzer" navigated to /fantasy, which has never had a
+  trade analyzer on it. The second is harder to notice, and a promise the site does not keep is the
+  same failure as a number it cannot support.
+- AND A LINK THAT WORKS CAN STILL HAVE NO ADDRESS. Every other footer entry was `href="#"` with
+  data-click doing the work: no middle-click, no open-in-new-tab, nothing for a crawler, an empty
+  status bar on hover. The nav has carried real paths since routing moved off hashes. **The
+  data-click is the SPA transition; the href is what the link IS** — write both, always.
+- Both logos were anchors with no href at all, and "← Back to Home" was a `<div>`, which is also to
+  say it could not be reached from a keyboard: the global Enter/Space handler only fires on a
+  `[data-click]` element that is focusable.
+- `tests/links.test.js` holds four rules, each one a defect that was live: no `href="#"`, every
+  internal link carrying the path its `data-arg` navigates to, every footer target resolving against
+  ROUTE_PAGES and SEASON_VIEWS as the router defines them, and `rel="noopener"` on every tab-opener.
+
+## A page dressed for the wrong month
+- The Fantasy page led with the Value Board — a DRAFT tool, against a market that closed on
+  September 9th — through three weeks of football, under a green "live" badge, with copy in the
+  present tense ("the pick you take"). Nothing moved it because nothing was watching it.
+- fetch-adp has stamped `meta.historical` and `meta.closedAt` since the market shut. THE FILE KNEW
+  AND THE PAGE DID NOT READ IT BACK — the same shape as the In Season banner hardcoding "no games
+  have been played" and check-season claiming nothing generated a rest-of-season number.
+- Static markup cannot know whether a market is open, so the intro is written TENSE-NEUTRAL and the
+  live/closed sentence lives in the renderer, which reads the file. `.badge-archive` exists because
+  a badge with no variant class had no background at all: "not live" had no way to be said.
+- The test asserts the draft board is LAST in the strip and wears the archive badge, which is a
+  statement about what the page leads with rather than about what it contains.
