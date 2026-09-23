@@ -45,10 +45,34 @@ const MIN_WEEKS_FOR_LIVE = 4;
 let SEASON = 2026;
 let DEF_SEASON = 2025;
 const POSITIONS = ['QB', 'RB', 'WR', 'TE'];
-const SEGMENTS = {
-  early: { label: 'Weeks 1–4', from: 1, to: 4 },
-  playoffs: { label: 'Weeks 15–17', from: 15, to: 17 }
-};
+const LAST_WEEK = 18;
+
+/**
+ * THE SEGMENTS MOVE WITH THE SEASON, because one of them was in the past.
+ *
+ * This published "Weeks 1–4" and called it the opening month all the way
+ * through a season — so in week 4 the team pages offered a reader the schedule
+ * strength of games that had already been played, beside a season-long figure
+ * that was half history. Neither answers the only schedule question anybody has
+ * once games start: whose slate is soft FROM HERE.
+ *
+ * So the opening month is a PRESEASON segment and rest-of-season replaces it
+ * the moment a week is complete. The definitions are published in meta and the
+ * page renders whatever it finds there, rather than carrying its own copy of
+ * the words "Weeks 1–4" — which is how that label survived into October.
+ */
+function segmentsFor(week) {
+  const playoffs = { label: 'Weeks 15–17', from: 15, to: 17 };
+  // Sleeper's `week` is the one about to be played, so it is the first week
+  // still ahead of a reader. Below 2 nothing has been played and the opening
+  // month is genuinely the useful cut.
+  if (!week || week < 2) return { early: { label: 'Weeks 1–4', from: 1, to: 4 }, playoffs };
+  return {
+    rest: { label: `Weeks ${week}–${LAST_WEEK}`, from: week, to: LAST_WEEK },
+    playoffs,
+  };
+}
+let SEGMENTS = segmentsFor(0);
 
 const STATS_URL = s => `https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_${s}.csv`;
 const SCHEDULE_URL = 'https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv';
@@ -126,6 +150,23 @@ async function main() {
   log('Fetching schedule...');
   const games = parseCSV(await fetchCSV(SCHEDULE_URL))
     .filter(g => g.season === SEASON && g.game_type === 'REG');
+
+  // WHAT IS LEFT IS ASKED OF THE SCHEDULE, NOT OF THE CALENDAR. Sleeper's week
+  // and the games that have actually been played are two clocks and they
+  // disagree in both directions — Sleeper called the season "week 1" eleven
+  // days before kickoff, and on the Tuesday after week 3 it still said week 3
+  // with every week-3 game complete. A rest-of-season slate built on the second
+  // reading includes a week nobody can still play.
+  //
+  // The schedule feed carries the result, and it is the same file the slate
+  // itself is built from, so the window and the games cannot come apart. The
+  // calendar is the fallback for a feed that has stopped publishing results.
+  const unplayed = games.filter(g => !String(g.result || '').trim()).map(g => Number(g.week));
+  const firstOpen = unplayed.length ? Math.min(...unplayed)
+    : (st.phase === 'regular' || st.phase === 'post' ? st.week : 0);
+  SEGMENTS = segmentsFor(firstOpen);
+  log(`${games.length - unplayed.length} of ${games.length} games played; segments: `
+    + Object.entries(SEGMENTS).map(([k, v]) => `${k} ${v.label}`).join(', '));
   const schedule = {};
   for (const g of games) {
     if (!g.away_team || !g.home_team) continue;
@@ -148,22 +189,31 @@ async function main() {
           avgPerGame: r1(vals.reduce((a, d) => a + d.perGame, 0) / vals.length)
         };
       };
-      teams[team][pos] = {
-        season: pick(1, 18),
-        early: pick(SEGMENTS.early.from, SEGMENTS.early.to),
-        playoffs: pick(SEGMENTS.playoffs.from, SEGMENTS.playoffs.to)
-      };
+      // `season` stays whatever it always was — the whole slate, which in
+      // season is half a record — because the preseason headline is built on it
+      // and a team page still wants to say what the year looked like. What
+      // changes is which segment LEADS, and that is decided below.
+      teams[team][pos] = { season: pick(1, LAST_WEEK) };
+      for (const [key, seg] of Object.entries(SEGMENTS)) {
+        teams[team][pos][key] = pick(seg.from, seg.to);
+      }
     }
   }
 
-  // League rank of each team's own season-long slate, so "12th easiest WR
-  // schedule" is sayable rather than just an average of ranks.
-  for (const pos of POSITIONS) {
-    const order = Object.keys(teams)
-      .filter(t => teams[t][pos].season)
-      .sort((a, b) => teams[b][pos].season.avgRank - teams[a][pos].season.avgRank); // easiest first
-    order.forEach((t, i) => { teams[t][pos].seasonEaseRank = i + 1; });
-  }
+  // League rank of a team's own slate, so "12th easiest WR schedule" is sayable
+  // rather than just an average of ranks. Computed for the whole season AND for
+  // what is left, because in November they are different questions and only one
+  // of them is actionable.
+  const easeRank = (segmentKey, field) => {
+    for (const pos of POSITIONS) {
+      const order = Object.keys(teams)
+        .filter(t => teams[t][pos][segmentKey])
+        .sort((a, b) => teams[b][pos][segmentKey].avgRank - teams[a][pos][segmentKey].avgRank); // easiest first
+      order.forEach((t, i) => { teams[t][pos][field] = i + 1; });
+    }
+  };
+  easeRank('season', 'seasonEaseRank');
+  if (SEGMENTS.rest) easeRank('rest', 'restEaseRank');
 
   const out = {
     meta: {
@@ -172,9 +222,19 @@ async function main() {
       season: SEASON,
       defenseSeason: DEF_SEASON,
       segments: SEGMENTS,
+      // WHICH FIGURE THE PAGE SHOULD LEAD WITH. Naming it here rather than
+      // leaving the page to guess is what stops the two from disagreeing about
+      // whether the season is under way — the page has no calendar and should
+      // not grow one.
+      headline: SEGMENTS.rest ? 'rest' : 'season',
+      headlineRankField: SEGMENTS.rest ? 'restEaseRank' : 'seasonEaseRank',
       scale: 'Defensive rank 1–32 where 1 conceded the fewest fantasy points to that position. ' +
         'A low opponent rank is a hard matchup; a high one is a soft matchup. Team ease rank is 1 = easiest slate.',
-      caveats: `Defensive numbers are ${DEF_SEASON} results, not a ${SEASON} projection — coordinators and ` +
+      caveats: (SEGMENTS.rest
+        ? `The headline figure is what is LEFT of the schedule (${SEGMENTS.rest.label}); the season-long number is `
+          + `half a record by now and is kept for the shape of the year. `
+        : '')
+        + `Defensive numbers are ${DEF_SEASON} results, not a ${SEASON} projection — coordinators and ` +
         `secondaries turn over and a unit can look nothing like this by September. Fantasy points allowed also ` +
         `moves with pace and game script as much as with talent: a defense whose offense falls behind faces more ` +
         `passes and concedes more. Nothing here is adjusted for the offenses each defense happened to face. ` +
@@ -187,11 +247,16 @@ async function main() {
   const wrote = writeJSONIfChanged(OUT, out);
   if (!wrote) log('unchanged — not rewritten');
   else log(`Wrote data/sos.json (${(fs.statSync(OUT).size / 1024).toFixed(0)}KB)`);
+  // Reports whatever the page leads with, or the log describes a different
+  // board from the one a reader sees.
+  const key = out.meta.headline, field = out.meta.headlineRankField;
   for (const pos of POSITIONS) {
-    const easiest = Object.entries(teams).filter(([, v]) => v[pos].seasonEaseRank === 1)[0];
-    const hardest = Object.entries(teams).sort((a, b) => b[1][pos].seasonEaseRank - a[1][pos].seasonEaseRank)[0];
-    log(`  ${pos}: easiest slate ${easiest[0]} (opp avg rank ${easiest[1][pos].season.avgRank}), ` +
-        `hardest ${hardest[0]} (${hardest[1][pos].season.avgRank})`);
+    const ranked = Object.entries(teams).filter(([, v]) => v[pos][field]);
+    const easiest = ranked.find(([, v]) => v[pos][field] === 1);
+    const hardest = ranked.sort((a, b) => b[1][pos][field] - a[1][pos][field])[0];
+    if (!easiest || !hardest) continue;
+    log(`  ${pos} (${SEGMENTS[key] ? SEGMENTS[key].label : 'season'}): easiest ${easiest[0]} `
+      + `(opp avg rank ${easiest[1][pos][key].avgRank}), hardest ${hardest[0]} (${hardest[1][pos][key].avgRank})`);
   }
   log('=== SOS Complete ===');
 }

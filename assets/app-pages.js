@@ -1920,6 +1920,38 @@ function renderTeamPage() {
     + (scheme ? teamSectionLabel('How they line up', 'Personnel, what it draws from the defence, and what their own defence plays') + scheme : '')
     + teamSectionLabel('The season ahead', 'Every week, shaded by what that defence conceded to the position you pick');
 
+/**
+ * THE SEGMENTS ARE READ OFF THE FILE, NOT NAMED HERE.
+ *
+ * This line said "OPENING MONTH" and read `sosTeam.early` — a window that was
+ * over by the first Sunday in October and went on being published beside a
+ * season-long figure that was half history. The page had its own copy of the
+ * words "Weeks 1–4", which is how the label survived the season starting.
+ *
+ * build-sos now publishes which segments exist, what each one is called, and
+ * which one leads; this renders that. In the preseason it is the opening month
+ * again, without this function knowing either name.
+ */
+function sosSummary(sosTeam) {
+  const meta = (sosData && sosData.meta) || {};
+  const segs = meta.segments || {};
+  const lead = meta.headline && sosTeam[meta.headline] ? meta.headline : 'season';
+  const rankField = meta.headlineRankField && sosTeam[meta.headlineRankField]
+    ? meta.headlineRankField : 'seasonEaseRank';
+  if (!sosTeam[lead] && !sosTeam.season) return '';
+
+  const parts = [];
+  if (sosTeam[rankField]) {
+    const what = lead === 'season' ? 'SLATE' : `${(segs[lead] && segs[lead].label) || 'REST'}`.toUpperCase();
+    parts.push(`${sosPos} ${what}: ${ordinalWord(sosTeam[rankField])} EASIEST`);
+  }
+  for (const [key, seg] of Object.entries(segs)) {
+    if (key === lead || !sosTeam[key]) continue;
+    parts.push(`${String(seg.label).toUpperCase()} ${sosTeam[key].avgRank}`);
+  }
+  return parts.length ? ` · ${parts.join(' · ')}` : '';
+}
+
   const sosTeam = sosData && sosData.teams[currentTeam] && sosData.teams[currentTeam][sosPos];
   h += `<div class="medical-card" style="padding:18px;">
     <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:2px;">
@@ -1928,8 +1960,7 @@ function renderTeamPage() {
         `<button class="pos-btn${x === sosPos ? ' active' : ''}" data-click="sos-pos" data-arg="${x}">${x}</button>`).join('')}</div>
     </div>
     <div style="font-family:var(--mono);font-size:9.5px;color:var(--text-muted);letter-spacing:0.5px;margin-bottom:10px;">
-      18 WEEKS · BYE IN WEEK ${t.bye || '—'}${sosTeam && sosTeam.season ?
-        ` · ${sosPos} SLATE: ${ordinalWord(sosTeam.seasonEaseRank)} EASIEST · OPENING MONTH ${sosTeam.early ? sosTeam.early.avgRank : '—'} · PLAYOFF WEEKS ${sosTeam.playoffs ? sosTeam.playoffs.avgRank : '—'}` : ''}</div>
+      18 WEEKS · BYE IN WEEK ${t.bye || '—'}${sosTeam ? sosSummary(sosTeam) : ''}</div>
     <div class="tm-sched">`;
   const weeks = {};
   t.schedule.forEach(g => { weeks[g.week] = g; });

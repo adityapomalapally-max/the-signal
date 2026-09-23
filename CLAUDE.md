@@ -1674,3 +1674,32 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   a badge with no variant class had no background at all: "not live" had no way to be said.
 - The test asserts the draft board is LAST in the strip and wears the archive badge, which is a
   statement about what the page leads with rather than about what it contains.
+
+## Two clocks, and the one that was wrong all season
+- SLEEPER'S `week` IS THE WEEK ABOUT TO BE PLAYED. It turns over on the Tuesday. Two builds read it
+  as the week just finished, and both were wrong by one for the whole season:
+  - `build-ros` published `throughWeek: 3` on a Tuesday when week 3 kicked off on the Thursday; it
+    handed a two-game player the weight fitted for three (build-ros-weights fits week N as
+    `before = g.week <= N`, so N IS games of evidence); and `gamesRemaining` counted the upcoming
+    week as gone, so **every rest-of-season TOTAL was one game short — about 7%**, on the number a
+    reader actually trades on. Allen went 411.2 → 431.1 on the fix.
+  - `build-sos` cut its rest-of-season window at the same number, so the remaining slate included a
+    week nobody had played.
+  - And Start/Sit, which derives its week as `throughWeek + 1`, was showing the week AFTER next.
+- EACH ONE ASKS THE DATA IT IS BUILT FROM. ros reads the last week present in `data/weekly/*.json`
+  (the MAXIMUM across the pool — a player on bye has no row); sos reads `result` on the schedule
+  feed's own rows. The window and the games then come from one source and cannot come apart. The
+  calendar stays as the fallback for a feed that has stopped publishing results.
+- THREE FEEDS, THREE ANSWERS, ALL CORRECT: on 2026-09-22 Sleeper said week 3, the schedule feed had
+  32 of 272 games played (weeks 1–2), and stats_player had two weeks. Never cross-read them.
+
+## A segment that is in the past is not a segment
+- `build-sos` published "Weeks 1–4" as the opening month all season, beside a season-long figure
+  that was half history. Neither answers the only schedule question anybody has once games start:
+  whose slate is soft FROM HERE. The opening month is now preseason-only and `rest` replaces it the
+  moment a week is complete; `segmentsFor(week)` is the one definition.
+- THE PAGE HAD ITS OWN COPY OF THE WORDS. It read `sosTeam.early` and printed "OPENING MONTH", which
+  is how that label survived into October. build-sos publishes `meta.segments`, `meta.headline` and
+  `meta.headlineRankField`; `sosSummary()` renders whatever it finds and knows none of the names.
+- `restEaseRank` sits beside `seasonEaseRank` rather than replacing it — in November they answer
+  different questions and only one of them is actionable.

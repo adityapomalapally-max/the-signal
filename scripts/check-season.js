@@ -175,7 +175,16 @@ async function main() {
     }
     if (has('sos.json')) {
       const sos = read('sos.json');
-      notes.push(`SOS was built for ${sos.meta.season} off ${sos.meta.defenseSeason} defences — decays every week now that ${latest} defences are playing`);
+      // WHAT IT IS WAITING FOR, not just that it is old. build-sos switches to
+      // this season's defences once five weeks have been played
+      // (MIN_WEEKS_FOR_LIVE), and a note that says only "this decays" reads as
+      // something nobody has dealt with rather than something scheduled.
+      const onLast = Number(sos.meta.defenseSeason) !== Number(latest);
+      const seg = (sos.meta.segments && sos.meta.segments[sos.meta.headline]) || null;
+      notes.push(onLast
+        ? `SOS covers ${seg ? seg.label.toLowerCase() : 'the season'} off ${sos.meta.defenseSeason} defences — `
+          + `build-sos switches to ${latest} once five weeks have been played, and says so in its own caveats`
+        : `SOS covers ${seg ? seg.label.toLowerCase() : 'the season'} off ${latest} defences, this season's own`);
     }
     // DERIVED, NOT TYPED. A hardcoded file name here is a note that quietly
     // stops appearing the first season after the one it names — the same shape

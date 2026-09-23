@@ -45,6 +45,28 @@ const REGULAR_SEASON_WEEKS = 18;
 
 const read = (f) => JSON.parse(fs.readFileSync(path.join(DATA, f), 'utf8'));
 
+/**
+ * The last week this season anybody has a game on file for.
+ *
+ * Read off the same game logs the blend is built from, rather than off the
+ * calendar. A player who is on bye, hurt or benched has no row for a week, so
+ * the MAXIMUM across the pool is the question — "has anybody played week N" —
+ * and not any single player's last game.
+ */
+function lastPlayedWeek(season) {
+  let last = 0;
+  for (const f of fs.readdirSync(WEEKLY)) {
+    if (!f.endsWith('.json')) continue;
+    let log;
+    try { log = JSON.parse(fs.readFileSync(path.join(WEEKLY, f), 'utf8')); } catch (e) { continue; }
+    for (const g of (log[season] || [])) {
+      const w = Number(g.week);
+      if (Number.isFinite(w) && w > last) last = w;
+    }
+  }
+  return last;
+}
+
 function weightFor(weights, week, pos) {
   const perPos = weights.byPosition[pos];
   if (perPos) {
@@ -74,13 +96,38 @@ async function main() {
     console.log(`[ros] SIMULATING ${season} week ${week}`);
   } else {
     const st = await seasonLib.state();
-    season = st.season; week = st.week; phase = st.phase;
-    console.log(`[ros] league is in ${await seasonLib.describe()}`);
+    season = st.season; phase = st.phase;
+    // WEEKS PLAYED, NOT THE WEEK ON THE CALENDAR, AND THEY ARE NOT THE SAME
+    // NUMBER. Sleeper's `week` is the one ABOUT to be played — it turns over on
+    // the Tuesday — so taking it as the week this projection is "through"
+    // overstated the season by one all year:
+    //
+    //   - the weights are fitted per week as "N games of evidence"
+    //     (build-ros-weights: before = g.week <= N), so a player with two games
+    //     was being handed the weight fitted for three, which trusts a small
+    //     sample more than the fit says it should;
+    //   - gamesRemaining counted the upcoming week as already gone, so every
+    //     rest-of-season TOTAL was one game short — about 7% at this point of a
+    //     season, and the number a reader actually trades on;
+    //   - and the card said "through week 3" on a Tuesday when week 3 kicked
+    //     off on the Thursday.
+    //
+    // The game logs are what the blend is built from, so they are what the
+    // window is asked of: the last week anybody has a game on file. Two numbers
+    // derived from one source cannot come apart.
+    week = lastPlayedWeek(season);
+    console.log(`[ros] league is in ${await seasonLib.describe()}; game logs are complete through week ${week}`);
   }
 
   if (phase !== 'regular' && phase !== 'post') {
     console.log('[ros] not in season — a rest-of-season projection before any football has been '
       + 'played is the season projection under another name. Nothing written.');
+    return;
+  }
+
+  if (!week) {
+    console.log('[ros] no game has been played in this season yet — a rest-of-season projection with '
+      + 'nothing behind it is the preseason projection under another name. Nothing written.');
     return;
   }
 
@@ -120,6 +167,10 @@ async function main() {
     if (!chosen) continue;
 
     const blended = chosen.w * actualPpg + (1 - chosen.w) * pre.ppg;
+    // `week` is now the last week PLAYED, so the weeks still to come are
+    // week+1..REGULAR_SEASON_WEEKS, less the one bye that falls somewhere in a
+    // season. The old arithmetic subtracted an extra week because it read the
+    // upcoming week as a played one.
     const gamesLeft = Math.max(0, REGULAR_SEASON_WEEKS - week - 1);   // one bye already taken or coming
 
     players[player.id] = {

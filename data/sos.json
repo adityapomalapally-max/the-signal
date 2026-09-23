@@ -1,14 +1,14 @@
 {
   "meta": {
     "builtBy": "scripts/build-sos.js",
-    "builtAt": "2026-08-19T11:33:49.657Z",
+    "builtAt": "2026-09-23T01:34:48.296Z",
     "season": 2026,
     "defenseSeason": 2025,
     "segments": {
-      "early": {
-        "label": "Weeks 1–4",
-        "from": 1,
-        "to": 4
+      "rest": {
+        "label": "Weeks 3–18",
+        "from": 3,
+        "to": 18
       },
       "playoffs": {
         "label": "Weeks 15–17",
@@ -16,8 +16,10 @@
         "to": 17
       }
     },
+    "headline": "rest",
+    "headlineRankField": "restEaseRank",
     "scale": "Defensive rank 1–32 where 1 conceded the fewest fantasy points to that position. A low opponent rank is a hard matchup; a high one is a soft matchup. Team ease rank is 1 = easiest slate.",
-    "caveats": "Defensive numbers are 2025 results, not a 2026 projection — coordinators and secondaries turn over and a unit can look nothing like this by September. Fantasy points allowed also moves with pace and game script as much as with talent: a defense whose offense falls behind faces more passes and concedes more. Nothing here is adjusted for the offenses each defense happened to face. Use it for the comparative question — of two similar players, whose schedule opens softer — not as a forecast."
+    "caveats": "The headline figure is what is LEFT of the schedule (Weeks 3–18); the season-long number is half a record by now and is kept for the shape of the year. Defensive numbers are 2025 results, not a 2026 projection — coordinators and secondaries turn over and a unit can look nothing like this by September. Fantasy points allowed also moves with pace and game script as much as with talent: a defense whose offense falls behind faces more passes and concedes more. Nothing here is adjusted for the offenses each defense happened to face. Use it for the comparative question — of two similar players, whose schedule opens softer — not as a forecast."
   },
   "defense": {
     "MIN": {
@@ -605,17 +607,18 @@
           "avgRank": 15.5,
           "avgPerGame": 16
         },
-        "early": {
-          "games": 4,
-          "avgRank": 13.3,
-          "avgPerGame": 15.5
+        "rest": {
+          "games": 15,
+          "avgRank": 15.3,
+          "avgPerGame": 15.9
         },
         "playoffs": {
           "games": 3,
           "avgRank": 17.7,
           "avgPerGame": 16.4
         },
-        "seasonEaseRank": 22
+        "seasonEaseRank": 22,
+        "restEaseRank": 21
       },
       "RB": {
         "season": {
@@ -623,17 +626,18 @@
           "avgRank": 14.9,
           "avgPerGame": 21.7
         },
-        "early": {
-          "games": 4,
-          "avgRank": 9.5,
-          "avgPerGame": 20
+        "rest": {
+          "games": 15,
+          "avgRank": 16.1,
+          "avgPerGame": 22.1
         },
         "playoffs": {
           "games": 3,
           "avgRank": 12.7,
           "avgPerGame": 21.4
         },
-        "seasonEaseRank": 26
+        "seasonEaseRank": 26,
+        "restEaseRank": 18
       },
       "WR": {
         "season": {
@@ -641,9 +645,9 @@
           "avgRank": 14.5,
           "avgPerGame": 29.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 13,
+        "rest": {
+          "games": 15,
+          "avgRank": 14.5,
           "avgPerGame": 29.8
         },
         "playoffs": {
@@ -651,7 +655,8 @@
           "avgRank": 11.7,
           "avgPerGame": 28.2
         },
-        "seasonEaseRank": 25
+        "seasonEaseRank": 25,
+        "restEaseRank": 22
       },
       "TE": {
         "season": {
@@ -659,17 +664,18 @@
           "avgRank": 15.8,
           "avgPerGame": 12.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 19.3,
-          "avgPerGame": 13.4
+        "rest": {
+          "games": 15,
+          "avgRank": 14.5,
+          "avgPerGame": 12.5
         },
         "playoffs": {
           "games": 3,
           "avgRank": 16.7,
           "avgPerGame": 13.3
         },
-        "seasonEaseRank": 20
+        "seasonEaseRank": 20,
+        "restEaseRank": 29
       }
     },
     "SEA": {
@@ -679,17 +685,18 @@
           "avgRank": 16.6,
           "avgPerGame": 16.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 15.5,
-          "avgPerGame": 16
+        "rest": {
+          "games": 15,
+          "avgRank": 16.8,
+          "avgPerGame": 16.5
         },
         "playoffs": {
           "games": 3,
           "avgRank": 10,
           "avgPerGame": 14.5
         },
-        "seasonEaseRank": 14
+        "seasonEaseRank": 14,
+        "restEaseRank": 16
       },
       "RB": {
         "season": {
@@ -697,17 +704,18 @@
           "avgRank": 18.2,
           "avgPerGame": 22.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 16.5,
-          "avgPerGame": 22.3
+        "rest": {
+          "games": 15,
+          "avgRank": 18.3,
+          "avgPerGame": 22.4
         },
         "playoffs": {
           "games": 3,
           "avgRank": 19,
           "avgPerGame": 22.4
         },
-        "seasonEaseRank": 7
+        "seasonEaseRank": 7,
+        "restEaseRank": 5
       },
       "WR": {
         "season": {
@@ -715,17 +723,18 @@
           "avgRank": 17.8,
           "avgPerGame": 31.2
         },
-        "early": {
-          "games": 4,
-          "avgRank": 16,
-          "avgPerGame": 30.4
+        "rest": {
+          "games": 15,
+          "avgRank": 18.3,
+          "avgPerGame": 31.4
         },
         "playoffs": {
           "games": 3,
           "avgRank": 11,
           "avgPerGame": 28.4
         },
-        "seasonEaseRank": 10
+        "seasonEaseRank": 10,
+        "restEaseRank": 9
       },
       "TE": {
         "season": {
@@ -733,17 +742,18 @@
           "avgRank": 16.4,
           "avgPerGame": 13.1
         },
-        "early": {
-          "games": 4,
-          "avgRank": 21,
-          "avgPerGame": 14.3
+        "rest": {
+          "games": 15,
+          "avgRank": 15.1,
+          "avgPerGame": 12.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 12,
           "avgPerGame": 11.7
         },
-        "seasonEaseRank": 14
+        "seasonEaseRank": 14,
+        "restEaseRank": 28
       }
     },
     "SF": {
@@ -753,17 +763,18 @@
           "avgRank": 15.2,
           "avgPerGame": 16
         },
-        "early": {
-          "games": 4,
-          "avgRank": 16.3,
-          "avgPerGame": 16.2
+        "rest": {
+          "games": 15,
+          "avgRank": 14.7,
+          "avgPerGame": 15.9
         },
         "playoffs": {
           "games": 3,
           "avgRank": 8.3,
           "avgPerGame": 14.1
         },
-        "seasonEaseRank": 23
+        "seasonEaseRank": 23,
+        "restEaseRank": 26
       },
       "RB": {
         "season": {
@@ -771,17 +782,18 @@
           "avgRank": 16.4,
           "avgPerGame": 21.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 17.3,
-          "avgPerGame": 22
+        "rest": {
+          "games": 15,
+          "avgRank": 16,
+          "avgPerGame": 21.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 9.7,
           "avgPerGame": 20.2
         },
-        "seasonEaseRank": 17
+        "seasonEaseRank": 17,
+        "restEaseRank": 20
       },
       "WR": {
         "season": {
@@ -789,17 +801,18 @@
           "avgRank": 15.1,
           "avgPerGame": 30.2
         },
-        "early": {
-          "games": 4,
-          "avgRank": 14.5,
-          "avgPerGame": 29.7
+        "rest": {
+          "games": 15,
+          "avgRank": 14.8,
+          "avgPerGame": 30.1
         },
         "playoffs": {
           "games": 3,
           "avgRank": 9.3,
           "avgPerGame": 27.2
         },
-        "seasonEaseRank": 22
+        "seasonEaseRank": 22,
+        "restEaseRank": 21
       },
       "TE": {
         "season": {
@@ -807,17 +820,18 @@
           "avgRank": 15.4,
           "avgPerGame": 12.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 23.3,
-          "avgPerGame": 15
+        "rest": {
+          "games": 15,
+          "avgRank": 14.5,
+          "avgPerGame": 12.7
         },
         "playoffs": {
           "games": 3,
           "avgRank": 5,
           "avgPerGame": 9.9
         },
-        "seasonEaseRank": 25
+        "seasonEaseRank": 25,
+        "restEaseRank": 30
       }
     },
     "LA": {
@@ -827,17 +841,18 @@
           "avgRank": 16.1,
           "avgPerGame": 16.3
         },
-        "early": {
-          "games": 4,
-          "avgRank": 16,
-          "avgPerGame": 16
+        "rest": {
+          "games": 15,
+          "avgRank": 15.3,
+          "avgPerGame": 16.1
         },
         "playoffs": {
           "games": 3,
           "avgRank": 22.7,
           "avgPerGame": 18.9
         },
-        "seasonEaseRank": 17
+        "seasonEaseRank": 17,
+        "restEaseRank": 22
       },
       "RB": {
         "season": {
@@ -845,17 +860,18 @@
           "avgRank": 18.2,
           "avgPerGame": 22.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 18.3,
-          "avgPerGame": 22.2
+        "rest": {
+          "games": 15,
+          "avgRank": 17.1,
+          "avgPerGame": 22.1
         },
         "playoffs": {
           "games": 3,
           "avgRank": 16.7,
           "avgPerGame": 21.8
         },
-        "seasonEaseRank": 8
+        "seasonEaseRank": 8,
+        "restEaseRank": 12
       },
       "WR": {
         "season": {
@@ -863,9 +879,9 @@
           "avgRank": 15.4,
           "avgPerGame": 30.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 15.3,
+        "rest": {
+          "games": 15,
+          "avgRank": 14.5,
           "avgPerGame": 30
         },
         "playoffs": {
@@ -873,7 +889,8 @@
           "avgRank": 18.3,
           "avgPerGame": 32.4
         },
-        "seasonEaseRank": 21
+        "seasonEaseRank": 21,
+        "restEaseRank": 23
       },
       "TE": {
         "season": {
@@ -881,17 +898,18 @@
           "avgRank": 16.2,
           "avgPerGame": 13
         },
-        "early": {
-          "games": 4,
-          "avgRank": 12.8,
-          "avgPerGame": 12.1
+        "rest": {
+          "games": 15,
+          "avgRank": 16.2,
+          "avgPerGame": 13
         },
         "playoffs": {
           "games": 3,
           "avgRank": 20.7,
           "avgPerGame": 14.3
         },
-        "seasonEaseRank": 16
+        "seasonEaseRank": 16,
+        "restEaseRank": 17
       }
     },
     "CHI": {
@@ -901,17 +919,18 @@
           "avgRank": 13.8,
           "avgPerGame": 15.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 12,
-          "avgPerGame": 14.8
+        "rest": {
+          "games": 15,
+          "avgRank": 15.2,
+          "avgPerGame": 15.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 13.3,
           "avgPerGame": 15.4
         },
-        "seasonEaseRank": 30
+        "seasonEaseRank": 30,
+        "restEaseRank": 24
       },
       "RB": {
         "season": {
@@ -919,17 +938,18 @@
           "avgRank": 14.8,
           "avgPerGame": 21.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 21.3,
-          "avgPerGame": 23.6
+        "rest": {
+          "games": 15,
+          "avgRank": 14.5,
+          "avgPerGame": 21.4
         },
         "playoffs": {
           "games": 3,
           "avgRank": 16,
           "avgPerGame": 21.6
         },
-        "seasonEaseRank": 27
+        "seasonEaseRank": 27,
+        "restEaseRank": 29
       },
       "WR": {
         "season": {
@@ -937,17 +957,18 @@
           "avgRank": 13.5,
           "avgPerGame": 29.5
         },
-        "early": {
-          "games": 4,
-          "avgRank": 7.5,
-          "avgPerGame": 26.9
+        "rest": {
+          "games": 15,
+          "avgRank": 14.9,
+          "avgPerGame": 30.1
         },
         "playoffs": {
           "games": 3,
           "avgRank": 17,
           "avgPerGame": 31.2
         },
-        "seasonEaseRank": 31
+        "seasonEaseRank": 31,
+        "restEaseRank": 20
       },
       "TE": {
         "season": {
@@ -955,17 +976,18 @@
           "avgRank": 15.1,
           "avgPerGame": 12.7
         },
-        "early": {
-          "games": 4,
-          "avgRank": 12.8,
-          "avgPerGame": 12
+        "rest": {
+          "games": 15,
+          "avgRank": 15.5,
+          "avgPerGame": 12.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 10,
           "avgPerGame": 11.1
         },
-        "seasonEaseRank": 29
+        "seasonEaseRank": 29,
+        "restEaseRank": 25
       }
     },
     "CAR": {
@@ -975,17 +997,18 @@
           "avgRank": 16,
           "avgPerGame": 16.1
         },
-        "early": {
-          "games": 4,
-          "avgRank": 17,
-          "avgPerGame": 16.5
+        "rest": {
+          "games": 15,
+          "avgRank": 15.5,
+          "avgPerGame": 15.9
         },
         "playoffs": {
           "games": 3,
           "avgRank": 20,
           "avgPerGame": 17.1
         },
-        "seasonEaseRank": 18
+        "seasonEaseRank": 18,
+        "restEaseRank": 20
       },
       "RB": {
         "season": {
@@ -993,17 +1016,18 @@
           "avgRank": 14.6,
           "avgPerGame": 21.3
         },
-        "early": {
-          "games": 4,
-          "avgRank": 13.8,
-          "avgPerGame": 21
+        "rest": {
+          "games": 15,
+          "avgRank": 14.5,
+          "avgPerGame": 21.2
         },
         "playoffs": {
           "games": 3,
           "avgRank": 14.7,
           "avgPerGame": 22.1
         },
-        "seasonEaseRank": 30
+        "seasonEaseRank": 30,
+        "restEaseRank": 30
       },
       "WR": {
         "season": {
@@ -1011,17 +1035,18 @@
           "avgRank": 15.9,
           "avgPerGame": 30.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 22.5,
-          "avgPerGame": 33.1
+        "rest": {
+          "games": 15,
+          "avgRank": 14.5,
+          "avgPerGame": 29.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 10.7,
           "avgPerGame": 28.9
         },
-        "seasonEaseRank": 19
+        "seasonEaseRank": 19,
+        "restEaseRank": 24
       },
       "TE": {
         "season": {
@@ -1029,17 +1054,18 @@
           "avgRank": 15.4,
           "avgPerGame": 13.2
         },
-        "early": {
-          "games": 4,
-          "avgRank": 12.3,
-          "avgPerGame": 12.3
+        "rest": {
+          "games": 15,
+          "avgRank": 16.1,
+          "avgPerGame": 13.4
         },
         "playoffs": {
           "games": 3,
           "avgRank": 28,
           "avgPerGame": 17.4
         },
-        "seasonEaseRank": 26
+        "seasonEaseRank": 26,
+        "restEaseRank": 18
       }
     },
     "TB": {
@@ -1049,17 +1075,18 @@
           "avgRank": 14.6,
           "avgPerGame": 15.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 11,
-          "avgPerGame": 14.5
+        "rest": {
+          "games": 15,
+          "avgRank": 14.5,
+          "avgPerGame": 15.9
         },
         "playoffs": {
           "games": 3,
           "avgRank": 13,
           "avgPerGame": 15.2
         },
-        "seasonEaseRank": 27
+        "seasonEaseRank": 27,
+        "restEaseRank": 28
       },
       "RB": {
         "season": {
@@ -1067,17 +1094,18 @@
           "avgRank": 16.3,
           "avgPerGame": 21.8
         },
-        "early": {
-          "games": 4,
-          "avgRank": 19,
-          "avgPerGame": 22.8
+        "rest": {
+          "games": 15,
+          "avgRank": 15.1,
+          "avgPerGame": 21.4
         },
         "playoffs": {
           "games": 3,
           "avgRank": 13.7,
           "avgPerGame": 20.8
         },
-        "seasonEaseRank": 18
+        "seasonEaseRank": 18,
+        "restEaseRank": 25
       },
       "WR": {
         "season": {
@@ -1085,17 +1113,18 @@
           "avgRank": 16.9,
           "avgPerGame": 30.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 7.3,
-          "avgPerGame": 26.8
+        "rest": {
+          "games": 15,
+          "avgRank": 18.5,
+          "avgPerGame": 31.5
         },
         "playoffs": {
           "games": 3,
           "avgRank": 18.3,
           "avgPerGame": 31
         },
-        "seasonEaseRank": 13
+        "seasonEaseRank": 13,
+        "restEaseRank": 7
       },
       "TE": {
         "season": {
@@ -1103,17 +1132,18 @@
           "avgRank": 13.9,
           "avgPerGame": 12.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 14.8,
-          "avgPerGame": 14
+        "rest": {
+          "games": 15,
+          "avgRank": 12.9,
+          "avgPerGame": 12.4
         },
         "playoffs": {
           "games": 3,
           "avgRank": 11.3,
           "avgPerGame": 11.9
         },
-        "seasonEaseRank": 32
+        "seasonEaseRank": 32,
+        "restEaseRank": 32
       }
     },
     "CIN": {
@@ -1123,17 +1153,18 @@
           "avgRank": 17.4,
           "avgPerGame": 16.5
         },
-        "early": {
-          "games": 4,
-          "avgRank": 18.5,
-          "avgPerGame": 16.8
+        "rest": {
+          "games": 15,
+          "avgRank": 17.6,
+          "avgPerGame": 16.6
         },
         "playoffs": {
           "games": 3,
           "avgRank": 15,
           "avgPerGame": 16.1
         },
-        "seasonEaseRank": 12
+        "seasonEaseRank": 12,
+        "restEaseRank": 9
       },
       "RB": {
         "season": {
@@ -1141,17 +1172,18 @@
           "avgRank": 15.7,
           "avgPerGame": 21.6
         },
-        "early": {
-          "games": 4,
-          "avgRank": 10,
-          "avgPerGame": 20
+        "rest": {
+          "games": 15,
+          "avgRank": 15.8,
+          "avgPerGame": 21.6
         },
         "playoffs": {
           "games": 3,
           "avgRank": 19,
           "avgPerGame": 22.4
         },
-        "seasonEaseRank": 21
+        "seasonEaseRank": 21,
+        "restEaseRank": 22
       },
       "WR": {
         "season": {
@@ -1159,17 +1191,18 @@
           "avgRank": 18.4,
           "avgPerGame": 31.6
         },
-        "early": {
-          "games": 4,
-          "avgRank": 16.3,
-          "avgPerGame": 31
+        "rest": {
+          "games": 15,
+          "avgRank": 19.3,
+          "avgPerGame": 31.9
         },
         "playoffs": {
           "games": 3,
           "avgRank": 21.7,
           "avgPerGame": 32.9
         },
-        "seasonEaseRank": 7
+        "seasonEaseRank": 7,
+        "restEaseRank": 5
       },
       "TE": {
         "season": {
@@ -1177,17 +1210,18 @@
           "avgRank": 18.1,
           "avgPerGame": 13.6
         },
-        "early": {
-          "games": 4,
-          "avgRank": 23.3,
-          "avgPerGame": 14.9
+        "rest": {
+          "games": 15,
+          "avgRank": 17.9,
+          "avgPerGame": 13.5
         },
         "playoffs": {
           "games": 3,
           "avgRank": 17,
           "avgPerGame": 13.3
         },
-        "seasonEaseRank": 4
+        "seasonEaseRank": 4,
+        "restEaseRank": 9
       }
     },
     "NO": {
@@ -1197,17 +1231,18 @@
           "avgRank": 17.8,
           "avgPerGame": 16.5
         },
-        "early": {
-          "games": 4,
-          "avgRank": 19.5,
-          "avgPerGame": 17.1
+        "rest": {
+          "games": 15,
+          "avgRank": 17.1,
+          "avgPerGame": 16.4
         },
         "playoffs": {
           "games": 3,
           "avgRank": 21.7,
           "avgPerGame": 17.6
         },
-        "seasonEaseRank": 10
+        "seasonEaseRank": 10,
+        "restEaseRank": 14
       },
       "RB": {
         "season": {
@@ -1215,17 +1250,18 @@
           "avgRank": 19.2,
           "avgPerGame": 22.6
         },
-        "early": {
-          "games": 4,
-          "avgRank": 16.5,
-          "avgPerGame": 21.7
+        "rest": {
+          "games": 15,
+          "avgRank": 19.9,
+          "avgPerGame": 22.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 21.7,
           "avgPerGame": 23.3
         },
-        "seasonEaseRank": 1
+        "seasonEaseRank": 1,
+        "restEaseRank": 1
       },
       "WR": {
         "season": {
@@ -1233,17 +1269,18 @@
           "avgRank": 17.6,
           "avgPerGame": 31.2
         },
-        "early": {
-          "games": 4,
-          "avgRank": 25.5,
-          "avgPerGame": 34.7
+        "rest": {
+          "games": 15,
+          "avgRank": 16.2,
+          "avgPerGame": 30.6
         },
         "playoffs": {
           "games": 3,
           "avgRank": 19,
           "avgPerGame": 31.8
         },
-        "seasonEaseRank": 11
+        "seasonEaseRank": 11,
+        "restEaseRank": 16
       },
       "TE": {
         "season": {
@@ -1251,17 +1288,18 @@
           "avgRank": 15.9,
           "avgPerGame": 13.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 8.3,
-          "avgPerGame": 11.2
+        "rest": {
+          "games": 15,
+          "avgRank": 16.3,
+          "avgPerGame": 13.6
         },
         "playoffs": {
           "games": 3,
           "avgRank": 20.7,
           "avgPerGame": 14.3
         },
-        "seasonEaseRank": 18
+        "seasonEaseRank": 18,
+        "restEaseRank": 16
       }
     },
     "DET": {
@@ -1271,17 +1309,18 @@
           "avgRank": 15.9,
           "avgPerGame": 16
         },
-        "early": {
-          "games": 4,
-          "avgRank": 12.3,
-          "avgPerGame": 15.2
+        "rest": {
+          "games": 15,
+          "avgRank": 17.3,
+          "avgPerGame": 16.3
         },
         "playoffs": {
           "games": 3,
           "avgRank": 16,
           "avgPerGame": 15.8
         },
-        "seasonEaseRank": 20
+        "seasonEaseRank": 20,
+        "restEaseRank": 11
       },
       "RB": {
         "season": {
@@ -1289,17 +1328,18 @@
           "avgRank": 18.4,
           "avgPerGame": 22.5
         },
-        "early": {
-          "games": 4,
-          "avgRank": 23.3,
-          "avgPerGame": 24.2
+        "rest": {
+          "games": 15,
+          "avgRank": 18.4,
+          "avgPerGame": 22.5
         },
         "playoffs": {
           "games": 3,
           "avgRank": 17.3,
           "avgPerGame": 22.2
         },
-        "seasonEaseRank": 6
+        "seasonEaseRank": 6,
+        "restEaseRank": 4
       },
       "WR": {
         "season": {
@@ -1307,17 +1347,18 @@
           "avgRank": 16.1,
           "avgPerGame": 30.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 9.8,
-          "avgPerGame": 27.8
+        "rest": {
+          "games": 15,
+          "avgRank": 17.1,
+          "avgPerGame": 30.9
         },
         "playoffs": {
           "games": 3,
           "avgRank": 18.7,
           "avgPerGame": 31.2
         },
-        "seasonEaseRank": 16
+        "seasonEaseRank": 16,
+        "restEaseRank": 14
       },
       "TE": {
         "season": {
@@ -1325,17 +1366,18 @@
           "avgRank": 15.4,
           "avgPerGame": 12.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 14.5,
-          "avgPerGame": 12.3
+        "rest": {
+          "games": 15,
+          "avgRank": 16.4,
+          "avgPerGame": 13.3
         },
         "playoffs": {
           "games": 3,
           "avgRank": 10,
           "avgPerGame": 11.7
         },
-        "seasonEaseRank": 27
+        "seasonEaseRank": 27,
+        "restEaseRank": 15
       }
     },
     "BUF": {
@@ -1345,17 +1387,18 @@
           "avgRank": 15.7,
           "avgPerGame": 16
         },
-        "early": {
-          "games": 4,
-          "avgRank": 10,
-          "avgPerGame": 14.6
+        "rest": {
+          "games": 15,
+          "avgRank": 16,
+          "avgPerGame": 16
         },
         "playoffs": {
           "games": 3,
           "avgRank": 18,
           "avgPerGame": 16.8
         },
-        "seasonEaseRank": 21
+        "seasonEaseRank": 21,
+        "restEaseRank": 18
       },
       "RB": {
         "season": {
@@ -1363,17 +1406,18 @@
           "avgRank": 14.5,
           "avgPerGame": 21.5
         },
-        "early": {
-          "games": 4,
-          "avgRank": 6.5,
-          "avgPerGame": 19.2
+        "rest": {
+          "games": 15,
+          "avgRank": 15.3,
+          "avgPerGame": 21.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 13.7,
           "avgPerGame": 21
         },
-        "seasonEaseRank": 31
+        "seasonEaseRank": 31,
+        "restEaseRank": 23
       },
       "WR": {
         "season": {
@@ -1381,17 +1425,18 @@
           "avgRank": 15.8,
           "avgPerGame": 30.3
         },
-        "early": {
-          "games": 4,
-          "avgRank": 13.8,
-          "avgPerGame": 29.6
+        "rest": {
+          "games": 15,
+          "avgRank": 15.8,
+          "avgPerGame": 30.2
         },
         "playoffs": {
           "games": 3,
           "avgRank": 18,
           "avgPerGame": 31
         },
-        "seasonEaseRank": 20
+        "seasonEaseRank": 20,
+        "restEaseRank": 18
       },
       "TE": {
         "season": {
@@ -1399,17 +1444,18 @@
           "avgRank": 15.6,
           "avgPerGame": 13
         },
-        "early": {
-          "games": 4,
-          "avgRank": 14,
-          "avgPerGame": 12.6
+        "rest": {
+          "games": 15,
+          "avgRank": 15.7,
+          "avgPerGame": 13.1
         },
         "playoffs": {
           "games": 3,
           "avgRank": 20.3,
           "avgPerGame": 14.4
         },
-        "seasonEaseRank": 22
+        "seasonEaseRank": 22,
+        "restEaseRank": 22
       }
     },
     "HOU": {
@@ -1419,17 +1465,18 @@
           "avgRank": 18.6,
           "avgPerGame": 17
         },
-        "early": {
-          "games": 4,
-          "avgRank": 20,
-          "avgPerGame": 17.9
+        "rest": {
+          "games": 15,
+          "avgRank": 19.1,
+          "avgPerGame": 17.1
         },
         "playoffs": {
           "games": 3,
           "avgRank": 12.3,
           "avgPerGame": 15.1
         },
-        "seasonEaseRank": 4
+        "seasonEaseRank": 4,
+        "restEaseRank": 4
       },
       "RB": {
         "season": {
@@ -1437,17 +1484,18 @@
           "avgRank": 16.6,
           "avgPerGame": 22
         },
-        "early": {
-          "games": 4,
-          "avgRank": 23.3,
-          "avgPerGame": 24.3
+        "rest": {
+          "games": 15,
+          "avgRank": 15.1,
+          "avgPerGame": 21.5
         },
         "playoffs": {
           "games": 3,
           "avgRank": 13,
           "avgPerGame": 20.9
         },
-        "seasonEaseRank": 13
+        "seasonEaseRank": 13,
+        "restEaseRank": 26
       },
       "WR": {
         "season": {
@@ -1455,17 +1503,18 @@
           "avgRank": 19.7,
           "avgPerGame": 32.3
         },
-        "early": {
-          "games": 4,
-          "avgRank": 17.3,
-          "avgPerGame": 31.8
+        "rest": {
+          "games": 15,
+          "avgRank": 21.9,
+          "avgPerGame": 33.2
         },
         "playoffs": {
           "games": 3,
           "avgRank": 14,
           "avgPerGame": 29.8
         },
-        "seasonEaseRank": 3
+        "seasonEaseRank": 3,
+        "restEaseRank": 1
       },
       "TE": {
         "season": {
@@ -1473,17 +1522,18 @@
           "avgRank": 17.1,
           "avgPerGame": 13.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 18,
-          "avgPerGame": 14
+        "rest": {
+          "games": 15,
+          "avgRank": 17.1,
+          "avgPerGame": 13.2
         },
         "playoffs": {
           "games": 3,
           "avgRank": 12,
           "avgPerGame": 11.7
         },
-        "seasonEaseRank": 11
+        "seasonEaseRank": 11,
+        "restEaseRank": 13
       }
     },
     "BAL": {
@@ -1493,17 +1543,18 @@
           "avgRank": 16.4,
           "avgPerGame": 16.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 21.5,
-          "avgPerGame": 18.3
+        "rest": {
+          "games": 15,
+          "avgRank": 16.8,
+          "avgPerGame": 16.5
         },
         "playoffs": {
           "games": 3,
           "avgRank": 19.3,
           "avgPerGame": 16.8
         },
-        "seasonEaseRank": 16
+        "seasonEaseRank": 16,
+        "restEaseRank": 17
       },
       "RB": {
         "season": {
@@ -1511,17 +1562,18 @@
           "avgRank": 16.5,
           "avgPerGame": 22
         },
-        "early": {
-          "games": 4,
-          "avgRank": 16.3,
-          "avgPerGame": 21.7
+        "rest": {
+          "games": 15,
+          "avgRank": 17.2,
+          "avgPerGame": 22.3
         },
         "playoffs": {
           "games": 3,
           "avgRank": 19.3,
           "avgPerGame": 23.2
         },
-        "seasonEaseRank": 14
+        "seasonEaseRank": 14,
+        "restEaseRank": 11
       },
       "WR": {
         "season": {
@@ -1529,17 +1581,18 @@
           "avgRank": 15.1,
           "avgPerGame": 30.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 25.3,
-          "avgPerGame": 34.7
+        "rest": {
+          "games": 15,
+          "avgRank": 14.3,
+          "avgPerGame": 30.2
         },
         "playoffs": {
           "games": 3,
           "avgRank": 12,
           "avgPerGame": 29.1
         },
-        "seasonEaseRank": 23
+        "seasonEaseRank": 23,
+        "restEaseRank": 26
       },
       "TE": {
         "season": {
@@ -1547,17 +1600,18 @@
           "avgRank": 18.3,
           "avgPerGame": 14
         },
-        "early": {
-          "games": 4,
-          "avgRank": 18.5,
-          "avgPerGame": 13.6
+        "rest": {
+          "games": 15,
+          "avgRank": 18.1,
+          "avgPerGame": 14
         },
         "playoffs": {
           "games": 3,
           "avgRank": 24.3,
           "avgPerGame": 16.5
         },
-        "seasonEaseRank": 3
+        "seasonEaseRank": 3,
+        "restEaseRank": 7
       }
     },
     "IND": {
@@ -1567,17 +1621,18 @@
           "avgRank": 17.9,
           "avgPerGame": 16.7
         },
-        "early": {
-          "games": 4,
-          "avgRank": 16.8,
-          "avgPerGame": 16.3
+        "rest": {
+          "games": 15,
+          "avgRank": 18.1,
+          "avgPerGame": 16.7
         },
         "playoffs": {
           "games": 3,
           "avgRank": 19.7,
           "avgPerGame": 16.9
         },
-        "seasonEaseRank": 8
+        "seasonEaseRank": 8,
+        "restEaseRank": 8
       },
       "RB": {
         "season": {
@@ -1585,17 +1640,18 @@
           "avgRank": 16.5,
           "avgPerGame": 22
         },
-        "early": {
-          "games": 4,
-          "avgRank": 16.8,
-          "avgPerGame": 22
+        "rest": {
+          "games": 15,
+          "avgRank": 16.9,
+          "avgPerGame": 22.2
         },
         "playoffs": {
           "games": 3,
           "avgRank": 21.7,
           "avgPerGame": 23.9
         },
-        "seasonEaseRank": 15
+        "seasonEaseRank": 15,
+        "restEaseRank": 16
       },
       "WR": {
         "season": {
@@ -1603,17 +1659,18 @@
           "avgRank": 16,
           "avgPerGame": 30.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 16.8,
-          "avgPerGame": 31
+        "rest": {
+          "games": 15,
+          "avgRank": 15.5,
+          "avgPerGame": 30.7
         },
         "playoffs": {
           "games": 3,
           "avgRank": 12.3,
           "avgPerGame": 29.3
         },
-        "seasonEaseRank": 18
+        "seasonEaseRank": 18,
+        "restEaseRank": 19
       },
       "TE": {
         "season": {
@@ -1621,17 +1678,18 @@
           "avgRank": 17,
           "avgPerGame": 13.5
         },
-        "early": {
-          "games": 4,
-          "avgRank": 13.8,
-          "avgPerGame": 12.5
+        "rest": {
+          "games": 15,
+          "avgRank": 18.3,
+          "avgPerGame": 13.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 21.3,
           "avgPerGame": 15.7
         },
-        "seasonEaseRank": 12
+        "seasonEaseRank": 12,
+        "restEaseRank": 5
       }
     },
     "CLE": {
@@ -1641,17 +1699,18 @@
           "avgRank": 20.2,
           "avgPerGame": 17.2
         },
-        "early": {
-          "games": 4,
-          "avgRank": 19.3,
-          "avgPerGame": 17
+        "rest": {
+          "games": 15,
+          "avgRank": 20,
+          "avgPerGame": 17.1
         },
         "playoffs": {
           "games": 3,
           "avgRank": 21.3,
           "avgPerGame": 17.6
         },
-        "seasonEaseRank": 2
+        "seasonEaseRank": 2,
+        "restEaseRank": 2
       },
       "RB": {
         "season": {
@@ -1659,17 +1718,18 @@
           "avgRank": 18.6,
           "avgPerGame": 22.7
         },
-        "early": {
-          "games": 4,
-          "avgRank": 13.5,
-          "avgPerGame": 21
+        "rest": {
+          "games": 15,
+          "avgRank": 19.7,
+          "avgPerGame": 23.1
         },
         "playoffs": {
           "games": 3,
           "avgRank": 20.3,
           "avgPerGame": 22.9
         },
-        "seasonEaseRank": 4
+        "seasonEaseRank": 4,
+        "restEaseRank": 2
       },
       "WR": {
         "season": {
@@ -1677,17 +1737,18 @@
           "avgRank": 18.4,
           "avgPerGame": 31.7
         },
-        "early": {
-          "games": 4,
-          "avgRank": 17,
-          "avgPerGame": 31.1
+        "rest": {
+          "games": 15,
+          "avgRank": 18.5,
+          "avgPerGame": 31.7
         },
         "playoffs": {
           "games": 3,
           "avgRank": 27.7,
           "avgPerGame": 35.3
         },
-        "seasonEaseRank": 8
+        "seasonEaseRank": 8,
+        "restEaseRank": 8
       },
       "TE": {
         "season": {
@@ -1695,17 +1756,18 @@
           "avgRank": 18.9,
           "avgPerGame": 14.2
         },
-        "early": {
-          "games": 4,
-          "avgRank": 24.8,
-          "avgPerGame": 15.2
+        "rest": {
+          "games": 15,
+          "avgRank": 18,
+          "avgPerGame": 14.1
         },
         "playoffs": {
           "games": 3,
           "avgRank": 14,
           "avgPerGame": 12.5
         },
-        "seasonEaseRank": 2
+        "seasonEaseRank": 2,
+        "restEaseRank": 8
       }
     },
     "JAX": {
@@ -1715,17 +1777,18 @@
           "avgRank": 18.6,
           "avgPerGame": 17
         },
-        "early": {
-          "games": 4,
-          "avgRank": 12.8,
-          "avgPerGame": 15.2
+        "rest": {
+          "games": 15,
+          "avgRank": 20.1,
+          "avgPerGame": 17.4
         },
         "playoffs": {
           "games": 3,
           "avgRank": 21.7,
           "avgPerGame": 18.6
         },
-        "seasonEaseRank": 5
+        "seasonEaseRank": 5,
+        "restEaseRank": 1
       },
       "RB": {
         "season": {
@@ -1733,17 +1796,18 @@
           "avgRank": 16.2,
           "avgPerGame": 21.8
         },
-        "early": {
-          "games": 4,
-          "avgRank": 14,
-          "avgPerGame": 21.5
+        "rest": {
+          "games": 15,
+          "avgRank": 17.1,
+          "avgPerGame": 22.2
         },
         "playoffs": {
           "games": 3,
           "avgRank": 22,
           "avgPerGame": 23.5
         },
-        "seasonEaseRank": 19
+        "seasonEaseRank": 19,
+        "restEaseRank": 13
       },
       "WR": {
         "season": {
@@ -1751,17 +1815,18 @@
           "avgRank": 19.2,
           "avgPerGame": 32.1
         },
-        "early": {
-          "games": 4,
-          "avgRank": 8,
-          "avgPerGame": 27.1
+        "rest": {
+          "games": 15,
+          "avgRank": 20.6,
+          "avgPerGame": 32.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 20,
           "avgPerGame": 33.4
         },
-        "seasonEaseRank": 4
+        "seasonEaseRank": 4,
+        "restEaseRank": 3
       },
       "TE": {
         "season": {
@@ -1769,17 +1834,18 @@
           "avgRank": 17.8,
           "avgPerGame": 13.7
         },
-        "early": {
-          "games": 4,
-          "avgRank": 20,
-          "avgPerGame": 15.1
+        "rest": {
+          "games": 15,
+          "avgRank": 18.3,
+          "avgPerGame": 13.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 17.7,
           "avgPerGame": 13.5
         },
-        "seasonEaseRank": 7
+        "seasonEaseRank": 7,
+        "restEaseRank": 6
       }
     },
     "ATL": {
@@ -1789,17 +1855,18 @@
           "avgRank": 16.9,
           "avgPerGame": 16.3
         },
-        "early": {
-          "games": 4,
-          "avgRank": 13.3,
-          "avgPerGame": 15.4
+        "rest": {
+          "games": 15,
+          "avgRank": 16.9,
+          "avgPerGame": 16.3
         },
         "playoffs": {
           "games": 3,
           "avgRank": 22.3,
           "avgPerGame": 17.7
         },
-        "seasonEaseRank": 13
+        "seasonEaseRank": 13,
+        "restEaseRank": 15
       },
       "RB": {
         "season": {
@@ -1807,17 +1874,18 @@
           "avgRank": 17.5,
           "avgPerGame": 22.2
         },
-        "early": {
-          "games": 4,
-          "avgRank": 15.8,
-          "avgPerGame": 21.5
+        "rest": {
+          "games": 15,
+          "avgRank": 17.7,
+          "avgPerGame": 22.2
         },
         "playoffs": {
           "games": 3,
           "avgRank": 20,
           "avgPerGame": 22.8
         },
-        "seasonEaseRank": 9
+        "seasonEaseRank": 9,
+        "restEaseRank": 7
       },
       "WR": {
         "season": {
@@ -1825,17 +1893,18 @@
           "avgRank": 16.1,
           "avgPerGame": 30.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 15.5,
-          "avgPerGame": 30.2
+        "rest": {
+          "games": 15,
+          "avgRank": 16.1,
+          "avgPerGame": 30.3
         },
         "playoffs": {
           "games": 3,
           "avgRank": 18.7,
           "avgPerGame": 31.4
         },
-        "seasonEaseRank": 17
+        "seasonEaseRank": 17,
+        "restEaseRank": 17
       },
       "TE": {
         "season": {
@@ -1843,9 +1912,9 @@
           "avgRank": 18.1,
           "avgPerGame": 13.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 18,
+        "rest": {
+          "games": 15,
+          "avgRank": 17.3,
           "avgPerGame": 13.7
         },
         "playoffs": {
@@ -1853,7 +1922,8 @@
           "avgRank": 23,
           "avgPerGame": 14.7
         },
-        "seasonEaseRank": 5
+        "seasonEaseRank": 5,
+        "restEaseRank": 11
       }
     },
     "PIT": {
@@ -1863,17 +1933,18 @@
           "avgRank": 15.2,
           "avgPerGame": 15.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 14.8,
-          "avgPerGame": 15.7
+        "rest": {
+          "games": 15,
+          "avgRank": 15.3,
+          "avgPerGame": 16
         },
         "playoffs": {
           "games": 3,
           "avgRank": 18.3,
           "avgPerGame": 16.8
         },
-        "seasonEaseRank": 24
+        "seasonEaseRank": 24,
+        "restEaseRank": 23
       },
       "RB": {
         "season": {
@@ -1881,17 +1952,18 @@
           "avgRank": 16.5,
           "avgPerGame": 21.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 17.8,
-          "avgPerGame": 22.6
+        "rest": {
+          "games": 15,
+          "avgRank": 17.3,
+          "avgPerGame": 22.2
         },
         "playoffs": {
           "games": 3,
           "avgRank": 20.7,
           "avgPerGame": 22.9
         },
-        "seasonEaseRank": 16
+        "seasonEaseRank": 16,
+        "restEaseRank": 10
       },
       "WR": {
         "season": {
@@ -1899,17 +1971,18 @@
           "avgRank": 14.4,
           "avgPerGame": 29.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 11.5,
-          "avgPerGame": 28.8
+        "rest": {
+          "games": 15,
+          "avgRank": 13.9,
+          "avgPerGame": 29.7
         },
         "playoffs": {
           "games": 3,
           "avgRank": 20.7,
           "avgPerGame": 32.7
         },
-        "seasonEaseRank": 27
+        "seasonEaseRank": 27,
+        "restEaseRank": 27
       },
       "TE": {
         "season": {
@@ -1917,17 +1990,18 @@
           "avgRank": 16.8,
           "avgPerGame": 13.7
         },
-        "early": {
-          "games": 4,
-          "avgRank": 16.8,
-          "avgPerGame": 14.3
+        "rest": {
+          "games": 15,
+          "avgRank": 17.4,
+          "avgPerGame": 13.9
         },
         "playoffs": {
           "games": 3,
           "avgRank": 15.3,
           "avgPerGame": 12.9
         },
-        "seasonEaseRank": 13
+        "seasonEaseRank": 13,
+        "restEaseRank": 10
       }
     },
     "NYJ": {
@@ -1937,17 +2011,18 @@
           "avgRank": 13.4,
           "avgPerGame": 15.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 21.5,
-          "avgPerGame": 17.6
+        "rest": {
+          "games": 15,
+          "avgRank": 12.5,
+          "avgPerGame": 15.2
         },
         "playoffs": {
           "games": 3,
           "avgRank": 10.3,
           "avgPerGame": 14.3
         },
-        "seasonEaseRank": 31
+        "seasonEaseRank": 31,
+        "restEaseRank": 32
       },
       "RB": {
         "season": {
@@ -1955,17 +2030,18 @@
           "avgRank": 14.8,
           "avgPerGame": 21.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 13.3,
-          "avgPerGame": 20.9
+        "rest": {
+          "games": 15,
+          "avgRank": 14.6,
+          "avgPerGame": 21.4
         },
         "playoffs": {
           "games": 3,
           "avgRank": 14.7,
           "avgPerGame": 21.5
         },
-        "seasonEaseRank": 28
+        "seasonEaseRank": 28,
+        "restEaseRank": 27
       },
       "WR": {
         "season": {
@@ -1973,17 +2049,18 @@
           "avgRank": 14.4,
           "avgPerGame": 29.8
         },
-        "early": {
-          "games": 4,
-          "avgRank": 26,
-          "avgPerGame": 34.7
+        "rest": {
+          "games": 15,
+          "avgRank": 13.3,
+          "avgPerGame": 29.3
         },
         "playoffs": {
           "games": 3,
           "avgRank": 9.7,
           "avgPerGame": 27.7
         },
-        "seasonEaseRank": 28
+        "seasonEaseRank": 28,
+        "restEaseRank": 31
       },
       "TE": {
         "season": {
@@ -1991,17 +2068,18 @@
           "avgRank": 14.5,
           "avgPerGame": 12.6
         },
-        "early": {
-          "games": 4,
-          "avgRank": 16.3,
-          "avgPerGame": 13.3
+        "rest": {
+          "games": 15,
+          "avgRank": 14.3,
+          "avgPerGame": 12.5
         },
         "playoffs": {
           "games": 3,
           "avgRank": 19,
           "avgPerGame": 13.8
         },
-        "seasonEaseRank": 31
+        "seasonEaseRank": 31,
+        "restEaseRank": 31
       }
     },
     "TEN": {
@@ -2011,17 +2089,18 @@
           "avgRank": 18.8,
           "avgPerGame": 17
         },
-        "early": {
-          "games": 4,
-          "avgRank": 21.8,
-          "avgPerGame": 17.6
+        "rest": {
+          "games": 15,
+          "avgRank": 18.5,
+          "avgPerGame": 17
         },
         "playoffs": {
           "games": 3,
           "avgRank": 20.3,
           "avgPerGame": 17.3
         },
-        "seasonEaseRank": 3
+        "seasonEaseRank": 3,
+        "restEaseRank": 6
       },
       "RB": {
         "season": {
@@ -2029,17 +2108,18 @@
           "avgRank": 17,
           "avgPerGame": 22.3
         },
-        "early": {
-          "games": 4,
-          "avgRank": 25.5,
-          "avgPerGame": 24.9
+        "rest": {
+          "games": 15,
+          "avgRank": 15.9,
+          "avgPerGame": 21.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 13,
           "avgPerGame": 20.8
         },
-        "seasonEaseRank": 12
+        "seasonEaseRank": 12,
+        "restEaseRank": 21
       },
       "WR": {
         "season": {
@@ -2047,17 +2127,18 @@
           "avgRank": 18.8,
           "avgPerGame": 32
         },
-        "early": {
-          "games": 4,
-          "avgRank": 19,
-          "avgPerGame": 31.7
+        "rest": {
+          "games": 15,
+          "avgRank": 19.7,
+          "avgPerGame": 32.5
         },
         "playoffs": {
           "games": 3,
           "avgRank": 26,
           "avgPerGame": 34.9
         },
-        "seasonEaseRank": 5
+        "seasonEaseRank": 5,
+        "restEaseRank": 4
       },
       "TE": {
         "season": {
@@ -2065,17 +2146,18 @@
           "avgRank": 17.8,
           "avgPerGame": 13.6
         },
-        "early": {
-          "games": 4,
-          "avgRank": 10.8,
-          "avgPerGame": 11.5
+        "rest": {
+          "games": 15,
+          "avgRank": 18.4,
+          "avgPerGame": 13.9
         },
         "playoffs": {
           "games": 3,
           "avgRank": 19.7,
           "avgPerGame": 14
         },
-        "seasonEaseRank": 8
+        "seasonEaseRank": 8,
+        "restEaseRank": 3
       }
     },
     "ARI": {
@@ -2085,17 +2167,18 @@
           "avgRank": 16.6,
           "avgPerGame": 16.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 13.5,
-          "avgPerGame": 15.5
+        "rest": {
+          "games": 15,
+          "avgRank": 18.2,
+          "avgPerGame": 16.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 18.3,
           "avgPerGame": 16.7
         },
-        "seasonEaseRank": 15
+        "seasonEaseRank": 15,
+        "restEaseRank": 7
       },
       "RB": {
         "season": {
@@ -2103,17 +2186,18 @@
           "avgRank": 15.5,
           "avgPerGame": 21.7
         },
-        "early": {
-          "games": 4,
-          "avgRank": 14.8,
-          "avgPerGame": 21.6
+        "rest": {
+          "games": 15,
+          "avgRank": 17.1,
+          "avgPerGame": 22.1
         },
         "playoffs": {
           "games": 3,
           "avgRank": 21.7,
           "avgPerGame": 23.9
         },
-        "seasonEaseRank": 22
+        "seasonEaseRank": 22,
+        "restEaseRank": 14
       },
       "WR": {
         "season": {
@@ -2121,17 +2205,18 @@
           "avgRank": 16.8,
           "avgPerGame": 30.8
         },
-        "early": {
-          "games": 4,
-          "avgRank": 15,
-          "avgPerGame": 29.9
+        "rest": {
+          "games": 15,
+          "avgRank": 18.1,
+          "avgPerGame": 31.4
         },
         "playoffs": {
           "games": 3,
           "avgRank": 16.7,
           "avgPerGame": 30.5
         },
-        "seasonEaseRank": 14
+        "seasonEaseRank": 14,
+        "restEaseRank": 10
       },
       "TE": {
         "season": {
@@ -2139,17 +2224,18 @@
           "avgRank": 15.6,
           "avgPerGame": 12.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 14.8,
-          "avgPerGame": 12.9
+        "rest": {
+          "games": 15,
+          "avgRank": 15.9,
+          "avgPerGame": 13
         },
         "playoffs": {
           "games": 3,
           "avgRank": 14,
           "avgPerGame": 12.6
         },
-        "seasonEaseRank": 23
+        "seasonEaseRank": 23,
+        "restEaseRank": 19
       }
     },
     "LAC": {
@@ -2159,17 +2245,18 @@
           "avgRank": 15.2,
           "avgPerGame": 15.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 11.5,
-          "avgPerGame": 15.1
+        "rest": {
+          "games": 15,
+          "avgRank": 14.9,
+          "avgPerGame": 15.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 18.7,
           "avgPerGame": 16.8
         },
-        "seasonEaseRank": 25
+        "seasonEaseRank": 25,
+        "restEaseRank": 25
       },
       "RB": {
         "season": {
@@ -2177,17 +2264,18 @@
           "avgRank": 15.5,
           "avgPerGame": 21.6
         },
-        "early": {
-          "games": 4,
-          "avgRank": 19.8,
-          "avgPerGame": 22.9
+        "rest": {
+          "games": 15,
+          "avgRank": 14.1,
+          "avgPerGame": 21.2
         },
         "playoffs": {
           "games": 3,
           "avgRank": 18.3,
           "avgPerGame": 22.6
         },
-        "seasonEaseRank": 23
+        "seasonEaseRank": 23,
+        "restEaseRank": 31
       },
       "WR": {
         "season": {
@@ -2195,17 +2283,18 @@
           "avgRank": 14.2,
           "avgPerGame": 29.7
         },
-        "early": {
-          "games": 4,
-          "avgRank": 11.5,
-          "avgPerGame": 29.1
+        "rest": {
+          "games": 15,
+          "avgRank": 13.6,
+          "avgPerGame": 29.4
         },
         "playoffs": {
           "games": 3,
           "avgRank": 15,
           "avgPerGame": 29.8
         },
-        "seasonEaseRank": 30
+        "seasonEaseRank": 30,
+        "restEaseRank": 30
       },
       "TE": {
         "season": {
@@ -2213,17 +2302,18 @@
           "avgRank": 15.8,
           "avgPerGame": 13
         },
-        "early": {
-          "games": 4,
-          "avgRank": 14.3,
-          "avgPerGame": 12.3
+        "rest": {
+          "games": 15,
+          "avgRank": 15.7,
+          "avgPerGame": 12.9
         },
         "playoffs": {
           "games": 3,
           "avgRank": 20,
           "avgPerGame": 14
         },
-        "seasonEaseRank": 21
+        "seasonEaseRank": 21,
+        "restEaseRank": 23
       }
     },
     "MIA": {
@@ -2233,17 +2323,18 @@
           "avgRank": 15,
           "avgPerGame": 15.8
         },
-        "early": {
-          "games": 4,
-          "avgRank": 12.5,
-          "avgPerGame": 14.9
+        "rest": {
+          "games": 15,
+          "avgRank": 14.6,
+          "avgPerGame": 15.7
         },
         "playoffs": {
           "games": 3,
           "avgRank": 6,
           "avgPerGame": 13.6
         },
-        "seasonEaseRank": 26
+        "seasonEaseRank": 26,
+        "restEaseRank": 27
       },
       "RB": {
         "season": {
@@ -2251,17 +2342,18 @@
           "avgRank": 15.5,
           "avgPerGame": 21.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 14.8,
-          "avgPerGame": 21.3
+        "rest": {
+          "games": 15,
+          "avgRank": 14.6,
+          "avgPerGame": 21.7
         },
         "playoffs": {
           "games": 3,
           "avgRank": 14.7,
           "avgPerGame": 21.3
         },
-        "seasonEaseRank": 24
+        "seasonEaseRank": 24,
+        "restEaseRank": 28
       },
       "WR": {
         "season": {
@@ -2269,17 +2361,18 @@
           "avgRank": 14.8,
           "avgPerGame": 29.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 13.5,
-          "avgPerGame": 29.2
+        "rest": {
+          "games": 15,
+          "avgRank": 13.9,
+          "avgPerGame": 29.5
         },
         "playoffs": {
           "games": 3,
           "avgRank": 11.3,
           "avgPerGame": 28.4
         },
-        "seasonEaseRank": 24
+        "seasonEaseRank": 24,
+        "restEaseRank": 28
       },
       "TE": {
         "season": {
@@ -2287,17 +2380,18 @@
           "avgRank": 15.1,
           "avgPerGame": 12.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 10,
-          "avgPerGame": 11.6
+        "rest": {
+          "games": 15,
+          "avgRank": 15.3,
+          "avgPerGame": 12.9
         },
         "playoffs": {
           "games": 3,
           "avgRank": 5.3,
           "avgPerGame": 10.1
         },
-        "seasonEaseRank": 30
+        "seasonEaseRank": 30,
+        "restEaseRank": 26
       }
     },
     "LV": {
@@ -2307,17 +2401,18 @@
           "avgRank": 12.8,
           "avgPerGame": 15.3
         },
-        "early": {
-          "games": 4,
-          "avgRank": 11.5,
-          "avgPerGame": 15
+        "rest": {
+          "games": 15,
+          "avgRank": 12.9,
+          "avgPerGame": 15.2
         },
         "playoffs": {
           "games": 3,
           "avgRank": 18.7,
           "avgPerGame": 16.7
         },
-        "seasonEaseRank": 32
+        "seasonEaseRank": 32,
+        "restEaseRank": 31
       },
       "RB": {
         "season": {
@@ -2325,17 +2420,18 @@
           "avgRank": 13,
           "avgPerGame": 21
         },
-        "early": {
-          "games": 4,
-          "avgRank": 12,
-          "avgPerGame": 20.8
+        "rest": {
+          "games": 15,
+          "avgRank": 12.8,
+          "avgPerGame": 20.9
         },
         "playoffs": {
           "games": 3,
           "avgRank": 15.3,
           "avgPerGame": 21.5
         },
-        "seasonEaseRank": 32
+        "seasonEaseRank": 32,
+        "restEaseRank": 32
       },
       "WR": {
         "season": {
@@ -2343,17 +2439,18 @@
           "avgRank": 12.6,
           "avgPerGame": 28.8
         },
-        "early": {
-          "games": 4,
-          "avgRank": 11.8,
-          "avgPerGame": 28.1
+        "rest": {
+          "games": 15,
+          "avgRank": 12.7,
+          "avgPerGame": 28.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 17,
           "avgPerGame": 30.9
         },
-        "seasonEaseRank": 32
+        "seasonEaseRank": 32,
+        "restEaseRank": 32
       },
       "TE": {
         "season": {
@@ -2361,17 +2458,18 @@
           "avgRank": 16.1,
           "avgPerGame": 13
         },
-        "early": {
-          "games": 4,
-          "avgRank": 14,
-          "avgPerGame": 12.6
+        "rest": {
+          "games": 15,
+          "avgRank": 15.9,
+          "avgPerGame": 13
         },
         "playoffs": {
           "games": 3,
           "avgRank": 23,
           "avgPerGame": 14.9
         },
-        "seasonEaseRank": 17
+        "seasonEaseRank": 17,
+        "restEaseRank": 20
       }
     },
     "GB": {
@@ -2381,17 +2479,18 @@
           "avgRank": 16,
           "avgPerGame": 16.2
         },
-        "early": {
-          "games": 4,
-          "avgRank": 19.5,
-          "avgPerGame": 16.7
+        "rest": {
+          "games": 15,
+          "avgRank": 16,
+          "avgPerGame": 16.3
         },
         "playoffs": {
           "games": 3,
           "avgRank": 16,
           "avgPerGame": 16.4
         },
-        "seasonEaseRank": 19
+        "seasonEaseRank": 19,
+        "restEaseRank": 19
       },
       "RB": {
         "season": {
@@ -2399,17 +2498,18 @@
           "avgRank": 15.8,
           "avgPerGame": 21.7
         },
-        "early": {
-          "games": 4,
-          "avgRank": 18.8,
-          "avgPerGame": 22.8
+        "rest": {
+          "games": 15,
+          "avgRank": 15.3,
+          "avgPerGame": 21.5
         },
         "playoffs": {
           "games": 3,
           "avgRank": 17,
           "avgPerGame": 22
         },
-        "seasonEaseRank": 20
+        "seasonEaseRank": 20,
+        "restEaseRank": 24
       },
       "WR": {
         "season": {
@@ -2417,17 +2517,18 @@
           "avgRank": 16.6,
           "avgPerGame": 30.8
         },
-        "early": {
-          "games": 4,
-          "avgRank": 14.8,
-          "avgPerGame": 29.8
+        "rest": {
+          "games": 15,
+          "avgRank": 17.7,
+          "avgPerGame": 31.3
         },
         "playoffs": {
           "games": 3,
           "avgRank": 16,
           "avgPerGame": 30.7
         },
-        "seasonEaseRank": 15
+        "seasonEaseRank": 15,
+        "restEaseRank": 11
       },
       "TE": {
         "season": {
@@ -2435,17 +2536,18 @@
           "avgRank": 15.2,
           "avgPerGame": 12.8
         },
-        "early": {
-          "games": 4,
-          "avgRank": 15.5,
-          "avgPerGame": 13
+        "rest": {
+          "games": 15,
+          "avgRank": 15.2,
+          "avgPerGame": 12.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 18.7,
           "avgPerGame": 13.9
         },
-        "seasonEaseRank": 28
+        "seasonEaseRank": 28,
+        "restEaseRank": 27
       }
     },
     "MIN": {
@@ -2455,17 +2557,18 @@
           "avgRank": 18.4,
           "avgPerGame": 16.8
         },
-        "early": {
-          "games": 4,
-          "avgRank": 21.5,
-          "avgPerGame": 17.7
+        "rest": {
+          "games": 15,
+          "avgRank": 18.6,
+          "avgPerGame": 16.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 28.3,
           "avgPerGame": 19.2
         },
-        "seasonEaseRank": 7
+        "seasonEaseRank": 7,
+        "restEaseRank": 5
       },
       "RB": {
         "season": {
@@ -2473,17 +2576,18 @@
           "avgRank": 17.4,
           "avgPerGame": 22.2
         },
-        "early": {
-          "games": 4,
-          "avgRank": 19,
-          "avgPerGame": 22.4
+        "rest": {
+          "games": 15,
+          "avgRank": 17.7,
+          "avgPerGame": 22.3
         },
         "playoffs": {
           "games": 3,
           "avgRank": 22,
           "avgPerGame": 24.3
         },
-        "seasonEaseRank": 10
+        "seasonEaseRank": 10,
+        "restEaseRank": 8
       },
       "WR": {
         "season": {
@@ -2491,17 +2595,18 @@
           "avgRank": 19.9,
           "avgPerGame": 32.1
         },
-        "early": {
-          "games": 4,
-          "avgRank": 20.5,
-          "avgPerGame": 32.2
+        "rest": {
+          "games": 15,
+          "avgRank": 19.3,
+          "avgPerGame": 31.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 23,
           "avgPerGame": 33.6
         },
-        "seasonEaseRank": 2
+        "seasonEaseRank": 2,
+        "restEaseRank": 6
       },
       "TE": {
         "season": {
@@ -2509,17 +2614,18 @@
           "avgRank": 17.8,
           "avgPerGame": 13.5
         },
-        "early": {
-          "games": 4,
-          "avgRank": 20.3,
-          "avgPerGame": 14.3
+        "rest": {
+          "games": 15,
+          "avgRank": 18.5,
+          "avgPerGame": 13.6
         },
         "playoffs": {
           "games": 3,
           "avgRank": 24,
           "avgPerGame": 14.9
         },
-        "seasonEaseRank": 9
+        "seasonEaseRank": 9,
+        "restEaseRank": 2
       }
     },
     "WAS": {
@@ -2529,17 +2635,18 @@
           "avgRank": 17.8,
           "avgPerGame": 16.8
         },
-        "early": {
-          "games": 4,
-          "avgRank": 16.8,
-          "avgPerGame": 17.2
+        "rest": {
+          "games": 15,
+          "avgRank": 17.3,
+          "avgPerGame": 16.5
         },
         "playoffs": {
           "games": 3,
           "avgRank": 11,
           "avgPerGame": 14.4
         },
-        "seasonEaseRank": 11
+        "seasonEaseRank": 11,
+        "restEaseRank": 12
       },
       "RB": {
         "season": {
@@ -2547,17 +2654,18 @@
           "avgRank": 18.6,
           "avgPerGame": 22.6
         },
-        "early": {
-          "games": 4,
-          "avgRank": 15.3,
-          "avgPerGame": 21.5
+        "rest": {
+          "games": 15,
+          "avgRank": 17.9,
+          "avgPerGame": 22.4
         },
         "playoffs": {
           "games": 3,
           "avgRank": 9,
           "avgPerGame": 19.8
         },
-        "seasonEaseRank": 5
+        "seasonEaseRank": 5,
+        "restEaseRank": 6
       },
       "WR": {
         "season": {
@@ -2565,17 +2673,18 @@
           "avgRank": 17,
           "avgPerGame": 31.3
         },
-        "early": {
-          "games": 4,
-          "avgRank": 18.3,
-          "avgPerGame": 32.1
+        "rest": {
+          "games": 15,
+          "avgRank": 16.7,
+          "avgPerGame": 31
         },
         "playoffs": {
           "games": 3,
           "avgRank": 13.7,
           "avgPerGame": 29.5
         },
-        "seasonEaseRank": 12
+        "seasonEaseRank": 12,
+        "restEaseRank": 15
       },
       "TE": {
         "season": {
@@ -2583,17 +2692,18 @@
           "avgRank": 15.6,
           "avgPerGame": 13
         },
-        "early": {
-          "games": 4,
-          "avgRank": 15.8,
-          "avgPerGame": 12.6
+        "rest": {
+          "games": 15,
+          "avgRank": 16.7,
+          "avgPerGame": 13.4
         },
         "playoffs": {
           "games": 3,
           "avgRank": 11.3,
           "avgPerGame": 11.9
         },
-        "seasonEaseRank": 24
+        "seasonEaseRank": 24,
+        "restEaseRank": 14
       }
     },
     "PHI": {
@@ -2603,17 +2713,18 @@
           "avgRank": 20.8,
           "avgPerGame": 17.7
         },
-        "early": {
-          "games": 4,
-          "avgRank": 23.5,
-          "avgPerGame": 18
+        "rest": {
+          "games": 15,
+          "avgRank": 19.7,
+          "avgPerGame": 17.5
         },
         "playoffs": {
           "games": 3,
           "avgRank": 10,
           "avgPerGame": 14.6
         },
-        "seasonEaseRank": 1
+        "seasonEaseRank": 1,
+        "restEaseRank": 3
       },
       "RB": {
         "season": {
@@ -2621,17 +2732,18 @@
           "avgRank": 18.9,
           "avgPerGame": 22.7
         },
-        "early": {
-          "games": 4,
-          "avgRank": 17.3,
-          "avgPerGame": 22.1
+        "rest": {
+          "games": 15,
+          "avgRank": 18.6,
+          "avgPerGame": 22.5
         },
         "playoffs": {
           "games": 3,
           "avgRank": 12.7,
           "avgPerGame": 20.7
         },
-        "seasonEaseRank": 2
+        "seasonEaseRank": 2,
+        "restEaseRank": 3
       },
       "WR": {
         "season": {
@@ -2639,17 +2751,18 @@
           "avgRank": 21.3,
           "avgPerGame": 33.1
         },
-        "early": {
-          "games": 4,
-          "avgRank": 25.8,
-          "avgPerGame": 34.6
+        "rest": {
+          "games": 15,
+          "avgRank": 20.7,
+          "avgPerGame": 32.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 9.3,
           "avgPerGame": 28.1
         },
-        "seasonEaseRank": 1
+        "seasonEaseRank": 1,
+        "restEaseRank": 2
       },
       "TE": {
         "season": {
@@ -2657,17 +2770,18 @@
           "avgRank": 19.9,
           "avgPerGame": 14
         },
-        "early": {
-          "games": 4,
-          "avgRank": 20,
-          "avgPerGame": 14.1
+        "rest": {
+          "games": 15,
+          "avgRank": 19.3,
+          "avgPerGame": 13.9
         },
         "playoffs": {
           "games": 3,
           "avgRank": 19,
           "avgPerGame": 13.9
         },
-        "seasonEaseRank": 1
+        "seasonEaseRank": 1,
+        "restEaseRank": 1
       }
     },
     "DAL": {
@@ -2677,17 +2791,18 @@
           "avgRank": 18.6,
           "avgPerGame": 16.8
         },
-        "early": {
-          "games": 4,
-          "avgRank": 19.8,
-          "avgPerGame": 17.1
+        "rest": {
+          "games": 15,
+          "avgRank": 17.4,
+          "avgPerGame": 16.5
         },
         "playoffs": {
           "games": 3,
           "avgRank": 18,
           "avgPerGame": 16.5
         },
-        "seasonEaseRank": 6
+        "seasonEaseRank": 6,
+        "restEaseRank": 10
       },
       "RB": {
         "season": {
@@ -2695,17 +2810,18 @@
           "avgRank": 18.8,
           "avgPerGame": 22.5
         },
-        "early": {
-          "games": 4,
-          "avgRank": 22.5,
-          "avgPerGame": 23.6
+        "rest": {
+          "games": 15,
+          "avgRank": 17.5,
+          "avgPerGame": 22.1
         },
         "playoffs": {
           "games": 3,
           "avgRank": 14.3,
           "avgPerGame": 21.4
         },
-        "seasonEaseRank": 3
+        "seasonEaseRank": 3,
+        "restEaseRank": 9
       },
       "WR": {
         "season": {
@@ -2713,17 +2829,18 @@
           "avgRank": 18.5,
           "avgPerGame": 31.7
         },
-        "early": {
-          "games": 4,
-          "avgRank": 20.3,
-          "avgPerGame": 32.7
+        "rest": {
+          "games": 15,
+          "avgRank": 17.7,
+          "avgPerGame": 31.4
         },
         "playoffs": {
           "games": 3,
           "avgRank": 20.3,
           "avgPerGame": 32.2
         },
-        "seasonEaseRank": 6
+        "seasonEaseRank": 6,
+        "restEaseRank": 12
       },
       "TE": {
         "season": {
@@ -2731,17 +2848,18 @@
           "avgRank": 17.5,
           "avgPerGame": 13.3
         },
-        "early": {
-          "games": 4,
-          "avgRank": 14,
-          "avgPerGame": 12.6
+        "rest": {
+          "games": 15,
+          "avgRank": 17.3,
+          "avgPerGame": 13.2
         },
         "playoffs": {
           "games": 3,
           "avgRank": 16.3,
           "avgPerGame": 13.1
         },
-        "seasonEaseRank": 10
+        "seasonEaseRank": 10,
+        "restEaseRank": 12
       }
     },
     "NYG": {
@@ -2751,17 +2869,18 @@
           "avgRank": 17.9,
           "avgPerGame": 17
         },
-        "early": {
-          "games": 4,
-          "avgRank": 23.3,
-          "avgPerGame": 18.6
+        "rest": {
+          "games": 15,
+          "avgRank": 17.3,
+          "avgPerGame": 16.6
         },
         "playoffs": {
           "games": 3,
           "avgRank": 20.3,
           "avgPerGame": 18.3
         },
-        "seasonEaseRank": 9
+        "seasonEaseRank": 9,
+        "restEaseRank": 13
       },
       "RB": {
         "season": {
@@ -2769,17 +2888,18 @@
           "avgRank": 17.4,
           "avgPerGame": 22.1
         },
-        "early": {
-          "games": 4,
-          "avgRank": 21,
-          "avgPerGame": 23.2
+        "rest": {
+          "games": 15,
+          "avgRank": 17.1,
+          "avgPerGame": 22.1
         },
         "playoffs": {
           "games": 3,
           "avgRank": 17.3,
           "avgPerGame": 22.1
         },
-        "seasonEaseRank": 11
+        "seasonEaseRank": 11,
+        "restEaseRank": 15
       },
       "WR": {
         "season": {
@@ -2787,17 +2907,18 @@
           "avgRank": 18.4,
           "avgPerGame": 31.9
         },
-        "early": {
-          "games": 4,
-          "avgRank": 23.5,
-          "avgPerGame": 34.2
+        "rest": {
+          "games": 15,
+          "avgRank": 17.4,
+          "avgPerGame": 31.4
         },
         "playoffs": {
           "games": 3,
           "avgRank": 22.7,
           "avgPerGame": 34
         },
-        "seasonEaseRank": 9
+        "seasonEaseRank": 9,
+        "restEaseRank": 13
       },
       "TE": {
         "season": {
@@ -2805,17 +2926,18 @@
           "avgRank": 17.9,
           "avgPerGame": 13.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 20.3,
-          "avgPerGame": 14.1
+        "rest": {
+          "games": 15,
+          "avgRank": 18.4,
+          "avgPerGame": 13.5
         },
         "playoffs": {
           "games": 3,
           "avgRank": 14.3,
           "avgPerGame": 12.7
         },
-        "seasonEaseRank": 6
+        "seasonEaseRank": 6,
+        "restEaseRank": 4
       }
     },
     "DEN": {
@@ -2825,17 +2947,18 @@
           "avgRank": 14.1,
           "avgPerGame": 15.6
         },
-        "early": {
-          "games": 4,
-          "avgRank": 15.5,
-          "avgPerGame": 15.8
+        "rest": {
+          "games": 15,
+          "avgRank": 14.1,
+          "avgPerGame": 15.6
         },
         "playoffs": {
           "games": 3,
           "avgRank": 10.3,
           "avgPerGame": 14.6
         },
-        "seasonEaseRank": 29
+        "seasonEaseRank": 29,
+        "restEaseRank": 30
       },
       "RB": {
         "season": {
@@ -2843,17 +2966,18 @@
           "avgRank": 14.7,
           "avgPerGame": 21.6
         },
-        "early": {
-          "games": 4,
-          "avgRank": 10.8,
-          "avgPerGame": 20.3
+        "rest": {
+          "games": 15,
+          "avgRank": 16.1,
+          "avgPerGame": 22
         },
         "playoffs": {
           "games": 3,
           "avgRank": 16.7,
           "avgPerGame": 21.9
         },
-        "seasonEaseRank": 29
+        "seasonEaseRank": 29,
+        "restEaseRank": 19
       },
       "WR": {
         "season": {
@@ -2861,17 +2985,18 @@
           "avgRank": 14.3,
           "avgPerGame": 29.7
         },
-        "early": {
-          "games": 4,
-          "avgRank": 17,
-          "avgPerGame": 30.6
+        "rest": {
+          "games": 15,
+          "avgRank": 14.4,
+          "avgPerGame": 29.8
         },
         "playoffs": {
           "games": 3,
           "avgRank": 13.3,
           "avgPerGame": 29.7
         },
-        "seasonEaseRank": 29
+        "seasonEaseRank": 29,
+        "restEaseRank": 25
       },
       "TE": {
         "season": {
@@ -2879,17 +3004,18 @@
           "avgRank": 15.9,
           "avgPerGame": 13
         },
-        "early": {
-          "games": 4,
-          "avgRank": 17.8,
-          "avgPerGame": 13.4
+        "rest": {
+          "games": 15,
+          "avgRank": 15.9,
+          "avgPerGame": 13
         },
         "playoffs": {
           "games": 3,
           "avgRank": 8,
           "avgPerGame": 10.5
         },
-        "seasonEaseRank": 19
+        "seasonEaseRank": 19,
+        "restEaseRank": 21
       }
     },
     "KC": {
@@ -2899,17 +3025,18 @@
           "avgRank": 14.4,
           "avgPerGame": 15.7
         },
-        "early": {
-          "games": 4,
-          "avgRank": 16.5,
-          "avgPerGame": 16.4
+        "rest": {
+          "games": 15,
+          "avgRank": 14.5,
+          "avgPerGame": 15.7
         },
         "playoffs": {
           "games": 3,
           "avgRank": 11,
           "avgPerGame": 14.8
         },
-        "seasonEaseRank": 28
+        "seasonEaseRank": 28,
+        "restEaseRank": 29
       },
       "RB": {
         "season": {
@@ -2917,17 +3044,18 @@
           "avgRank": 15.5,
           "avgPerGame": 21.8
         },
-        "early": {
-          "games": 4,
-          "avgRank": 14.5,
-          "avgPerGame": 21.2
+        "rest": {
+          "games": 15,
+          "avgRank": 16.8,
+          "avgPerGame": 22.2
         },
         "playoffs": {
           "games": 3,
           "avgRank": 10.3,
           "avgPerGame": 20.3
         },
-        "seasonEaseRank": 25
+        "seasonEaseRank": 25,
+        "restEaseRank": 17
       },
       "WR": {
         "season": {
@@ -2935,17 +3063,18 @@
           "avgRank": 14.5,
           "avgPerGame": 29.8
         },
-        "early": {
-          "games": 4,
-          "avgRank": 18.8,
-          "avgPerGame": 31.6
+        "rest": {
+          "games": 15,
+          "avgRank": 13.9,
+          "avgPerGame": 29.6
         },
         "playoffs": {
           "games": 3,
           "avgRank": 15,
           "avgPerGame": 29.6
         },
-        "seasonEaseRank": 26
+        "seasonEaseRank": 26,
+        "restEaseRank": 29
       },
       "TE": {
         "season": {
@@ -2953,17 +3082,18 @@
           "avgRank": 16.4,
           "avgPerGame": 13.4
         },
-        "early": {
-          "games": 4,
-          "avgRank": 18.8,
-          "avgPerGame": 13.8
+        "rest": {
+          "games": 15,
+          "avgRank": 15.7,
+          "avgPerGame": 13.2
         },
         "playoffs": {
           "games": 3,
           "avgRank": 16,
           "avgPerGame": 13
         },
-        "seasonEaseRank": 15
+        "seasonEaseRank": 15,
+        "restEaseRank": 24
       }
     }
   }
