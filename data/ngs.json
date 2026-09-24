@@ -908,7 +908,7 @@
         "separation": 2.4,
         "cushion": 6.2,
         "iay": 14.4,
-        "iayShare": 48.6,
+        "iayShare": 47.2,
         "catchPct": 66.7,
         "yac": 1,
         "xYac": 3.1,
@@ -1002,7 +1002,7 @@
         "separation": 2.7,
         "cushion": 5,
         "iay": 14.7,
-        "iayShare": 52.1,
+        "iayShare": 52.4,
         "catchPct": 68.4,
         "yac": 1,
         "xYac": 1.1,
@@ -1454,7 +1454,7 @@
         "separation": 2.8,
         "cushion": 5.8,
         "iay": 15.4,
-        "iayShare": 28.6,
+        "iayShare": 28.8,
         "catchPct": 70,
         "yac": 4.3,
         "xYac": 2.8,
@@ -1740,11 +1740,11 @@
     },
     "2026": {
       "rec": {
-        "separation": 2.3,
-        "cushion": 6.3,
-        "iay": 14.1,
-        "iayShare": 29.2,
-        "catchPct": 54.5,
+        "separation": 2.5,
+        "cushion": 6.1,
+        "iay": 14.3,
+        "iayShare": 31.3,
+        "catchPct": 50,
         "yac": 1,
         "xYac": 2.4,
         "yacOE": -1.5
@@ -2648,6 +2648,16 @@
       "snapGames": 15
     },
     "2026": {
+      "rec": {
+        "separation": 2.8,
+        "cushion": 3.6,
+        "iay": 6.6,
+        "iayShare": 10,
+        "catchPct": 62.5,
+        "yac": 6.9,
+        "xYac": 4.2,
+        "yacOE": 2.7
+      },
       "snapPct": 54.3,
       "offSnaps": 71,
       "snapGames": 2
@@ -3914,7 +3924,7 @@
         "separation": 2.7,
         "cushion": 8.7,
         "iay": 9.6,
-        "iayShare": 27,
+        "iayShare": 26.6,
         "catchPct": 66.7,
         "yac": 4.1,
         "xYac": 2.9,
@@ -4911,10 +4921,10 @@
       "pass": {
         "timeToThrow": 3.41,
         "aggressiveness": 8.1,
-        "iay": 9.6,
+        "iay": 9.4,
         "compPct": 64.5,
-        "xCompPct": 61.7,
-        "cpoe": 2.8
+        "xCompPct": 62.9,
+        "cpoe": 1.7
       },
       "snapPct": 100,
       "offSnaps": 131,
@@ -5632,10 +5642,10 @@
       "pass": {
         "timeToThrow": 2.88,
         "aggressiveness": 13.5,
-        "iay": 10.9,
+        "iay": 11,
         "compPct": 67.3,
-        "xCompPct": 59.8,
-        "cpoe": 7.5
+        "xCompPct": 60.5,
+        "cpoe": 6.8
       },
       "snapPct": 94.1,
       "offSnaps": 109,
@@ -7766,11 +7776,11 @@
         "eightBoxPct": 34.8,
         "timeToLos": 2.52,
         "attempts": 23,
-        "expYards": 82.4,
-        "ryoe": 13.6,
-        "ryoePerAtt": 0.62,
-        "ryoePct": 16.5,
-        "beatRate": 0.5,
+        "expYards": 83.3,
+        "ryoe": 11.7,
+        "ryoePerAtt": 0.51,
+        "ryoePct": 14,
+        "beatRate": 0.478,
         "ypc": 4.13
       },
       "snapPct": 26.5,
@@ -8499,6 +8509,49 @@
       }
     }
   },
+  "black": {
+    "2026": {
+      "rush": {
+        "efficiency": 3.97,
+        "eightBoxPct": 9.5,
+        "timeToLos": 2.63,
+        "attempts": 21,
+        "expYards": 100.9,
+        "ryoe": -10.9,
+        "ryoePerAtt": -0.52,
+        "ryoePct": -10.8,
+        "beatRate": 0.286,
+        "ypc": 4.29
+      },
+      "snapPct": 38.6,
+      "offSnaps": 45,
+      "snapGames": 2
+    }
+  },
+  "lloyd": {
+    "2024": {
+      "snapPct": 14,
+      "offSnaps": 10,
+      "snapGames": 1
+    },
+    "2026": {
+      "rush": {
+        "efficiency": 4.94,
+        "eightBoxPct": 10.5,
+        "timeToLos": 2.7,
+        "attempts": 19,
+        "expYards": 82.2,
+        "ryoe": -25.2,
+        "ryoePerAtt": -1.33,
+        "ryoePct": -30.7,
+        "beatRate": 0.263,
+        "ypc": 3
+      },
+      "snapPct": 36.1,
+      "offSnaps": 46,
+      "snapGames": 2
+    }
+  },
   "tuten": {
     "2025": {
       "snapPct": 21.2,
@@ -8539,49 +8592,6 @@
       },
       "snapPct": 41.8,
       "offSnaps": 52,
-      "snapGames": 2
-    }
-  },
-  "lloyd": {
-    "2024": {
-      "snapPct": 14,
-      "offSnaps": 10,
-      "snapGames": 1
-    },
-    "2026": {
-      "rush": {
-        "efficiency": 4.94,
-        "eightBoxPct": 10.5,
-        "timeToLos": 2.7,
-        "attempts": 19,
-        "expYards": 82.2,
-        "ryoe": -25.2,
-        "ryoePerAtt": -1.33,
-        "ryoePct": -30.7,
-        "beatRate": 0.263,
-        "ypc": 3
-      },
-      "snapPct": 36.1,
-      "offSnaps": 46,
-      "snapGames": 2
-    }
-  },
-  "black": {
-    "2026": {
-      "rush": {
-        "efficiency": 3.97,
-        "eightBoxPct": 9.5,
-        "timeToLos": 2.63,
-        "attempts": 21,
-        "expYards": 100.9,
-        "ryoe": -10.9,
-        "ryoePerAtt": -0.52,
-        "ryoePct": -10.8,
-        "beatRate": 0.286,
-        "ypc": 4.29
-      },
-      "snapPct": 38.6,
-      "offSnaps": 45,
       "snapGames": 2
     }
   },
@@ -9335,7 +9345,7 @@
   },
   "davis-m": {
     "2025": {
-      "snapPct": 20.1,
+      "snapPct": 20.3,
       "offSnaps": 155,
       "snapGames": 10
     }
