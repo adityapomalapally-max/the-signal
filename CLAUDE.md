@@ -1703,3 +1703,32 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   `meta.headlineRankField`; `sosSummary()` renders whatever it finds and knows none of the names.
 - `restEaseRank` sits beside `seasonEaseRank` rather than replacing it — in November they answer
   different questions and only one of them is actionable.
+
+## The branch that fires once a year
+- build-sos moves from last season's defences to this season's at MIN_WEEKS_FOR_LIVE, which happens
+  on ONE morning a year and had never executed. `dry-run-rollover --week 6` was the way to see it:
+  it switched cleanly, produced 32 ranked defences, and check-season's "this season's own" wording —
+  also never executed — appeared for the first time.
+- AND THE SWITCH READ THE WRONG CLOCK, the third instance in two days. `st.week > MIN_WEEKS_FOR_LIVE`
+  is Sleeper's upcoming week, so it would have fired a week early, on four games while the log said
+  six. `weeksPlayedFrom(games)` reads the schedule's own `result` column instead.
+- A WEEK IS FINISHED WHEN NOTHING IN IT IS STILL TO COME, so that function counts up to the first
+  UNPLAYED game rather than counting played ones — on a Sunday evening half the results are in and
+  the week is not over. A postponement therefore drags the floor down rather than up, which is the
+  safe direction. The tempting implementation (max week with a result) is what the test mutates to.
+- `liveDefences` and `weeksPlayedFrom` are exported behind `require.main === module` so the switch
+  can be exercised at every week instead of on the morning it happens. THE FIRST VERSION OF THAT TEST
+  ONLY COVERED THE PURE FUNCTION and I proved it worthless by mutating the caller — which rang, but
+  with a SyntaxError rather than the assertion. A guard that rings for the wrong reason is decoration.
+
+## What MIN_WEEKS_FOR_LIVE rests on
+- The line beside it used to assert "past the floor the current data beats the stale data". Nobody
+  had checked, so `research-matchup-stability.js` now asks it the way the build asks it: standing at
+  week N, which predicts the REST of this season better — this year's N games or last year whole?
+- Measured over 2024 and 2025, at the week-4 split (Pearson r, this season / last season):
+  **QB 0.19/0.20 · RB 0.09/0.22 · WR 0.15/0.03 · TE 0.54/0.34**. This season wins two positions of
+  four; the mean is 0.243 against 0.199. Backs go the other way and not narrowly.
+- SO THE FLOOR STAYS AT FOUR, and the claim beside it is now the measured one. There is no evidence
+  for moving it, which is a different thing from there being evidence for it — and both priors sit
+  under r = 0.25, which the reader-facing caveat now says out loud. Same bargain as the Vegas
+  research: measure it, keep the number, stop the question being reopened from memory.

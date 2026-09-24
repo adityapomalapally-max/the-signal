@@ -124,6 +124,67 @@ test('the page reads the segments off the file rather than naming them', () => {
   assert.ok(!/sosTeam\.early/.test(pages), 'the page still reaches for a segment by name');
 });
 
+test('the defence season switches on games PLAYED, at the week it says it does', () => {
+  // THE BRANCH THAT HAD NEVER RUN. build-sos moves from last season's defences
+  // to this season's once the floor is cleared, and the switch read Sleeper's
+  // week — the one about to be played — so it would have fired a week early, on
+  // four games while the log said six. Same confusion that put ros a week ahead
+  // and the rest-of-season slate on a week nobody had played.
+  //
+  // Exercised here at every week instead of on the one morning a year it fires.
+  const { liveDefences, weeksPlayedFrom, MIN_WEEKS_FOR_LIVE, segmentsFor } = require('../scripts/build-sos.js');
+
+  // THE COUNT IS THE HALF THAT CAN BE WRONG QUIETLY. A week is finished when
+  // nothing in it is still to come — so this counts up to the first unplayed
+  // game rather than counting played ones, or a Sunday evening with half the
+  // results in would read as a completed week.
+  const game = (week, played) => ({ week, result: played ? '3' : '' });
+  const season = (playedWeeks, total = 6) => {
+    const rows = [];
+    for (let w = 1; w <= total; w++) for (let i = 0; i < 16; i++) rows.push(game(w, w <= playedWeeks));
+    return rows;
+  };
+  assert.strictEqual(weeksPlayedFrom(season(0)), 0, 'before kickoff nothing has been played');
+  assert.strictEqual(weeksPlayedFrom(season(2)), 2);
+  assert.strictEqual(weeksPlayedFrom([]), 0, 'no schedule at all is not a played season');
+
+  // A week half in the books is not a week.
+  const halfWeek = season(2).concat([game(3, true), game(3, false)]);
+  assert.strictEqual(weeksPlayedFrom(halfWeek), 2, 'a Sunday evening was counted as a finished week');
+
+  // A postponed game drags the floor DOWN rather than up, which is the safe
+  // direction: build on less, never on a week nobody finished.
+  const postponed = season(5).map(g => (g.week === 3 ? game(3, false) : g));
+  assert.strictEqual(weeksPlayedFrom(postponed), 2, 'a postponement let the count run past it');
+
+  // A season with every result in is as many weeks as it has.
+  assert.strictEqual(weeksPlayedFrom(season(6)), 6);
+
+  assert.strictEqual(MIN_WEEKS_FOR_LIVE, 4, 'the floor moved; the measurement behind it is in the file');
+  for (const played of [0, 1, 2, 3]) {
+    assert.strictEqual(liveDefences(played), false, `${played} weeks played should still use last season`);
+  }
+  for (const played of [4, 5, 12]) {
+    assert.strictEqual(liveDefences(played), true, `${played} weeks played should use this season`);
+  }
+
+  // And the segments follow the same clock: the window opens at the first week
+  // nobody has played, so it can never contain one that is over.
+  assert.ok(segmentsFor(0).early, 'before kickoff the opening month is the useful cut');
+  assert.ok(!segmentsFor(0).rest, 'a rest-of-season window before any football is the season itself');
+  const mid = segmentsFor(7);
+  assert.strictEqual(mid.rest.from, 7);
+  assert.ok(!mid.early, 'the opening month is still offered in week 7, and it is over');
+});
+
+test('building the script does not run it', () => {
+  // The export exists so the switch can be tested. If requiring the file also
+  // kicked off a 200MB fetch and wrote data/, every test run would rebuild the
+  // site's schedule strength as a side effect.
+  const src = fs.readFileSync(path.join(ROOT, 'scripts', 'build-sos.js'), 'utf8');
+  assert.match(src, /require\.main === module/, 'requiring build-sos.js runs the whole build');
+});
+
 test('every team the schedule board can show has a figure for the leading segment', () => {
   const lead = sos.meta.headline;
   const teams = Object.keys(sos.teams);

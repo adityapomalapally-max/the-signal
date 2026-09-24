@@ -38,10 +38,56 @@ const OUT = path.join(DATA_DIR, 'sos.json');
 // coordinators, the personnel and the injuries have all moved — and continuing
 // to publish them is a schedule strength describing teams that no longer exist.
 //
-// MIN_WEEKS_FOR_LIVE is the honest floor: four weeks of defensive results is a
-// thin sample, but it is a sample of THIS season, and past it the current data
-// beats the stale data. Below it, last season is still the better guess.
+// MIN_WEEKS_FOR_LIVE is the floor, and the sentence that used to sit here —
+// "past it the current data beats the stale data" — was an assertion nobody had
+// checked. It is measured now, in research-matchup-stability.js, asked exactly
+// as this line asks it: standing at week N, which better predicts what defences
+// allow over the REST of the season, this year's N games or last year whole?
+//
+//   split 4      QB 0.19/0.20   RB 0.09/0.22   WR 0.15/0.03   TE 0.54/0.34
+//                (this season / last season, Pearson r, 2024 and 2025)
+//
+// THIS SEASON WINS IN TWO POSITIONS OF FOUR, and by a hair on the mean (0.243
+// against 0.199). Backs go the other way and not narrowly. So the switch stays
+// at four — there is no evidence for moving it, which is different from there
+// being evidence for it — and the claim beside it is now the measured one: at
+// this point of a season the two priors are about equally weak, and the whole
+// figure is a comparative reading rather than a forecast. Both numbers live
+// under r = 0.25; nothing here predicts a defence.
 const MIN_WEEKS_FOR_LIVE = 4;
+
+/**
+ * Whether to build on this season's defences, given how many weeks have
+ * actually been PLAYED.
+ *
+ * It used to read Sleeper's week — `st.week > MIN_WEEKS_FOR_LIVE` — which is
+ * the week about to be played and turns over on the Tuesday. So the switch
+ * would have fired a week early, on four games while the log said six, the
+ * third instance of the same confusion in this repo in two days. The rest of
+ * this file already asks the schedule which games have results; so does this.
+ */
+function liveDefences(weeksPlayed) {
+  return Number(weeksPlayed) >= MIN_WEEKS_FOR_LIVE;
+}
+
+/**
+ * How many weeks of this season are in the books, from the schedule's own rows.
+ *
+ * A WEEK IS FINISHED WHEN NOTHING IN IT IS STILL TO COME, which is why this
+ * counts up to the first unplayed game rather than counting played ones: on a
+ * Tuesday the Monday night game has a result and the week is over; on a Sunday
+ * evening half the week has results and the week is not. Counting rows with
+ * results would call that half-week a week.
+ *
+ * A postponement moves the floor DOWN rather than up, which is the safe
+ * direction: it means building on less rather than on a week nobody finished.
+ */
+function weeksPlayedFrom(games) {
+  const open = games.filter(g => !String(g.result || '').trim()).map(g => Number(g.week))
+    .filter(Number.isFinite);
+  if (!open.length) return games.length ? Math.max(...games.map(g => Number(g.week) || 0)) : 0;
+  return Math.max(0, Math.min(...open) - 1);
+}
 let SEASON = 2026;
 let DEF_SEASON = 2025;
 const POSITIONS = ['QB', 'RB', 'WR', 'TE'];
@@ -83,13 +129,24 @@ const r1 = (n) => Math.round(n * 10) / 10;
 async function main() {
   const st = await seasonLib.state();
   SEASON = st.season;
-  // The defensive season is this one once enough of it has been played, and
-  // last one until then.
-  const live = (st.phase === 'regular' || st.phase === 'post') && st.week > MIN_WEEKS_FOR_LIVE;
-  DEF_SEASON = live ? st.season : await seasonLib.lastCompletedSeason();
-  log(`schedule for ${SEASON}, defences from ${DEF_SEASON} (${live ? `${st.week} weeks played` : 'not enough of this season played yet'})`);
 
   log('=== SOS Start ===');
+
+  // THE SCHEDULE COMES FIRST because two decisions below depend on which games
+  // have been played: which season's defences to build on, and where the
+  // rest-of-season window starts. Both used to be taken from the calendar.
+  log('Fetching schedule...');
+  const games = parseCSV(await fetchCSV(SCHEDULE_URL))
+    .filter(g => g.season === SEASON && g.game_type === 'REG');
+  const weeksPlayed = weeksPlayedFrom(games);
+  const firstOpen = weeksPlayed + 1;
+
+  // The defensive season is this one once enough of it has been played, and
+  // last one until then.
+  const live = (st.phase === 'regular' || st.phase === 'post') && liveDefences(weeksPlayed);
+  DEF_SEASON = live ? st.season : await seasonLib.lastCompletedSeason();
+  log(`schedule for ${SEASON}, defences from ${DEF_SEASON} `
+    + `(${weeksPlayed} week${weeksPlayed === 1 ? '' : 's'} played, floor is ${MIN_WEEKS_FOR_LIVE})`);
 
   log(`Fetching ${DEF_SEASON} weekly stats...`);
   const readDefenses = async (year) => {
@@ -147,10 +204,6 @@ async function main() {
     });
   }
 
-  log('Fetching schedule...');
-  const games = parseCSV(await fetchCSV(SCHEDULE_URL))
-    .filter(g => g.season === SEASON && g.game_type === 'REG');
-
   // WHAT IS LEFT IS ASKED OF THE SCHEDULE, NOT OF THE CALENDAR. Sleeper's week
   // and the games that have actually been played are two clocks and they
   // disagree in both directions — Sleeper called the season "week 1" eleven
@@ -161,11 +214,8 @@ async function main() {
   // The schedule feed carries the result, and it is the same file the slate
   // itself is built from, so the window and the games cannot come apart. The
   // calendar is the fallback for a feed that has stopped publishing results.
-  const unplayed = games.filter(g => !String(g.result || '').trim()).map(g => Number(g.week));
-  const firstOpen = unplayed.length ? Math.min(...unplayed)
-    : (st.phase === 'regular' || st.phase === 'post' ? st.week : 0);
   SEGMENTS = segmentsFor(firstOpen);
-  log(`${games.length - unplayed.length} of ${games.length} games played; segments: `
+  log(`${games.filter(g => String(g.result || '').trim()).length} of ${games.length} games played; segments: `
     + Object.entries(SEGMENTS).map(([k, v]) => `${k} ${v.label}`).join(', '));
   const schedule = {};
   for (const g of games) {
@@ -234,6 +284,9 @@ async function main() {
         ? `The headline figure is what is LEFT of the schedule (${SEGMENTS.rest.label}); the season-long number is `
           + `half a record by now and is kept for the shape of the year. `
         : '')
+        + `A defence's rating barely predicts its own future: measured over 2024 and 2025, what a unit `
+        + `allowed through week four correlates with what it allowed afterwards at r = 0.09 to 0.54 by `
+        + `position, and last season's full rating does about as well (0.03 to 0.34). Neither is a forecast. `
         + `Defensive numbers are ${DEF_SEASON} results, not a ${SEASON} projection — coordinators and ` +
         `secondaries turn over and a unit can look nothing like this by September. Fantasy points allowed also ` +
         `moves with pace and game script as much as with talent: a defense whose offense falls behind faces more ` +
@@ -261,4 +314,10 @@ async function main() {
   log('=== SOS Complete ===');
 }
 
-main().catch(e => { log(`FATAL: ${e.message}`); process.exit(1); });
+// Exported so the switch can be exercised from a test at every week rather
+// than only on the morning it happens to fire. Still a script when run as one.
+module.exports = { liveDefences, weeksPlayedFrom, segmentsFor, MIN_WEEKS_FOR_LIVE };
+
+if (require.main === module) {
+  main().catch(e => { log(`FATAL: ${e.message}`); process.exit(1); });
+}
