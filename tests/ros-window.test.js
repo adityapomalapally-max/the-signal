@@ -14,9 +14,18 @@
  *   build-sos then cut its rest-of-season window at the same number, so the
  *   remaining slate included a week nobody had played.
  *
- * Both now ask the data instead: the game logs for ros, the schedule feed's own
- * results for sos. The window and the games come from one source in each case,
- * so they cannot come apart.
+ * The first fix moved ros onto the GAME LOGS — "the last week anybody has a row
+ * for" — and that is a third clock, wrong in the same direction for four days of
+ * every seven. On Friday 2026-09-25 one Thursday night game made the season
+ * three weeks old with two weeks played: the weights came from the wrong row of
+ * the fit, every rest-of-season total lost a game, and the start/sit page
+ * (throughWeek + 1) offered a week-4 call while week 3 was being played. It is
+ * what turned the daily run red, in this test, from the sos side.
+ *
+ * Both now ask ONE definition — lib/schedule.js, "a week is through when nothing
+ * in it is still to come" — so the window, the games and the slate cannot come
+ * apart. The game logs stay as the second source in a contradiction check: they
+ * may lead by the week in progress and by no more than that.
  *
  *   node --test tests/ros-window.test.js
  */
@@ -32,9 +41,10 @@ const ros = read('ros.json');
 const sos = read('sos.json');
 const REGULAR_SEASON_WEEKS = 18;
 
-// The last week anybody in the pool has a game on file for, computed here the
-// long way so the test is not reading back the same helper it is checking.
-function lastPlayedWeek(season) {
+// The last week anybody in the pool has a row on file for — NOT the clock, the
+// second source. Computed here the long way so the test is not reading back the
+// same helper it is checking.
+function lastWeekOnFile(season) {
   const dir = path.join(ROOT, 'data', 'weekly');
   let last = 0;
   for (const f of fs.readdirSync(dir)) {
@@ -46,10 +56,66 @@ function lastPlayedWeek(season) {
   return last;
 }
 
-test('the projection is through the last week PLAYED, not the week on the calendar', () => {
-  const played = lastPlayedWeek(ros.meta.season);
-  assert.strictEqual(ros.meta.throughWeek, played,
-    `ros.json says it is through week ${ros.meta.throughWeek} and the game logs end at week ${played}`);
+// The last week that is FINISHED, off a third file: teams.json carries every
+// game with its result, and a null result is a game still to come. Asked here of
+// a different file than build-ros reads, so agreeing is worth something.
+//
+// A TIE IS RESULT 0 and 0 is not "no result" — a truthiness test here would call
+// a drawn week unfinished for the rest of the season.
+function lastCompleteWeek() {
+  const played = (g) => g.result !== null && g.result !== undefined && String(g.result).trim() !== '';
+  const weeks = [];
+  const open = [];
+  for (const t of Object.values(read('teams.json').teams || {})) {
+    for (const g of (t.schedule || [])) {
+      const w = Number(g.week);
+      if (!Number.isFinite(w)) continue;
+      weeks.push(w);
+      if (!played(g)) open.push(w);
+    }
+  }
+  if (!weeks.length) return null;                     // no schedule to ask
+  if (!open.length) return Math.max(...weeks);        // season over
+  return Math.max(0, Math.min(...open) - 1);
+}
+
+test('the projection is through the last week FINISHED, not one in progress', () => {
+  // THE TEST THAT AGREED WITH THE BUG. It asserted throughWeek === the last week
+  // with a row in it, which is the same wrong question build-ros was asking, so
+  // it stayed green through the Friday the numbers went out a game short. The
+  // property is what to pin: the week the file is through must be one with no
+  // football left in it.
+  const complete = lastCompleteWeek();
+  if (complete === null) return;   // no schedule on disk to ask
+  assert.strictEqual(ros.meta.throughWeek, complete,
+    `ros.json says it is through week ${ros.meta.throughWeek} and week ${complete} is the last one `
+    + 'with every result in');
+});
+
+test('the week in progress is not counted, and its games are not in the blend', () => {
+  const onFile = lastWeekOnFile(ros.meta.season);
+  assert.ok(onFile - ros.meta.throughWeek <= 1,
+    `the game logs reach week ${onFile} and the file is through week ${ros.meta.throughWeek} — `
+    + 'more than the one week that can be in progress');
+
+  // And the window was actually applied to the games, not just written in meta:
+  // a player who played the Thursday night game of an unfinished week must not
+  // be carrying it. Recomputed from his own log.
+  const dir = path.join(ROOT, 'data', 'weekly');
+  let checked = 0;
+  for (const [id, p] of Object.entries(ros.players)) {
+    const f = path.join(dir, `${id}.json`);
+    if (!fs.existsSync(f)) continue;
+    const games = (JSON.parse(fs.readFileSync(f, 'utf8'))[ros.meta.season] || [])
+      .filter(g => Number(g.week) <= ros.meta.throughWeek);
+    assert.strictEqual(p.gamesPlayed, games.length,
+      `${id}: the file counts ${p.gamesPlayed} games and its log has ${games.length} through week ${ros.meta.throughWeek}`);
+    const pts = +games.reduce((s, g) => s + (g.fpts || 0), 0).toFixed(1);
+    assert.ok(Math.abs(p.pointsSoFar - pts) <= 0.15,
+      `${id}: ${p.pointsSoFar} points on file, ${pts} in the log through week ${ros.meta.throughWeek}`);
+    checked++;
+  }
+  assert.ok(checked > 20, `only ${checked} players could be checked against their own logs`);
 });
 
 test('nobody in the file has played more weeks than the file claims', () => {
@@ -159,6 +225,12 @@ test('the defence season switches on games PLAYED, at the week it says it does',
 
   // A season with every result in is as many weeks as it has.
   assert.strictEqual(weeksPlayedFrom(season(6)), 6);
+
+  // A TIE IS A PLAYED GAME. `result` is the home margin, so a draw is 0 — and a
+  // truthiness test on it reads the week as never finished and pins the clock
+  // below it for the rest of the season. One tie a year is enough.
+  const drawn = season(2).map(g => (g.week === 2 ? { week: 2, result: 0 } : g));
+  assert.strictEqual(weeksPlayedFrom(drawn), 2, 'a tied game was read as a game not played');
 
   assert.strictEqual(MIN_WEEKS_FOR_LIVE, 4, 'the floor moved; the measurement behind it is in the file');
   for (const played of [0, 1, 2, 3]) {

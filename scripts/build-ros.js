@@ -35,6 +35,7 @@
 const fs = require('fs');
 const path = require('path');
 const seasonLib = require('./lib/season');
+const schedule = require('./lib/schedule');
 const { writeJSONIfChanged } = require('./lib/write');
 
 const DATA = path.join(__dirname, '..', 'data');
@@ -46,14 +47,19 @@ const REGULAR_SEASON_WEEKS = 18;
 const read = (f) => JSON.parse(fs.readFileSync(path.join(DATA, f), 'utf8'));
 
 /**
- * The last week this season anybody has a game on file for.
+ * The last week this season ANYBODY has a row on file for.
  *
- * Read off the same game logs the blend is built from, rather than off the
- * calendar. A player who is on bye, hurt or benched has no row for a week, so
- * the MAXIMUM across the pool is the question — "has anybody played week N" —
- * and not any single player's last game.
+ * This is NOT the clock, and reading it as one is the bug this function now only
+ * cross-checks. "Has anybody played week N" is a different question from "is
+ * week N over", and they give different answers for four days out of every
+ * seven: on a Friday the Thursday night game is on file and fifteen games of
+ * that week are not. The week the projection is through comes from
+ * lib/schedule.js, which asks whether anything in a week is still to come.
+ *
+ * Kept as the second source in a contradiction check — the logs may lead the
+ * schedule by the week in progress, and by no more than that.
  */
-function lastPlayedWeek(season) {
+function lastWeekOnFile(season) {
   let last = 0;
   for (const f of fs.readdirSync(WEEKLY)) {
     if (!f.endsWith('.json')) continue;
@@ -97,26 +103,39 @@ async function main() {
   } else {
     const st = await seasonLib.state();
     season = st.season; phase = st.phase;
-    // WEEKS PLAYED, NOT THE WEEK ON THE CALENDAR, AND THEY ARE NOT THE SAME
-    // NUMBER. Sleeper's `week` is the one ABOUT to be played — it turns over on
-    // the Tuesday — so taking it as the week this projection is "through"
-    // overstated the season by one all year:
+    // WEEKS PLAYED, NOT THE WEEK ON THE CALENDAR, AND NOT THE LAST WEEK WITH A
+    // ROW IN IT EITHER. Three clocks, and only the schedule's results are the
+    // football:
     //
-    //   - the weights are fitted per week as "N games of evidence"
-    //     (build-ros-weights: before = g.week <= N), so a player with two games
-    //     was being handed the weight fitted for three, which trusts a small
-    //     sample more than the fit says it should;
-    //   - gamesRemaining counted the upcoming week as already gone, so every
-    //     rest-of-season TOTAL was one game short — about 7% at this point of a
-    //     season, and the number a reader actually trades on;
-    //   - and the card said "through week 3" on a Tuesday when week 3 kicked
-    //     off on the Thursday.
+    //   - Sleeper's `week` is the one ABOUT to be played and turns over on the
+    //     Tuesday, so it overstated the season by one all year;
+    //   - the game logs answer "has anybody played week N", which on a Friday
+    //     is one Thursday night game out of sixteen. That shipped on
+    //     2026-09-25: ros.json said the season was three weeks old when two
+    //     weeks had been played, so every player got the weight fitted for
+    //     three games of evidence (build-ros-weights: before = g.week <= N),
+    //     every rest-of-season TOTAL lost a game — about 7% of the number a
+    //     reader trades on — and the start/sit page, which reads throughWeek+1,
+    //     offered a week-4 decision while week 3 was being played.
     //
-    // The game logs are what the blend is built from, so they are what the
-    // window is asked of: the last week anybody has a game on file. Two numbers
-    // derived from one source cannot come apart.
-    week = lastPlayedWeek(season);
-    console.log(`[ros] league is in ${await seasonLib.describe()}; game logs are complete through week ${week}`);
+    // A WEEK IS THROUGH WHEN NOTHING IN IT IS STILL TO COME. That is the
+    // definition in lib/schedule.js, the one build-sos already used, and the
+    // reason its rest-of-season window and this file's window can no longer
+    // disagree — they are now the same sentence in the same file.
+    week = await schedule.weeksPlayed(season);
+
+    // THE LOGS ARE THE SECOND SOURCE, and they may lead by the week in progress
+    // — never by more. Two weeks apart is not a young season, it is the result
+    // column having moved or stopped, and then this file would quietly project
+    // off a window that is weeks stale, which is a failure with no symptom.
+    const onFile = lastWeekOnFile(season);
+    if (onFile - week > 1) {
+      throw new Error(`the schedule says ${week} week(s) are complete and the game logs already reach `
+        + `week ${onFile} — more than the week in progress. The schedule feed's result column has `
+        + 'moved or stopped publishing; the window cannot be trusted.');
+    }
+    console.log(`[ros] league is in ${await seasonLib.describe()}; ${week} week(s) complete, `
+      + `logs reach week ${onFile}`);
   }
 
   if (phase !== 'regular' && phase !== 'post') {
@@ -126,8 +145,16 @@ async function main() {
   }
 
   if (!week) {
-    console.log('[ros] no game has been played in this season yet — a rest-of-season projection with '
-      + 'nothing behind it is the preseason projection under another name. Nothing written.');
+    // Not one week is FINISHED. Two different mornings arrive here and the
+    // message has to be true of the one it is: the empty weeks before kickoff,
+    // and the four days of week 1 when the football has started and no week of
+    // it is over yet. Either way a blend has nothing fitted to stand on.
+    const onFile = simArg ? 0 : lastWeekOnFile(season);
+    console.log(onFile
+      ? `[ros] week ${onFile} is under way and no week of this season is finished yet — the weights are `
+        + 'fitted per COMPLETED week, so there is nothing to blend against. Nothing written.'
+      : '[ros] no game has been played in this season yet — a rest-of-season projection with '
+        + 'nothing behind it is the preseason projection under another name. Nothing written.');
     return;
   }
 

@@ -79,7 +79,7 @@ function liveRos() {
   return fs.existsSync(f) ? fs.readFileSync(f, 'utf8') : null;
 }
 
-test('in season it projects, and the file it writes is not a simulation', () => {
+test('in season it projects, and the live file on disk is not a simulation', () => {
   // THIS TEST USED TO ASSERT THE OPPOSITE, and it was right until Week 1 was
   // played. It ran build-ros against the REAL calendar and required a no-op —
   // which held only while it happened to be the preseason, so it went red on
@@ -93,7 +93,17 @@ test('in season it projects, and the file it writes is not a simulation', () => 
   // only became reachable in September and had never been exercised live: in
   // season the script produces a real forecast and a file with no simulation
   // stamp on it.
-  const out = execFileSync('node', ['scripts/build-ros.js'], { cwd: ROOT }).toString();
+  // --dry, BECAUSE A TEST MUST NOT REWRITE THE SITE'S DATA. This was the one
+  // spawned build in the suite without it (build-history is --dry twice over),
+  // and it wrote data/ros.json on every run. Harmless while build-ros only read
+  // local files; not harmless once it asks the schedule feed which weeks are
+  // complete — a mutation run mutates that clock, and the file this left behind
+  // said the season was 18 weeks old with 0 games remaining. Uncommitted, so it
+  // never shipped, and invisible unless somebody diffed before pushing.
+  //
+  // It also made the suite need the network to be green, which is a feed blip
+  // away from a red run for a reason that is not a bug.
+  const out = execFileSync('node', ['scripts/build-ros.js', '--dry'], { cwd: ROOT }).toString();
   assert.match(out, /players projected through week \d+|no games are on file/i,
     'the live run neither projected nor explained why it did not');
   const live = liveRos();

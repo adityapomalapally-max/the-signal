@@ -1675,7 +1675,7 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - The test asserts the draft board is LAST in the strip and wears the archive badge, which is a
   statement about what the page leads with rather than about what it contains.
 
-## Two clocks, and the one that was wrong all season
+## Three clocks, and the two that were wrong
 - SLEEPER'S `week` IS THE WEEK ABOUT TO BE PLAYED. It turns over on the Tuesday. Two builds read it
   as the week just finished, and both were wrong by one for the whole season:
   - `build-ros` published `throughWeek: 3` on a Tuesday when week 3 kicked off on the Thursday; it
@@ -1686,12 +1686,33 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   - `build-sos` cut its rest-of-season window at the same number, so the remaining slate included a
     week nobody had played.
   - And Start/Sit, which derives its week as `throughWeek + 1`, was showing the week AFTER next.
-- EACH ONE ASKS THE DATA IT IS BUILT FROM. ros reads the last week present in `data/weekly/*.json`
-  (the MAXIMUM across the pool — a player on bye has no row); sos reads `result` on the schedule
-  feed's own rows. The window and the games then come from one source and cannot come apart. The
-  calendar stays as the fallback for a feed that has stopped publishing results.
+- THE GAME LOGS ARE THE THIRD CLOCK AND THE FIX USED IT, so the same bug shipped again eighteen days
+  later. ros was moved onto "the last week present in `data/weekly/*.json`", which answers *has
+  anybody played week N* — and on a Friday that is ONE Thursday night game out of sixteen. On
+  2026-09-25, 15 rows into week 3 against ~235 for a full week, ros called the season three weeks old
+  with two weeks played: every player got the three-game weight on two games, every total lost a game
+  again — the SAME arithmetic on the same two-week sample, so the same numbers, Allen 411.2 → 431.1 —
+  and the six players in the Thursday game carried it as a full week besides (Bijan 25.9 → 21.2 ppg).
+  Start/Sit offered week-4 decisions during week 3. It went red from the SOS side — the two
+  windows disagreed — which is the only reason anybody found out.
+- ONE DEFINITION, IN `lib/schedule.js`: **a week is through when nothing in it is still to come**, off
+  the schedule feed's `result` column. build-ros and build-sos both call it. Neither owns a clock, so
+  the window, the games and the remaining slate cannot come apart. The calendar stays as the fallback
+  for a feed that has stopped publishing results.
+- A TIE IS `result: 0` AND 0 IS FALSY. `!String(g.result || '').trim()` read a drawn game as never
+  played, which would have pinned the clock below that week for the rest of the season — one tie a
+  year is enough. `hasResult()` tests for null/undefined/empty, the way build-teams already did.
+- THE GAME LOGS STAY AS THE SECOND SOURCE, not the clock: they may lead the schedule by the week in
+  progress and by NO MORE. Two weeks apart is the result column having moved, and build-ros throws
+  rather than project off a window that is quietly weeks stale.
 - THREE FEEDS, THREE ANSWERS, ALL CORRECT: on 2026-09-22 Sleeper said week 3, the schedule feed had
   32 of 272 games played (weeks 1–2), and stats_player had two weeks. Never cross-read them.
+- AND THE TEST AGREED WITH THE BUG, which is why green meant nothing: it asserted `throughWeek ===`
+  the last week with a row in it — the code's own wrong question, restated. It now pins the property
+  against a THIRD file (`teams.json` carries every game's result) and recomputes each player's games
+  and points from his own log, so the window has to have been applied and not just written in meta.
+  Same lesson as 2026-09-06: a test that encodes the same idea as the code cannot see the idea is
+  wrong.
 
 ## A segment that is in the past is not a segment
 - `build-sos` published "Weeks 1–4" as the opening month all season, beside a season-long figure

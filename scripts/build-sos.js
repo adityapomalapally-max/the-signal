@@ -27,6 +27,10 @@
 const fs = require('fs');
 const path = require('path');
 const { fetchCSV, parseCSV } = require('./lib/match');
+// The season's clock lives in one place now — build-ros asked the game logs the
+// same question and got a different answer, which is how a week in progress
+// became a week played. lib/schedule.js is the definition both read.
+const { hasResult, weeksPlayedFrom, regularSeasonGames } = require('./lib/schedule');
 const seasonLib = require('./lib/season');
 const { writeJSONIfChanged } = require('./lib/write');
 
@@ -70,24 +74,9 @@ function liveDefences(weeksPlayed) {
   return Number(weeksPlayed) >= MIN_WEEKS_FOR_LIVE;
 }
 
-/**
- * How many weeks of this season are in the books, from the schedule's own rows.
- *
- * A WEEK IS FINISHED WHEN NOTHING IN IT IS STILL TO COME, which is why this
- * counts up to the first unplayed game rather than counting played ones: on a
- * Tuesday the Monday night game has a result and the week is over; on a Sunday
- * evening half the week has results and the week is not. Counting rows with
- * results would call that half-week a week.
- *
- * A postponement moves the floor DOWN rather than up, which is the safe
- * direction: it means building on less rather than on a week nobody finished.
- */
-function weeksPlayedFrom(games) {
-  const open = games.filter(g => !String(g.result || '').trim()).map(g => Number(g.week))
-    .filter(Number.isFinite);
-  if (!open.length) return games.length ? Math.max(...games.map(g => Number(g.week) || 0)) : 0;
-  return Math.max(0, Math.min(...open) - 1);
-}
+// weeksPlayedFrom moved to lib/schedule.js, where build-ros reads it too. It is
+// still exported from here: the tests that exercise the once-a-year switch drive
+// it through this file.
 let SEASON = 2026;
 let DEF_SEASON = 2025;
 const POSITIONS = ['QB', 'RB', 'WR', 'TE'];
@@ -121,7 +110,6 @@ function segmentsFor(week) {
 let SEGMENTS = segmentsFor(0);
 
 const STATS_URL = s => `https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_${s}.csv`;
-const SCHEDULE_URL = 'https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv';
 
 const log = (m) => console.log(`[sos] ${m}`);
 const r1 = (n) => Math.round(n * 10) / 10;
@@ -136,8 +124,7 @@ async function main() {
   // have been played: which season's defences to build on, and where the
   // rest-of-season window starts. Both used to be taken from the calendar.
   log('Fetching schedule...');
-  const games = parseCSV(await fetchCSV(SCHEDULE_URL))
-    .filter(g => g.season === SEASON && g.game_type === 'REG');
+  const games = await regularSeasonGames(SEASON);
   const weeksPlayed = weeksPlayedFrom(games);
   const firstOpen = weeksPlayed + 1;
 
@@ -215,7 +202,7 @@ async function main() {
   // itself is built from, so the window and the games cannot come apart. The
   // calendar is the fallback for a feed that has stopped publishing results.
   SEGMENTS = segmentsFor(firstOpen);
-  log(`${games.filter(g => String(g.result || '').trim()).length} of ${games.length} games played; segments: `
+  log(`${games.filter(hasResult).length} of ${games.length} games played; segments: `
     + Object.entries(SEGMENTS).map(([k, v]) => `${k} ${v.label}`).join(', '));
   const schedule = {};
   for (const g of games) {
