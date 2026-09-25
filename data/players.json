@@ -110,11 +110,25 @@
     "name": "James Cook III",
     "pos": "RB",
     "team": "BUF",
-    "age": 26,
+    "age": 27,
     "fRank": "RB5",
     "sleeperId": "8138",
     "gsisId": "00-0037248",
     "experience": "4th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
+    "id": "stbrown",
+    "name": "Amon-Ra St. Brown",
+    "pos": "WR",
+    "team": "DET",
+    "age": 26,
+    "fRank": "WR5",
+    "sleeperId": "7547",
+    "gsisId": "00-0036963",
+    "experience": "5th Year",
     "status": "Healthy",
     "statusClass": "status-healthy",
     "statusSource": "sleeper"
@@ -143,20 +157,6 @@
     "sleeperId": "3198",
     "gsisId": "00-0032764",
     "experience": "10th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
-  },
-  {
-    "id": "stbrown",
-    "name": "Amon-Ra St. Brown",
-    "pos": "WR",
-    "team": "DET",
-    "age": 26,
-    "fRank": "WR5",
-    "sleeperId": "7547",
-    "gsisId": "00-0036963",
-    "experience": "5th Year",
     "status": "Healthy",
     "statusClass": "status-healthy",
     "statusSource": "sleeper"
@@ -220,20 +220,6 @@
     "statusSource": "sleeper"
   },
   {
-    "id": "jefferson",
-    "name": "Justin Jefferson",
-    "pos": "WR",
-    "team": "MIN",
-    "age": 27,
-    "fRank": "WR3",
-    "sleeperId": "6794",
-    "gsisId": "00-0036322",
-    "experience": "6th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
-  },
-  {
     "id": "maye",
     "name": "Drake Maye",
     "pos": "QB",
@@ -278,6 +264,20 @@
     "manualOverride": false
   },
   {
+    "id": "jefferson",
+    "name": "Justin Jefferson",
+    "pos": "WR",
+    "team": "MIN",
+    "age": 27,
+    "fRank": "WR3",
+    "sleeperId": "6794",
+    "gsisId": "00-0036322",
+    "experience": "6th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
     "id": "williams",
     "name": "Kyren Williams",
     "pos": "RB",
@@ -287,6 +287,20 @@
     "sleeperId": "8150",
     "gsisId": "00-0037840",
     "experience": "5th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
+    "id": "brown",
+    "name": "Chase Brown",
+    "pos": "RB",
+    "team": "CIN",
+    "age": 26,
+    "fRank": "RB12",
+    "sleeperId": "9224",
+    "gsisId": "00-0038597",
+    "experience": "4th Year",
     "status": "Healthy",
     "statusClass": "status-healthy",
     "statusSource": "sleeper"
@@ -306,20 +320,6 @@
     "statusSource": "sleeper",
     "statusUpdated": "2026-09-20T18:57:11.375Z",
     "manualOverride": false
-  },
-  {
-    "id": "brown",
-    "name": "Chase Brown",
-    "pos": "RB",
-    "team": "CIN",
-    "age": 26,
-    "fRank": "RB12",
-    "sleeperId": "9224",
-    "gsisId": "00-0038597",
-    "experience": "4th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
   },
   {
     "id": "jlove",
@@ -642,22 +642,6 @@
     "manualOverride": false
   },
   {
-    "id": "higgins",
-    "name": "Tee Higgins",
-    "pos": "WR",
-    "team": "CIN",
-    "age": 27,
-    "fRank": "WR19",
-    "sleeperId": "6801",
-    "gsisId": "00-0036410",
-    "experience": "7th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-09-10T16:37:24.427Z",
-    "manualOverride": false
-  },
-  {
     "id": "mcconkey",
     "name": "Ladd McConkey",
     "pos": "WR",
@@ -674,18 +658,20 @@
     "manualOverride": false
   },
   {
-    "id": "skattebo",
-    "name": "Cam Skattebo",
-    "pos": "RB",
-    "team": "NYG",
-    "age": 24,
-    "fRank": "RB18",
-    "sleeperId": "12481",
-    "gsisId": "00-0040715",
-    "experience": "2nd Year",
+    "id": "higgins",
+    "name": "Tee Higgins",
+    "pos": "WR",
+    "team": "CIN",
+    "age": 27,
+    "fRank": "WR19",
+    "sleeperId": "6801",
+    "gsisId": "00-0036410",
+    "experience": "7th Year",
     "status": "Healthy",
     "statusClass": "status-healthy",
-    "statusSource": "sleeper"
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-09-10T16:37:24.427Z",
+    "manualOverride": false
   },
   {
     "id": "loveland",
@@ -696,6 +682,20 @@
     "fRank": "TE3",
     "sleeperId": "12517",
     "gsisId": "00-0040126",
+    "experience": "2nd Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
+    "id": "skattebo",
+    "name": "Cam Skattebo",
+    "pos": "RB",
+    "team": "NYG",
+    "age": 24,
+    "fRank": "RB18",
+    "sleeperId": "12481",
+    "gsisId": "00-0040715",
     "experience": "2nd Year",
     "status": "Healthy",
     "statusClass": "status-healthy",
@@ -854,22 +854,6 @@
     "statusSource": "sleeper"
   },
   {
-    "id": "waddle",
-    "name": "Jaylen Waddle",
-    "pos": "WR",
-    "team": "DEN",
-    "age": 27,
-    "fRank": "WR17",
-    "sleeperId": "7526",
-    "gsisId": "00-0036613",
-    "experience": "6th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-08-20T11:31:52.206Z",
-    "manualOverride": false
-  },
-  {
     "id": "dart",
     "name": "Jaxson Dart",
     "pos": "QB",
@@ -883,6 +867,22 @@
     "statusClass": "status-out",
     "statusSource": "sleeper",
     "statusUpdated": "2026-09-25T01:15:55.537Z",
+    "manualOverride": false
+  },
+  {
+    "id": "waddle",
+    "name": "Jaylen Waddle",
+    "pos": "WR",
+    "team": "DEN",
+    "age": 27,
+    "fRank": "WR17",
+    "sleeperId": "7526",
+    "gsisId": "00-0036613",
+    "experience": "6th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-08-20T11:31:52.206Z",
     "manualOverride": false
   },
   {
@@ -918,6 +918,20 @@
     "manualOverride": false
   },
   {
+    "id": "nix",
+    "name": "Bo Nix",
+    "pos": "QB",
+    "team": "DEN",
+    "age": 26,
+    "fRank": "QB15",
+    "sleeperId": "11563",
+    "gsisId": "00-0039732",
+    "experience": "3rd Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
     "id": "judkins",
     "name": "Quinshon Judkins",
     "pos": "RB",
@@ -948,18 +962,20 @@
     "statusSource": "sleeper"
   },
   {
-    "id": "nix",
-    "name": "Bo Nix",
-    "pos": "QB",
-    "team": "DEN",
-    "age": 26,
-    "fRank": "QB15",
-    "sleeperId": "11563",
-    "gsisId": "00-0039732",
-    "experience": "3rd Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
+    "id": "moore",
+    "name": "DJ Moore",
+    "pos": "WR",
+    "team": "BUF",
+    "age": 29,
+    "fRank": "WR31",
+    "sleeperId": "4983",
+    "gsisId": "00-0034827",
+    "experience": "9th Year",
+    "status": "Questionable (Shoulder - AC Joint)",
+    "statusClass": "status-quest",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-09-23T15:22:41.413Z",
+    "manualOverride": false
   },
   {
     "id": "warren",
@@ -975,22 +991,6 @@
     "statusClass": "status-healthy",
     "statusSource": "sleeper",
     "statusUpdated": "2026-09-10T16:37:24.427Z",
-    "manualOverride": false
-  },
-  {
-    "id": "moore",
-    "name": "DJ Moore",
-    "pos": "WR",
-    "team": "BUF",
-    "age": 29,
-    "fRank": "WR31",
-    "sleeperId": "4983",
-    "gsisId": "00-0034827",
-    "experience": "9th Year",
-    "status": "Questionable (Shoulder - AC Joint)",
-    "statusClass": "status-quest",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-09-23T15:22:41.413Z",
     "manualOverride": false
   },
   {
@@ -1238,6 +1238,20 @@
     "statusSource": "sleeper"
   },
   {
+    "id": "stafford",
+    "name": "Matthew Stafford",
+    "pos": "QB",
+    "team": "LAR",
+    "age": 38,
+    "fRank": "QB14",
+    "sleeperId": "421",
+    "gsisId": "00-0026498",
+    "experience": "18th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
     "id": "dowdle",
     "name": "Rico Dowdle",
     "pos": "RB",
@@ -1284,20 +1298,6 @@
     "statusSource": "sleeper",
     "statusUpdated": "2026-09-13T18:51:32.683Z",
     "manualOverride": false
-  },
-  {
-    "id": "stafford",
-    "name": "Matthew Stafford",
-    "pos": "QB",
-    "team": "LAR",
-    "age": 38,
-    "fRank": "QB14",
-    "sleeperId": "421",
-    "gsisId": "00-0026498",
-    "experience": "18th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
   },
   {
     "id": "hubbard",
@@ -1570,6 +1570,20 @@
     "manualOverride": false
   },
   {
+    "id": "gainwell",
+    "name": "Kenny Gainwell",
+    "pos": "RB",
+    "team": "TB",
+    "age": 27,
+    "fRank": null,
+    "sleeperId": "7567",
+    "gsisId": "00-0036919",
+    "experience": "6th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
     "id": "murray",
     "name": "Kyler Murray",
     "pos": "QB",
@@ -1584,20 +1598,6 @@
     "statusSource": "sleeper",
     "statusUpdated": "2026-09-23T15:22:41.413Z",
     "manualOverride": false
-  },
-  {
-    "id": "gainwell",
-    "name": "Kenny Gainwell",
-    "pos": "RB",
-    "team": "TB",
-    "age": 27,
-    "fRank": null,
-    "sleeperId": "7567",
-    "gsisId": "00-0036919",
-    "experience": "6th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
   },
   {
     "id": "brooks",
@@ -1658,6 +1658,22 @@
     "statusSource": "sleeper"
   },
   {
+    "id": "mason",
+    "name": "Jordan Mason",
+    "pos": "RB",
+    "team": "MIN",
+    "age": 27,
+    "fRank": null,
+    "sleeperId": "8408",
+    "gsisId": "00-0037525",
+    "experience": "5th Year",
+    "status": "IR (Thumb)",
+    "statusClass": "status-out",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-09-16T20:05:29.254Z",
+    "manualOverride": false
+  },
+  {
     "id": "shough",
     "name": "Tyler Shough",
     "pos": "QB",
@@ -1715,22 +1731,6 @@
     "statusClass": "status-out",
     "statusSource": "sleeper",
     "statusUpdated": "2026-08-31T00:44:05.528Z",
-    "manualOverride": false
-  },
-  {
-    "id": "mason",
-    "name": "Jordan Mason",
-    "pos": "RB",
-    "team": "MIN",
-    "age": 27,
-    "fRank": null,
-    "sleeperId": "8408",
-    "gsisId": "00-0037525",
-    "experience": "5th Year",
-    "status": "IR (Thumb)",
-    "statusClass": "status-out",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-09-16T20:05:29.254Z",
     "manualOverride": false
   },
   {
@@ -1962,6 +1962,20 @@
     "statusSource": "sleeper"
   },
   {
+    "id": "likely",
+    "name": "Isaiah Likely",
+    "pos": "TE",
+    "team": "NYG",
+    "age": 26,
+    "fRank": null,
+    "sleeperId": "8131",
+    "gsisId": "00-0037838",
+    "experience": "5th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
     "id": "strange",
     "name": "Brenton Strange",
     "pos": "TE",
@@ -1971,20 +1985,6 @@
     "sleeperId": "9480",
     "gsisId": "00-0038935",
     "experience": "4th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
-  },
-  {
-    "id": "hunter",
-    "name": "Travis Hunter",
-    "pos": "WR",
-    "team": "JAX",
-    "age": 23,
-    "fRank": null,
-    "sleeperId": "12530",
-    "gsisId": "00-0040718",
-    "experience": "2nd Year",
     "status": "Healthy",
     "statusClass": "status-healthy",
     "statusSource": "sleeper"
@@ -2020,6 +2020,20 @@
     "statusSource": "sleeper"
   },
   {
+    "id": "hunter",
+    "name": "Travis Hunter",
+    "pos": "WR",
+    "team": "JAX",
+    "age": 23,
+    "fRank": null,
+    "sleeperId": "12530",
+    "gsisId": "00-0040718",
+    "experience": "2nd Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
     "id": "pittman",
     "name": "Michael Pittman",
     "pos": "WR",
@@ -2036,15 +2050,15 @@
     "manualOverride": false
   },
   {
-    "id": "likely",
-    "name": "Isaiah Likely",
-    "pos": "TE",
-    "team": "NYG",
-    "age": 26,
+    "id": "mendoza",
+    "name": "Fernando Mendoza",
+    "pos": "QB",
+    "team": "LV",
+    "age": 22,
     "fRank": null,
-    "sleeperId": "8131",
-    "gsisId": "00-0037838",
-    "experience": "5th Year",
+    "sleeperId": "13269",
+    "gsisId": "00-0041562",
+    "experience": "Rookie",
     "status": "Healthy",
     "statusClass": "status-healthy",
     "statusSource": "sleeper"
@@ -2080,20 +2094,6 @@
     "statusSource": "sleeper",
     "statusUpdated": "2026-09-18T01:07:30.387Z",
     "manualOverride": false
-  },
-  {
-    "id": "mendoza",
-    "name": "Fernando Mendoza",
-    "pos": "QB",
-    "team": "LV",
-    "age": 22,
-    "fRank": null,
-    "sleeperId": "13269",
-    "gsisId": "00-0041562",
-    "experience": "Rookie",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
   },
   {
     "id": "concepcion",
@@ -2142,20 +2142,6 @@
     "manualOverride": false
   },
   {
-    "id": "ward",
-    "name": "Cam Ward",
-    "pos": "QB",
-    "team": "TEN",
-    "age": 24,
-    "fRank": null,
-    "sleeperId": "12522",
-    "gsisId": "00-0040676",
-    "experience": "2nd Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
-  },
-  {
     "id": "johnson-e",
     "name": "Emmett Johnson",
     "pos": "RB",
@@ -2181,6 +2167,20 @@
     "experience": "3rd Year",
     "status": "IR (Knee)",
     "statusClass": "status-out",
+    "statusSource": "sleeper"
+  },
+  {
+    "id": "ward",
+    "name": "Cam Ward",
+    "pos": "QB",
+    "team": "TEN",
+    "age": 24,
+    "fRank": null,
+    "sleeperId": "12522",
+    "gsisId": "00-0040676",
+    "experience": "2nd Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
     "statusSource": "sleeper"
   },
   {
@@ -2539,10 +2539,10 @@
     "sleeperId": "8210",
     "gsisId": "00-0037809",
     "experience": "5th Year",
-    "status": "Questionable (Hamstring)",
-    "statusClass": "status-quest",
+    "status": "Doubtful (Hamstring)",
+    "statusClass": "status-out",
     "statusSource": "sleeper",
-    "statusUpdated": "2026-09-23T15:22:41.414Z",
+    "statusUpdated": "2026-09-25T15:46:18.518Z",
     "manualOverride": false
   },
   {
@@ -2555,10 +2555,10 @@
     "sleeperId": "12498",
     "gsisId": "00-0040736",
     "experience": "2nd Year",
-    "status": "Doubtful (Thumb)",
+    "status": "Out (Thumb)",
     "statusClass": "status-out",
     "statusSource": "sleeper",
-    "statusUpdated": "2026-09-23T15:22:41.414Z",
+    "statusUpdated": "2026-09-25T15:46:18.518Z",
     "manualOverride": false
   },
   {
@@ -2822,6 +2822,22 @@
     "statusSource": "sleeper"
   },
   {
+    "id": "black",
+    "name": "Kaelon Black",
+    "pos": "RB",
+    "team": "SF",
+    "age": 24,
+    "fRank": null,
+    "sleeperId": "13414",
+    "gsisId": "00-0041052",
+    "experience": "Rookie",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-09-21T00:23:11.437Z",
+    "manualOverride": false
+  },
+  {
     "id": "wilson-e",
     "name": "Emanuel Wilson",
     "pos": "RB",
@@ -2851,22 +2867,6 @@
     "statusClass": "status-quest",
     "statusSource": "sleeper",
     "statusUpdated": "2026-09-25T01:15:55.538Z",
-    "manualOverride": false
-  },
-  {
-    "id": "black",
-    "name": "Kaelon Black",
-    "pos": "RB",
-    "team": "SF",
-    "age": 24,
-    "fRank": null,
-    "sleeperId": "13414",
-    "gsisId": "00-0041052",
-    "experience": "Rookie",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-09-21T00:23:11.437Z",
     "manualOverride": false
   },
   {
@@ -3011,10 +3011,10 @@
     "sleeperId": "11643",
     "gsisId": "00-0039874",
     "experience": "3rd Year",
-    "status": "Questionable (Neck)",
-    "statusClass": "status-quest",
+    "status": "Doubtful (Foot)",
+    "statusClass": "status-out",
     "statusSource": "sleeper",
-    "statusUpdated": "2026-09-21T00:23:11.437Z",
+    "statusUpdated": "2026-09-25T15:46:18.518Z",
     "manualOverride": false
   },
   {
@@ -3062,6 +3062,20 @@
     "statusSource": "sleeper"
   },
   {
+    "id": "washington-malik",
+    "name": "Malik Washington",
+    "pos": "WR",
+    "team": "MIA",
+    "age": 25,
+    "fRank": null,
+    "sleeperId": "11610",
+    "gsisId": "00-0039880",
+    "experience": "3rd Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
     "id": "tonges",
     "name": "Jake Tonges",
     "pos": "TE",
@@ -3078,20 +3092,6 @@
     "manualOverride": false
   },
   {
-    "id": "washington-malik",
-    "name": "Malik Washington",
-    "pos": "WR",
-    "team": "MIA",
-    "age": 25,
-    "fRank": null,
-    "sleeperId": "11610",
-    "gsisId": "00-0039880",
-    "experience": "3rd Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
-  },
-  {
     "id": "harris",
     "name": "Tre' Harris",
     "pos": "WR",
@@ -3106,20 +3106,6 @@
     "statusSource": "sleeper",
     "statusUpdated": "2026-09-10T16:37:24.428Z",
     "manualOverride": false
-  },
-  {
-    "id": "allen-c",
-    "name": "Cyrus Allen",
-    "pos": "WR",
-    "team": "KC",
-    "age": 23,
-    "fRank": null,
-    "sleeperId": "13413",
-    "gsisId": "00-0040890",
-    "experience": "Rookie",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
   },
   {
     "id": "ridley",
@@ -3150,6 +3136,20 @@
     "statusSource": "sleeper",
     "statusUpdated": "2026-09-25T01:15:55.538Z",
     "manualOverride": false
+  },
+  {
+    "id": "allen-c",
+    "name": "Cyrus Allen",
+    "pos": "WR",
+    "team": "KC",
+    "age": 23,
+    "fRank": null,
+    "sleeperId": "13413",
+    "gsisId": "00-0040890",
+    "experience": "Rookie",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
   },
   {
     "id": "smith-b",
@@ -3418,22 +3418,6 @@
     "manualOverride": false
   },
   {
-    "id": "douglas",
-    "name": "Caleb Douglas",
-    "pos": "WR",
-    "team": "MIA",
-    "age": 23,
-    "fRank": null,
-    "sleeperId": "13296",
-    "gsisId": "00-0041523",
-    "experience": "Rookie",
-    "status": "Questionable (Ankle)",
-    "statusClass": "status-quest",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-09-21T00:23:11.438Z",
-    "manualOverride": false
-  },
-  {
     "id": "sarratt",
     "name": "Elijah Sarratt",
     "pos": "WR",
@@ -3447,6 +3431,22 @@
     "statusClass": "status-healthy",
     "statusSource": "sleeper",
     "statusUpdated": "2026-09-16T15:22:35.547Z",
+    "manualOverride": false
+  },
+  {
+    "id": "douglas",
+    "name": "Caleb Douglas",
+    "pos": "WR",
+    "team": "MIA",
+    "age": 23,
+    "fRank": null,
+    "sleeperId": "13296",
+    "gsisId": "00-0041523",
+    "experience": "Rookie",
+    "status": "Out (Ankle)",
+    "statusClass": "status-out",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-09-25T15:46:18.518Z",
     "manualOverride": false
   },
   {
@@ -3536,6 +3536,20 @@
     "statusSource": "sleeper"
   },
   {
+    "id": "vele",
+    "name": "Devaughn Vele",
+    "pos": "WR",
+    "team": "NO",
+    "age": 28,
+    "fRank": null,
+    "sleeperId": "11834",
+    "gsisId": "00-0039424",
+    "experience": "3rd Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
     "id": "smith-g",
     "name": "Geno Smith",
     "pos": "QB",
@@ -3550,20 +3564,6 @@
     "statusSource": "sleeper",
     "statusUpdated": "2026-08-19T11:29:49.979Z",
     "manualOverride": false
-  },
-  {
-    "id": "vele",
-    "name": "Devaughn Vele",
-    "pos": "WR",
-    "team": "NO",
-    "age": 28,
-    "fRank": null,
-    "sleeperId": "11834",
-    "gsisId": "00-0039424",
-    "experience": "3rd Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
   },
   {
     "id": "kirk",
@@ -3614,6 +3614,20 @@
     "manualOverride": false
   },
   {
+    "id": "hill",
+    "name": "Justice Hill",
+    "pos": "RB",
+    "team": "BAL",
+    "age": 28,
+    "fRank": null,
+    "sleeperId": "5995",
+    "gsisId": "00-0034975",
+    "experience": "8th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
     "id": "mccarthy",
     "name": "J.J. McCarthy",
     "pos": "QB",
@@ -3628,20 +3642,6 @@
     "statusSource": "sleeper",
     "statusUpdated": "2026-09-16T15:22:35.547Z",
     "manualOverride": false
-  },
-  {
-    "id": "hill",
-    "name": "Justice Hill",
-    "pos": "RB",
-    "team": "BAL",
-    "age": 28,
-    "fRank": null,
-    "sleeperId": "5995",
-    "gsisId": "00-0034975",
-    "experience": "8th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
   },
   {
     "id": "sanders",
@@ -4192,20 +4192,6 @@
     "manualOverride": false
   },
   {
-    "id": "fehoko",
-    "name": "Simi Fehoko",
-    "pos": "WR",
-    "team": "ARI",
-    "age": 28,
-    "fRank": null,
-    "sleeperId": "7812",
-    "gsisId": "00-0036646",
-    "experience": "6th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
-  },
-  {
     "id": "fields-j",
     "name": "Justin Fields",
     "pos": "QB",
@@ -4214,6 +4200,20 @@
     "fRank": null,
     "sleeperId": "7591",
     "gsisId": "00-0036945",
+    "experience": "6th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
+    "id": "fehoko",
+    "name": "Simi Fehoko",
+    "pos": "WR",
+    "team": "ARI",
+    "age": 28,
+    "fRank": null,
+    "sleeperId": "7812",
+    "gsisId": "00-0036646",
     "experience": "6th Year",
     "status": "Healthy",
     "statusClass": "status-healthy",
@@ -4470,20 +4470,6 @@
     "statusSource": "sleeper"
   },
   {
-    "id": "montgomery-d",
-    "name": "D.J. Montgomery",
-    "pos": "WR",
-    "team": "IND",
-    "age": 29,
-    "fRank": null,
-    "sleeperId": "6453",
-    "gsisId": "00-0035045",
-    "experience": "8th Year",
-    "status": "IR (Abdomen)",
-    "statusClass": "status-out",
-    "statusSource": "sleeper"
-  },
-  {
     "id": "ehlinger",
     "name": "Sam Ehlinger",
     "pos": "QB",
@@ -4511,6 +4497,20 @@
     "experience": "4th Year",
     "status": "Healthy",
     "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
+    "id": "montgomery-d",
+    "name": "D.J. Montgomery",
+    "pos": "WR",
+    "team": "IND",
+    "age": 29,
+    "fRank": null,
+    "sleeperId": "6453",
+    "gsisId": "00-0035045",
+    "experience": "8th Year",
+    "status": "IR (Abdomen)",
+    "statusClass": "status-out",
     "statusSource": "sleeper"
   },
   {
@@ -4746,6 +4746,20 @@
     "statusSource": "sleeper"
   },
   {
+    "id": "jones-j",
+    "name": "Jeshaun Jones",
+    "pos": "WR",
+    "team": "MIN",
+    "age": 26,
+    "fRank": null,
+    "sleeperId": "11911",
+    "gsisId": null,
+    "experience": "3rd Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
     "id": "thompson",
     "name": "Brenen Thompson",
     "pos": "WR",
@@ -4776,34 +4790,6 @@
     "statusSource": "sleeper"
   },
   {
-    "id": "jones-j",
-    "name": "Jeshaun Jones",
-    "pos": "WR",
-    "team": "MIN",
-    "age": 26,
-    "fRank": null,
-    "sleeperId": "11911",
-    "gsisId": null,
-    "experience": "3rd Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
-  },
-  {
-    "id": "douglas-d",
-    "name": "DeMario Douglas",
-    "pos": "WR",
-    "team": "NE",
-    "age": 25,
-    "fRank": null,
-    "sleeperId": "9501",
-    "gsisId": "00-0038621",
-    "experience": "4th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
-  },
-  {
     "id": "iosivas",
     "name": "Andrei Iosivas",
     "pos": "WR",
@@ -4828,6 +4814,20 @@
     "fRank": null,
     "sleeperId": "11320",
     "gsisId": "00-0038519",
+    "experience": "4th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
+    "id": "douglas-d",
+    "name": "DeMario Douglas",
+    "pos": "WR",
+    "team": "NE",
+    "age": 25,
+    "fRank": null,
+    "sleeperId": "9501",
+    "gsisId": "00-0038621",
     "experience": "4th Year",
     "status": "Healthy",
     "statusClass": "status-healthy",
@@ -4864,22 +4864,6 @@
     "statusSource": "sleeper"
   },
   {
-    "id": "allen-l",
-    "name": "LeQuint Allen",
-    "pos": "RB",
-    "team": "JAX",
-    "age": 22,
-    "fRank": null,
-    "sleeperId": "12544",
-    "gsisId": "00-0040238",
-    "experience": "2nd Year",
-    "status": "Questionable (Hip)",
-    "statusClass": "status-quest",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-09-24T15:46:00.376Z",
-    "manualOverride": false
-  },
-  {
     "id": "benson-m",
     "name": "Malik Benson",
     "pos": "WR",
@@ -4910,18 +4894,20 @@
     "manualOverride": false
   },
   {
-    "id": "webb",
-    "name": "Jeremiah Webb",
-    "pos": "WR",
-    "team": "NE",
-    "age": 25,
+    "id": "allen-l",
+    "name": "LeQuint Allen",
+    "pos": "RB",
+    "team": "JAX",
+    "age": 22,
     "fRank": null,
-    "sleeperId": "13124",
-    "gsisId": null,
+    "sleeperId": "12544",
+    "gsisId": "00-0040238",
     "experience": "2nd Year",
-    "status": "IR (Arm)",
-    "statusClass": "status-out",
-    "statusSource": "sleeper"
+    "status": "Questionable (Hip)",
+    "statusClass": "status-quest",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-09-24T15:46:00.376Z",
+    "manualOverride": false
   },
   {
     "id": "hibner",
@@ -4970,17 +4956,17 @@
     "manualOverride": false
   },
   {
-    "id": "dotson",
-    "name": "Jahan Dotson",
+    "id": "webb",
+    "name": "Jeremiah Webb",
     "pos": "WR",
-    "team": "ATL",
-    "age": 26,
+    "team": "NE",
+    "age": 25,
     "fRank": null,
-    "sleeperId": "8119",
-    "gsisId": "00-0037741",
-    "experience": "5th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
+    "sleeperId": "13124",
+    "gsisId": null,
+    "experience": "2nd Year",
+    "status": "IR (Arm)",
+    "statusClass": "status-out",
     "statusSource": "sleeper"
   },
   {
@@ -4998,6 +4984,20 @@
     "statusSource": "sleeper",
     "statusUpdated": "2026-09-10T16:37:24.428Z",
     "manualOverride": false
+  },
+  {
+    "id": "dotson",
+    "name": "Jahan Dotson",
+    "pos": "WR",
+    "team": "ATL",
+    "age": 26,
+    "fRank": null,
+    "sleeperId": "8119",
+    "gsisId": "00-0037741",
+    "experience": "5th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
   },
   {
     "id": "endries",

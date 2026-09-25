@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-anatomy.js",
-    "builtAt": "2026-09-24T15:49:31.007Z",
+    "builtAt": "2026-09-25T15:49:48.952Z",
     "layers": {
       "frequency": "counted from data/injuries.json — the official NFL injury reports for this pool",
       "recovery": "from data/injury-curves.json, derived from those same reports",
@@ -12,7 +12,7 @@
       "A named condition without a research entry is listed because it genuinely occurs at that region, NOT because we have data on it. The page says so rather than printing a timeline nobody can check.",
       "Recovery figures are the median across this pool over three seasons, not a prognosis for any individual. Sample sizes are stated and several are small."
     ],
-    "totalEpisodes": 1181,
+    "totalEpisodes": 1191,
     "unmappedParts": [
       {
         "part": "Undisclosed",
@@ -48,15 +48,15 @@
       }
     ],
     "coverage": {
-      "mappedEpisodes": 1007,
-      "totalEpisodes": 1181,
-      "pct": 85.3
+      "mappedEpisodes": 1015,
+      "totalEpisodes": 1191,
+      "pct": 85.2
     }
   },
   "regions": {
     "head": {
       "label": "Head & neck",
-      "episodes": 68,
+      "episodes": 69,
       "players": 58,
       "shareOfAll": 5.8,
       "reportedAs": [
@@ -67,7 +67,7 @@
         },
         {
           "part": "Neck",
-          "episodes": 17,
+          "episodes": 18,
           "players": 17
         },
         {
@@ -185,7 +185,7 @@
       "label": "Shoulder",
       "episodes": 86,
       "players": 66,
-      "shareOfAll": 7.3,
+      "shareOfAll": 7.2,
       "reportedAs": [
         {
           "part": "Shoulder",
@@ -332,8 +332,8 @@
     },
     "arm": {
       "label": "Arm, elbow & hand",
-      "episodes": 73,
-      "players": 59,
+      "episodes": 74,
+      "players": 60,
       "shareOfAll": 6.2,
       "reportedAs": [
         {
@@ -358,8 +358,8 @@
         },
         {
           "part": "Finger",
-          "episodes": 6,
-          "players": 6
+          "episodes": 7,
+          "players": 7
         },
         {
           "part": "Biceps",
@@ -521,9 +521,9 @@
     },
     "core": {
       "label": "Ribs, chest & core",
-      "episodes": 51,
-      "players": 45,
-      "shareOfAll": 4.3,
+      "episodes": 52,
+      "players": 46,
+      "shareOfAll": 4.4,
       "reportedAs": [
         {
           "part": "Chest",
@@ -547,8 +547,8 @@
         },
         {
           "part": "Abdomen",
-          "episodes": 6,
-          "players": 6
+          "episodes": 7,
+          "players": 7
         },
         {
           "part": "Pectoral",
@@ -645,7 +645,7 @@
       "label": "Hip & groin",
       "episodes": 103,
       "players": 77,
-      "shareOfAll": 8.7,
+      "shareOfAll": 8.6,
       "reportedAs": [
         {
           "part": "Hip",
@@ -760,14 +760,14 @@
     },
     "thigh": {
       "label": "Hamstring, quad & thigh",
-      "episodes": 124,
-      "players": 91,
-      "shareOfAll": 10.5,
+      "episodes": 126,
+      "players": 92,
+      "shareOfAll": 10.6,
       "reportedAs": [
         {
           "part": "Hamstring",
-          "episodes": 95,
-          "players": 70
+          "episodes": 97,
+          "players": 71
         },
         {
           "part": "Quadricep",
@@ -877,14 +877,14 @@
     },
     "knee": {
       "label": "Knee",
-      "episodes": 165,
-      "players": 107,
-      "shareOfAll": 14,
+      "episodes": 168,
+      "players": 108,
+      "shareOfAll": 14.1,
       "reportedAs": [
         {
           "part": "Knee",
-          "episodes": 165,
-          "players": 107
+          "episodes": 168,
+          "players": 108
         }
       ],
       "recovery": {
@@ -1147,7 +1147,7 @@
       "label": "Ankle",
       "episodes": 164,
       "players": 116,
-      "shareOfAll": 13.9,
+      "shareOfAll": 13.8,
       "reportedAs": [
         {
           "part": "Ankle",
