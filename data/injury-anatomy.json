@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-anatomy.js",
-    "builtAt": "2026-09-25T15:49:48.952Z",
+    "builtAt": "2026-09-26T15:00:12.081Z",
     "layers": {
       "frequency": "counted from data/injuries.json — the official NFL injury reports for this pool",
       "recovery": "from data/injury-curves.json, derived from those same reports",
@@ -12,7 +12,7 @@
       "A named condition without a research entry is listed because it genuinely occurs at that region, NOT because we have data on it. The page says so rather than printing a timeline nobody can check.",
       "Recovery figures are the median across this pool over three seasons, not a prognosis for any individual. Sample sizes are stated and several are small."
     ],
-    "totalEpisodes": 1191,
+    "totalEpisodes": 1189,
     "unmappedParts": [
       {
         "part": "Undisclosed",
@@ -48,8 +48,8 @@
       }
     ],
     "coverage": {
-      "mappedEpisodes": 1015,
-      "totalEpisodes": 1191,
+      "mappedEpisodes": 1013,
+      "totalEpisodes": 1189,
       "pct": 85.2
     }
   },
@@ -645,7 +645,7 @@
       "label": "Hip & groin",
       "episodes": 103,
       "players": 77,
-      "shareOfAll": 8.6,
+      "shareOfAll": 8.7,
       "reportedAs": [
         {
           "part": "Hip",
@@ -760,14 +760,14 @@
     },
     "thigh": {
       "label": "Hamstring, quad & thigh",
-      "episodes": 126,
-      "players": 92,
-      "shareOfAll": 10.6,
+      "episodes": 125,
+      "players": 91,
+      "shareOfAll": 10.5,
       "reportedAs": [
         {
           "part": "Hamstring",
-          "episodes": 97,
-          "players": 71
+          "episodes": 96,
+          "players": 70
         },
         {
           "part": "Quadricep",
@@ -877,14 +877,14 @@
     },
     "knee": {
       "label": "Knee",
-      "episodes": 168,
-      "players": 108,
-      "shareOfAll": 14.1,
+      "episodes": 167,
+      "players": 107,
+      "shareOfAll": 14,
       "reportedAs": [
         {
           "part": "Knee",
-          "episodes": 168,
-          "players": 108
+          "episodes": 167,
+          "players": 107
         }
       ],
       "recovery": {
