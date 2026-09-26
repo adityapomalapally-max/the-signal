@@ -101,8 +101,11 @@ test('in season it projects, and the live file on disk is not a simulation', () 
   // said the season was 18 weeks old with 0 games remaining. Uncommitted, so it
   // never shipped, and invisible unless somebody diffed before pushing.
   //
-  // It also made the suite need the network to be green, which is a feed blip
-  // away from a red run for a reason that is not a bug.
+  // --dry STILL ASKS THE SCHEDULE FEED — that is the branch worth exercising, and
+  // this suite already reaches the network through check-season. What --dry stops
+  // is the write. Worth knowing because it is why the ratchet now reports 36 of
+  // 60 instead of 35: the extra kill is fetchCSV's redirect branch, caught only
+  // because a real HTTPS request happens here. See tests/mutation-baseline.json.
   const out = execFileSync('node', ['scripts/build-ros.js', '--dry'], { cwd: ROOT }).toString();
   assert.match(out, /players projected through week \d+|no games are on file/i,
     'the live run neither projected nor explained why it did not');

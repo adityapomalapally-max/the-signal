@@ -131,6 +131,12 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   stayed red for six runs with nobody looking. It is in daily-update.yml now, after the push with
   `always()`, 40 seconds. THE SAME HOLE ALREADY COST THE DATA-INTEGRITY SUITE, which is why that
   suite is in the daily Action too; the fix was applied once and not looked for elsewhere.
+- AND WHEN IT RISES, ASK WHAT EARNED IT. On 2026-09-25 it went 35 -> 36 and the invitation to raise
+  the baseline was a trap: the extra kill was `res.statusCode < 400` in fetchCSV's redirect branch,
+  caught only because build-ros began asking the schedule feed and a test spawns it — so it is the
+  NETWORK being up, not an assertion. Banked at 36, the next offline run fails the build for a feed
+  blip. Only raise the number for a kill an assertion earns; the reason is recorded in the baseline
+  file itself so the invitation stops being answered from scratch every push.
 - WHEN THE RATCHET DROPS, FIND THE SURVIVOR — do not lower the baseline. The number in the file is
   the whole mechanism. The 34 -> 33 drop was the date fallback's `m >= 9 && m <= 12` losing December
   to `off`, which turns gamesHaveStarted() false and hands the entire site last season in week 15,
