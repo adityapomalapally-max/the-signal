@@ -17,11 +17,30 @@ const https = require('https');
 const zlib = require('zlib');
 const { USER_AGENT } = require('./agent');
 
+/**
+ * THE SEAM, the same shape as lib/season's `__setState` and lib/feeds'
+ * `__setPublished`.
+ *
+ * Every nflverse fetch in this repo goes through the function below and NOTHING
+ * tested it — tests/ never mentioned this file. That was invisible until the
+ * mutation ratchet reported itself getting stronger on 2026-09-25: the extra
+ * kill was `statusCode < 400` here, and it died only because build-ros had begun
+ * asking the schedule feed and GitHub happened to answer 302. A kill that rests
+ * on a CDN's behaviour is not a test, and it would have come undone the day the
+ * release URL stopped redirecting.
+ *
+ * So the transport is injectable and the redirect rules are asserted offline.
+ */
+let transport = null;
+function __setTransport(fn) { transport = fn; }
+function __resetTransport() { transport = null; }
+
 function fetchCSV(url) {
   return new Promise((resolve, reject) => {
     const doFetch = (u, redirects = 0) => {
       if (redirects > 5) return reject(new Error('Too many redirects'));
-      https.get(u, { headers: { 'User-Agent': USER_AGENT } }, (res) => {
+      const get = transport || https.get.bind(https);
+      get(u, { headers: { 'User-Agent': USER_AGENT } }, (res) => {
         if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
           return doFetch(res.headers.location, redirects + 1);
         }
@@ -126,4 +145,5 @@ function matchRow(index, fields) {
   return index.byName.get(`${normalizeName(fields.name || '')}|${fields.pos}`) || null;
 }
 
-module.exports = { fetchCSV, parseCSV, parseCSVLine, normalizeName, normalizeSleeperName, buildMatchIndex, matchRow };
+module.exports = { fetchCSV, parseCSV, parseCSVLine, normalizeName, normalizeSleeperName, buildMatchIndex, matchRow,
+  __setTransport, __resetTransport };

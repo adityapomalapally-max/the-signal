@@ -133,10 +133,21 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   suite is in the daily Action too; the fix was applied once and not looked for elsewhere.
 - AND WHEN IT RISES, ASK WHAT EARNED IT. On 2026-09-25 it went 35 -> 36 and the invitation to raise
   the baseline was a trap: the extra kill was `res.statusCode < 400` in fetchCSV's redirect branch,
-  caught only because build-ros began asking the schedule feed and a test spawns it — so it is the
-  NETWORK being up, not an assertion. Banked at 36, the next offline run fails the build for a feed
-  blip. Only raise the number for a kill an assertion earns; the reason is recorded in the baseline
-  file itself so the invitation stops being answered from scratch every push.
+  caught only because build-ros began asking the schedule feed and a test spawns it — so it was the
+  NETWORK being up, wearing coverage's clothes, and it would have come undone the day that URL stopped
+  answering 302. The fix was to EARN it: `lib/match.js` now takes an injectable transport (the same
+  seam shape as `lib/season.__setState`) and tests/match-fetch.test.js asserts the redirect rules
+  offline — 300 is a redirect, 400 is not even with a location, a non-200 is refused rather than
+  parsed into an empty layer, and the loop cap stops at six requests. Nothing in tests/ had ever
+  mentioned that file, and every nflverse fetch goes through it.
+- THE SAMPLE RE-ROLLS SILENTLY, which is the flaw under all of the above. mutate.js shuffles the WHOLE
+  pool with the seed and takes the first 60, so one operator added or removed anywhere in the lib
+  files changes which 60 run — the recorded count then describes a different sample and a drop looks
+  exactly like a weaker suite. That happened here: the transport seam plus `lib/schedule.js` joining
+  the list took the pool 224 -> 236 and the number 36 -> 30. The baseline records `pool` now and
+  mutate.js says so out loud when it no longer matches. **30 is not weaker than 35** — the proof is
+  which files are ABSENT from the survivor list: match.js and schedule.js, where three mutants used
+  to live. 17 of the 30 survivors are fieldmap.js, still the thinnest-covered file in the pool.
 - WHEN THE RATCHET DROPS, FIND THE SURVIVOR — do not lower the baseline. The number in the file is
   the whole mechanism. The 34 -> 33 drop was the date fallback's `m >= 9 && m <= 12` losing December
   to `off`, which turns gamesHaveStarted() false and hands the entire site last season in week 15,

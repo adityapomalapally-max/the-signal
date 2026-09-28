@@ -45,6 +45,7 @@ const arg = (name, dflt) => {
 // says nothing about whether the maths is checked.
 const DEFAULT_FILES = [
   'scripts/lib/season.js',
+  'scripts/lib/schedule.js',   // the week clock: build-ros and build-sos both read it
   'scripts/lib/status.js',
   'scripts/lib/match.js',
   'scripts/lib/overrides.js',
@@ -204,6 +205,20 @@ function main() {
     if (baseline.budget !== chosen.length || baseline.seed !== seed) {
       console.error(`[mutate] --strict needs the recorded sample: --budget ${baseline.budget} --seed ${baseline.seed}`);
       process.exit(2);
+    }
+    // THE SAMPLE CAN RE-ROLL WITHOUT THE BUDGET OR THE SEED CHANGING, and then
+    // the recorded number describes 60 different mutants. The shuffle runs over
+    // the whole pool, so ONE operator added or removed anywhere in the lib files
+    // moves which 60 get run — it happened on 2026-09-26 (224 -> 236 mutants,
+    // caught 36 -> 30) and nothing said so; the drop looks exactly like a suite
+    // that has got weaker, and the fix for that is to lower the baseline, which
+    // is the one thing this file exists to prevent. So it says so out loud.
+    if (baseline.pool && baseline.pool !== all.length) {
+      console.error('');
+      console.error(`[mutate] THE SAMPLE IS NOT THE RECORDED ONE: ${all.length} mutants available, baseline was drawn from ${baseline.pool}.`);
+      console.error('         The count below is not comparable with the recorded one, in either direction.');
+      console.error('         Re-measure and re-record pool + caught before reading anything into the number.');
+      console.error('');
     }
     if (caught < baseline.caught) {
       console.error('');

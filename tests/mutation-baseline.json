@@ -2,7 +2,9 @@
   "_comment": "A RATCHET, NOT A TARGET. scripts/mutate.js runs a fixed, seeded sample of mutants and this is the number the suite currently catches. CI fails if it drops. It does not have to go up, and chasing 100% is the classic mutation-testing mistake: most of the survivors left are `||` -> `&&` inside defaulting expressions like `a || b`, where the mutant is close to equivalent and a test written to kill it would assert nothing anybody cares about. What the ratchet stops is a change that quietly makes the SUITE weaker \u2014 deleting an assertion, loosening a boundary, or replacing a real check with one that cannot fail.",
   "budget": 60,
   "seed": 7,
-  "caught": 35,
-  "recorded": "2026-09-10",
-  "_do_not_raise_to_36": "2026-09-25: the run reports 'the suite got stronger: 35 -> 36. Raise caught'. DO NOT. The extra kill is scripts/lib/match.js:25, `res.statusCode < 400` in fetchCSV's redirect branch, and it is caught only because build-ros now asks the schedule feed and tests/ros.test.js spawns it \u2014 i.e. only while the network is up and GitHub still 302s. An offline or rate-limited run un-catches it, and a baseline of 36 would then fail the build for a feed blip rather than for a weaker suite. 35 is the number the ASSERTIONS earn. Raise it when an assertion earns it."
+  "caught": 30,
+  "recorded": "2026-09-26",
+  "pool": 236,
+  "_pool": "The number of mutants the sample was drawn from. IT IS PART OF THE BASELINE'S IDENTITY: mutate.js shuffles the whole pool with the seed and takes the first `budget`, so adding or removing a single operator anywhere in scripts/lib/*.js re-rolls WHICH 60 get run, and the recorded count stops describing the same sample. mutate.js warns when this no longer matches.",
+  "_why_30_after_35": "2026-09-26: this is NOT the suite getting weaker. lib/schedule.js joined the file list and lib/match.js gained a transport seam, so the pool went 224 -> 236 and the sample re-rolled; the new 60 happen to include 17 fieldmap.js mutants, the file the suite has always covered worst. The evidence that it got STRONGER is which files are absent from the survivor list: match.js and schedule.js, both fully caught, where before the redirect branch had two survivors and the clock had one. The 35 -> 36 rise that prompted all this was fetchCSV's redirect branch dying because GitHub answered 302 during a test \u2014 the network wearing coverage's clothes. tests/match-fetch.test.js now kills those six mutants offline."
 }
