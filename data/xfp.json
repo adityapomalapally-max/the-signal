@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-09-28T18:38:07.462Z",
+    "generated": "2026-09-29T16:55:43.897Z",
     "builtBy": "scripts/build-scheme.js via lib/xfp.js",
     "seasons": [
       2024,
@@ -11,28 +11,28 @@
     "scoring": "Full PPR — 1 per reception, 0.1 per yard, 6 per touchdown — matching nflverse fantasy_points_ppr, which is what every other points figure on this site already is.",
     "method": "EMPIRICAL, NOT FITTED. A cell's price is the mean fantasy points the plays in that cell actually produced. No regression, no coefficients, nothing trained — anyone with the same CSV recomputes the same number. A season prices itself once it has the plays to do it; until then it borrows the last finished season's table, and meta.build.pricedFrom says which season paid for the prices above.",
     "build": {
-      "opportunities": 5344,
-      "targets": 2898,
-      "carries": 2446,
-      "playersQualified": 82,
+      "opportunities": 5455,
+      "targets": 2957,
+      "carries": 2498,
+      "playersQualified": 85,
       "passersDropped": 2,
       "minPasserAttempts": 20,
       "minCell": 100,
       "minOpportunities": 20,
-      "fallbackPct": 0.94,
+      "fallbackPct": 0.93,
       "skippedNoLine": 0,
       "pricedFromSuppliedTable": true,
       "unpriced": 0,
-      "leagueFp": 3133.5,
-      "leagueXfp": 3239.1,
-      "leagueRatio": 0.9674,
-      "selfFallbackPct": 17.89,
+      "leagueFp": 3288.8,
+      "leagueXfp": 3404.3,
+      "leagueRatio": 0.9661,
+      "selfFallbackPct": 18,
       "season": 2026,
       "pricedFrom": 2025
     },
     "caveats": [
-      "THESE PRICES ARE 2025'S. 2026 has not played enough football to price itself — its own table would put 17.89% of opportunities on a marginal cell against the 0.94% these prices manage — so every expectation here is what the same chance was worth in 2025. Measured on 2025: priced this way a two-week season lands 0.165 points a game from what those plays were really worth, against 0.313 priced off its own two weeks. It switches to its own table the moment that table fits.",
-      "EARLY IN A SEASON EVERY QUALIFIED PLAYER LOOKS GOOD, and that is the qualifier rather than the football. The floor is 20+ opportunities, which over a season admits a rotational player and after one week admits only the workhorses — who are the players getting that volume because they are producing. League actual against these prices (0.9674x) is computed over exactly those qualified players, so read it as who cleared the floor, not as the league scoring more than it did last year, and not as a consistency check: carried prices are not means over these plays.",
+      "THESE PRICES ARE 2025'S. 2026 has not played enough football to price itself — its own table would put 18% of opportunities on a marginal cell against the 0.93% these prices manage — so every expectation here is what the same chance was worth in 2025. Measured on 2025: priced this way a two-week season lands 0.165 points a game from what those plays were really worth, against 0.313 priced off its own two weeks. It switches to its own table the moment that table fits.",
+      "EARLY IN A SEASON EVERY QUALIFIED PLAYER LOOKS GOOD, and that is the qualifier rather than the football. The floor is 20+ opportunities, which over a season admits a rotational player and after one week admits only the workhorses — who are the players getting that volume because they are producing. League actual against these prices (0.9661x) is computed over exactly those qualified players, so read it as who cleared the floor, not as the league scoring more than it did last year, and not as a consistency check: carried prices are not means over these plays.",
       "PASSING IS NOT PRICED, so quarterbacks are absent rather than wrong. A quarterback's points are overwhelmingly passing, and showing his rushing expectation beside his total would put every quarterback in the league hundreds of points \"over expected\".",
       "Fumbles lost and two-point conversions are excluded from BOTH sides. They are outcomes rather than opportunities and have no situation to price. Measured against stats.json, this leaves a median gap of 0.0 points across a season and a 10th-to-90th range of plus or minus 2 — which is one fumble, or one two-point conversion.",
       "THE GAP IS MOSTLY TOUCHDOWNS, AND TOUCHDOWNS DO NOT REPEAT. A player far over expected is usually not a player who will stay there. That is the reading this file is for.",
@@ -56536,15 +56536,15 @@
       },
       "00-0036275": {
         "team": "CHI",
-        "games": 2,
-        "targets": 6,
-        "carries": 34,
-        "fp": 47.3,
-        "xfp": 35.9,
-        "diff": 11.4,
-        "fpPerG": 23.65,
-        "xfpPerG": 17.94,
-        "diffPerG": 5.71,
+        "games": 3,
+        "targets": 9,
+        "carries": 54,
+        "fp": 58.1,
+        "xfp": 56.4,
+        "diff": 1.7,
+        "fpPerG": 19.37,
+        "xfpPerG": 18.81,
+        "diffPerG": 0.56,
         "weeks": [
           {
             "week": 1,
@@ -56557,6 +56557,44 @@
             "fp": 14.9,
             "xfp": 17.9,
             "opps": 21
+          },
+          {
+            "week": 3,
+            "fp": 10.8,
+            "xfp": 20.5,
+            "opps": 23
+          }
+        ]
+      },
+      "00-0040735": {
+        "team": "CHI",
+        "games": 3,
+        "targets": 23,
+        "carries": 2,
+        "fp": 37.5,
+        "xfp": 42.2,
+        "diff": -4.7,
+        "fpPerG": 12.5,
+        "xfpPerG": 14.06,
+        "diffPerG": -1.56,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 11.5,
+            "xfp": 8.2,
+            "opps": 6
+          },
+          {
+            "week": 2,
+            "fp": 6.2,
+            "xfp": 12.8,
+            "opps": 7
+          },
+          {
+            "week": 3,
+            "fp": 19.8,
+            "xfp": 21.2,
+            "opps": 12
           }
         ]
       },
@@ -56624,17 +56662,49 @@
           }
         ]
       },
+      "00-0032464": {
+        "team": "CHI",
+        "games": 3,
+        "targets": 21,
+        "carries": 0,
+        "fp": 46.4,
+        "xfp": 32.9,
+        "diff": 13.5,
+        "fpPerG": 15.47,
+        "xfpPerG": 10.97,
+        "diffPerG": 4.49,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 16.4,
+            "xfp": 13.7,
+            "opps": 9
+          },
+          {
+            "week": 2,
+            "fp": 9,
+            "xfp": 8.5,
+            "opps": 5
+          },
+          {
+            "week": 3,
+            "fp": 21,
+            "xfp": 10.7,
+            "opps": 7
+          }
+        ]
+      },
       "00-0040236": {
         "team": "CHI",
-        "games": 2,
+        "games": 3,
         "targets": 4,
-        "carries": 20,
-        "fp": 28.2,
-        "xfp": 18.9,
-        "diff": 9.3,
-        "fpPerG": 14.1,
-        "xfpPerG": 9.46,
-        "diffPerG": 4.64,
+        "carries": 30,
+        "fp": 31.3,
+        "xfp": 25.1,
+        "diff": 6.2,
+        "fpPerG": 10.43,
+        "xfpPerG": 8.38,
+        "diffPerG": 2.05,
         "weeks": [
           {
             "week": 1,
@@ -56647,6 +56717,12 @@
             "fp": 7.8,
             "xfp": 9.8,
             "opps": 12
+          },
+          {
+            "week": 3,
+            "fp": 3.1,
+            "xfp": 6.2,
+            "opps": 10
           }
         ]
       },
@@ -58316,15 +58392,15 @@
       },
       "00-0034844": {
         "team": "PHI",
-        "games": 2,
-        "targets": 4,
-        "carries": 19,
-        "fp": 12,
-        "xfp": 15.7,
-        "diff": -3.7,
-        "fpPerG": 6,
-        "xfpPerG": 7.87,
-        "diffPerG": -1.87,
+        "games": 3,
+        "targets": 6,
+        "carries": 34,
+        "fp": 21,
+        "xfp": 30.3,
+        "diff": -9.3,
+        "fpPerG": 7,
+        "xfpPerG": 10.11,
+        "diffPerG": -3.11,
         "weeks": [
           {
             "week": 1,
@@ -58337,6 +58413,44 @@
             "fp": 3,
             "xfp": 5,
             "opps": 6
+          },
+          {
+            "week": 3,
+            "fp": 9,
+            "xfp": 14.6,
+            "opps": 17
+          }
+        ]
+      },
+      "00-0036912": {
+        "team": "PHI",
+        "games": 3,
+        "targets": 27,
+        "carries": 0,
+        "fp": 48.5,
+        "xfp": 48.8,
+        "diff": -0.3,
+        "fpPerG": 16.17,
+        "xfpPerG": 16.26,
+        "diffPerG": -0.09,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 8.3,
+            "xfp": 9.8,
+            "opps": 6
+          },
+          {
+            "week": 2,
+            "fp": 27.7,
+            "xfp": 26.4,
+            "opps": 13
+          },
+          {
+            "week": 3,
+            "fp": 12.5,
+            "xfp": 12.6,
+            "opps": 8
           }
         ]
       },
