@@ -438,7 +438,7 @@ const CHART_METRICS = {
   ],
 };
 
-let labCharting = null, labAdvstats = null, labContext = null, labRushing = null;
+let labCharting = null, labAdvstats = null, labContext = null, labRushing = null, labScoring = null;
 let chartsPromise = null;
 function ensureChartData() {
   if (!chartsPromise) {
@@ -448,6 +448,7 @@ function ensureChartData() {
       loadJSON('/data/context.json').then(d => (labContext = d)),
       loadJSON('/data/fieldmap.json').then(d => (labFieldmap = d)),
       loadJSON('/data/rushing.json').then(d => (labRushing = d)),
+      loadJSON('/data/scoring.json').then(d => (labScoring = d)),
     ]);
   }
   return chartsPromise;
@@ -469,6 +470,11 @@ function labSeasons() {
   if (labMode === 'defense') {
     const any = labAdvstats && labAdvstats.defenseByTeam && Object.values(labAdvstats.defenseByTeam)[0];
     return any ? Object.keys(any).sort() : LAB_SEASONS;
+  }
+  // Scoring chances start the season nflverse first published play-by-play for
+  // this build, which is not as far back as the box scores go.
+  if (labMode === 'scoring') {
+    return labScoring && labScoring.meta ? (labScoring.meta.seasons || []).map(String) : LAB_SEASONS;
   }
   if (labMode !== 'charts') return LAB_SEASONS;
   if (!labCharting || !labCharting.meta) return LAB_SEASONS;
@@ -514,6 +520,74 @@ const RUSH_METRICS = [
     note: 'The bar itself: what an average back gains from the pictures this one was handed. Read as an environment rather than a skill — it is the closest thing here to a blocking rating, and the team board publishes it beside a second, disagreeing reading.' },
 ];
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCORING CHANCES — THE TWO HALVES OF A TOUCHDOWN
+   ═══════════════════════════════════════════════════════════════════════════
+
+   Every other board here answers volume or efficiency. None of them answers the
+   question an anytime-touchdown market asks, which is not "is he good" but:
+
+       does his offence reach the twenty, and is he the one holding the ball
+       when it does
+
+   Those two fail independently, so they are shown side by side and never
+   multiplied. A back can own the goal line on an offence that gets there twice a
+   game; a back on a good offence can be the man who leaves the field at the five.
+
+   THE COUNT TRAVELS WITH EVERY SHARE. Two of a team's three goal-line carries is
+   67% and also two carries, and a board that shows only the percentage invites
+   the reader to trust the thinner number more. The qualifier is deliberately low
+   for the same reason — in week 4 nobody has a large sample and pretending
+   otherwise by hiding the small ones would leave the board empty in the only
+   month it is wanted. */
+const SCORING_METRICS = [
+  { key: 'i5CarryShare', label: 'Goal-line Carry Share', get: r => pctOf(r.i5CarryShare), unit: '%', minChances: 3, countedBy: r => r.i5Carries,
+    note: 'Of the carries his team took from inside the 5, how many were his. The goal line is a different eleven — short-yardage personnel — so this is the one share that says whether he is on the field when it matters most.' },
+  { key: 'i5Carries', label: 'Goal-line Carries', get: r => r.i5Carries, unit: '', minChances: 1,
+    note: 'The count behind the share. Read them together: a 100% share off two carries and a 70% share off eleven are not the same claim.' },
+  { key: 'rzCarryShare', label: 'Red-zone Carry Share', get: r => pctOf(r.rzCarryShare), unit: '%', minChances: 4, countedBy: r => r.rzCarries,
+    note: 'The same question over the whole red zone, where the passing game still exists and the personnel has not been compressed yet.' },
+  { key: 'rzCarries', label: 'Red-zone Carries', get: r => r.rzCarries, unit: '', minChances: 1,
+    note: 'Carries from inside the 20. THE ZONES NEST — every goal-line carry is also a red-zone carry, so this is a total and never a column to add beside the other.' },
+  { key: 'rzTargetShare', label: 'Red-zone Target Share', get: r => pctOf(r.rzTargetShare), unit: '%', minChances: 4, countedBy: r => r.rzTargets,
+    note: 'For receivers, the half that corresponds to a back\'s goal-line share. A target counts whether it was caught — the bet is about the chance he was given.' },
+  { key: 'rzTargets', label: 'Red-zone Targets', get: r => r.rzTargets, unit: '', minChances: 1,
+    note: 'The count behind the share, including the fades nobody caught.' },
+  { key: 'teamRzTrips', label: 'Team Red-zone Trips / Game', get: r => r.teamRzTripsPerGame, unit: '', minChances: 1,
+    note: 'THE OTHER HALF, and it belongs to the offence rather than the player: how often his team gets inside the twenty at all. Counted by DRIVE, so four plays from the eight are one trip. The league sits around 3.4 — a player with a commanding share of an offence that rarely gets there has fewer chances than his share suggests.' },
+  { key: 'anyTd', label: 'Touchdowns Scored', get: r => r.anyTd, unit: '', minChances: 1,
+    note: 'Rushing plus receiving, which is what an anytime-touchdown market on a skill player is usually written on. What HAPPENED, not what was likely — it is here as the check on the two halves above, not as a forecast.' },
+];
+
+/** A stored share is 0-1; a board reads in points. */
+function pctOf(v) { return (v === null || v === undefined) ? null : Math.round(v * 1000) / 10; }
+
+function scoringRows(m) {
+  const season = (labScoring && labScoring.seasons && labScoring.seasons[labSeason]) || null;
+  const players = (season && season.players) || {};
+  const teams = (season && season.teams) || {};
+  const rows = [];
+  for (const p of playersDB) {
+    if (p.pos !== labPos) continue;
+    const sc = p.gsisId ? players[p.gsisId] : null;
+    if (!sc) continue;
+    // THE QUALIFIER IS THE COUNT THE METRIC IS COMPUTED FROM, which is not the
+    // same thing as "chances inside the twenty" and the difference was a bug.
+    // Counting total red-zone chances let a back with ONE goal-line carry and six
+    // red-zone carries clear the floor and print a 100% goal-line share — the
+    // exact row the qualifier exists to keep off the board. A share declares its
+    // own denominator now; a raw count falls back to total chances, because for a
+    // count there is nothing to be thin about.
+    const counted = m.countedBy ? (m.countedBy(sc) || 0) : ((sc.rzCarries || 0) + (sc.rzTargets || 0));
+    if (counted < (m.minChances || 1)) continue;
+    const t = teams[sc.team] || {};
+    const v = m.get({ ...sc, teamRzTripsPerGame: t.rzTripsPerGame });
+    if (typeof v !== 'number' || isNaN(v)) continue;
+    rows.push({ id: p.id, name: p.name, team: p.team, value: v });
+  }
+  return rows;
+}
+
 const LAB_TABLES = {
   stats: () => LAB_METRICS,
   charts: () => CHART_METRICS,
@@ -524,6 +598,10 @@ const LAB_TABLES = {
   // Backs only. A rushing board offered for receivers is a control that
   // reaches nothing, so the position picker hides in this mode.
   rushing: () => ({ QB: RUSH_METRICS, RB: RUSH_METRICS, WR: RUSH_METRICS, TE: RUSH_METRICS }),
+  // Every position, because the question is asked of all of them — a back's
+  // goal-line share and a receiver's red-zone target share are the same half of
+  // the same bet, read off different columns.
+  scoring: () => ({ QB: SCORING_METRICS, RB: SCORING_METRICS, WR: SCORING_METRICS, TE: SCORING_METRICS }),
 };
 
 function chartRowFor(id, season) {
@@ -1275,6 +1353,7 @@ function defenseRows(m) {
 function labQualFor(m) {
   if (labMode === 'charts') return chartQualText(m);
   if (labMode === 'rushing') return `QUALIFIER: ${m.minAtt || 60}+ carries — below that a season is a handful of runs and this metric is mostly one of them`;
+  if (labMode === 'scoring') return `QUALIFIER: ${m.minChances || 1}+ chance${(m.minChances || 1) === 1 ? '' : 's'} inside the 20 — deliberately low, because in October nobody has a large sample and a board that hid the small ones would be empty in the month it is wanted. The count is published beside every share for the same reason.`;
   if (labMode === 'athletic') return 'QUALIFIER: PERCENTILES ARE AGAINST EVERY PLAYER ON RECORD AT THIS POSITION';
   if (labMode === 'defense') return m.minTargets ? `QUALIFIER: ${m.minTargets}+ charted targets faced` : '';
   return labQualText(m);
@@ -1283,6 +1362,7 @@ function labQualFor(m) {
 function labSourceText(m) {
   if (labMode === 'charts') return `${chartQualText(m)} · ${m.chart ? 'FTN charting' : 'Pro Football Reference'}`;
   if (labMode === 'rushing') return 'Next Gen Stats player tracking (the expectation) and nflverse play-by-play (EPA) · joined on the GSIS id';
+  if (labMode === 'scoring') return 'nflverse play-by-play, keyed on yardline_100 · regular season · two-point attempts, kneels, spikes and kicks excluded · joined on the GSIS id';
   if (labMode === 'athletic') return 'NFL Scouting Combine via nflverse · percentiles against every tested player at the position';
   if (labMode === 'defense') return 'Pro Football Reference advanced defensive splits, aggregated across every charted defender';
   return `${labQualText(m)} · nflverse${m.ngs ? ' · NFL Next Gen Stats' : ''}`;
@@ -1353,7 +1433,8 @@ function renderLabPage() {
 
   // The charting files are only needed by the Charts half, so a reader who
   // never leaves the production boards never pays for them.
-  if ((labMode === 'charts' || labMode === 'athletic' || labMode === 'defense' || labMode === 'field') && !labCharting) {
+  if ((labMode === 'charts' || labMode === 'athletic' || labMode === 'defense' || labMode === 'field'
+       || labMode === 'scoring') && !labCharting) {
     board.innerHTML = `<div class="medical-card"><div class="medical-detail">Loading the charting…</div></div>`;
     // Same guard, same reason: loadJSON SWALLOWS a failed fetch and resolves
     // with null, so re-rendering on anything other than "the data arrived"
@@ -1370,7 +1451,7 @@ function renderLabPage() {
   // happened, out of the two layers a box score cannot produce.
   const modeRow = document.getElementById('labModeToggle');
   if (modeRow) {
-    modeRow.innerHTML = [['stats', 'Stats'], ['charts', 'Charts'], ['field', 'Field Map'], ['rushing', 'Rushing'], ['athletic', 'Athletic'], ['defense', 'Defense']].map(([k, label]) =>
+    modeRow.innerHTML = [['stats', 'Stats'], ['charts', 'Charts'], ['field', 'Field Map'], ['rushing', 'Rushing'], ['scoring', 'Scoring'], ['athletic', 'Athletic'], ['defense', 'Defense']].map(([k, label]) =>
       `<button class="pos-btn${labMode === k ? ' active' : ''}" data-click="lab-mode" data-arg="${k}">${label}</button>`).join('');
   }
 
@@ -1452,7 +1533,7 @@ function renderLabPage() {
   }
 
   const valueOf = m.ngs ? ((s, n) => m.ngs(n)) : ((s) => m.stat(s));
-  const rowsFor = { charts: () => chartRows(m), athletic: () => athleticRows(m), defense: () => defenseRows(m), rushing: () => rushRows(m) };
+  const rowsFor = { charts: () => chartRows(m), athletic: () => athleticRows(m), defense: () => defenseRows(m), rushing: () => rushRows(m), scoring: () => scoringRows(m) };
   const rows = (rowsFor[labMode] ? rowsFor[labMode]() : labRows(valueOf, m))
     .sort((a, b) => m.lower ? a.value - b.value : b.value - a.value)
     .slice(0, labMode === 'defense' ? 32 : 20);
