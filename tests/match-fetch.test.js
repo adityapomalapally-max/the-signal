@@ -26,6 +26,8 @@ const zlib = require('node:zlib');
 const { EventEmitter } = require('node:events');
 const match = require('../scripts/lib/match');
 
+match.__setBackoff([0, 0]);   // the waiting is not the behaviour under test
+
 /**
  * A scripted transport. `reply(url, n)` returns what the nth request answers:
  * { status, headers, body }. Records what was asked for, in order, so "it was
@@ -39,6 +41,14 @@ function scripted(reply) {
     asked.push(String(url));
     sent.push(opts && opts.headers);
     const answer = reply(String(url), asked.length) || {};
+    // A TRANSPORT FAILURE IS NOT A RESPONSE. A dropped socket never reaches the
+    // response callback at all — it arrives on the request object — so a helper
+    // that always calls cb() cannot stage one, and a retry on it cannot be tested.
+    if (answer.error) {
+      const req = new EventEmitter();
+      process.nextTick(() => req.emit('error', new Error(answer.error)));
+      return req;
+    }
     const res = new EventEmitter();
     res.statusCode = answer.status;
     res.headers = answer.headers || {};
@@ -132,4 +142,46 @@ test('a redirect loop stops instead of running for ever', { timeout: 5000 }, asy
   // would have been the seventh is the one refused. Worth pinning as a number —
   // I wrote 7 here first and this assertion is what said otherwise.
   assert.strictEqual(t.asked.length, 6, `the cap let ${t.asked.length} requests through`);
+});
+
+// ── A 500 is not a 404, and the difference is a day's data ────────────────
+
+test('a 500 is asked again and the second answer is kept', () => {
+  // 2026-09-30: nflverse answered advstats_season_pass.csv with a 500 for a few
+  // minutes. fetch-advstats exited 1, every build below it was skipped, the
+  // commit never happened, and the day was lost. The same URL was fine the next
+  // morning. Nothing was broken except the timing of one request.
+  const t = scripted((url, n) => (n === 1
+    ? { status: 500, body: 'upstream oops' }
+    : { status: 200, body: 'season,week\n2026,4\n' }));
+  return match.fetchCSV('https://github.example/advstats.csv').then(csv => {
+    assert.match(csv, /2026,4/);
+    assert.strictEqual(t.asked.length, 2, 'the 500 was not retried');
+  });
+});
+
+test('a 404 is NOT retried, because the file has moved and somebody must know', () => {
+  // fetch-advstats' own header records why this matters: nflverse moved that file
+  // once and a per-season try/catch swallowed the 404 for MONTHS. Retrying a 4xx
+  // would be the same mistake wearing patience.
+  const t = scripted(() => ({ status: 404, body: 'Not Found' }));
+  return assert.rejects(() => match.fetchCSV('https://github.example/gone.csv'), /HTTP 404/)
+    .then(() => assert.strictEqual(t.asked.length, 1, 'a moved file was asked for again'));
+});
+
+test('a server that is down stays down, and the run finds out', () => {
+  const t = scripted(() => ({ status: 503 }));
+  return assert.rejects(() => match.fetchCSV('https://github.example/x.csv'), /HTTP 503/)
+    .then(() => assert.strictEqual(t.asked.length, match.RETRY_ATTEMPTS,
+      `tried ${t.asked.length} times, expected ${match.RETRY_ATTEMPTS}`));
+});
+
+test('a dropped socket gets the same second chance as a 502', () => {
+  // 'socket hang up', ECONNRESET and ETIMEDOUT are one accident spelled three
+  // ways, which is why the transport tags it rather than the retry matching text.
+  const t = scripted((url, n) => (n === 1 ? { error: 'socket hang up' } : { status: 200, body: 'a\n1\n' }));
+  return match.fetchCSV('https://github.example/y.csv').then(csv => {
+    assert.match(csv, /1/);
+    assert.strictEqual(t.asked.length, 2);
+  });
 });

@@ -35,7 +35,29 @@ let transport = null;
 function __setTransport(fn) { transport = fn; }
 function __resetTransport() { transport = null; }
 
-function fetchCSV(url) {
+// A 500 IS NOT A 404, AND THE DIFFERENCE IS A DAY'S DATA.
+//
+// On 2026-09-30 nflverse answered advstats_season_pass.csv with an HTTP 500 for
+// a few minutes. fetch-advstats exited 1, every build step below it was skipped,
+// the commit never happened, and the whole day was lost. The next morning the
+// same URL was fine. Nothing was broken except the timing of one request.
+//
+// THE HARD FAILURE ON 404 STAYS, and deliberately: fetch-advstats' own header
+// records why — nflverse moved that file once and a per-season try/catch
+// swallowed the 404 for months. A 4xx means the thing we asked for is not there
+// any more and somebody has to know. A 5xx means the server is having a moment,
+// and so does a dropped socket. Those are worth asking again about; a moved file
+// is not.
+//
+// Retries are announced rather than silent. A retry that quietly saves the run
+// every morning is a feed degrading where nobody can see it.
+const RETRY_ATTEMPTS = 3;
+let backoffMs = [1500, 4000];
+function __setBackoff(ms) { backoffMs = ms; }       // tests do not wait 5.5 seconds
+
+const retriable = (err) => /^HTTP 5\d\d/.test(err.message) || err.transportError === true;
+
+function fetchOnce(url) {
   return new Promise((resolve, reject) => {
     const doFetch = (u, redirects = 0) => {
       if (redirects > 5) return reject(new Error('Too many redirects'));
@@ -55,10 +77,32 @@ function fetchCSV(url) {
             reject(new Error(`gunzip failed for ${u}: ${e.message}`));
           }
         });
-      }).on('error', reject);
+      }).on('error', (e) => {
+        // A dropped socket is the same kind of accident as a 502 and gets the
+        // same second chance. Tagged rather than string-matched: 'socket hang up'
+        // and ECONNRESET and ETIMEDOUT are all this, spelled differently.
+        e.transportError = true;
+        reject(e);
+      });
     };
     doFetch(url);
   });
+}
+
+async function fetchCSV(url) {
+  let last = null;
+  for (let attempt = 1; attempt <= RETRY_ATTEMPTS; attempt++) {
+    try {
+      return await fetchOnce(url);
+    } catch (e) {
+      last = e;
+      if (!retriable(e) || attempt === RETRY_ATTEMPTS) break;
+      const wait = backoffMs[attempt - 1] !== undefined ? backoffMs[attempt - 1] : 4000;
+      console.error(`[fetch] ${e.message} — asking again in ${wait}ms (attempt ${attempt + 1} of ${RETRY_ATTEMPTS})`);
+      await new Promise(r => setTimeout(r, wait));
+    }
+  }
+  throw last;
 }
 
 function parseCSVLine(line) {
@@ -146,4 +190,4 @@ function matchRow(index, fields) {
 }
 
 module.exports = { fetchCSV, parseCSV, parseCSVLine, normalizeName, normalizeSleeperName, buildMatchIndex, matchRow,
-  __setTransport, __resetTransport };
+  __setTransport, __resetTransport, __setBackoff, RETRY_ATTEMPTS };
