@@ -122,6 +122,11 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   every medical injury, a game log behind every dated injury event, no invented projections, ordered
   rankings, no draft article in the sitemap. When you learn a new rule the hard way, add a test with it.
 - A test that cannot fail is decoration. Mutate the data and watch it go red before you trust it.
+- REQUIRING A BUILD SCRIPT MUST NOT RUN IT. build-scheme.js — a 93MB fetch and nine files written,
+  the heaviest script here — had no `require.main === module` guard until 2026-10-01, and it was
+  found by starting the fetch with a careless `require`. build-sos has carried that guard and a
+  test since 2026-09-24; six of thirty-nine scripts had it, and the one that costs most to run by
+  accident was not among them.
 - `scripts/mutate.js --budget 60 --seed 7 --strict` is the RATCHET: it edits the lib files one
   character at a time and fails if the suite catches fewer than `tests/mutation-baseline.json` says.
   A ratchet, not a target — chasing 100% is the classic mutation-testing mistake.
@@ -1374,6 +1379,23 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - The chart's table twin is a `<details>`, not a toggle — a disclosure element needs no click
   handler, and this page is trying to shed its 108 inline handlers rather than add the 109th.
 
+## A 500 is not a 404
+- 2026-09-30: nflverse answered `advstats_season_pass.csv` with an HTTP 500 for a few minutes.
+  fetch-advstats exited 1, every build step below it was SKIPPED, the commit never ran, and the
+  day's data was lost. The same URL was fine the next morning. Nothing was broken except the
+  timing of one request.
+- `fetchCSV` retries on 5xx and on a dropped socket — three attempts, 1.5s then 4s. Every nflverse
+  fetch in the repo goes through that one function, so it is twenty-odd requests a morning that no
+  longer turn a server's bad minute into a lost day. Retries announce themselves on stderr: a
+  retry that quietly saves the run every morning is a feed degrading where nobody can see it.
+- THE HARD FAILURE ON 4xx STAYS, and that is the point rather than an exception to it.
+  fetch-advstats' own header records why — nflverse moved that file once and a per-season
+  try/catch swallowed the 404 for MONTHS. A 4xx means the thing we asked for is gone and somebody
+  must know today; a 5xx means the server is having a moment. Retrying both would be the old bug
+  wearing patience. Three tests pin the distinction.
+- A dropped socket is tagged at the transport, not matched by message: 'socket hang up',
+  ECONNRESET and ETIMEDOUT are one accident spelled three ways.
+
 ## A guard that cannot tell a young season from a broken feed
 - THE CLASS, NAMED, BECAUSE IT HAS NOW COST FOUR OUTAGES. Every per-season source publishes on its
   own clock. nflverse rebuilds play-by-play the night of a game; Next Gen Stats had 2026 up the
@@ -1730,6 +1752,37 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   and points from his own log, so the window has to have been applied and not just written in meta.
   Same lesson as 2026-09-06: a test that encodes the same idea as the code cannot see the idea is
   wrong.
+
+## Where touchdowns come from — the scoring layer
+- `data/scoring.json`, the NINTH output of the one pbp download build-scheme already pays for.
+  `yardline_100` had been in that file the whole time and nothing read it, so the site could say
+  how much a player was given and never WHERE. Anytime touchdown is the second-biggest market on
+  Sleeper's board — 121 lines on 2026-10-01 against 161 for receiving yards — and we had nothing.
+- TWO HALVES, PUBLISHED SEPARATELY AND NEVER MULTIPLIED: how often the offence reaches the twenty
+  (`rzTripsPerGame`, counted by DRIVE — four plays from the eight are one trip) and how much of
+  what happens there belongs to one player (his share of the team's inside-5 and red-zone carries
+  and targets). They fail independently and the first screen proves it: **Bijan Robinson and
+  Kenneth Walker both own 100% of five goal-line carries; Atlanta gets there 1.67 times a game and
+  Kansas City 5.00.** Multiplying them would be a forecast, and nothing here has been measured
+  against what a player went on to score.
+- THE ZONES NEST. Inside 5 ⊂ inside 10 ⊂ inside 20, so `rzCarries` is a total and `i5Carries` is a
+  subset of it — never two columns to add together.
+- IT SHIPPED A PLAUSIBLE NUMBER FIRST, which is the lesson worth keeping. The league came out at
+  **4.80 red-zone trips a game against a real ~3.5** — wrong by a third and comfortable enough to
+  miss. Three row types did it: `extra_point` is snapped from the 15, so every touchdown from
+  anywhere handed its drive a trip it never made; blank `play_type` rows are administrative and not
+  plays at all (182 drives, the biggest source); four kickoffs. Scrimmage plays only now, `no_play`
+  KEPT because a penalty inside the twenty is a drive that got inside the twenty. The league reads
+  3.36. **A number nobody compared with the outside world is not a measurement.**
+- A SHARE IS QUALIFIED ON THE COUNT IT DIVIDES. The board's first qualifier counted total red-zone
+  chances, which let one goal-line carry beside six red-zone carries print a 100% goal-line share —
+  the row the floor existed to stop. Every share metric carries `countedBy` and a test asserts it.
+- The floors are deliberately low and the COUNT travels with every share. In October nobody has a
+  large sample; hiding the thin rows would empty the board in the month it is wanted, so 100% of
+  three and 82% of eleven both appear, each saying what it is.
+- A kneel or a spike inside the twenty is NOT a red-zone trip. Geometrically it is; this board
+  answers the scoring question. That filter looked redundant — a kneel's play_type is never 'run' —
+  until a mutation showed the test was decoration: what it protects is the TEAM half.
 
 ## A segment that is in the past is not a segment
 - `build-sos` published "Weeks 1–4" as the opening month all season, beside a season-long figure

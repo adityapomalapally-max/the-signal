@@ -46,6 +46,7 @@ const arg = (name, dflt) => {
 const DEFAULT_FILES = [
   'scripts/lib/season.js',
   'scripts/lib/schedule.js',   // the week clock: build-ros and build-sos both read it
+  'scripts/lib/scoring.js',    // where touchdowns come from: a bettor reads this one
   'scripts/lib/status.js',
   'scripts/lib/match.js',
   'scripts/lib/overrides.js',
