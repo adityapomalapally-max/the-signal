@@ -32,6 +32,7 @@ const path = require('path');
 const { fetchCSV, parseCSV, parseCSVLine } = require('./lib/match');
 const { buildWeeklyUsage } = require('./lib/weekly');
 const { buildRushing } = require('./lib/rushing');
+const { scoringFromPbp } = require('./lib/scoring');
 const { buildXfp, borrowableTable } = require('./lib/xfp');
 const { blankRoutes, tallyRoute, finishRoutes } = require('./lib/routes');
 const { poolCrosswalk } = require('./lib/ids');
@@ -56,6 +57,7 @@ const OUT_WEEKLY = path.join(DATA_DIR, 'weekly-usage.json');
 const OUT_RUSHING = path.join(DATA_DIR, 'rushing.json');
 const OUT_XFP = path.join(DATA_DIR, 'xfp.json');
 const OUT_ROUTES = path.join(DATA_DIR, 'routes.json');
+const OUT_SCORING = path.join(DATA_DIR, 'scoring.json');
 
 // The seasons participation data covers well. 2016-2022 exists but the schema
 // and the league both moved; three seasons is enough to read a trend and short
@@ -789,7 +791,24 @@ async function buildSeason(season, opts) {
       + `${routes.meta.concepts.length} concepts`);
   }
 
-  return { participation, teams, league, usage, teamDropbacks, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage, weekly, rushing, xfp, xfpPricedFrom, routes };
+  // THE NINTH OUTPUT OF THE ONE pbp DOWNLOAD. yardline_100 has been in this file
+  // the whole time and nothing had read it, so the site could say how much a
+  // player was given and never where he was given it. Anytime touchdown is the
+  // second-biggest market on the board and we had nothing to say about it.
+  const scoring = scoringFromPbp(pbpCsv);
+  log(`  scoring: ${Object.keys(scoring.players).length} players with a chance inside the twenty, `
+    + `${scoring.meta.playsInZone} of ${scoring.meta.plays} plays (${scoring.meta.twoPointAttemptsExcluded} two-point attempts excluded)`);
+  // A SEASON WITH PLAYS BUT NONE INSIDE THE TWENTY IS A MOVED SCHEMA, not an
+  // offence that never got there. The required-column check cannot catch a
+  // column that is present and has stopped meaning what it meant.
+  if (scoring.meta.plays > 500 && !scoring.meta.playsInZone) {
+    throw new Error(`${scoring.meta.plays} plays and not one inside the twenty — yardline_100 has changed meaning`);
+  }
+  if (scoring.meta.columnsMissing.length) {
+    log(`  scoring: thin — pbp no longer carries ${scoring.meta.columnsMissing.join(', ')}`);
+  }
+
+  return { participation, teams, league, usage, teamDropbacks, defenses, charting, fieldmap, fmCoverage: fmRaw.coverage, weekly, rushing, xfp, xfpPricedFrom, routes, scoring };
 }
 
 function shapeDefense(d) {
@@ -856,6 +875,9 @@ async function main() {
   const weeklySeasons = { ...(existingWeekly.seasons || {}) };
   const existingRushing = fs.existsSync(OUT_RUSHING) ? JSON.parse(fs.readFileSync(OUT_RUSHING, 'utf8')) : { seasons: {} };
   const rushingSeasons = { ...(existingRushing.seasons || {}) };
+  const existingScoring = fs.existsSync(OUT_SCORING) ? JSON.parse(fs.readFileSync(OUT_SCORING, 'utf8')) : { seasons: {} };
+  const scoringSeasons = { ...(existingScoring.seasons || {}) };
+  let scoringMetaLatest = (existingScoring.meta && existingScoring.meta.build) || null;
   const existingRoutes = fs.existsSync(OUT_ROUTES) ? JSON.parse(fs.readFileSync(OUT_ROUTES, 'utf8')) : { seasons: {} };
   const routeSeasons = { ...(existingRoutes.seasons || {}) };
   let routeLeagueLatest = existingRoutes.league || null;
@@ -918,6 +940,7 @@ async function main() {
     [OUT]: seasons, [OUT_USAGE]: usageSeasons, [OUT_CHARTING]: chartingSeasons,
     [OUT_FIELDMAP]: fieldmapSeasons, [OUT_WEEKLY]: weeklySeasons,
     [OUT_RUSHING]: rushingSeasons, [OUT_ROUTES]: routeSeasons, [OUT_XFP]: xfpSeasons,
+    [OUT_SCORING]: scoringSeasons,
   };
   const markPending = (file, s, reason) => {
     if (Number(s) !== Number(live)) return;
@@ -935,7 +958,7 @@ async function main() {
   for (const season of wanted) {
     try {
       const { participation, teams, league: lg, usage, teamDropbacks, defenses, charting, fieldmap,
-              fmCoverage, weekly, rushing, xfp, xfpPricedFrom, routes } = await buildSeason(season, { carriedPrices });
+              fmCoverage, weekly, rushing, xfp, xfpPricedFrom, routes, scoring } = await buildSeason(season, { carriedPrices });
       // THE pbp LAYERS FIRST, BECAUSE THEY DO NOT DEPEND ON THE ONE THAT IS
       // LATE. Everything from here to the participation block reads
       // play-by-play, snap counts or FTN charting, all of which nflverse
@@ -957,6 +980,17 @@ async function main() {
       else markPending(OUT_WEEKLY, season, 'no snap counts or targets published for this season yet');
       if (rushing && Object.keys(rushing.players).length) rushingSeasons[season] = rushing.players;
       else markPending(OUT_RUSHING, season, `no back has met the carry qualifier for this season yet`);
+      // NO QUALIFIER HERE, DELIBERATELY. Every other layer waits for volume
+      // because a rate off four carries is noise; this one publishes counts and
+      // shares of counts, and a back with two goal-line carries in three weeks is
+      // exactly the row a bettor wants to see — small, and labelled small by the
+      // number itself. The page is responsible for not dressing 2-of-3 as 67%.
+      if (scoring && Object.keys(scoring.players).length) {
+        scoringSeasons[season] = { players: scoring.players, teams: scoring.teams };
+        scoringMetaLatest = { ...scoring.meta, season };
+      } else if (scoring) {
+        markPending(OUT_SCORING, season, 'no play inside the twenty has been published for this season yet');
+      }
       if (routes && Object.keys(routes.players).length) {
         routeSeasons[season] = routes.players;
         // The baseline belongs to the newest season built, like the xfp price
@@ -1415,6 +1449,66 @@ async function main() {
     log(`${wroteRoutes ? 'wrote' : 'unchanged —'} routes.json: ${Object.keys(latestRoutes).length} players in `
       + `${routeYears[routeYears.length - 1]} — ${Math.round(fs.statSync(OUT_ROUTES).size / 1024)}KB`);
   }
+
+  // The ninth output. Where the chances were, rather than how many there were.
+  const scoringYears = Object.keys(scoringSeasons).map(Number).sort();
+  if (scoringYears.length) {
+    const scoringOut = {
+      meta: {
+        generated: new Date().toISOString(),
+        builtBy: 'scripts/build-scheme.js via lib/scoring.js',
+        seasons: scoringYears,
+        source: 'nflverse play-by-play, keyed on yardline_100. REG season only. Two-point attempts, '
+          + 'kneels and spikes excluded — a conversion from the two is not a touchdown, and a team '
+          + 'killing the clock at the opponent\'s fifteen has not reached the red zone.',
+        method: 'TWO HALVES, PUBLISHED SEPARATELY AND NEVER MULTIPLIED. How often the offence gets '
+          + 'inside the twenty (rzTripsPerGame, counted by DRIVE so four plays from the eight are one '
+          + 'trip) and how much of what it does there belongs to one player (his share of the team\'s '
+          + 'inside-5 and red-zone carries and targets). Multiplying them would be a forecast, and a '
+          + 'forecast here is an assertion nobody has measured yet.',
+        zones: 'Inside 5 is the goal-line shift, where short-yardage personnel changes the eleven on '
+          + 'the field. Inside 10 still has play-action and fades in it. Inside 20 is the conventional '
+          + 'red zone, kept because every other source quotes it. THE ZONES NEST: a carry from the 3 '
+          + 'is in all three, so rzCarries is a total and i5Carries is a subset of it, never a column '
+          + 'to be added alongside.',
+        caveats: [
+          'Descriptive, not predictive. Nothing here has been measured against what a player went on '
+            + 'to score, and the one thing this site has learned the hard way is that a plausible '
+            + 'number is not a forecast until somebody checks it.',
+          'A share off a handful of chances is not a rate. Two of a team\'s three goal-line carries is '
+            + '67% and also two carries; the counts are published beside every share so the thinness '
+            + 'is visible rather than rounded away.',
+          'Shares are of the team total, so a traded player\'s share is split across two teams and '
+            + 'neither half describes his role now. `team` is where he last touched the ball.',
+          'gamesWithTouch is games he actually had the ball in, which is not games he played — a '
+            + 'receiver can play sixty snaps and be targeted none.',
+          'Returns and defensive scores are not here. anyTd is rushing plus receiving, which is what '
+            + 'an anytime-touchdown market on a skill player is usually written on, but not always: '
+            + 'check the book before pricing against it.',
+        ],
+        build: scoringMetaLatest,
+      },
+      seasons: scoringSeasons,
+    };
+    const wroteScoring = writeOut(OUT_SCORING, scoringOut);
+    const latestScoring = scoringSeasons[scoringYears[scoringYears.length - 1]] || {};
+    log(`${wroteScoring ? 'wrote' : 'unchanged —'} scoring.json: `
+      + `${Object.keys(latestScoring.players || {}).length} players, `
+      + `${Object.keys(latestScoring.teams || {}).length} teams in ${scoringYears[scoringYears.length - 1]} `
+      + `— ${Math.round(fs.statSync(OUT_SCORING).size / 1024)}KB`);
+  }
 }
 
-main().catch(e => { console.error('[scheme] fatal:', e.message); process.exit(1); });
+// REQUIRING THIS FILE MUST NOT RUN IT. It is the heaviest script in the repo — a
+// 93MB play-by-play fetch and nine data files — and it had no guard, so a test
+// that wanted one of its pure helpers, or a careless `require` at a REPL, would
+// start the whole build and rewrite data/ as a side effect. That happened on
+// 2026-10-01 while wiring the scoring layer: the fetch was already underway
+// before anybody noticed. build-sos has carried this guard and a test for it
+// since 2026-09-24; six of thirty-nine scripts had it, and the one that costs
+// the most to run by accident was not among them.
+if (require.main === module) {
+  main().catch(e => { console.error('[scheme] fatal:', e.message); process.exit(1); });
+}
+
+module.exports = { leanPbp, teamKey };
