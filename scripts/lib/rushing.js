@@ -29,6 +29,12 @@ const { parseCSV } = require('./match');
 // A carry needs a real rusher and a real EPA. Kneels are filtered by play_type.
 const MIN_CARRIES = 20;
 
+// `v === ''` IS DEAD CODE THROUGH THIS FILE'S ONLY CALLER, and the mutation gate
+// is right to keep flagging it: lib/match's parseCSV already turns '' and 'NA'
+// into null before a row reaches here, so no empty string can arrive. It stays
+// because num() is a general guard and the day something hands it a raw field
+// instead of a parsed row, 0 is the wrong answer — but no test can kill that
+// mutant honestly, so nothing here pretends to.
 function num(v) {
   if (v === null || v === undefined || v === '') return null;
   const n = Number(v);
