@@ -229,6 +229,11 @@ function scoringFromPbp(pbpCsv) {
       rzCarryShare: share(p.rzCarries, t.rzCarries),
       i5TargetShare: share(p.i5Targets, t.i5Targets),
       rzTargetShare: share(p.rzTargets, t.rzTargets),
+      // The sort is belt-and-braces: these keys are integer-like, and JS iterates
+      // those in ascending numeric order already. A mutation testing tool will
+      // flag the comparator as a survivor forever and it is right to — no test
+      // can distinguish it, because the sort cannot change the result. Kept
+      // because the day one of these keys stops being an integer it will matter.
       weeks: Object.keys(p.weeks).map(Number).sort((a, b) => a - b)
         .map(w => ({ week: w, ...p.weeks[w] })),
     };

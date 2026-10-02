@@ -209,3 +209,31 @@ test('a penalty inside the twenty is still a drive that got inside the twenty', 
   const fg = scoringFromPbp(pbp([{ play_type: 'field_goal', yardline_100: 18 }]));
   assert.strictEqual(fg.teams.KC.rzTrips, 1, 'a field goal from the 18 means the ball was at the 18');
 });
+
+test('a team plays games, not plays — the denominator of every per-game figure', () => {
+  // THE MUTATION THAT LIVED. `gameId && !seenTeamGames.has(tg)` survived the gate
+  // because nothing here counted a team's games across more than one play, and
+  // with `||` in place of `&&` the counter increments on EVERY play. That number
+  // is the denominator of rzTripsPerGame — the figure this whole board was
+  // validated against the league mean of 3.36 on — so inflating it silently
+  // divides every offence's trips by its play count.
+  const s = scoringFromPbp(pbp([
+    RUN(8), RUN(6), PASS(4),                                        // game 1, one drive
+    RUN(8, { game_id: 'G2', fixed_drive: 7 }),                      // game 2
+    PASS(5, { game_id: 'G2', fixed_drive: 7 }),
+    RUN(9, { game_id: 'G2', fixed_drive: 8 }),                      // a second drive in game 2
+  ]));
+  const t = s.teams.KC;
+  assert.strictEqual(t.games, 2, 'games counted plays rather than games');
+  assert.strictEqual(t.rzTrips, 3, 'three distinct drives reached the twenty');
+  assert.strictEqual(t.rzTripsPerGame, 1.5, '3 trips over 2 games');
+});
+
+test('a player plays games, not plays, either', () => {
+  const s = scoringFromPbp(pbp([
+    RUN(8), RUN(6),
+    RUN(8, { game_id: 'G2', fixed_drive: 7 }),
+  ]));
+  assert.strictEqual(s.players.RB1.gamesWithTouch, 2,
+    'his games were counted per touch rather than per game');
+});
