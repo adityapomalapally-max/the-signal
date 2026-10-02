@@ -122,6 +122,12 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   every medical injury, a game log behind every dated injury event, no invented projections, ordered
   rankings, no draft article in the sitemap. When you learn a new rule the hard way, add a test with it.
 - A test that cannot fail is decoration. Mutate the data and watch it go red before you trust it.
+- RUN THE SUITE AS CI SEES IT: `CI=1 GITHUB_ACTIONS=true node --test 'tests/*.test.js'`. The suite is
+  NOT environment-independent and deliberately so — `season.fromEnv()` calls `process.exit(1)` when
+  CI or GITHUB_ACTIONS is set, because a simulated calendar must never build a file that ships. On
+  2026-10-02 a new test set SIGNAL_SEASON_STATE, passed locally, and took the whole CI run down by
+  killing the test process. A test that needs that path lifts the two flags for one call and puts
+  them back in a `finally`; the guard is about builds, and a unit test is not one.
 - REQUIRING A BUILD SCRIPT MUST NOT RUN IT. build-scheme.js — a 93MB fetch and nine files written,
   the heaviest script here — had no `require.main === module` guard until 2026-10-01, and it was
   found by starting the fetch with a careless `require`. build-sos has carried that guard and a

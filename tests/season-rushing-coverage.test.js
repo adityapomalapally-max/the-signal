@@ -81,34 +81,65 @@ test('a season after the last completed one is the unpublished one (line 267)', 
   }
 });
 
-test('a simulated calendar keeps the phase it was given (lines 94, 134)', async () => {
-  // SIGNAL_SEASON_STATE is how check-season is pointed at a state on purpose —
-  // tests/pending-layers.test.js builds every alarm state through it. The phase
-  // passes through normalizePhase, and both mutants there corrupt it silently:
-  // one reads season_type instead of phase, the other maps 'pre' to 'off' and
+test('the phase off the live feed is normalized, not passed through (line 134)', async () => {
+  // THE NETWORK PATH, with fetch stubbed — no env var, so the CI guard below is
+  // never involved. normalizePhase is the only thing between Sleeper's
+  // season_type and every "is it in season" decision on the site, and both of
+  // its mutants corrupt it silently: one maps 'pre' to 'off', the other maps
   // everything else to 'pre'.
-  // DRIVEN THROUGH state(), BECAUSE fromEnv IS NOT EXPORTED. The first version of
-  // this test asked for season.fromEnv and skipped itself when it was not there
-  // — nine green assertions, one of which asserted nothing. state() takes the
-  // env path before it ever reaches the network, so no fetch happens here.
-  const prev = process.env.SIGNAL_SEASON_STATE;
+  const realFetch = global.fetch;
+  try {
+    for (const [given, expected] of [['pre', 'pre'], ['regular', 'regular'],
+                                     ['post', 'post'], ['OFFSEASON', 'off'], ['', 'off']]) {
+      season.__reset();
+      global.fetch = async () => ({
+        ok: true,
+        json: async () => ({ season: 2026, previous_season: 2025, week: 3, season_type: given }),
+      });
+      const st = await season.state();
+      assert.strictEqual(st.phase, expected, `season_type ${given || '(blank)'} became ${st.phase}`);
+    }
+  } finally {
+    global.fetch = realFetch;
+    season.__reset();
+  }
+});
+
+test('a simulated calendar reads its phase from phase, not season_type (line 94)', async () => {
+  // THE ENV PATH, which needs the CI guard lifted for exactly one call.
+  //
+  // `fromEnv()` calls process.exit(1) when CI or GITHUB_ACTIONS is set, because
+  // a simulated calendar must never build a file that ships — a good guard, and
+  // the reason this test file took the whole CI run down the first time I wrote
+  // it. But that path is then untestable in the one place the mutation gate
+  // runs, so the mutant could never be killed where it counts.
+  //
+  // The flags come off for one synchronous call and go straight back in a
+  // `finally`. Nothing here builds anything or writes a file; the guard is about
+  // builds, and a unit test is not one.
+  const saved = { ci: process.env.CI, ga: process.env.GITHUB_ACTIONS,
+                  state: process.env.SIGNAL_SEASON_STATE };
   const err = console.error;
   console.error = () => {};                       // it shouts about being simulated, by design
   try {
-    for (const [given, expected] of [['pre', 'pre'], ['regular', 'regular'],
-                                     ['post', 'post'], ['nonsense', 'off']]) {
+    delete process.env.CI;
+    delete process.env.GITHUB_ACTIONS;
+    for (const [given, expected] of [['pre', 'pre'], ['regular', 'regular'], ['nonsense', 'off']]) {
       season.__reset();
       process.env.SIGNAL_SEASON_STATE = JSON.stringify({ season: 2026, week: 1, phase: given });
       const st = await season.state();
       assert.strictEqual(st.source, 'SIMULATED via SIGNAL_SEASON_STATE',
-        'state() did not take the env path, so this test is measuring the network');
+        'state() did not take the env path, so this is measuring something else');
       assert.strictEqual(st.phase, expected, `phase ${given} became ${st.phase}`);
     }
   } finally {
     console.error = err;
     season.__reset();
-    if (prev === undefined) delete process.env.SIGNAL_SEASON_STATE;
-    else process.env.SIGNAL_SEASON_STATE = prev;
+    for (const [k, v] of [['CI', saved.ci], ['GITHUB_ACTIONS', saved.ga],
+                          ['SIGNAL_SEASON_STATE', saved.state]]) {
+      if (v === undefined) delete process.env[k];
+      else process.env[k] = v;
+    }
   }
 });
 
