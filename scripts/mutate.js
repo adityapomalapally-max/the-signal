@@ -137,6 +137,88 @@ function mutantsFor(file) {
 const TEST_FILES = fs.readdirSync(path.join(ROOT, 'tests'))
   .filter(f => f.endsWith('.test.js')).map(f => path.join('tests', f));
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   A KILLED RUN MUST NOT LEAVE A LIVE MUTANT IN THE REPO
+   ═══════════════════════════════════════════════════════════════════════════
+
+   This file edits scripts/lib/*.js in place and restores them in a `finally`.
+   A `finally` does not run when the process is SIGKILLed — and on 2026-10-01
+   and 10-02 that happened three times, because the machine kept sleeping and
+   the system killed the run for memory. Each time it left one mutant sitting in
+   a library:
+
+     lib/fieldmap.js   >= 300  ->  > 300
+     lib/weekly.js     typeof v !== 'number'  ->  === 'number'   (nulls every rounded figure)
+     lib/season.js     phase !== 'regular' ? false  ->  true      (off-season reads as live)
+
+   All three were caught by running `git status` at the right moment, which is
+   luck wearing the clothes of a process. The last one would have told the whole
+   site that games had started in February.
+
+   So the run now leaves a note on disk naming the files it is about to touch.
+   If that note is still there next time, the previous run died without
+   restoring, and the first thing this one does is put those files back.
+
+   The note is NOT a lock: two runs at once are not the failure being prevented,
+   and a lock that outlives a crash is the same trap one level up.
+
+   IT LIVES IN .git/ AND IT IS NOT JSON. Both on purpose. Inside .git it can
+   never be committed, never show in `git status`, and never trip a test that
+   reads the repo's contents — a crash marker that can itself be mistaken for
+   data is not an improvement. And writing it as JSON made `mutate.js` an
+   offender against this repo's own rule that every JSON write in a daily script
+   goes through writeJSONIfChanged, which is how the suite caught the first
+   version of this file within a minute. Plain lines instead. */
+const SENTINEL = path.join(ROOT, '.git', 'mutate-in-flight');
+
+/** The file list out of the note, comments and blank lines dropped. */
+function parseSentinel(text) {
+  return String(text || '').split('\n')
+    .map(l => l.trim())
+    .filter(l => l && !l.startsWith('#'));
+}
+
+/** Restore anything a previous killed run left mutated, and say so loudly. */
+function healFromPreviousRun() {
+  if (!fs.existsSync(SENTINEL)) return [];
+  let files = [];
+  try {
+    files = parseSentinel(fs.readFileSync(SENTINEL, 'utf8'));
+  } catch (e) {
+    files = [];
+  }
+  const healed = [];
+  for (const f of files) {
+    try {
+      execFileSync('git', ['checkout', '--', f], { cwd: ROOT, stdio: 'ignore' });
+      healed.push(f);
+    } catch (e) {
+      console.error(`[mutate] could not restore ${f}: ${e.message}`);
+    }
+  }
+  fs.unlinkSync(SENTINEL);
+  if (healed.length) {
+    console.error('');
+    console.error('[mutate] A PREVIOUS RUN WAS KILLED WITHOUT RESTORING. These files were put back');
+    console.error('         from git before this run started — if you had uncommitted edits in them,');
+    console.error('         they are gone and that is the lesser of the two losses:');
+    for (const f of healed) console.error(`           ${f}`);
+    console.error('');
+  }
+  return healed;
+}
+
+/** Refuse to measure a tree somebody is in the middle of editing. */
+function dirtyLibs(files) {
+  try {
+    const out = execFileSync('git', ['status', '--porcelain', '--', ...files],
+                             { cwd: ROOT, encoding: 'utf8' });
+    return out.split('\n').map(l => l.slice(3).trim()).filter(Boolean);
+  } catch (e) {
+    return [];                                  // not a git checkout: nothing to compare against
+  }
+}
+
 function runSuite() {
   try {
     execFileSync('node', ['--test', ...TEST_FILES], { cwd: ROOT, stdio: 'ignore', timeout: 120000 });
@@ -165,16 +247,39 @@ function main() {
   for (let i = all.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [all[i], all[j]] = [all[j], all[i]]; }
   const chosen = budget ? all.slice(0, budget) : all;
 
+  healFromPreviousRun();
+
+  // A MUTATION SCORE OFF A DIRTY TREE MEASURES SOMEBODY'S WORK IN PROGRESS, not
+  // the suite. It is also how a half-finished edit gets blamed on the ratchet.
+  const dirty = dirtyLibs(files);
+  if (dirty.length && !argv.includes('--allow-dirty')) {
+    console.error(`[mutate] these library files have uncommitted changes, so a score would not `
+      + `describe the committed suite:`);
+    for (const f of dirty) console.error(`           ${f}`);
+    console.error('         Commit or stash them, or pass --allow-dirty if you meant it.');
+    process.exit(2);
+  }
+
+  fs.writeFileSync(SENTINEL,
+    `# mutate.js started ${new Date().toISOString()} as pid ${process.pid}\n`
+    + `# if this file still exists, that run died without restoring these:\n`
+    + files.join('\n') + '\n');
+
   console.log(`[mutate] ${all.length} mutants available across ${files.length} files; running ${chosen.length}`);
   if (!runSuite()) {
     console.error('[mutate] the suite fails before any mutation — fix that first');
+    if (fs.existsSync(SENTINEL)) fs.unlinkSync(SENTINEL);
     process.exit(2);
   }
 
   const survivors = [];
   const originals = new Map();
   const restore = () => { for (const [f, txt] of originals) fs.writeFileSync(path.join(ROOT, f), txt); };
-  process.on('SIGINT', () => { restore(); process.exit(130); });
+  process.on('SIGINT', () => {
+    restore();
+    if (fs.existsSync(SENTINEL)) fs.unlinkSync(SENTINEL);
+    process.exit(130);
+  });
 
   try {
     for (const [n, m] of chosen.entries()) {
@@ -189,6 +294,8 @@ function main() {
     }
   } finally {
     restore();
+    // The note goes only when the restore it describes has actually happened.
+    if (fs.existsSync(SENTINEL)) fs.unlinkSync(SENTINEL);
   }
 
   const caught = chosen.length - survivors.length;
@@ -249,4 +356,11 @@ function main() {
   process.exit(0);
 }
 
-main();
+// SAME GUARD build-scheme.js GOT TODAY, for the same reason: requiring this file
+// ran it, and running it means editing every library in place for forty minutes.
+// A test that wants to check the crash guard should not have to launch the gate.
+if (require.main === module) {
+  main();
+}
+
+module.exports = { parseSentinel, SENTINEL };

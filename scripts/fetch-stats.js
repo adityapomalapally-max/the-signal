@@ -146,9 +146,19 @@ function buildWeeklyLog(weeks, pos) {
     .map(w => {
       const base = { week: w.week, opp: w.opponent_team, fpts: round(w.fantasy_points_ppr, 1) };
       if (pos === 'QB') {
+        // `car` IS HERE BECAUSE ITS ABSENCE WAS A CONTRADICTION. This shape
+        // published a quarterback's rushing PRODUCTION — rushYds, rushTD — and
+        // not the carries that produced it, so anything asking how he got those
+        // yards read a player who gained 40 on the ground on no attempts. It
+        // surfaced on 2026-10-02 against a rushing-yards prop board, which is
+        // the one market where a quarterback's volume is the entire question:
+        // Lamar Jackson's line sat at 31.5 and his log said 40/34/50 yards on
+        // nothing. A scrambler and a designed-run quarterback reach the same
+        // yardage from different volumes and the bet is which one he is.
         return { ...base,
           cmp: w.completions, att: w.attempts, passYds: w.passing_yards,
-          passTD: w.passing_tds, int: w.passing_interceptions, rushYds: w.rushing_yards,
+          passTD: w.passing_tds, int: w.passing_interceptions,
+          car: w.carries, rushYds: w.rushing_yards,
           rushTD: w.rushing_tds, passEPA: round(w.passing_epa, 1)
         };
       } else if (pos === 'RB') {
@@ -493,7 +503,13 @@ async function main() {
   log('=== Stats Pipeline Complete ===');
 }
 
-main().catch(e => {
-  console.error('Stats pipeline fatal error:', e);
-  process.exit(1);
-});
+// The third script today to need this. Requiring it fetched three seasons of
+// stats and rewrote data/ — see build-scheme.js and mutate.js for the same note.
+if (require.main === module) {
+  main().catch(e => {
+    console.error('Stats pipeline fatal error:', e);
+    process.exit(1);
+  });
+}
+
+module.exports = { buildWeeklyLog };
