@@ -2,9 +2,9 @@
   "_comment": "A RATCHET, NOT A TARGET. scripts/mutate.js runs a fixed, seeded sample of mutants and this is the number the suite currently catches. CI fails if it drops. It does not have to go up, and chasing 100% is the classic mutation-testing mistake: most of the survivors left are `||` -> `&&` inside defaulting expressions like `a || b`, where the mutant is close to equivalent and a test written to kill it would assert nothing anybody cares about. What the ratchet stops is a change that quietly makes the SUITE weaker \u2014 deleting an assertion, loosening a boundary, or replacing a real check with one that cannot fail.",
   "budget": 60,
   "seed": 7,
-  "caught": 30,
-  "recorded": "2026-09-26",
-  "pool": 236,
+  "caught": 29,
+  "recorded": "2026-10-02",
+  "pool": 269,
   "_pool": "The number of mutants the sample was drawn from. IT IS PART OF THE BASELINE'S IDENTITY: mutate.js shuffles the whole pool with the seed and takes the first `budget`, so adding or removing a single operator anywhere in scripts/lib/*.js re-rolls WHICH 60 get run, and the recorded count stops describing the same sample. mutate.js warns when this no longer matches.",
-  "_why_30_after_35": "2026-09-26: this is NOT the suite getting weaker. lib/schedule.js joined the file list and lib/match.js gained a transport seam, so the pool went 224 -> 236 and the sample re-rolled; the new 60 happen to include 17 fieldmap.js mutants, the file the suite has always covered worst. The evidence that it got STRONGER is which files are absent from the survivor list: match.js and schedule.js, both fully caught, where before the redirect branch had two survivors and the clock had one. The 35 -> 36 rise that prompted all this was fetchCSV's redirect branch dying because GitHub answered 302 during a test \u2014 the network wearing coverage's clothes. tests/match-fetch.test.js now kills those six mutants offline."
+  "_why_29_after_30": "2026-10-02, measured in CI (the only machine that stayed awake for it; three local attempts were killed for memory). THIS IS NOT THE SUITE GETTING WEAKER, and the number is not being lowered to make a build pass \u2014 the SAMPLE changed. lib/scoring.js joined the file list and lib/match.js grew its retry logic, taking the pool 236 -> 269, and mutate.js shuffles the whole pool before taking 60, so these are 60 different mutants. 29 of them die where 30 of a different 60 did. The suite went 481 -> 520 tests over the same period, and lib/match.js, lib/schedule.js and lib/scoring.js each gained tests verified by hand-mutation. What would be a real regression is 28 of THIS pool's 60 \u2014 which is now what the number means."
 }

@@ -306,6 +306,30 @@ function main() {
   // a target: the point is to notice the suite getting weaker — an assertion
   // deleted, a boundary loosened, a real check swapped for one that cannot
   // fail — not to chase a percentage. See tests/mutation-baseline.json.
+  // THE SURVIVORS COME FIRST, BECAUSE THE REGRESSION PATH EXITS.
+  //
+  // This printed the verdict and then the survivor list, and `process.exit(1)`
+  // on a regression happened in between — so the one run where somebody needs to
+  // know WHICH mutant stopped dying printed a message saying "the survivors above
+  // say where" above nothing at all. CI did exactly that on 2026-10-02 and the
+  // list was unrecoverable from the log.
+  const report = () => {
+    console.log('');
+    console.log(`[mutate] caught ${caught}/${chosen.length}  (${score.toFixed(1)}%)`);
+    if (!survivors.length) return;
+    console.log('');
+    console.log('        SURVIVORS — the suite did not notice these edits:');
+    const byFile = {};
+    for (const m of survivors) (byFile[m.file] ||= []).push(m);
+    for (const [f, list] of Object.entries(byFile)) {
+      console.log(`        ${f}`);
+      for (const m of list.sort((a, b) => a.line - b.line)) {
+        console.log(`          line ${String(m.line).padStart(4)}  ${m.kind.padEnd(11)} ${m.from} -> ${m.to}`);
+      }
+    }
+  };
+  report();
+
   const baselinePath = path.join(ROOT, 'tests', 'mutation-baseline.json');
   let baseline = null;
   if (fs.existsSync(baselinePath)) baseline = JSON.parse(fs.readFileSync(baselinePath, 'utf8'));
@@ -331,26 +355,12 @@ function main() {
     if (caught < baseline.caught) {
       console.error('');
       console.error(`[mutate] REGRESSION: the suite used to catch ${baseline.caught} of these ${chosen.length}, it now catches ${caught}.`);
-      console.error('         Something that was checked is no longer checked. The survivors above say where.');
+      console.error('         Something that was checked is no longer checked. The survivor list above says where.');
       process.exit(1);
     }
     if (caught > baseline.caught) {
       console.log('');
       console.log(`[mutate] the suite got stronger: ${baseline.caught} -> ${caught}. Raise "caught" in tests/mutation-baseline.json.`);
-    }
-  }
-  console.log('');
-  console.log(`[mutate] caught ${caught}/${chosen.length}  (${score.toFixed(1)}%)`);
-  if (survivors.length) {
-    console.log('');
-    console.log('        SURVIVORS — the suite did not notice these edits:');
-    const byFile = {};
-    for (const m of survivors) (byFile[m.file] ||= []).push(m);
-    for (const [f, list] of Object.entries(byFile)) {
-      console.log(`        ${f}`);
-      for (const m of list.sort((a, b) => a.line - b.line)) {
-        console.log(`          line ${String(m.line).padStart(4)}  ${m.kind.padEnd(11)} ${m.from} -> ${m.to}`);
-      }
     }
   }
   process.exit(0);

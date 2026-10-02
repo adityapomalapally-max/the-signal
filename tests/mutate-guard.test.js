@@ -82,3 +82,35 @@ test('requiring mutate.js does not start a forty-minute gate', () => {
   assert.match(SRC, /require\.main === module\s*\)\s*\{[\s\S]{0,80}main\(\)/,
     'the guard exists but main() is called outside it');
 });
+
+test('the survivor list is printed before any verdict, because the verdict exits', () => {
+  // CI, 2026-10-02: "REGRESSION ... The survivors above say where" printed above
+  // nothing at all, because process.exit(1) ran before the survivor report. The
+  // one run where somebody needs to know WHICH mutant stopped dying was the one
+  // run that would not tell them, and the list was unrecoverable from the log.
+  const reportAt = SRC.indexOf('report();');
+  const strictAt = SRC.indexOf("argv.includes('--strict')");
+  // THE MESSAGE, NOT THE WORD. The first version of this test searched for
+  // 'REGRESSION' and matched the comment explaining the fix, which sat above the
+  // code — so it failed while the code was right. A test that can be satisfied
+  // or broken by prose is testing prose.
+  const exitAt = SRC.indexOf('REGRESSION: the suite used to catch');
+  assert.ok(reportAt > 0 && strictAt > 0 && exitAt > 0, 'the report or the ratchet is gone');
+  assert.ok(reportAt < strictAt, 'the verdict is reached before the survivors are printed');
+  assert.ok(reportAt < exitAt, 'a regression still exits before naming the survivors');
+});
+
+test('the baseline records the pool it was drawn from', () => {
+  // Without `pool` the recorded count silently describes a different 60 the next
+  // time anybody adds an operator to a lib file.
+  const baseline = JSON.parse(fs.readFileSync(path.join(ROOT, 'tests', 'mutation-baseline.json'), 'utf8'));
+  for (const key of ['budget', 'seed', 'caught', 'pool', 'recorded']) {
+    assert.ok(baseline[key] !== undefined, `the baseline has no ${key}`);
+  }
+  assert.ok(typeof baseline.pool === 'number' && baseline.pool > baseline.budget,
+    'the pool must be a count larger than the sample drawn from it');
+  // And it must explain itself: every change to this number since September has
+  // needed a sentence, and the sentences are why nobody lowered it by reflex.
+  assert.ok(Object.keys(baseline).some(k => k.startsWith('_why')),
+    'the baseline changed without a note saying why');
+});
