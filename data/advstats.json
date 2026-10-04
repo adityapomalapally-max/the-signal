@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/fetch-advstats.js",
-    "builtAt": "2026-10-03T15:07:53.192Z",
+    "builtAt": "2026-10-04T15:45:02.906Z",
     "seasons": [
       2024,
       2025,
@@ -16,7 +16,7 @@
     ],
     "defenseNote": "aggregated across every charted defender on the team; rates recomputed from totals rather than averaged across players, so a nickel corner's 12 targets do not weigh the same as a No.1 corner's season",
     "coverage": {
-      "players": 313,
+      "players": 312,
       "of": 351
     }
   },
@@ -8850,6 +8850,86 @@
         }
       }
     },
+    "shepard": {
+      "name": "Sterling Shepard",
+      "pos": "WR",
+      "seasons": {
+        "2024": {
+          "receiving": {
+            "targets": 51,
+            "rec": 32,
+            "yards": 334,
+            "firstDowns": 16,
+            "yardsBeforeCatch": 235,
+            "ybcPerRec": 7.3,
+            "yardsAfterCatch": 99,
+            "yacPerRec": 3.1,
+            "aDOT": 9.3,
+            "brokenTackles": 1,
+            "recPerBrokenTackle": 32,
+            "drops": 4,
+            "dropPct": 0.078,
+            "passerRatingWhenTargeted": 88.2
+          },
+          "rushing": {
+            "attempts": 8,
+            "yards": 69,
+            "firstDowns": 4,
+            "yardsBeforeContact": 48,
+            "ybcPerAttempt": 6,
+            "yardsAfterContact": 21,
+            "yacPerAttempt": 2.6,
+            "brokenTackles": 1,
+            "attPerBrokenTackle": 8
+          }
+        },
+        "2025": {
+          "receiving": {
+            "targets": 53,
+            "rec": 39,
+            "yards": 371,
+            "firstDowns": 18,
+            "yardsBeforeCatch": 222,
+            "ybcPerRec": 5.7,
+            "yardsAfterCatch": 149,
+            "yacPerRec": 3.8,
+            "aDOT": 8.5,
+            "brokenTackles": 2,
+            "recPerBrokenTackle": 19.5,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 98.9
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 19,
+            "firstDowns": 1,
+            "yardsBeforeContact": 17,
+            "ybcPerAttempt": 4.3,
+            "yardsAfterContact": 2,
+            "yacPerAttempt": 0.5,
+            "brokenTackles": 0
+          }
+        },
+        "2026": {
+          "receiving": {
+            "targets": 1,
+            "rec": 1,
+            "yards": 3,
+            "firstDowns": 0,
+            "yardsBeforeCatch": 2,
+            "ybcPerRec": 2,
+            "yardsAfterCatch": 1,
+            "yacPerRec": 1,
+            "aDOT": 2,
+            "brokenTackles": 0,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 79.2
+          }
+        }
+      }
+    },
     "washington": {
       "name": "Parker Washington",
       "pos": "WR",
@@ -12042,69 +12122,6 @@
         }
       }
     },
-    "davis-i": {
-      "name": "Isaiah Davis",
-      "pos": "RB",
-      "seasons": {
-        "2024": {
-          "receiving": {
-            "targets": 12,
-            "rec": 9,
-            "yards": 75,
-            "firstDowns": 4,
-            "yardsBeforeCatch": 0,
-            "ybcPerRec": 0,
-            "yardsAfterCatch": 75,
-            "yacPerRec": 8.3,
-            "aDOT": 1.3,
-            "brokenTackles": 0,
-            "drops": 1,
-            "dropPct": 0.083,
-            "passerRatingWhenTargeted": 118.4
-          },
-          "rushing": {
-            "attempts": 30,
-            "yards": 174,
-            "firstDowns": 10,
-            "yardsBeforeContact": 66,
-            "ybcPerAttempt": 2.2,
-            "yardsAfterContact": 108,
-            "yacPerAttempt": 3.6,
-            "brokenTackles": 4,
-            "attPerBrokenTackle": 7.5
-          }
-        },
-        "2025": {
-          "receiving": {
-            "targets": 28,
-            "rec": 21,
-            "yards": 186,
-            "firstDowns": 8,
-            "yardsBeforeCatch": -3,
-            "ybcPerRec": -0.1,
-            "yardsAfterCatch": 189,
-            "yacPerRec": 9,
-            "aDOT": 1.1,
-            "brokenTackles": 1,
-            "recPerBrokenTackle": 21,
-            "drops": 1,
-            "dropPct": 0.036,
-            "passerRatingWhenTargeted": 92.3
-          },
-          "rushing": {
-            "attempts": 43,
-            "yards": 236,
-            "firstDowns": 7,
-            "yardsBeforeContact": 130,
-            "ybcPerAttempt": 3,
-            "yardsAfterContact": 106,
-            "yacPerAttempt": 2.5,
-            "brokenTackles": 2,
-            "attPerBrokenTackle": 21.5
-          }
-        }
-      }
-    },
     "tucker": {
       "name": "Sean Tucker",
       "pos": "RB",
@@ -13995,47 +14012,6 @@
             "yacPerAttempt": 2.1,
             "brokenTackles": 1,
             "attPerBrokenTackle": 20
-          }
-        }
-      }
-    },
-    "shavers": {
-      "name": "Tyrell Shavers",
-      "pos": "WR",
-      "seasons": {
-        "2024": {
-          "receiving": {
-            "targets": 1,
-            "rec": 1,
-            "yards": 69,
-            "firstDowns": 1,
-            "yardsBeforeCatch": -2,
-            "ybcPerRec": -2,
-            "yardsAfterCatch": 71,
-            "yacPerRec": 71,
-            "aDOT": -2,
-            "brokenTackles": 1,
-            "recPerBrokenTackle": 1,
-            "drops": 0,
-            "dropPct": 0,
-            "passerRatingWhenTargeted": 158.3
-          }
-        },
-        "2025": {
-          "receiving": {
-            "targets": 23,
-            "rec": 15,
-            "yards": 245,
-            "firstDowns": 11,
-            "yardsBeforeCatch": 181,
-            "ybcPerRec": 12.1,
-            "yardsAfterCatch": 64,
-            "yacPerRec": 4.3,
-            "aDOT": 13.4,
-            "brokenTackles": 0,
-            "drops": 0,
-            "dropPct": 0,
-            "passerRatingWhenTargeted": 115.3
           }
         }
       }
