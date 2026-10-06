@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-10-02T16:39:21.936Z",
+    "generated": "2026-10-06T17:11:20.676Z",
     "builtBy": "scripts/build-scheme.js via lib/xfp.js",
     "seasons": [
       2024,
@@ -11,28 +11,28 @@
     "scoring": "Full PPR — 1 per reception, 0.1 per yard, 6 per touchdown — matching nflverse fantasy_points_ppr, which is what every other points figure on this site already is.",
     "method": "EMPIRICAL, NOT FITTED. A cell's price is the mean fantasy points the plays in that cell actually produced. No regression, no coefficients, nothing trained — anyone with the same CSV recomputes the same number. A season prices itself once it has the plays to do it; until then it borrows the last finished season's table, and meta.build.pricedFrom says which season paid for the prices above.",
     "build": {
-      "opportunities": 5571,
-      "targets": 3029,
-      "carries": 2542,
-      "playersQualified": 89,
+      "opportunities": 7317,
+      "targets": 4003,
+      "carries": 3314,
+      "playersQualified": 131,
       "passersDropped": 2,
       "minPasserAttempts": 20,
       "minCell": 100,
       "minOpportunities": 20,
-      "fallbackPct": 0.92,
+      "fallbackPct": 0.9,
       "skippedNoLine": 0,
       "pricedFromSuppliedTable": true,
       "unpriced": 0,
-      "leagueFp": 3541.2,
-      "leagueXfp": 3636,
-      "leagueRatio": 0.9739,
-      "selfFallbackPct": 18,
+      "leagueFp": 5988.9,
+      "leagueXfp": 6051.5,
+      "leagueRatio": 0.9897,
+      "selfFallbackPct": 13.17,
       "season": 2026,
       "pricedFrom": 2025
     },
     "caveats": [
-      "THESE PRICES ARE 2025'S. 2026 has not played enough football to price itself — its own table would put 18% of opportunities on a marginal cell against the 0.92% these prices manage — so every expectation here is what the same chance was worth in 2025. Measured on 2025: priced this way a two-week season lands 0.165 points a game from what those plays were really worth, against 0.313 priced off its own two weeks. It switches to its own table the moment that table fits.",
-      "EARLY IN A SEASON EVERY QUALIFIED PLAYER LOOKS GOOD, and that is the qualifier rather than the football. The floor is 20+ opportunities, which over a season admits a rotational player and after one week admits only the workhorses — who are the players getting that volume because they are producing. League actual against these prices (0.9739x) is computed over exactly those qualified players, so read it as who cleared the floor, not as the league scoring more than it did last year, and not as a consistency check: carried prices are not means over these plays.",
+      "THESE PRICES ARE 2025'S. 2026 has not played enough football to price itself — its own table would put 13.17% of opportunities on a marginal cell against the 0.9% these prices manage — so every expectation here is what the same chance was worth in 2025. Measured on 2025: priced this way a two-week season lands 0.165 points a game from what those plays were really worth, against 0.313 priced off its own two weeks. It switches to its own table the moment that table fits.",
+      "EARLY IN A SEASON EVERY QUALIFIED PLAYER LOOKS GOOD, and that is the qualifier rather than the football. The floor is 20+ opportunities, which over a season admits a rotational player and after one week admits only the workhorses — who are the players getting that volume because they are producing. League actual against these prices (0.9897x) is computed over exactly those qualified players, so read it as who cleared the floor, not as the league scoring more than it did last year, and not as a consistency check: carried prices are not means over these plays.",
       "PASSING IS NOT PRICED, so quarterbacks are absent rather than wrong. A quarterback's points are overwhelmingly passing, and showing his rushing expectation beside his total would put every quarterback in the league hundreds of points \"over expected\".",
       "Fumbles lost and two-point conversions are excluded from BOTH sides. They are outcomes rather than opportunities and have no situation to price. Measured against stats.json, this leaves a median gap of 0.0 points across a season and a 10th-to-90th range of plus or minus 2 — which is one fumble, or one two-point conversion.",
       "THE GAP IS MOSTLY TOUCHDOWNS, AND TOUCHDOWNS DO NOT REPEAT. A player far over expected is usually not a player who will stay there. That is the reading this file is for.",
@@ -55838,15 +55838,15 @@
     "2026": {
       "00-0037744": {
         "team": "ARI",
-        "games": 3,
-        "targets": 34,
+        "games": 4,
+        "targets": 46,
         "carries": 0,
-        "fp": 59.1,
-        "xfp": 61.7,
-        "diff": -2.6,
-        "fpPerG": 19.7,
-        "xfpPerG": 20.56,
-        "diffPerG": -0.86,
+        "fp": 69.2,
+        "xfp": 82.3,
+        "diff": -13.1,
+        "fpPerG": 17.3,
+        "xfpPerG": 20.57,
+        "diffPerG": -3.27,
         "weeks": [
           {
             "week": 1,
@@ -55865,20 +55865,26 @@
             "fp": 16.5,
             "xfp": 19.4,
             "opps": 11
+          },
+          {
+            "week": 4,
+            "fp": 10.1,
+            "xfp": 20.6,
+            "opps": 12
           }
         ]
       },
       "00-0037263": {
         "team": "ARI",
-        "games": 3,
-        "targets": 8,
-        "carries": 24,
-        "fp": 17.8,
-        "xfp": 27,
-        "diff": -9.2,
-        "fpPerG": 5.93,
-        "xfpPerG": 8.99,
-        "diffPerG": -3.05,
+        "games": 4,
+        "targets": 10,
+        "carries": 32,
+        "fp": 30.7,
+        "xfp": 35.9,
+        "diff": -5.2,
+        "fpPerG": 7.68,
+        "xfpPerG": 8.98,
+        "diffPerG": -1.3,
         "weeks": [
           {
             "week": 1,
@@ -55897,20 +55903,26 @@
             "fp": 4.9,
             "xfp": 7.1,
             "opps": 6
+          },
+          {
+            "week": 4,
+            "fp": 12.9,
+            "xfp": 8.9,
+            "opps": 10
           }
         ]
       },
       "00-0041027": {
         "team": "ARI",
-        "games": 3,
-        "targets": 12,
-        "carries": 41,
-        "fp": 42.4,
-        "xfp": 45.4,
-        "diff": -3,
-        "fpPerG": 14.13,
-        "xfpPerG": 15.12,
-        "diffPerG": -0.99,
+        "games": 4,
+        "targets": 13,
+        "carries": 55,
+        "fp": 48.9,
+        "xfp": 54.3,
+        "diff": -5.4,
+        "fpPerG": 12.23,
+        "xfpPerG": 13.58,
+        "diffPerG": -1.36,
         "weeks": [
           {
             "week": 1,
@@ -55929,20 +55941,26 @@
             "fp": 21.9,
             "xfp": 21,
             "opps": 26
+          },
+          {
+            "week": 4,
+            "fp": 6.5,
+            "xfp": 9,
+            "opps": 15
           }
         ]
       },
       "00-0040666": {
         "team": "LAC",
-        "games": 3,
-        "targets": 3,
-        "carries": 50,
-        "fp": 35.4,
-        "xfp": 37.9,
-        "diff": -2.5,
-        "fpPerG": 11.8,
-        "xfpPerG": 12.65,
-        "diffPerG": -0.85,
+        "games": 4,
+        "targets": 5,
+        "carries": 59,
+        "fp": 48.7,
+        "xfp": 48.7,
+        "diff": 0,
+        "fpPerG": 12.18,
+        "xfpPerG": 12.18,
+        "diffPerG": 0,
         "weeks": [
           {
             "week": 1,
@@ -55961,20 +55979,26 @@
             "fp": 5.6,
             "xfp": 14.1,
             "opps": 16
+          },
+          {
+            "week": 4,
+            "fp": 13.3,
+            "xfp": 10.8,
+            "opps": 11
           }
         ]
       },
       "00-0038454": {
         "team": "LAC",
-        "games": 3,
-        "targets": 4,
-        "carries": 17,
-        "fp": 19.5,
-        "xfp": 16.9,
-        "diff": 2.6,
-        "fpPerG": 6.5,
-        "xfpPerG": 5.62,
-        "diffPerG": 0.88,
+        "games": 4,
+        "targets": 10,
+        "carries": 27,
+        "fp": 30.8,
+        "xfp": 30.3,
+        "diff": 0.5,
+        "fpPerG": 7.7,
+        "xfpPerG": 7.56,
+        "diffPerG": 0.14,
         "weeks": [
           {
             "week": 1,
@@ -55993,20 +56017,26 @@
             "fp": 13.7,
             "xfp": 9.9,
             "opps": 11
+          },
+          {
+            "week": 4,
+            "fp": 11.3,
+            "xfp": 13.4,
+            "opps": 16
           }
         ]
       },
       "00-0038559": {
         "team": "ARI",
-        "games": 3,
-        "targets": 31,
+        "games": 4,
+        "targets": 44,
         "carries": 0,
-        "fp": 40.3,
-        "xfp": 55.3,
-        "diff": -15,
-        "fpPerG": 13.43,
-        "xfpPerG": 18.44,
-        "diffPerG": -5,
+        "fp": 56.8,
+        "xfp": 81.5,
+        "diff": -24.7,
+        "fpPerG": 14.2,
+        "xfpPerG": 20.37,
+        "diffPerG": -6.17,
         "weeks": [
           {
             "week": 1,
@@ -56025,6 +56055,88 @@
             "fp": 25.9,
             "xfp": 33.1,
             "opps": 17
+          },
+          {
+            "week": 4,
+            "fp": 16.5,
+            "xfp": 26.2,
+            "opps": 13
+          }
+        ]
+      },
+      "00-0038544": {
+        "team": "LAC",
+        "games": 4,
+        "targets": 19,
+        "carries": 2,
+        "fp": 18.1,
+        "xfp": 32.5,
+        "diff": -14.4,
+        "fpPerG": 4.53,
+        "xfpPerG": 8.12,
+        "diffPerG": -3.6,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 3.7,
+            "xfp": 8.9,
+            "opps": 6
+          },
+          {
+            "week": 2,
+            "fp": 2.4,
+            "xfp": 8.6,
+            "opps": 6
+          },
+          {
+            "week": 3,
+            "fp": 7,
+            "xfp": 9.6,
+            "opps": 6
+          },
+          {
+            "week": 4,
+            "fp": 5,
+            "xfp": 5.3,
+            "opps": 3
+          }
+        ]
+      },
+      "00-0040727": {
+        "team": "LAC",
+        "games": 4,
+        "targets": 21,
+        "carries": 0,
+        "fp": 33.9,
+        "xfp": 36.1,
+        "diff": -2.2,
+        "fpPerG": 8.48,
+        "xfpPerG": 9.01,
+        "diffPerG": -0.54,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 5,
+            "xfp": 9.3,
+            "opps": 6
+          },
+          {
+            "week": 2,
+            "fp": 6.3,
+            "xfp": 5.3,
+            "opps": 3
+          },
+          {
+            "week": 3,
+            "fp": 13.6,
+            "xfp": 12.9,
+            "opps": 7
+          },
+          {
+            "week": 4,
+            "fp": 9,
+            "xfp": 8.5,
+            "opps": 5
           }
         ]
       },
@@ -56106,15 +56218,15 @@
       },
       "00-0038542": {
         "team": "ATL",
-        "games": 3,
-        "targets": 16,
-        "carries": 66,
-        "fp": 77.7,
-        "xfp": 67.9,
-        "diff": 9.8,
-        "fpPerG": 25.9,
-        "xfpPerG": 22.64,
-        "diffPerG": 3.26,
+        "games": 4,
+        "targets": 18,
+        "carries": 85,
+        "fp": 105.4,
+        "xfp": 83.9,
+        "diff": 21.5,
+        "fpPerG": 26.35,
+        "xfpPerG": 20.98,
+        "diffPerG": 5.37,
         "weeks": [
           {
             "week": 1,
@@ -56133,6 +56245,12 @@
             "fp": 35.3,
             "xfp": 29,
             "opps": 31
+          },
+          {
+            "week": 4,
+            "fp": 27.7,
+            "xfp": 16,
+            "opps": 21
           }
         ]
       },
@@ -56202,15 +56320,15 @@
       },
       "00-0037746": {
         "team": "ATL",
-        "games": 3,
-        "targets": 2,
-        "carries": 30,
-        "fp": 22.8,
-        "xfp": 19.4,
-        "diff": 3.4,
-        "fpPerG": 7.6,
-        "xfpPerG": 6.47,
-        "diffPerG": 1.13,
+        "games": 4,
+        "targets": 3,
+        "carries": 44,
+        "fp": 48.5,
+        "xfp": 31.9,
+        "diff": 16.6,
+        "fpPerG": 12.13,
+        "xfpPerG": 7.97,
+        "diffPerG": 4.16,
         "weeks": [
           {
             "week": 1,
@@ -56229,20 +56347,26 @@
             "fp": 11,
             "xfp": 5.9,
             "opps": 10
+          },
+          {
+            "week": 4,
+            "fp": 25.7,
+            "xfp": 12.5,
+            "opps": 15
           }
         ]
       },
       "00-0037238": {
         "team": "ATL",
-        "games": 3,
-        "targets": 19,
+        "games": 4,
+        "targets": 25,
         "carries": 2,
-        "fp": 42.8,
-        "xfp": 29.7,
-        "diff": 13.1,
-        "fpPerG": 14.27,
-        "xfpPerG": 9.9,
-        "diffPerG": 4.36,
+        "fp": 57.4,
+        "xfp": 39.5,
+        "diff": 17.9,
+        "fpPerG": 14.35,
+        "xfpPerG": 9.88,
+        "diffPerG": 4.47,
         "weeks": [
           {
             "week": 1,
@@ -56261,6 +56385,12 @@
             "fp": 28.4,
             "xfp": 15.5,
             "opps": 10
+          },
+          {
+            "week": 4,
+            "fp": 14.6,
+            "xfp": 9.8,
+            "opps": 6
           }
         ]
       },
@@ -56336,15 +56466,15 @@
       },
       "00-0038997": {
         "team": "IND",
-        "games": 3,
-        "targets": 24,
+        "games": 4,
+        "targets": 28,
         "carries": 0,
-        "fp": 32.6,
-        "xfp": 42.1,
-        "diff": -9.5,
-        "fpPerG": 10.87,
-        "xfpPerG": 14.03,
-        "diffPerG": -3.16,
+        "fp": 37.2,
+        "xfp": 47.8,
+        "diff": -10.6,
+        "fpPerG": 9.3,
+        "xfpPerG": 11.94,
+        "diffPerG": -2.64,
         "weeks": [
           {
             "week": 1,
@@ -56363,20 +56493,26 @@
             "fp": 12.7,
             "xfp": 20,
             "opps": 11
+          },
+          {
+            "week": 4,
+            "fp": 4.6,
+            "xfp": 5.7,
+            "opps": 4
           }
         ]
       },
       "00-0036223": {
         "team": "IND",
-        "games": 3,
-        "targets": 11,
-        "carries": 66,
-        "fp": 65.5,
-        "xfp": 60.5,
-        "diff": 5,
-        "fpPerG": 21.83,
-        "xfpPerG": 20.18,
-        "diffPerG": 1.65,
+        "games": 4,
+        "targets": 15,
+        "carries": 86,
+        "fp": 88.2,
+        "xfp": 81.2,
+        "diff": 7,
+        "fpPerG": 22.05,
+        "xfpPerG": 20.3,
+        "diffPerG": 1.75,
         "weeks": [
           {
             "week": 1,
@@ -56395,20 +56531,58 @@
             "fp": 9.2,
             "xfp": 16,
             "opps": 26
+          },
+          {
+            "week": 4,
+            "fp": 22.7,
+            "xfp": 20.6,
+            "opps": 24
+          }
+        ]
+      },
+      "00-0039064": {
+        "team": "BAL",
+        "games": 3,
+        "targets": 22,
+        "carries": 1,
+        "fp": 67.2,
+        "xfp": 37.5,
+        "diff": 29.7,
+        "fpPerG": 22.4,
+        "xfpPerG": 12.49,
+        "diffPerG": 9.91,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 26,
+            "xfp": 10.2,
+            "opps": 6
+          },
+          {
+            "week": 3,
+            "fp": 15.4,
+            "xfp": 11.5,
+            "opps": 7
+          },
+          {
+            "week": 4,
+            "fp": 25.8,
+            "xfp": 15.8,
+            "opps": 10
           }
         ]
       },
       "00-0032764": {
         "team": "BAL",
-        "games": 3,
-        "targets": 5,
-        "carries": 66,
-        "fp": 74.9,
-        "xfp": 62.9,
-        "diff": 12,
-        "fpPerG": 24.97,
-        "xfpPerG": 20.96,
-        "diffPerG": 4.01,
+        "games": 4,
+        "targets": 7,
+        "carries": 89,
+        "fp": 90.8,
+        "xfp": 82.5,
+        "diff": 8.3,
+        "fpPerG": 22.7,
+        "xfpPerG": 20.62,
+        "diffPerG": 2.08,
         "weeks": [
           {
             "week": 1,
@@ -56427,20 +56601,26 @@
             "fp": 21.9,
             "xfp": 28,
             "opps": 27
+          },
+          {
+            "week": 4,
+            "fp": 15.9,
+            "xfp": 19.6,
+            "opps": 25
           }
         ]
       },
       "00-0040128": {
         "team": "IND",
-        "games": 3,
-        "targets": 22,
+        "games": 4,
+        "targets": 27,
         "carries": 2,
-        "fp": 39.4,
-        "xfp": 35.6,
-        "diff": 3.8,
-        "fpPerG": 13.13,
-        "xfpPerG": 11.87,
-        "diffPerG": 1.27,
+        "fp": 48.5,
+        "xfp": 43,
+        "diff": 5.5,
+        "fpPerG": 12.12,
+        "xfpPerG": 10.75,
+        "diffPerG": 1.38,
         "weeks": [
           {
             "week": 1,
@@ -56459,20 +56639,102 @@
             "fp": 14.7,
             "xfp": 15.2,
             "opps": 11
+          },
+          {
+            "week": 4,
+            "fp": 9.1,
+            "xfp": 7.4,
+            "opps": 5
+          }
+        ]
+      },
+      "00-0034753": {
+        "team": "BAL",
+        "games": 4,
+        "targets": 24,
+        "carries": 0,
+        "fp": 38.9,
+        "xfp": 39.5,
+        "diff": -0.6,
+        "fpPerG": 9.73,
+        "xfpPerG": 9.87,
+        "diffPerG": -0.15,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 8.9,
+            "xfp": 9,
+            "opps": 6
+          },
+          {
+            "week": 2,
+            "fp": 10.9,
+            "xfp": 10.4,
+            "opps": 7
+          },
+          {
+            "week": 3,
+            "fp": 5.4,
+            "xfp": 7.6,
+            "opps": 5
+          },
+          {
+            "week": 4,
+            "fp": 13.7,
+            "xfp": 12.4,
+            "opps": 6
+          }
+        ]
+      },
+      "00-0034975": {
+        "team": "BAL",
+        "games": 4,
+        "targets": 6,
+        "carries": 14,
+        "fp": 15.4,
+        "xfp": 15.7,
+        "diff": -0.3,
+        "fpPerG": 3.85,
+        "xfpPerG": 3.93,
+        "diffPerG": -0.08,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 3.8,
+            "xfp": 4.6,
+            "opps": 7
+          },
+          {
+            "week": 2,
+            "fp": 3.8,
+            "xfp": 3.8,
+            "opps": 4
+          },
+          {
+            "week": 3,
+            "fp": 3.3,
+            "xfp": 2.7,
+            "opps": 5
+          },
+          {
+            "week": 4,
+            "fp": 4.5,
+            "xfp": 4.7,
+            "opps": 4
           }
         ]
       },
       "00-0037248": {
         "team": "BUF",
-        "games": 3,
-        "targets": 8,
-        "carries": 58,
-        "fp": 52.2,
-        "xfp": 52.2,
-        "diff": 0,
-        "fpPerG": 17.4,
-        "xfpPerG": 17.39,
-        "diffPerG": 0.01,
+        "games": 4,
+        "targets": 10,
+        "carries": 70,
+        "fp": 68.5,
+        "xfp": 63.3,
+        "diff": 5.2,
+        "fpPerG": 17.12,
+        "xfpPerG": 15.83,
+        "diffPerG": 1.3,
         "weeks": [
           {
             "week": 1,
@@ -56491,20 +56753,26 @@
             "fp": 21.4,
             "xfp": 18,
             "opps": 25
+          },
+          {
+            "week": 4,
+            "fp": 16.3,
+            "xfp": 11.2,
+            "opps": 14
           }
         ]
       },
       "00-0035685": {
         "team": "HOU",
-        "games": 3,
+        "games": 4,
         "targets": 7,
-        "carries": 37,
-        "fp": 40.1,
-        "xfp": 37.5,
-        "diff": 2.6,
-        "fpPerG": 13.37,
-        "xfpPerG": 12.49,
-        "diffPerG": 0.87,
+        "carries": 47,
+        "fp": 42.5,
+        "xfp": 43.5,
+        "diff": -1,
+        "fpPerG": 10.63,
+        "xfpPerG": 10.88,
+        "diffPerG": -0.26,
         "weeks": [
           {
             "week": 1,
@@ -56523,20 +56791,26 @@
             "fp": 6.8,
             "xfp": 8.8,
             "opps": 13
+          },
+          {
+            "week": 4,
+            "fp": 2.4,
+            "xfp": 6.1,
+            "opps": 10
           }
         ]
       },
       "00-0040583": {
         "team": "HOU",
-        "games": 3,
-        "targets": 8,
-        "carries": 22,
-        "fp": 22.6,
-        "xfp": 26.1,
-        "diff": -3.5,
-        "fpPerG": 7.53,
-        "xfpPerG": 8.71,
-        "diffPerG": -1.17,
+        "games": 4,
+        "targets": 9,
+        "carries": 28,
+        "fp": 30.8,
+        "xfp": 31.6,
+        "diff": -0.8,
+        "fpPerG": 7.7,
+        "xfpPerG": 7.9,
+        "diffPerG": -0.2,
         "weeks": [
           {
             "week": 1,
@@ -56555,20 +56829,64 @@
             "fp": 9.1,
             "xfp": 6.5,
             "opps": 6
+          },
+          {
+            "week": 4,
+            "fp": 8.2,
+            "xfp": 5.5,
+            "opps": 7
+          }
+        ]
+      },
+      "00-0037261": {
+        "team": "BUF",
+        "games": 4,
+        "targets": 23,
+        "carries": 0,
+        "fp": 31.6,
+        "xfp": 38,
+        "diff": -6.4,
+        "fpPerG": 7.9,
+        "xfpPerG": 9.49,
+        "diffPerG": -1.59,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 8,
+            "xfp": 12.2,
+            "opps": 6
+          },
+          {
+            "week": 2,
+            "fp": 6.8,
+            "xfp": 9.2,
+            "opps": 6
+          },
+          {
+            "week": 3,
+            "fp": 1.6,
+            "xfp": 4.8,
+            "opps": 3
+          },
+          {
+            "week": 4,
+            "fp": 15.2,
+            "xfp": 11.8,
+            "opps": 8
           }
         ]
       },
       "00-0034383": {
         "team": "HOU",
-        "games": 3,
-        "targets": 25,
+        "games": 4,
+        "targets": 27,
         "carries": 0,
-        "fp": 39.5,
-        "xfp": 37.9,
-        "diff": 1.6,
-        "fpPerG": 13.17,
-        "xfpPerG": 12.65,
-        "diffPerG": 0.52,
+        "fp": 44.3,
+        "xfp": 40.9,
+        "diff": 3.4,
+        "fpPerG": 11.08,
+        "xfpPerG": 10.23,
+        "diffPerG": 0.84,
         "weeks": [
           {
             "week": 1,
@@ -56587,20 +56905,26 @@
             "fp": 6,
             "xfp": 5,
             "opps": 3
+          },
+          {
+            "week": 4,
+            "fp": 4.8,
+            "xfp": 3,
+            "opps": 2
           }
         ]
       },
       "00-0038618": {
         "team": "HOU",
-        "games": 3,
-        "targets": 21,
+        "games": 4,
+        "targets": 26,
         "carries": 2,
-        "fp": 21.4,
-        "xfp": 37.7,
-        "diff": -16.3,
-        "fpPerG": 7.13,
-        "xfpPerG": 12.56,
-        "diffPerG": -5.43,
+        "fp": 29,
+        "xfp": 45.7,
+        "diff": -16.7,
+        "fpPerG": 7.25,
+        "xfpPerG": 11.42,
+        "diffPerG": -4.17,
         "weeks": [
           {
             "week": 1,
@@ -56619,20 +56943,64 @@
             "fp": 8.5,
             "xfp": 11.1,
             "opps": 8
+          },
+          {
+            "week": 4,
+            "fp": 7.6,
+            "xfp": 8,
+            "opps": 5
+          }
+        ]
+      },
+      "00-0034827": {
+        "team": "BUF",
+        "games": 4,
+        "targets": 20,
+        "carries": 2,
+        "fp": 36.3,
+        "xfp": 36.2,
+        "diff": 0.1,
+        "fpPerG": 9.08,
+        "xfpPerG": 9.06,
+        "diffPerG": 0.01,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 21,
+            "xfp": 13.8,
+            "opps": 8
+          },
+          {
+            "week": 2,
+            "fp": -0.1,
+            "xfp": 0.6,
+            "opps": 1
+          },
+          {
+            "week": 3,
+            "fp": 12.7,
+            "xfp": 17.8,
+            "opps": 10
+          },
+          {
+            "week": 4,
+            "fp": 2.7,
+            "xfp": 4.1,
+            "opps": 3
           }
         ]
       },
       "00-0036275": {
         "team": "CHI",
-        "games": 3,
-        "targets": 9,
-        "carries": 54,
-        "fp": 58.1,
-        "xfp": 56.4,
-        "diff": 1.7,
-        "fpPerG": 19.37,
-        "xfpPerG": 18.81,
-        "diffPerG": 0.56,
+        "games": 4,
+        "targets": 11,
+        "carries": 69,
+        "fp": 67.5,
+        "xfp": 71.9,
+        "diff": -4.4,
+        "fpPerG": 16.88,
+        "xfpPerG": 17.98,
+        "diffPerG": -1.11,
         "weeks": [
           {
             "week": 1,
@@ -56651,20 +57019,26 @@
             "fp": 10.8,
             "xfp": 20.5,
             "opps": 23
+          },
+          {
+            "week": 4,
+            "fp": 9.4,
+            "xfp": 15.5,
+            "opps": 17
           }
         ]
       },
       "00-0040735": {
         "team": "CHI",
-        "games": 3,
-        "targets": 23,
-        "carries": 2,
-        "fp": 37.5,
-        "xfp": 42.2,
-        "diff": -4.7,
-        "fpPerG": 12.5,
-        "xfpPerG": 14.06,
-        "diffPerG": -1.56,
+        "games": 4,
+        "targets": 29,
+        "carries": 3,
+        "fp": 48.9,
+        "xfp": 52.4,
+        "diff": -3.5,
+        "fpPerG": 12.23,
+        "xfpPerG": 13.09,
+        "diffPerG": -0.87,
         "weeks": [
           {
             "week": 1,
@@ -56683,20 +57057,26 @@
             "fp": 19.8,
             "xfp": 21.2,
             "opps": 12
+          },
+          {
+            "week": 4,
+            "fp": 11.4,
+            "xfp": 10.2,
+            "opps": 7
           }
         ]
       },
       "00-0036555": {
         "team": "CAR",
-        "games": 3,
-        "targets": 9,
-        "carries": 41,
-        "fp": 53.1,
-        "xfp": 42.1,
-        "diff": 11,
-        "fpPerG": 17.7,
-        "xfpPerG": 14.02,
-        "diffPerG": 3.68,
+        "games": 4,
+        "targets": 11,
+        "carries": 61,
+        "fp": 79,
+        "xfp": 57.6,
+        "diff": 21.4,
+        "fpPerG": 19.75,
+        "xfpPerG": 14.41,
+        "diffPerG": 5.34,
         "weeks": [
           {
             "week": 1,
@@ -56715,6 +57095,12 @@
             "fp": 15,
             "xfp": 15.5,
             "opps": 23
+          },
+          {
+            "week": 4,
+            "fp": 25.9,
+            "xfp": 15.6,
+            "opps": 22
           }
         ]
       },
@@ -56752,15 +57138,15 @@
       },
       "00-0032464": {
         "team": "CHI",
-        "games": 3,
-        "targets": 21,
+        "games": 4,
+        "targets": 23,
         "carries": 0,
-        "fp": 46.4,
-        "xfp": 32.9,
-        "diff": 13.5,
-        "fpPerG": 15.47,
-        "xfpPerG": 10.97,
-        "diffPerG": 4.49,
+        "fp": 49,
+        "xfp": 35.7,
+        "diff": 13.3,
+        "fpPerG": 12.25,
+        "xfpPerG": 8.93,
+        "diffPerG": 3.32,
         "weeks": [
           {
             "week": 1,
@@ -56779,20 +57165,26 @@
             "fp": 21,
             "xfp": 10.7,
             "opps": 7
+          },
+          {
+            "week": 4,
+            "fp": 2.6,
+            "xfp": 2.8,
+            "opps": 2
           }
         ]
       },
       "00-0040236": {
         "team": "CHI",
-        "games": 3,
-        "targets": 4,
-        "carries": 30,
-        "fp": 31.3,
-        "xfp": 25.1,
-        "diff": 6.2,
-        "fpPerG": 10.43,
-        "xfpPerG": 8.38,
-        "diffPerG": 2.05,
+        "games": 4,
+        "targets": 5,
+        "carries": 60,
+        "fp": 59.3,
+        "xfp": 56,
+        "diff": 3.3,
+        "fpPerG": 14.82,
+        "xfpPerG": 14.01,
+        "diffPerG": 0.82,
         "weeks": [
           {
             "week": 1,
@@ -56811,20 +57203,64 @@
             "fp": 3.1,
             "xfp": 6.2,
             "opps": 10
+          },
+          {
+            "week": 4,
+            "fp": 28,
+            "xfp": 30.9,
+            "opps": 31
+          }
+        ]
+      },
+      "00-0039919": {
+        "team": "CHI",
+        "games": 4,
+        "targets": 20,
+        "carries": 0,
+        "fp": 37.3,
+        "xfp": 35.7,
+        "diff": 1.6,
+        "fpPerG": 9.32,
+        "xfpPerG": 8.91,
+        "diffPerG": 0.41,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 7.2,
+            "xfp": 5.4,
+            "opps": 3
+          },
+          {
+            "week": 2,
+            "fp": 7.3,
+            "xfp": 6.7,
+            "opps": 4
+          },
+          {
+            "week": 3,
+            "fp": 7.4,
+            "xfp": 12.5,
+            "opps": 6
+          },
+          {
+            "week": 4,
+            "fp": 15.4,
+            "xfp": 11.1,
+            "opps": 7
           }
         ]
       },
       "00-0040124": {
         "team": "CAR",
-        "games": 3,
-        "targets": 23,
+        "games": 4,
+        "targets": 39,
         "carries": 0,
-        "fp": 31.3,
-        "xfp": 45.4,
-        "diff": -14.1,
-        "fpPerG": 10.43,
-        "xfpPerG": 15.14,
-        "diffPerG": -4.71,
+        "fp": 76.5,
+        "xfp": 72.9,
+        "diff": 3.6,
+        "fpPerG": 19.13,
+        "xfpPerG": 18.23,
+        "diffPerG": 0.9,
         "weeks": [
           {
             "week": 1,
@@ -56843,6 +57279,12 @@
             "fp": 3.7,
             "xfp": 10,
             "opps": 5
+          },
+          {
+            "week": 4,
+            "fp": 45.2,
+            "xfp": 27.5,
+            "opps": 16
           }
         ]
       },
@@ -56924,15 +57366,15 @@
       },
       "00-0040719": {
         "team": "JAX",
-        "games": 3,
-        "targets": 5,
-        "carries": 43,
-        "fp": 41,
-        "xfp": 34.7,
-        "diff": 6.3,
-        "fpPerG": 13.67,
-        "xfpPerG": 11.56,
-        "diffPerG": 2.1,
+        "games": 4,
+        "targets": 7,
+        "carries": 60,
+        "fp": 52.1,
+        "xfp": 47.4,
+        "diff": 4.7,
+        "fpPerG": 13.02,
+        "xfpPerG": 11.85,
+        "diffPerG": 1.18,
         "weeks": [
           {
             "week": 1,
@@ -56951,20 +57393,26 @@
             "fp": 17,
             "xfp": 13,
             "opps": 17
+          },
+          {
+            "week": 4,
+            "fp": 11.1,
+            "xfp": 12.7,
+            "opps": 19
           }
         ]
       },
       "00-0038611": {
         "team": "JAX",
-        "games": 3,
+        "games": 4,
         "targets": 0,
-        "carries": 20,
-        "fp": 13.3,
-        "xfp": 14.4,
-        "diff": -1.1,
-        "fpPerG": 4.43,
-        "xfpPerG": 4.79,
-        "diffPerG": -0.36,
+        "carries": 26,
+        "fp": 22.8,
+        "xfp": 17.9,
+        "diff": 4.9,
+        "fpPerG": 5.7,
+        "xfpPerG": 4.47,
+        "diffPerG": 1.23,
         "weeks": [
           {
             "week": 1,
@@ -56983,20 +57431,26 @@
             "fp": 9.7,
             "xfp": 5.9,
             "opps": 8
+          },
+          {
+            "week": 4,
+            "fp": 9.5,
+            "xfp": 3.5,
+            "opps": 6
           }
         ]
       },
       "00-0038606": {
         "team": "JAX",
-        "games": 3,
-        "targets": 23,
-        "carries": 0,
-        "fp": 49.1,
-        "xfp": 45.2,
-        "diff": 3.9,
-        "fpPerG": 16.37,
-        "xfpPerG": 15.08,
-        "diffPerG": 1.29,
+        "games": 4,
+        "targets": 26,
+        "carries": 1,
+        "fp": 51.1,
+        "xfp": 53.2,
+        "diff": -2.1,
+        "fpPerG": 12.77,
+        "xfpPerG": 13.3,
+        "diffPerG": -0.52,
         "weeks": [
           {
             "week": 1,
@@ -57015,6 +57469,12 @@
             "fp": 13,
             "xfp": 13.3,
             "opps": 5
+          },
+          {
+            "week": 4,
+            "fp": 2,
+            "xfp": 7.9,
+            "opps": 4
           }
         ]
       },
@@ -57096,15 +57556,15 @@
       },
       "00-0036997": {
         "team": "DAL",
-        "games": 3,
-        "targets": 12,
-        "carries": 43,
-        "fp": 50.5,
-        "xfp": 52.3,
-        "diff": -1.8,
-        "fpPerG": 16.83,
-        "xfpPerG": 17.42,
-        "diffPerG": -0.59,
+        "games": 4,
+        "targets": 17,
+        "carries": 62,
+        "fp": 81.8,
+        "xfp": 79.8,
+        "diff": 2,
+        "fpPerG": 20.45,
+        "xfpPerG": 19.96,
+        "diffPerG": 0.49,
         "weeks": [
           {
             "week": 1,
@@ -57123,20 +57583,26 @@
             "fp": 18.3,
             "xfp": 18.5,
             "opps": 22
+          },
+          {
+            "week": 4,
+            "fp": 31.3,
+            "xfp": 27.6,
+            "opps": 24
           }
         ]
       },
       "00-0036358": {
         "team": "DAL",
-        "games": 3,
-        "targets": 25,
-        "carries": 1,
-        "fp": 68.9,
-        "xfp": 46.7,
-        "diff": 22.2,
-        "fpPerG": 22.97,
-        "xfpPerG": 15.56,
-        "diffPerG": 7.41,
+        "games": 4,
+        "targets": 46,
+        "carries": 2,
+        "fp": 110.2,
+        "xfp": 82.3,
+        "diff": 27.9,
+        "fpPerG": 27.55,
+        "xfpPerG": 20.57,
+        "diffPerG": 6.98,
         "weeks": [
           {
             "week": 1,
@@ -57155,20 +57621,26 @@
             "fp": 18.2,
             "xfp": 12.3,
             "opps": 8
+          },
+          {
+            "week": 4,
+            "fp": 41.3,
+            "xfp": 35.6,
+            "opps": 22
           }
         ]
       },
       "00-0037247": {
         "team": "DAL",
-        "games": 3,
-        "targets": 25,
+        "games": 4,
+        "targets": 28,
         "carries": 0,
-        "fp": 31,
-        "xfp": 45.2,
-        "diff": -14.2,
-        "fpPerG": 10.33,
-        "xfpPerG": 15.06,
-        "diffPerG": -4.73,
+        "fp": 40.5,
+        "xfp": 50.5,
+        "diff": -10,
+        "fpPerG": 10.13,
+        "xfpPerG": 12.61,
+        "diffPerG": -2.49,
         "weeks": [
           {
             "week": 1,
@@ -57187,20 +57659,26 @@
             "fp": 15.2,
             "xfp": 21,
             "opps": 11
+          },
+          {
+            "week": 4,
+            "fp": 9.5,
+            "xfp": 5.3,
+            "opps": 3
           }
         ]
       },
       "00-0040715": {
         "team": "NYG",
-        "games": 3,
-        "targets": 8,
-        "carries": 50,
-        "fp": 36.6,
-        "xfp": 45.3,
-        "diff": -8.7,
-        "fpPerG": 12.2,
-        "xfpPerG": 15.1,
-        "diffPerG": -2.9,
+        "games": 4,
+        "targets": 9,
+        "carries": 68,
+        "fp": 44.2,
+        "xfp": 56.5,
+        "diff": -12.3,
+        "fpPerG": 11.05,
+        "xfpPerG": 14.11,
+        "diffPerG": -3.06,
         "weeks": [
           {
             "week": 1,
@@ -57219,20 +57697,64 @@
             "fp": 13,
             "xfp": 19.6,
             "opps": 24
+          },
+          {
+            "week": 4,
+            "fp": 7.6,
+            "xfp": 11.2,
+            "opps": 19
+          }
+        ]
+      },
+      "00-0039337": {
+        "team": "NYG",
+        "games": 4,
+        "targets": 26,
+        "carries": 0,
+        "fp": 44.8,
+        "xfp": 44.1,
+        "diff": 0.7,
+        "fpPerG": 11.2,
+        "xfpPerG": 11.03,
+        "diffPerG": 0.17,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 12.9,
+            "xfp": 14.3,
+            "opps": 9
+          },
+          {
+            "week": 2,
+            "fp": 1.1,
+            "xfp": 8.4,
+            "opps": 4
+          },
+          {
+            "week": 3,
+            "fp": 7.6,
+            "xfp": 9,
+            "opps": 6
+          },
+          {
+            "week": 4,
+            "fp": 23.2,
+            "xfp": 12.5,
+            "opps": 7
           }
         ]
       },
       "00-0037838": {
         "team": "NYG",
-        "games": 3,
-        "targets": 23,
+        "games": 4,
+        "targets": 35,
         "carries": 0,
-        "fp": 39.4,
-        "xfp": 37.6,
-        "diff": 1.8,
-        "fpPerG": 13.13,
-        "xfpPerG": 12.53,
-        "diffPerG": 0.6,
+        "fp": 53,
+        "xfp": 56.5,
+        "diff": -3.5,
+        "fpPerG": 13.25,
+        "xfpPerG": 14.11,
+        "diffPerG": -0.86,
         "weeks": [
           {
             "week": 1,
@@ -57251,20 +57773,64 @@
             "fp": 3.3,
             "xfp": 7.3,
             "opps": 5
+          },
+          {
+            "week": 4,
+            "fp": 13.6,
+            "xfp": 18.9,
+            "opps": 12
+          }
+        ]
+      },
+      "00-0039410": {
+        "team": "DAL",
+        "games": 4,
+        "targets": 23,
+        "carries": 0,
+        "fp": 23.4,
+        "xfp": 39.1,
+        "diff": -15.7,
+        "fpPerG": 5.85,
+        "xfpPerG": 9.77,
+        "diffPerG": -3.92,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 4.2,
+            "xfp": 5.9,
+            "opps": 4
+          },
+          {
+            "week": 2,
+            "fp": 7.3,
+            "xfp": 8.6,
+            "opps": 6
+          },
+          {
+            "week": 3,
+            "fp": 4.2,
+            "xfp": 17.1,
+            "opps": 8
+          },
+          {
+            "week": 4,
+            "fp": 7.7,
+            "xfp": 7.5,
+            "opps": 5
           }
         ]
       },
       "00-0036158": {
         "team": "DEN",
-        "games": 3,
-        "targets": 2,
-        "carries": 35,
-        "fp": 13.5,
-        "xfp": 29.9,
-        "diff": -16.4,
-        "fpPerG": 4.5,
-        "xfpPerG": 9.97,
-        "diffPerG": -5.47,
+        "games": 4,
+        "targets": 4,
+        "carries": 46,
+        "fp": 20.7,
+        "xfp": 38.5,
+        "diff": -17.8,
+        "fpPerG": 5.17,
+        "xfpPerG": 9.63,
+        "diffPerG": -4.46,
         "weeks": [
           {
             "week": 1,
@@ -57283,20 +57849,64 @@
             "fp": 6.3,
             "xfp": 14.4,
             "opps": 19
+          },
+          {
+            "week": 4,
+            "fp": 7.2,
+            "xfp": 8.6,
+            "opps": 13
+          }
+        ]
+      },
+      "00-0034348": {
+        "team": "DEN",
+        "games": 4,
+        "targets": 22,
+        "carries": 0,
+        "fp": 17.6,
+        "xfp": 43.1,
+        "diff": -25.5,
+        "fpPerG": 4.4,
+        "xfpPerG": 10.77,
+        "diffPerG": -6.37,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 3.1,
+            "xfp": 7.9,
+            "opps": 5
+          },
+          {
+            "week": 2,
+            "fp": 5.5,
+            "xfp": 7.8,
+            "opps": 4
+          },
+          {
+            "week": 3,
+            "fp": 7.6,
+            "xfp": 16.5,
+            "opps": 7
+          },
+          {
+            "week": 4,
+            "fp": 1.4,
+            "xfp": 10.8,
+            "opps": 6
           }
         ]
       },
       "00-0038134": {
         "team": "KC",
-        "games": 3,
-        "targets": 18,
-        "carries": 65,
-        "fp": 79.2,
-        "xfp": 75.3,
-        "diff": 3.9,
-        "fpPerG": 26.4,
-        "xfpPerG": 25.09,
-        "diffPerG": 1.31,
+        "games": 4,
+        "targets": 19,
+        "carries": 87,
+        "fp": 110.1,
+        "xfp": 94.2,
+        "diff": 15.9,
+        "fpPerG": 27.52,
+        "xfpPerG": 23.55,
+        "diffPerG": 3.97,
         "weeks": [
           {
             "week": 1,
@@ -57315,20 +57925,134 @@
             "fp": 21.3,
             "xfp": 16.2,
             "opps": 20
+          },
+          {
+            "week": 4,
+            "fp": 30.9,
+            "xfp": 19,
+            "opps": 23
+          }
+        ]
+      },
+      "00-0030506": {
+        "team": "KC",
+        "games": 4,
+        "targets": 22,
+        "carries": 0,
+        "fp": 52.6,
+        "xfp": 35.2,
+        "diff": 17.4,
+        "fpPerG": 13.15,
+        "xfpPerG": 8.79,
+        "diffPerG": 4.36,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 10.1,
+            "xfp": 7.5,
+            "opps": 5
+          },
+          {
+            "week": 2,
+            "fp": 25.1,
+            "xfp": 17,
+            "opps": 11
+          },
+          {
+            "week": 3,
+            "fp": 13.9,
+            "xfp": 5,
+            "opps": 2
+          },
+          {
+            "week": 4,
+            "fp": 3.5,
+            "xfp": 5.7,
+            "opps": 4
+          }
+        ]
+      },
+      "00-0039894": {
+        "team": "KC",
+        "games": 4,
+        "targets": 22,
+        "carries": 0,
+        "fp": 33.3,
+        "xfp": 38.2,
+        "diff": -4.9,
+        "fpPerG": 8.33,
+        "xfpPerG": 9.56,
+        "diffPerG": -1.23,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 4.8,
+            "xfp": 9.6,
+            "opps": 6
+          },
+          {
+            "week": 2,
+            "fp": 13.5,
+            "xfp": 13.9,
+            "opps": 7
+          },
+          {
+            "week": 3,
+            "fp": 4,
+            "xfp": 3,
+            "opps": 2
+          },
+          {
+            "week": 4,
+            "fp": 11,
+            "xfp": 11.8,
+            "opps": 7
+          }
+        ]
+      },
+      "00-0040730": {
+        "team": "DEN",
+        "games": 3,
+        "targets": 21,
+        "carries": 12,
+        "fp": 38.1,
+        "xfp": 36.3,
+        "diff": 1.8,
+        "fpPerG": 12.7,
+        "xfpPerG": 12.09,
+        "diffPerG": 0.61,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 8.1,
+            "xfp": 6.8,
+            "opps": 7
+          },
+          {
+            "week": 3,
+            "fp": 10.7,
+            "xfp": 11.9,
+            "opps": 9
+          },
+          {
+            "week": 4,
+            "fp": 19.3,
+            "xfp": 17.6,
+            "opps": 17
           }
         ]
       },
       "00-0041013": {
         "team": "KC",
-        "games": 3,
-        "targets": 4,
+        "games": 4,
+        "targets": 5,
         "carries": 16,
-        "fp": 16,
-        "xfp": 14.2,
-        "diff": 1.8,
-        "fpPerG": 5.33,
-        "xfpPerG": 4.72,
-        "diffPerG": 0.62,
+        "fp": 18,
+        "xfp": 15.5,
+        "diff": 2.5,
+        "fpPerG": 4.5,
+        "xfpPerG": 3.87,
+        "diffPerG": 0.63,
         "weeks": [
           {
             "week": 1,
@@ -57347,20 +58071,26 @@
             "fp": 1.7,
             "xfp": 3.3,
             "opps": 6
+          },
+          {
+            "week": 4,
+            "fp": 2,
+            "xfp": 1.3,
+            "opps": 1
           }
         ]
       },
       "00-0036613": {
         "team": "DEN",
-        "games": 3,
-        "targets": 20,
+        "games": 4,
+        "targets": 26,
         "carries": 1,
-        "fp": 27.4,
-        "xfp": 33.1,
-        "diff": -5.7,
-        "fpPerG": 9.13,
-        "xfpPerG": 11.04,
-        "diffPerG": -1.91,
+        "fp": 41.9,
+        "xfp": 42.8,
+        "diff": -0.9,
+        "fpPerG": 10.48,
+        "xfpPerG": 10.7,
+        "diffPerG": -0.22,
         "weeks": [
           {
             "week": 1,
@@ -57379,20 +58109,26 @@
             "fp": 4.4,
             "xfp": 11.5,
             "opps": 8
+          },
+          {
+            "week": 4,
+            "fp": 14.5,
+            "xfp": 9.7,
+            "opps": 6
           }
         ]
       },
       "00-0033293": {
         "team": "MIN",
-        "games": 3,
-        "targets": 7,
-        "carries": 52,
-        "fp": 34.7,
-        "xfp": 39.1,
-        "diff": -4.4,
-        "fpPerG": 11.57,
-        "xfpPerG": 13.03,
-        "diffPerG": -1.47,
+        "games": 4,
+        "targets": 15,
+        "carries": 72,
+        "fp": 51.5,
+        "xfp": 61.3,
+        "diff": -9.8,
+        "fpPerG": 12.88,
+        "xfpPerG": 15.32,
+        "diffPerG": -2.44,
         "weeks": [
           {
             "week": 1,
@@ -57411,20 +58147,102 @@
             "fp": 14.2,
             "xfp": 17.4,
             "opps": 23
+          },
+          {
+            "week": 4,
+            "fp": 16.8,
+            "xfp": 22.2,
+            "opps": 28
+          }
+        ]
+      },
+      "00-0038996": {
+        "team": "GB",
+        "games": 4,
+        "targets": 24,
+        "carries": 1,
+        "fp": 36.1,
+        "xfp": 42.2,
+        "diff": -6.1,
+        "fpPerG": 9.03,
+        "xfpPerG": 10.55,
+        "diffPerG": -1.52,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 9.5,
+            "xfp": 10.5,
+            "opps": 6
+          },
+          {
+            "week": 2,
+            "fp": 3.5,
+            "xfp": 4.3,
+            "opps": 3
+          },
+          {
+            "week": 3,
+            "fp": 6.6,
+            "xfp": 12,
+            "opps": 8
+          },
+          {
+            "week": 4,
+            "fp": 16.5,
+            "xfp": 15.4,
+            "opps": 8
+          }
+        ]
+      },
+      "00-0038685": {
+        "team": "GB",
+        "games": 4,
+        "targets": 5,
+        "carries": 15,
+        "fp": 12.4,
+        "xfp": 19.1,
+        "diff": -6.7,
+        "fpPerG": 3.1,
+        "xfpPerG": 4.77,
+        "diffPerG": -1.67,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 2.9,
+            "xfp": 5.9,
+            "opps": 8
+          },
+          {
+            "week": 2,
+            "fp": 3.6,
+            "xfp": 5.8,
+            "opps": 6
+          },
+          {
+            "week": 3,
+            "fp": 1.4,
+            "xfp": 1.3,
+            "opps": 1
+          },
+          {
+            "week": 4,
+            "fp": 4.5,
+            "xfp": 6.1,
+            "opps": 5
           }
         ]
       },
       "00-0040667": {
         "team": "GB",
-        "games": 3,
-        "targets": 30,
-        "carries": 0,
-        "fp": 46.3,
-        "xfp": 55.5,
-        "diff": -9.2,
-        "fpPerG": 15.43,
-        "xfpPerG": 18.49,
-        "diffPerG": -3.06,
+        "games": 4,
+        "targets": 37,
+        "carries": 1,
+        "fp": 58,
+        "xfp": 69.3,
+        "diff": -11.3,
+        "fpPerG": 14.5,
+        "xfpPerG": 17.33,
+        "diffPerG": -2.83,
         "weeks": [
           {
             "week": 1,
@@ -57443,20 +58261,64 @@
             "fp": 21,
             "xfp": 22.7,
             "opps": 12
+          },
+          {
+            "week": 4,
+            "fp": 11.7,
+            "xfp": 13.9,
+            "opps": 8
+          }
+        ]
+      },
+      "00-0035229": {
+        "team": "MIN",
+        "games": 4,
+        "targets": 26,
+        "carries": 0,
+        "fp": 47.5,
+        "xfp": 43,
+        "diff": 4.5,
+        "fpPerG": 11.88,
+        "xfpPerG": 10.76,
+        "diffPerG": 1.12,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 13.6,
+            "xfp": 8.8,
+            "opps": 5
+          },
+          {
+            "week": 2,
+            "fp": 5.9,
+            "xfp": 6.3,
+            "opps": 4
+          },
+          {
+            "week": 3,
+            "fp": 3.1,
+            "xfp": 6.3,
+            "opps": 4
+          },
+          {
+            "week": 4,
+            "fp": 24.9,
+            "xfp": 21.7,
+            "opps": 13
           }
         ]
       },
       "00-0038124": {
         "team": "GB",
-        "games": 3,
-        "targets": 29,
+        "games": 4,
+        "targets": 32,
         "carries": 0,
-        "fp": 69.4,
-        "xfp": 54.5,
-        "diff": 14.9,
-        "fpPerG": 23.13,
-        "xfpPerG": 18.16,
-        "diffPerG": 4.97,
+        "fp": 77.1,
+        "xfp": 59.2,
+        "diff": 17.9,
+        "fpPerG": 19.27,
+        "xfpPerG": 14.79,
+        "diffPerG": 4.49,
         "weeks": [
           {
             "week": 1,
@@ -57475,20 +58337,64 @@
             "fp": 22.6,
             "xfp": 19.8,
             "opps": 10
+          },
+          {
+            "week": 4,
+            "fp": 7.7,
+            "xfp": 4.7,
+            "opps": 3
+          }
+        ]
+      },
+      "00-0038994": {
+        "team": "MIN",
+        "games": 4,
+        "targets": 22,
+        "carries": 1,
+        "fp": 33.2,
+        "xfp": 37.5,
+        "diff": -4.3,
+        "fpPerG": 8.3,
+        "xfpPerG": 9.37,
+        "diffPerG": -1.07,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 0,
+            "xfp": 3.3,
+            "opps": 2
+          },
+          {
+            "week": 2,
+            "fp": 4.1,
+            "xfp": 7.8,
+            "opps": 5
+          },
+          {
+            "week": 3,
+            "fp": 20,
+            "xfp": 15.8,
+            "opps": 9
+          },
+          {
+            "week": 4,
+            "fp": 9.1,
+            "xfp": 10.6,
+            "opps": 7
           }
         ]
       },
       "00-0039811": {
         "team": "GB",
-        "games": 3,
-        "targets": 6,
-        "carries": 23,
-        "fp": 18.1,
-        "xfp": 25.6,
-        "diff": -7.5,
-        "fpPerG": 6.03,
-        "xfpPerG": 8.53,
-        "diffPerG": -2.49,
+        "games": 4,
+        "targets": 11,
+        "carries": 30,
+        "fp": 28,
+        "xfp": 39.2,
+        "diff": -11.2,
+        "fpPerG": 7,
+        "xfpPerG": 9.81,
+        "diffPerG": -2.81,
         "weeks": [
           {
             "week": 1,
@@ -57507,6 +58413,12 @@
             "fp": 3.8,
             "xfp": 8.3,
             "opps": 7
+          },
+          {
+            "week": 4,
+            "fp": 9.9,
+            "xfp": 13.7,
+            "opps": 12
           }
         ]
       },
@@ -57544,15 +58456,15 @@
       },
       "00-0039880": {
         "team": "MIA",
-        "games": 3,
-        "targets": 23,
-        "carries": 3,
-        "fp": 28.1,
-        "xfp": 40.8,
-        "diff": -12.7,
-        "fpPerG": 9.37,
-        "xfpPerG": 13.61,
-        "diffPerG": -4.24,
+        "games": 4,
+        "targets": 28,
+        "carries": 5,
+        "fp": 40.1,
+        "xfp": 50.1,
+        "diff": -10,
+        "fpPerG": 10.03,
+        "xfpPerG": 12.52,
+        "diffPerG": -2.49,
         "weeks": [
           {
             "week": 1,
@@ -57571,20 +58483,26 @@
             "fp": 11.1,
             "xfp": 18.5,
             "opps": 12
+          },
+          {
+            "week": 4,
+            "fp": 12,
+            "xfp": 9.2,
+            "opps": 7
           }
         ]
       },
       "00-0040122": {
         "team": "LV",
-        "games": 3,
-        "targets": 16,
-        "carries": 63,
-        "fp": 55.3,
-        "xfp": 72.9,
-        "diff": -17.6,
-        "fpPerG": 18.43,
-        "xfpPerG": 24.3,
-        "diffPerG": -5.86,
+        "games": 4,
+        "targets": 24,
+        "carries": 78,
+        "fp": 73.9,
+        "xfp": 92.7,
+        "diff": -18.8,
+        "fpPerG": 18.48,
+        "xfpPerG": 23.17,
+        "diffPerG": -4.7,
         "weeks": [
           {
             "week": 1,
@@ -57603,6 +58521,126 @@
             "fp": 12.3,
             "xfp": 19.2,
             "opps": 22
+          },
+          {
+            "week": 4,
+            "fp": 18.6,
+            "xfp": 19.8,
+            "opps": 23
+          }
+        ]
+      },
+      "00-0039066": {
+        "team": "LV",
+        "games": 4,
+        "targets": 24,
+        "carries": 0,
+        "fp": 42.9,
+        "xfp": 38.7,
+        "diff": 4.2,
+        "fpPerG": 10.73,
+        "xfpPerG": 9.68,
+        "diffPerG": 1.05,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 9.2,
+            "xfp": 11.7,
+            "opps": 7
+          },
+          {
+            "week": 2,
+            "fp": 5.3,
+            "xfp": 5.9,
+            "opps": 4
+          },
+          {
+            "week": 3,
+            "fp": 12.2,
+            "xfp": 6.4,
+            "opps": 3
+          },
+          {
+            "week": 4,
+            "fp": 16.2,
+            "xfp": 14.7,
+            "opps": 10
+          }
+        ]
+      },
+      "00-0038563": {
+        "team": "LV",
+        "games": 4,
+        "targets": 23,
+        "carries": 0,
+        "fp": 44.3,
+        "xfp": 39.9,
+        "diff": 4.4,
+        "fpPerG": 11.07,
+        "xfpPerG": 9.98,
+        "diffPerG": 1.09,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 4.7,
+            "xfp": 7,
+            "opps": 4
+          },
+          {
+            "week": 2,
+            "fp": 22.9,
+            "xfp": 12.7,
+            "opps": 7
+          },
+          {
+            "week": 3,
+            "fp": 8.3,
+            "xfp": 6.1,
+            "opps": 4
+          },
+          {
+            "week": 4,
+            "fp": 8.4,
+            "xfp": 14.2,
+            "opps": 8
+          }
+        ]
+      },
+      "00-0040878": {
+        "team": "LV",
+        "games": 4,
+        "targets": 3,
+        "carries": 24,
+        "fp": 18.9,
+        "xfp": 18.5,
+        "diff": 0.4,
+        "fpPerG": 4.73,
+        "xfpPerG": 4.62,
+        "diffPerG": 0.1,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 4.1,
+            "xfp": 4.6,
+            "opps": 7
+          },
+          {
+            "week": 2,
+            "fp": 0.7,
+            "xfp": 3.4,
+            "opps": 4
+          },
+          {
+            "week": 3,
+            "fp": 11.4,
+            "xfp": 2.6,
+            "opps": 5
+          },
+          {
+            "week": 4,
+            "fp": 2.7,
+            "xfp": 7.8,
+            "opps": 11
           }
         ]
       },
@@ -57640,15 +58678,15 @@
       },
       "00-0038543": {
         "team": "SEA",
-        "games": 3,
-        "targets": 36,
+        "games": 4,
+        "targets": 42,
         "carries": 0,
-        "fp": 103.5,
-        "xfp": 68.7,
-        "diff": 34.8,
-        "fpPerG": 34.5,
-        "xfpPerG": 22.9,
-        "diffPerG": 11.6,
+        "fp": 116.1,
+        "xfp": 78.9,
+        "diff": 37.2,
+        "fpPerG": 29.02,
+        "xfpPerG": 19.74,
+        "diffPerG": 9.29,
         "weeks": [
           {
             "week": 1,
@@ -57667,20 +58705,26 @@
             "fp": 34.8,
             "xfp": 28.4,
             "opps": 14
+          },
+          {
+            "week": 4,
+            "fp": 12.6,
+            "xfp": 10.3,
+            "opps": 6
           }
         ]
       },
       "00-0039299": {
         "team": "SEA",
-        "games": 3,
-        "targets": 7,
-        "carries": 15,
-        "fp": 16.2,
-        "xfp": 24.1,
-        "diff": -7.9,
-        "fpPerG": 5.4,
-        "xfpPerG": 8.05,
-        "diffPerG": -2.65,
+        "games": 4,
+        "targets": 8,
+        "carries": 22,
+        "fp": 19.2,
+        "xfp": 29.4,
+        "diff": -10.2,
+        "fpPerG": 4.8,
+        "xfpPerG": 7.36,
+        "diffPerG": -2.56,
         "weeks": [
           {
             "week": 1,
@@ -57699,20 +58743,26 @@
             "fp": 10.8,
             "xfp": 10.4,
             "opps": 8
+          },
+          {
+            "week": 4,
+            "fp": 3,
+            "xfp": 5.3,
+            "opps": 8
           }
         ]
       },
       "00-0036875": {
         "team": "NE",
-        "games": 3,
-        "targets": 11,
-        "carries": 31,
-        "fp": 26.9,
-        "xfp": 33,
-        "diff": -6.1,
-        "fpPerG": 8.97,
-        "xfpPerG": 10.99,
-        "diffPerG": -2.03,
+        "games": 4,
+        "targets": 16,
+        "carries": 44,
+        "fp": 43.3,
+        "xfp": 48.5,
+        "diff": -5.2,
+        "fpPerG": 10.82,
+        "xfpPerG": 12.13,
+        "diffPerG": -1.3,
         "weeks": [
           {
             "week": 1,
@@ -57731,20 +58781,64 @@
             "fp": 6.8,
             "xfp": 9.5,
             "opps": 10
+          },
+          {
+            "week": 4,
+            "fp": 16.4,
+            "xfp": 15.5,
+            "opps": 18
+          }
+        ]
+      },
+      "00-0033555": {
+        "team": "NE",
+        "games": 4,
+        "targets": 20,
+        "carries": 0,
+        "fp": 35.9,
+        "xfp": 37.6,
+        "diff": -1.7,
+        "fpPerG": 8.98,
+        "xfpPerG": 9.4,
+        "diffPerG": -0.43,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 9.1,
+            "xfp": 9.3,
+            "opps": 5
+          },
+          {
+            "week": 2,
+            "fp": 3.8,
+            "xfp": 2.9,
+            "opps": 2
+          },
+          {
+            "week": 3,
+            "fp": 14.7,
+            "xfp": 18.2,
+            "opps": 9
+          },
+          {
+            "week": 4,
+            "fp": 8.3,
+            "xfp": 7.1,
+            "opps": 4
           }
         ]
       },
       "00-0038797": {
         "team": "SEA",
-        "games": 3,
-        "targets": 1,
-        "carries": 32,
-        "fp": 10.9,
-        "xfp": 32,
-        "diff": -21.1,
-        "fpPerG": 3.63,
-        "xfpPerG": 10.66,
-        "diffPerG": -7.03,
+        "games": 4,
+        "targets": 5,
+        "carries": 53,
+        "fp": 37.9,
+        "xfp": 50,
+        "diff": -12.1,
+        "fpPerG": 9.48,
+        "xfpPerG": 12.5,
+        "diffPerG": -3.02,
         "weeks": [
           {
             "week": 1,
@@ -57763,20 +58857,64 @@
             "fp": 1.4,
             "xfp": 8.4,
             "opps": 9
+          },
+          {
+            "week": 4,
+            "fp": 27,
+            "xfp": 18,
+            "opps": 25
+          }
+        ]
+      },
+      "00-0037816": {
+        "team": "NE",
+        "games": 4,
+        "targets": 20,
+        "carries": 0,
+        "fp": 44.3,
+        "xfp": 39.1,
+        "diff": 5.2,
+        "fpPerG": 11.08,
+        "xfpPerG": 9.78,
+        "diffPerG": 1.3,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 0,
+            "xfp": 6.6,
+            "opps": 3
+          },
+          {
+            "week": 2,
+            "fp": 12.6,
+            "xfp": 6.4,
+            "opps": 4
+          },
+          {
+            "week": 3,
+            "fp": 7.9,
+            "xfp": 6.5,
+            "opps": 4
+          },
+          {
+            "week": 4,
+            "fp": 23.8,
+            "xfp": 19.7,
+            "opps": 9
           }
         ]
       },
       "00-0039139": {
         "team": "DET",
-        "games": 3,
-        "targets": 21,
-        "carries": 65,
-        "fp": 100.3,
-        "xfp": 82.6,
-        "diff": 17.7,
-        "fpPerG": 33.43,
-        "xfpPerG": 27.54,
-        "diffPerG": 5.9,
+        "games": 4,
+        "targets": 28,
+        "carries": 80,
+        "fp": 117.1,
+        "xfp": 103.5,
+        "diff": 13.6,
+        "fpPerG": 29.28,
+        "xfpPerG": 25.87,
+        "diffPerG": 3.41,
         "weeks": [
           {
             "week": 1,
@@ -57795,20 +58933,26 @@
             "fp": 41.4,
             "xfp": 27.2,
             "opps": 28
+          },
+          {
+            "week": 4,
+            "fp": 16.8,
+            "xfp": 20.9,
+            "opps": 22
           }
         ]
       },
       "00-0036963": {
         "team": "DET",
-        "games": 3,
-        "targets": 35,
+        "games": 4,
+        "targets": 46,
         "carries": 0,
-        "fp": 75.8,
-        "xfp": 62.3,
-        "diff": 13.5,
-        "fpPerG": 25.27,
-        "xfpPerG": 20.78,
-        "diffPerG": 4.48,
+        "fp": 92.2,
+        "xfp": 81.6,
+        "diff": 10.6,
+        "fpPerG": 23.05,
+        "xfpPerG": 20.4,
+        "diffPerG": 2.65,
         "weeks": [
           {
             "week": 1,
@@ -57827,6 +58971,12 @@
             "fp": 11.9,
             "xfp": 14.3,
             "opps": 8
+          },
+          {
+            "week": 4,
+            "fp": 16.4,
+            "xfp": 19.2,
+            "opps": 11
           }
         ]
       },
@@ -57864,15 +59014,15 @@
       },
       "00-0039424": {
         "team": "NO",
-        "games": 3,
-        "targets": 22,
+        "games": 4,
+        "targets": 31,
         "carries": 0,
-        "fp": 38.2,
-        "xfp": 40.6,
-        "diff": -2.4,
-        "fpPerG": 12.73,
-        "xfpPerG": 13.52,
-        "diffPerG": -0.79,
+        "fp": 55.6,
+        "xfp": 57.6,
+        "diff": -2,
+        "fpPerG": 13.9,
+        "xfpPerG": 14.39,
+        "diffPerG": -0.49,
         "weeks": [
           {
             "week": 1,
@@ -57891,20 +59041,172 @@
             "fp": 6.9,
             "xfp": 11.7,
             "opps": 6
+          },
+          {
+            "week": 4,
+            "fp": 17.4,
+            "xfp": 17,
+            "opps": 9
+          }
+        ]
+      },
+      "00-0038551": {
+        "team": "NO",
+        "games": 3,
+        "targets": 6,
+        "carries": 19,
+        "fp": 16.8,
+        "xfp": 19.8,
+        "diff": -3,
+        "fpPerG": 5.6,
+        "xfpPerG": 6.59,
+        "diffPerG": -0.99,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 9,
+            "xfp": 6,
+            "opps": 9
+          },
+          {
+            "week": 3,
+            "fp": 3.9,
+            "xfp": 6.2,
+            "opps": 7
+          },
+          {
+            "week": 4,
+            "fp": 3.9,
+            "xfp": 7.6,
+            "opps": 9
+          }
+        ]
+      },
+      "00-0039065": {
+        "team": "DET",
+        "games": 4,
+        "targets": 32,
+        "carries": 0,
+        "fp": 56.8,
+        "xfp": 61.4,
+        "diff": -4.6,
+        "fpPerG": 14.2,
+        "xfpPerG": 15.35,
+        "diffPerG": -1.15,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 9.8,
+            "xfp": 15.1,
+            "opps": 8
+          },
+          {
+            "week": 2,
+            "fp": 17.2,
+            "xfp": 12.5,
+            "opps": 7
+          },
+          {
+            "week": 3,
+            "fp": 7.4,
+            "xfp": 8.1,
+            "opps": 4
+          },
+          {
+            "week": 4,
+            "fp": 22.4,
+            "xfp": 25.8,
+            "opps": 13
+          }
+        ]
+      },
+      "00-0037240": {
+        "team": "DET",
+        "games": 4,
+        "targets": 25,
+        "carries": 0,
+        "fp": 38.9,
+        "xfp": 41.8,
+        "diff": -2.9,
+        "fpPerG": 9.73,
+        "xfpPerG": 10.45,
+        "diffPerG": -0.72,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 8.5,
+            "xfp": 15.4,
+            "opps": 9
+          },
+          {
+            "week": 2,
+            "fp": 5.3,
+            "xfp": 6.5,
+            "opps": 4
+          },
+          {
+            "week": 3,
+            "fp": 8.9,
+            "xfp": 6.5,
+            "opps": 4
+          },
+          {
+            "week": 4,
+            "fp": 16.2,
+            "xfp": 13.3,
+            "opps": 8
+          }
+        ]
+      },
+      "00-0036040": {
+        "team": "NO",
+        "games": 4,
+        "targets": 27,
+        "carries": 0,
+        "fp": 62.2,
+        "xfp": 50.8,
+        "diff": 11.4,
+        "fpPerG": 15.55,
+        "xfpPerG": 12.69,
+        "diffPerG": 2.86,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 14.4,
+            "xfp": 15.3,
+            "opps": 7
+          },
+          {
+            "week": 2,
+            "fp": 10.6,
+            "xfp": 7.2,
+            "opps": 4
+          },
+          {
+            "week": 3,
+            "fp": 25.3,
+            "xfp": 15.6,
+            "opps": 8
+          },
+          {
+            "week": 4,
+            "fp": 11.9,
+            "xfp": 12.6,
+            "opps": 8
           }
         ]
       },
       "00-0037239": {
         "team": "NO",
-        "games": 3,
-        "targets": 36,
+        "games": 4,
+        "targets": 48,
         "carries": 0,
-        "fp": 70.5,
-        "xfp": 63.8,
+        "fp": 90.1,
+        "xfp": 83.4,
         "diff": 6.7,
-        "fpPerG": 23.5,
-        "xfpPerG": 21.26,
-        "diffPerG": 2.24,
+        "fpPerG": 22.53,
+        "xfpPerG": 20.84,
+        "diffPerG": 1.68,
         "weeks": [
           {
             "week": 1,
@@ -57923,6 +59225,12 @@
             "fp": 19.7,
             "xfp": 24.9,
             "opps": 13
+          },
+          {
+            "week": 4,
+            "fp": 19.6,
+            "xfp": 19.6,
+            "opps": 12
           }
         ]
       },
@@ -57960,15 +59268,15 @@
       },
       "00-0037740": {
         "team": "NYJ",
-        "games": 3,
-        "targets": 27,
+        "games": 4,
+        "targets": 31,
         "carries": 0,
-        "fp": 57.3,
-        "xfp": 44.8,
-        "diff": 12.5,
-        "fpPerG": 19.1,
-        "xfpPerG": 14.95,
-        "diffPerG": 4.15,
+        "fp": 63,
+        "xfp": 51,
+        "diff": 12,
+        "fpPerG": 15.75,
+        "xfpPerG": 12.74,
+        "diffPerG": 3.01,
         "weeks": [
           {
             "week": 1,
@@ -57987,20 +59295,26 @@
             "fp": 26.7,
             "xfp": 21.3,
             "opps": 13
+          },
+          {
+            "week": 4,
+            "fp": 5.7,
+            "xfp": 6.1,
+            "opps": 4
           }
         ]
       },
       "00-0035261": {
         "team": "TEN",
-        "games": 3,
-        "targets": 7,
-        "carries": 38,
-        "fp": 25.5,
-        "xfp": 37.4,
-        "diff": -11.9,
-        "fpPerG": 8.5,
-        "xfpPerG": 12.47,
-        "diffPerG": -3.97,
+        "games": 4,
+        "targets": 11,
+        "carries": 54,
+        "fp": 38.5,
+        "xfp": 62.3,
+        "diff": -23.8,
+        "fpPerG": 9.63,
+        "xfpPerG": 15.56,
+        "diffPerG": -5.94,
         "weeks": [
           {
             "week": 1,
@@ -58019,20 +59333,64 @@
             "fp": 13.6,
             "xfp": 17.3,
             "opps": 21
+          },
+          {
+            "week": 4,
+            "fp": 13,
+            "xfp": 24.9,
+            "opps": 20
+          }
+        ]
+      },
+      "00-0038117": {
+        "team": "TEN",
+        "games": 4,
+        "targets": 23,
+        "carries": 1,
+        "fp": 40.4,
+        "xfp": 40.2,
+        "diff": 0.2,
+        "fpPerG": 10.1,
+        "xfpPerG": 10.04,
+        "diffPerG": 0.06,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 8.8,
+            "xfp": 8.6,
+            "opps": 6
+          },
+          {
+            "week": 2,
+            "fp": 1.9,
+            "xfp": 1.5,
+            "opps": 1
+          },
+          {
+            "week": 3,
+            "fp": 18.7,
+            "xfp": 19.8,
+            "opps": 11
+          },
+          {
+            "week": 4,
+            "fp": 11,
+            "xfp": 10.3,
+            "opps": 6
           }
         ]
       },
       "00-0041438": {
         "team": "TEN",
-        "games": 3,
-        "targets": 20,
+        "games": 4,
+        "targets": 32,
         "carries": 0,
-        "fp": 25.3,
-        "xfp": 34.9,
-        "diff": -9.6,
-        "fpPerG": 8.43,
-        "xfpPerG": 11.63,
-        "diffPerG": -3.19,
+        "fp": 48.8,
+        "xfp": 54,
+        "diff": -5.2,
+        "fpPerG": 12.2,
+        "xfpPerG": 13.51,
+        "diffPerG": -1.31,
         "weeks": [
           {
             "week": 1,
@@ -58051,20 +59409,64 @@
             "fp": 11.8,
             "xfp": 17.4,
             "opps": 9
+          },
+          {
+            "week": 4,
+            "fp": 23.5,
+            "xfp": 19.2,
+            "opps": 12
+          }
+        ]
+      },
+      "00-0039032": {
+        "team": "TEN",
+        "games": 4,
+        "targets": 7,
+        "carries": 15,
+        "fp": 15.5,
+        "xfp": 17.9,
+        "diff": -2.4,
+        "fpPerG": 3.88,
+        "xfpPerG": 4.49,
+        "diffPerG": -0.61,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 4.4,
+            "xfp": 7.1,
+            "opps": 7
+          },
+          {
+            "week": 2,
+            "fp": 9,
+            "xfp": 6.7,
+            "opps": 9
+          },
+          {
+            "week": 3,
+            "fp": 0.5,
+            "xfp": 1.6,
+            "opps": 3
+          },
+          {
+            "week": 4,
+            "fp": 1.6,
+            "xfp": 2.6,
+            "opps": 3
           }
         ]
       },
       "00-0039794": {
         "team": "NYJ",
-        "games": 3,
-        "targets": 5,
-        "carries": 19,
-        "fp": 17.2,
-        "xfp": 19.2,
-        "diff": -2,
-        "fpPerG": 5.73,
-        "xfpPerG": 6.42,
-        "diffPerG": -0.68,
+        "games": 4,
+        "targets": 7,
+        "carries": 33,
+        "fp": 25.9,
+        "xfp": 29.7,
+        "diff": -3.8,
+        "fpPerG": 6.48,
+        "xfpPerG": 7.43,
+        "diffPerG": -0.96,
         "weeks": [
           {
             "week": 1,
@@ -58083,20 +59485,52 @@
             "fp": 4.7,
             "xfp": 6.5,
             "opps": 7
+          },
+          {
+            "week": 4,
+            "fp": 8.7,
+            "xfp": 10.5,
+            "opps": 16
+          }
+        ]
+      },
+      "00-0039075": {
+        "team": "LA",
+        "games": 2,
+        "targets": 21,
+        "carries": 1,
+        "fp": 40.1,
+        "xfp": 37.4,
+        "diff": 2.7,
+        "fpPerG": 20.05,
+        "xfpPerG": 18.69,
+        "diffPerG": 1.36,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 12.4,
+            "xfp": 16.2,
+            "opps": 9
+          },
+          {
+            "week": 4,
+            "fp": 27.7,
+            "xfp": 21.1,
+            "opps": 13
           }
         ]
       },
       "00-0037840": {
         "team": "LA",
-        "games": 3,
-        "targets": 12,
-        "carries": 38,
-        "fp": 55,
-        "xfp": 44.5,
-        "diff": 10.5,
-        "fpPerG": 18.33,
-        "xfpPerG": 14.85,
-        "diffPerG": 3.49,
+        "games": 4,
+        "targets": 25,
+        "carries": 54,
+        "fp": 91.7,
+        "xfp": 76.2,
+        "diff": 15.5,
+        "fpPerG": 22.92,
+        "xfpPerG": 19.05,
+        "diffPerG": 3.88,
         "weeks": [
           {
             "week": 1,
@@ -58115,20 +59549,26 @@
             "fp": 21.8,
             "xfp": 18.5,
             "opps": 22
+          },
+          {
+            "week": 4,
+            "fp": 36.7,
+            "xfp": 31.6,
+            "opps": 29
           }
         ]
       },
       "00-0033280": {
         "team": "SF",
-        "games": 3,
-        "targets": 17,
-        "carries": 35,
-        "fp": 58,
-        "xfp": 53.5,
-        "diff": 4.5,
-        "fpPerG": 19.33,
-        "xfpPerG": 17.85,
-        "diffPerG": 1.49,
+        "games": 4,
+        "targets": 22,
+        "carries": 50,
+        "fp": 74,
+        "xfp": 74.2,
+        "diff": -0.2,
+        "fpPerG": 18.5,
+        "xfpPerG": 18.54,
+        "diffPerG": -0.04,
         "weeks": [
           {
             "week": 1,
@@ -58147,20 +59587,140 @@
             "fp": 21.6,
             "xfp": 17.7,
             "opps": 20
+          },
+          {
+            "week": 4,
+            "fp": 16,
+            "xfp": 20.6,
+            "opps": 20
+          }
+        ]
+      },
+      "00-0033288": {
+        "team": "SF",
+        "games": 4,
+        "targets": 22,
+        "carries": 0,
+        "fp": 64.4,
+        "xfp": 39.9,
+        "diff": 24.5,
+        "fpPerG": 16.1,
+        "xfpPerG": 9.98,
+        "diffPerG": 6.12,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 3.2,
+            "xfp": 9.5,
+            "opps": 5
+          },
+          {
+            "week": 2,
+            "fp": 18,
+            "xfp": 8.4,
+            "opps": 4
+          },
+          {
+            "week": 3,
+            "fp": 26.2,
+            "xfp": 12.8,
+            "opps": 7
+          },
+          {
+            "week": 4,
+            "fp": 17,
+            "xfp": 9.2,
+            "opps": 6
+          }
+        ]
+      },
+      "00-0031408": {
+        "team": "SF",
+        "games": 4,
+        "targets": 24,
+        "carries": 0,
+        "fp": 64.3,
+        "xfp": 44.7,
+        "diff": 19.6,
+        "fpPerG": 16.07,
+        "xfpPerG": 11.17,
+        "diffPerG": 4.91,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 16.9,
+            "xfp": 13.1,
+            "opps": 7
+          },
+          {
+            "week": 2,
+            "fp": 8.4,
+            "xfp": 5,
+            "opps": 3
+          },
+          {
+            "week": 3,
+            "fp": 26.4,
+            "xfp": 10.9,
+            "opps": 6
+          },
+          {
+            "week": 4,
+            "fp": 12.6,
+            "xfp": 15.6,
+            "opps": 8
+          }
+        ]
+      },
+      "00-0035719": {
+        "team": "SF",
+        "games": 4,
+        "targets": 17,
+        "carries": 7,
+        "fp": 43.9,
+        "xfp": 33,
+        "diff": 10.9,
+        "fpPerG": 10.98,
+        "xfpPerG": 8.24,
+        "diffPerG": 2.73,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 18,
+            "xfp": 13,
+            "opps": 8
+          },
+          {
+            "week": 2,
+            "fp": 6.5,
+            "xfp": 6.5,
+            "opps": 5
+          },
+          {
+            "week": 3,
+            "fp": 1.4,
+            "xfp": 1.1,
+            "opps": 2
+          },
+          {
+            "week": 4,
+            "fp": 18,
+            "xfp": 12.4,
+            "opps": 9
           }
         ]
       },
       "00-0041052": {
         "team": "SF",
-        "games": 3,
+        "games": 4,
         "targets": 2,
-        "carries": 25,
-        "fp": 12.2,
-        "xfp": 17.4,
-        "diff": -5.2,
-        "fpPerG": 4.07,
-        "xfpPerG": 5.8,
-        "diffPerG": -1.73,
+        "carries": 31,
+        "fp": 13.5,
+        "xfp": 20.1,
+        "diff": -6.6,
+        "fpPerG": 3.38,
+        "xfpPerG": 5.03,
+        "diffPerG": -1.66,
         "weeks": [
           {
             "week": 1,
@@ -58179,20 +59739,26 @@
             "fp": 1.7,
             "xfp": 4.3,
             "opps": 5
+          },
+          {
+            "week": 4,
+            "fp": 1.3,
+            "xfp": 2.7,
+            "opps": 6
           }
         ]
       },
       "00-0039738": {
         "team": "LA",
-        "games": 3,
-        "targets": 5,
-        "carries": 28,
-        "fp": 19.1,
-        "xfp": 21.7,
-        "diff": -2.6,
-        "fpPerG": 6.37,
-        "xfpPerG": 7.25,
-        "diffPerG": -0.88,
+        "games": 4,
+        "targets": 7,
+        "carries": 33,
+        "fp": 22.2,
+        "xfp": 27.3,
+        "diff": -5.1,
+        "fpPerG": 5.55,
+        "xfpPerG": 6.82,
+        "diffPerG": -1.27,
         "weeks": [
           {
             "week": 1,
@@ -58211,20 +59777,26 @@
             "fp": 3.5,
             "xfp": 8.9,
             "opps": 10
+          },
+          {
+            "week": 4,
+            "fp": 3.1,
+            "xfp": 5.6,
+            "opps": 7
           }
         ]
       },
       "00-0031381": {
         "team": "LA",
-        "games": 3,
-        "targets": 29,
+        "games": 4,
+        "targets": 38,
         "carries": 0,
-        "fp": 65.8,
-        "xfp": 51.8,
-        "diff": 14,
-        "fpPerG": 21.93,
-        "xfpPerG": 17.27,
-        "diffPerG": 4.66,
+        "fp": 73,
+        "xfp": 68.4,
+        "diff": 4.6,
+        "fpPerG": 18.25,
+        "xfpPerG": 17.11,
+        "diffPerG": 1.14,
         "weeks": [
           {
             "week": 1,
@@ -58243,20 +59815,26 @@
             "fp": 20.7,
             "xfp": 23.6,
             "opps": 13
+          },
+          {
+            "week": 4,
+            "fp": 7.2,
+            "xfp": 16.6,
+            "opps": 9
           }
         ]
       },
       "00-0039361": {
         "team": "TB",
-        "games": 3,
+        "games": 4,
         "targets": 15,
-        "carries": 40,
-        "fp": 43.1,
-        "xfp": 43.8,
-        "diff": -0.7,
-        "fpPerG": 14.37,
-        "xfpPerG": 14.6,
-        "diffPerG": -0.23,
+        "carries": 56,
+        "fp": 49.2,
+        "xfp": 52.4,
+        "diff": -3.2,
+        "fpPerG": 12.3,
+        "xfpPerG": 13.11,
+        "diffPerG": -0.81,
         "weeks": [
           {
             "week": 1,
@@ -58275,20 +59853,26 @@
             "fp": 7.8,
             "xfp": 14.2,
             "opps": 19
+          },
+          {
+            "week": 4,
+            "fp": 6.1,
+            "xfp": 8.6,
+            "opps": 16
           }
         ]
       },
       "00-0040129": {
         "team": "TB",
-        "games": 3,
-        "targets": 20,
+        "games": 4,
+        "targets": 24,
         "carries": 1,
-        "fp": 32.8,
-        "xfp": 35.5,
-        "diff": -2.7,
-        "fpPerG": 10.93,
-        "xfpPerG": 11.84,
-        "diffPerG": -0.9,
+        "fp": 36.1,
+        "xfp": 43,
+        "diff": -6.9,
+        "fpPerG": 9.02,
+        "xfpPerG": 10.76,
+        "diffPerG": -1.74,
         "weeks": [
           {
             "week": 1,
@@ -58307,20 +59891,64 @@
             "fp": 11.2,
             "xfp": 14.3,
             "opps": 9
+          },
+          {
+            "week": 4,
+            "fp": 3.3,
+            "xfp": 7.5,
+            "opps": 4
+          }
+        ]
+      },
+      "00-0033921": {
+        "team": "TB",
+        "games": 4,
+        "targets": 18,
+        "carries": 2,
+        "fp": 31.7,
+        "xfp": 27.5,
+        "diff": 4.2,
+        "fpPerG": 7.93,
+        "xfpPerG": 6.87,
+        "diffPerG": 1.05,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 8.3,
+            "xfp": 6.3,
+            "opps": 5
+          },
+          {
+            "week": 2,
+            "fp": 8.8,
+            "xfp": 5.3,
+            "opps": 4
+          },
+          {
+            "week": 3,
+            "fp": 5.5,
+            "xfp": 5.8,
+            "opps": 4
+          },
+          {
+            "week": 4,
+            "fp": 9.1,
+            "xfp": 10.1,
+            "opps": 7
           }
         ]
       },
       "00-0036919": {
         "team": "TB",
-        "games": 3,
-        "targets": 10,
-        "carries": 10,
-        "fp": 10.3,
-        "xfp": 21.7,
-        "diff": -11.4,
-        "fpPerG": 3.43,
-        "xfpPerG": 7.22,
-        "diffPerG": -3.79,
+        "games": 4,
+        "targets": 12,
+        "carries": 13,
+        "fp": 21,
+        "xfp": 27.5,
+        "diff": -6.5,
+        "fpPerG": 5.25,
+        "xfpPerG": 6.88,
+        "diffPerG": -1.63,
         "weeks": [
           {
             "week": 1,
@@ -58339,20 +59967,26 @@
             "fp": 3,
             "xfp": 10.6,
             "opps": 8
+          },
+          {
+            "week": 4,
+            "fp": 10.7,
+            "xfp": 5.9,
+            "opps": 5
           }
         ]
       },
       "00-0038597": {
         "team": "CIN",
-        "games": 3,
-        "targets": 13,
-        "carries": 49,
-        "fp": 38.9,
-        "xfp": 50.6,
-        "diff": -11.7,
-        "fpPerG": 12.97,
-        "xfpPerG": 16.88,
-        "diffPerG": -3.91,
+        "games": 4,
+        "targets": 24,
+        "carries": 58,
+        "fp": 58,
+        "xfp": 71.1,
+        "diff": -13.1,
+        "fpPerG": 14.5,
+        "xfpPerG": 17.77,
+        "diffPerG": -3.27,
         "weeks": [
           {
             "week": 1,
@@ -58371,20 +60005,26 @@
             "fp": 8.9,
             "xfp": 9.7,
             "opps": 15
+          },
+          {
+            "week": 4,
+            "fp": 19.1,
+            "xfp": 20.4,
+            "opps": 20
           }
         ]
       },
       "00-0036900": {
         "team": "CIN",
-        "games": 3,
-        "targets": 25,
+        "games": 4,
+        "targets": 28,
         "carries": 0,
-        "fp": 54.5,
-        "xfp": 44.2,
-        "diff": 10.3,
-        "fpPerG": 18.17,
-        "xfpPerG": 14.74,
-        "diffPerG": 3.42,
+        "fp": 60.2,
+        "xfp": 48.6,
+        "diff": 11.6,
+        "fpPerG": 15.05,
+        "xfpPerG": 12.15,
+        "diffPerG": 2.9,
         "weeks": [
           {
             "week": 1,
@@ -58403,20 +60043,64 @@
             "fp": 24.8,
             "xfp": 20.8,
             "opps": 12
+          },
+          {
+            "week": 4,
+            "fp": 5.7,
+            "xfp": 4.4,
+            "opps": 3
+          }
+        ]
+      },
+      "00-0038129": {
+        "team": "TB",
+        "games": 4,
+        "targets": 23,
+        "carries": 0,
+        "fp": 30.7,
+        "xfp": 36.5,
+        "diff": -5.8,
+        "fpPerG": 7.68,
+        "xfpPerG": 9.13,
+        "diffPerG": -1.46,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 5.6,
+            "xfp": 8.8,
+            "opps": 5
+          },
+          {
+            "week": 2,
+            "fp": 8.8,
+            "xfp": 9.2,
+            "opps": 6
+          },
+          {
+            "week": 3,
+            "fp": 8.6,
+            "xfp": 9.7,
+            "opps": 6
+          },
+          {
+            "week": 4,
+            "fp": 7.7,
+            "xfp": 8.8,
+            "opps": 6
           }
         ]
       },
       "00-0036410": {
         "team": "CIN",
-        "games": 3,
-        "targets": 23,
+        "games": 4,
+        "targets": 39,
         "carries": 0,
-        "fp": 44.4,
-        "xfp": 38.1,
-        "diff": 6.3,
-        "fpPerG": 14.8,
-        "xfpPerG": 12.71,
-        "diffPerG": 2.09,
+        "fp": 71.1,
+        "xfp": 65.2,
+        "diff": 5.9,
+        "fpPerG": 17.78,
+        "xfpPerG": 16.31,
+        "diffPerG": 1.46,
         "weeks": [
           {
             "week": 1,
@@ -58435,20 +60119,64 @@
             "fp": 21,
             "xfp": 12.6,
             "opps": 7
+          },
+          {
+            "week": 4,
+            "fp": 26.7,
+            "xfp": 27.1,
+            "opps": 16
+          }
+        ]
+      },
+      "00-0033526": {
+        "team": "CIN",
+        "games": 4,
+        "targets": 8,
+        "carries": 13,
+        "fp": 14.3,
+        "xfp": 19.2,
+        "diff": -4.9,
+        "fpPerG": 3.58,
+        "xfpPerG": 4.8,
+        "diffPerG": -1.22,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 8,
+            "xfp": 7.1,
+            "opps": 8
+          },
+          {
+            "week": 2,
+            "fp": 3.2,
+            "xfp": 2.5,
+            "opps": 3
+          },
+          {
+            "week": 3,
+            "fp": 2.4,
+            "xfp": 6.5,
+            "opps": 6
+          },
+          {
+            "week": 4,
+            "fp": 0.7,
+            "xfp": 3.2,
+            "opps": 4
           }
         ]
       },
       "00-0040242": {
         "team": "WAS",
-        "games": 3,
-        "targets": 3,
-        "carries": 47,
-        "fp": 23.7,
-        "xfp": 32.1,
-        "diff": -8.4,
-        "fpPerG": 7.9,
-        "xfpPerG": 10.7,
-        "diffPerG": -2.8,
+        "games": 4,
+        "targets": 7,
+        "carries": 56,
+        "fp": 30.7,
+        "xfp": 44.6,
+        "diff": -13.9,
+        "fpPerG": 7.68,
+        "xfpPerG": 11.15,
+        "diffPerG": -3.48,
         "weeks": [
           {
             "week": 1,
@@ -58467,6 +60195,12 @@
             "fp": 5.3,
             "xfp": 12.5,
             "opps": 20
+          },
+          {
+            "week": 4,
+            "fp": 7,
+            "xfp": 12.5,
+            "opps": 13
           }
         ]
       },
@@ -58536,15 +60270,15 @@
       },
       "00-0031588": {
         "team": "WAS",
-        "games": 3,
-        "targets": 22,
+        "games": 4,
+        "targets": 31,
         "carries": 0,
-        "fp": 44.5,
-        "xfp": 39.9,
-        "diff": 4.6,
-        "fpPerG": 14.83,
-        "xfpPerG": 13.31,
-        "diffPerG": 1.53,
+        "fp": 53,
+        "xfp": 53.8,
+        "diff": -0.8,
+        "fpPerG": 13.25,
+        "xfpPerG": 13.45,
+        "diffPerG": -0.2,
         "weeks": [
           {
             "week": 1,
@@ -58563,20 +60297,26 @@
             "fp": 7.3,
             "xfp": 10.4,
             "opps": 7
+          },
+          {
+            "week": 4,
+            "fp": 8.5,
+            "xfp": 13.9,
+            "opps": 9
           }
         ]
       },
       "00-0034844": {
         "team": "PHI",
-        "games": 3,
-        "targets": 6,
-        "carries": 34,
-        "fp": 21,
-        "xfp": 30.3,
-        "diff": -9.3,
-        "fpPerG": 7,
-        "xfpPerG": 10.11,
-        "diffPerG": -3.11,
+        "games": 4,
+        "targets": 7,
+        "carries": 36,
+        "fp": 23,
+        "xfp": 32.8,
+        "diff": -9.8,
+        "fpPerG": 5.75,
+        "xfpPerG": 8.21,
+        "diffPerG": -2.46,
         "weeks": [
           {
             "week": 1,
@@ -58595,6 +60335,50 @@
             "fp": 9,
             "xfp": 14.6,
             "opps": 17
+          },
+          {
+            "week": 4,
+            "fp": 2,
+            "xfp": 2.5,
+            "opps": 3
+          }
+        ]
+      },
+      "00-0038393": {
+        "team": "PHI",
+        "games": 4,
+        "targets": 20,
+        "carries": 0,
+        "fp": 37.7,
+        "xfp": 37.7,
+        "diff": 0,
+        "fpPerG": 9.43,
+        "xfpPerG": 9.44,
+        "diffPerG": -0.01,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 15.3,
+            "xfp": 8.6,
+            "opps": 4
+          },
+          {
+            "week": 2,
+            "fp": 12.4,
+            "xfp": 10,
+            "opps": 6
+          },
+          {
+            "week": 3,
+            "fp": 5.2,
+            "xfp": 11.4,
+            "opps": 5
+          },
+          {
+            "week": 4,
+            "fp": 4.8,
+            "xfp": 7.8,
+            "opps": 5
           }
         ]
       },
@@ -58630,17 +60414,125 @@
           }
         ]
       },
-      "00-0040198": {
-        "team": "MIA",
-        "games": 2,
+      "00-0038555": {
+        "team": "PHI",
+        "games": 4,
+        "targets": 4,
+        "carries": 28,
+        "fp": 19.1,
+        "xfp": 24,
+        "diff": -4.9,
+        "fpPerG": 4.78,
+        "xfpPerG": 6,
+        "diffPerG": -1.23,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 0.3,
+            "xfp": 0.7,
+            "opps": 1
+          },
+          {
+            "week": 2,
+            "fp": 11.8,
+            "xfp": 11.8,
+            "opps": 15
+          },
+          {
+            "week": 3,
+            "fp": 1.5,
+            "xfp": 1.5,
+            "opps": 1
+          },
+          {
+            "week": 4,
+            "fp": 5.5,
+            "xfp": 10.1,
+            "opps": 15
+          }
+        ]
+      },
+      "00-0039746": {
+        "team": "PHI",
+        "games": 4,
+        "targets": 6,
+        "carries": 15,
+        "fp": 11.5,
+        "xfp": 18.8,
+        "diff": -7.3,
+        "fpPerG": 2.88,
+        "xfpPerG": 4.7,
+        "diffPerG": -1.83,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 2.2,
+            "xfp": 2.6,
+            "opps": 3
+          },
+          {
+            "week": 2,
+            "fp": 4.9,
+            "xfp": 7.2,
+            "opps": 9
+          },
+          {
+            "week": 3,
+            "fp": 2.1,
+            "xfp": 2.9,
+            "opps": 2
+          },
+          {
+            "week": 4,
+            "fp": 2.3,
+            "xfp": 6.2,
+            "opps": 7
+          }
+        ]
+      },
+      "00-0040142": {
+        "team": "GB",
+        "games": 3,
         "targets": 3,
         "carries": 20,
-        "fp": 15.2,
-        "xfp": 17,
-        "diff": -1.8,
-        "fpPerG": 7.6,
-        "xfpPerG": 8.5,
-        "diffPerG": -0.9,
+        "fp": 10,
+        "xfp": 18.5,
+        "diff": -8.5,
+        "fpPerG": 3.33,
+        "xfpPerG": 6.16,
+        "diffPerG": -2.82,
+        "weeks": [
+          {
+            "week": 2,
+            "fp": 3.2,
+            "xfp": 4.2,
+            "opps": 8
+          },
+          {
+            "week": 3,
+            "fp": 2.6,
+            "xfp": 6.3,
+            "opps": 7
+          },
+          {
+            "week": 4,
+            "fp": 4.2,
+            "xfp": 7.9,
+            "opps": 8
+          }
+        ]
+      },
+      "00-0040198": {
+        "team": "MIA",
+        "games": 3,
+        "targets": 5,
+        "carries": 29,
+        "fp": 33.2,
+        "xfp": 24.9,
+        "diff": 8.3,
+        "fpPerG": 11.07,
+        "xfpPerG": 8.29,
+        "diffPerG": 2.78,
         "weeks": [
           {
             "week": 2,
@@ -58653,20 +60545,26 @@
             "fp": 14.5,
             "xfp": 15.3,
             "opps": 20
+          },
+          {
+            "week": 4,
+            "fp": 18,
+            "xfp": 7.9,
+            "opps": 11
           }
         ]
       },
       "00-0033906": {
         "team": "NO",
-        "games": 2,
-        "targets": 7,
-        "carries": 18,
-        "fp": 12.3,
-        "xfp": 19.7,
-        "diff": -7.4,
-        "fpPerG": 6.15,
-        "xfpPerG": 9.84,
-        "diffPerG": -3.69,
+        "games": 3,
+        "targets": 14,
+        "carries": 25,
+        "fp": 35.1,
+        "xfp": 37.8,
+        "diff": -2.7,
+        "fpPerG": 11.7,
+        "xfpPerG": 12.61,
+        "diffPerG": -0.91,
         "weeks": [
           {
             "week": 2,
@@ -58679,20 +60577,58 @@
             "fp": 5.1,
             "xfp": 5.8,
             "opps": 10
+          },
+          {
+            "week": 4,
+            "fp": 22.8,
+            "xfp": 18.2,
+            "opps": 14
+          }
+        ]
+      },
+      "00-0036893": {
+        "team": "NYG",
+        "games": 3,
+        "targets": 0,
+        "carries": 22,
+        "fp": 8.8,
+        "xfp": 15.3,
+        "diff": -6.5,
+        "fpPerG": 2.93,
+        "xfpPerG": 5.11,
+        "diffPerG": -2.18,
+        "weeks": [
+          {
+            "week": 2,
+            "fp": 0.6,
+            "xfp": 5.1,
+            "opps": 4
+          },
+          {
+            "week": 3,
+            "fp": 5.2,
+            "xfp": 5,
+            "opps": 9
+          },
+          {
+            "week": 4,
+            "fp": 3,
+            "xfp": 5.3,
+            "opps": 9
           }
         ]
       },
       "00-0040734": {
         "team": "NE",
-        "games": 2,
-        "targets": 1,
-        "carries": 24,
-        "fp": 17.5,
-        "xfp": 14.7,
-        "diff": 2.8,
-        "fpPerG": 8.75,
-        "xfpPerG": 7.34,
-        "diffPerG": 1.41,
+        "games": 3,
+        "targets": 3,
+        "carries": 38,
+        "fp": 21.7,
+        "xfp": 25.4,
+        "diff": -3.7,
+        "fpPerG": 7.23,
+        "xfpPerG": 8.46,
+        "diffPerG": -1.23,
         "weeks": [
           {
             "week": 2,
@@ -58705,6 +60641,38 @@
             "fp": 3.9,
             "xfp": 5.9,
             "opps": 9
+          },
+          {
+            "week": 4,
+            "fp": 4.2,
+            "xfp": 10.7,
+            "opps": 16
+          }
+        ]
+      },
+      "00-0039338": {
+        "team": "LV",
+        "games": 2,
+        "targets": 24,
+        "carries": 0,
+        "fp": 48.2,
+        "xfp": 43.9,
+        "diff": 4.3,
+        "fpPerG": 24.1,
+        "xfpPerG": 21.96,
+        "diffPerG": 2.14,
+        "weeks": [
+          {
+            "week": 3,
+            "fp": 27.6,
+            "xfp": 24.7,
+            "opps": 13
+          },
+          {
+            "week": 4,
+            "fp": 20.6,
+            "xfp": 19.2,
+            "opps": 11
           }
         ]
       }

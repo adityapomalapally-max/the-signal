@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-anatomy.js",
-    "builtAt": "2026-10-04T15:46:36.138Z",
+    "builtAt": "2026-10-06T17:09:44.229Z",
     "layers": {
       "frequency": "counted from data/injuries.json — the official NFL injury reports for this pool",
       "recovery": "from data/injury-curves.json, derived from those same reports",
@@ -12,7 +12,7 @@
       "A named condition without a research entry is listed because it genuinely occurs at that region, NOT because we have data on it. The page says so rather than printing a timeline nobody can check.",
       "Recovery figures are the median across this pool over three seasons, not a prognosis for any individual. Sample sizes are stated and several are small."
     ],
-    "totalEpisodes": 1224,
+    "totalEpisodes": 1222,
     "unmappedParts": [
       {
         "part": "Undisclosed",
@@ -48,27 +48,27 @@
       }
     ],
     "coverage": {
-      "mappedEpisodes": 1048,
-      "totalEpisodes": 1224,
-      "pct": 85.6
+      "mappedEpisodes": 1045,
+      "totalEpisodes": 1222,
+      "pct": 85.5
     }
   },
   "regions": {
     "head": {
       "label": "Head & neck",
-      "episodes": 72,
-      "players": 58,
-      "shareOfAll": 5.9,
+      "episodes": 73,
+      "players": 59,
+      "shareOfAll": 6,
       "reportedAs": [
         {
           "part": "Concussion",
-          "episodes": 50,
-          "players": 44
+          "episodes": 52,
+          "players": 46
         },
         {
           "part": "Neck",
-          "episodes": 20,
-          "players": 17
+          "episodes": 19,
+          "players": 16
         },
         {
           "part": "Head",
@@ -183,14 +183,14 @@
     },
     "shoulder": {
       "label": "Shoulder",
-      "episodes": 93,
-      "players": 71,
-      "shareOfAll": 7.6,
+      "episodes": 92,
+      "players": 70,
+      "shareOfAll": 7.5,
       "reportedAs": [
         {
           "part": "Shoulder",
-          "episodes": 85,
-          "players": 65
+          "episodes": 84,
+          "players": 64
         },
         {
           "part": "Right Shoulder",
@@ -252,9 +252,9 @@
             "missed": 5
           },
           {
-            "id": "flacco",
-            "name": "Joe Flacco",
-            "season": 2025,
+            "id": "winston",
+            "name": "Jameis Winston",
+            "season": 2024,
             "missed": 3
           }
         ]
@@ -332,9 +332,9 @@
     },
     "arm": {
       "label": "Arm, elbow & hand",
-      "episodes": 78,
-      "players": 62,
-      "shareOfAll": 6.4,
+      "episodes": 77,
+      "players": 61,
+      "shareOfAll": 6.3,
       "reportedAs": [
         {
           "part": "Wrist",
@@ -363,8 +363,8 @@
         },
         {
           "part": "Biceps",
-          "episodes": 4,
-          "players": 4
+          "episodes": 3,
+          "players": 3
         },
         {
           "part": "Right Hand",
@@ -593,14 +593,14 @@
     },
     "back": {
       "label": "Back",
-      "episodes": 38,
-      "players": 29,
-      "shareOfAll": 3.1,
+      "episodes": 39,
+      "players": 30,
+      "shareOfAll": 3.2,
       "reportedAs": [
         {
           "part": "Back",
-          "episodes": 38,
-          "players": 29
+          "episodes": 39,
+          "players": 30
         }
       ],
       "recovery": null,
@@ -649,13 +649,13 @@
       "reportedAs": [
         {
           "part": "Hip",
-          "episodes": 56,
-          "players": 44
+          "episodes": 57,
+          "players": 45
         },
         {
           "part": "Groin",
-          "episodes": 37,
-          "players": 30
+          "episodes": 36,
+          "players": 29
         },
         {
           "part": "Glute",
@@ -666,15 +666,15 @@
       "recovery": {
         "source": "injury-curves.json",
         "bucket": "Hip / Groin",
-        "absences": 7,
-        "players": 7,
+        "absences": 8,
+        "players": 8,
         "medianGamesMissed": 3,
-        "baselinePpg": 8.6,
+        "baselinePpg": 8,
         "returnCurve": [
           {
             "label": "Games 1–2 back",
-            "n": 7,
-            "pct": 72
+            "n": 8,
+            "pct": 70
           },
           {
             "label": "Games 3–5",
@@ -701,15 +701,15 @@
             "missed": 5
           },
           {
+            "id": "tremayne",
+            "name": "Brycen Tremayne",
+            "season": 2025,
+            "missed": 4
+          },
+          {
             "id": "kamara",
             "name": "Alvin Kamara",
             "season": 2024,
-            "missed": 3
-          },
-          {
-            "id": "goodson",
-            "name": "Tyler Goodson",
-            "season": 2025,
             "missed": 3
           }
         ]
@@ -760,19 +760,19 @@
     },
     "thigh": {
       "label": "Hamstring, quad & thigh",
-      "episodes": 134,
+      "episodes": 133,
       "players": 94,
       "shareOfAll": 10.9,
       "reportedAs": [
         {
           "part": "Hamstring",
-          "episodes": 102,
-          "players": 74
+          "episodes": 100,
+          "players": 73
         },
         {
           "part": "Quadricep",
-          "episodes": 29,
-          "players": 23
+          "episodes": 30,
+          "players": 24
         },
         {
           "part": "Thigh",
@@ -877,14 +877,14 @@
     },
     "knee": {
       "label": "Knee",
-      "episodes": 171,
-      "players": 110,
-      "shareOfAll": 14,
+      "episodes": 172,
+      "players": 111,
+      "shareOfAll": 14.1,
       "reportedAs": [
         {
           "part": "Knee",
-          "episodes": 171,
-          "players": 110
+          "episodes": 172,
+          "players": 111
         }
       ],
       "recovery": {
@@ -1145,13 +1145,13 @@
     },
     "ankle": {
       "label": "Ankle",
-      "episodes": 170,
+      "episodes": 169,
       "players": 120,
-      "shareOfAll": 13.9,
+      "shareOfAll": 13.8,
       "reportedAs": [
         {
           "part": "Ankle",
-          "episodes": 170,
+          "episodes": 169,
           "players": 120
         }
       ],
@@ -1187,6 +1187,12 @@
             "missed": 9
           },
           {
+            "id": "thornton",
+            "name": "Tyquan Thornton",
+            "season": 2024,
+            "missed": 9
+          },
+          {
             "id": "hampton",
             "name": "Omarion Hampton",
             "season": 2025,
@@ -1196,12 +1202,6 @@
             "id": "godwin",
             "name": "Chris Godwin",
             "season": 2025,
-            "missed": 5
-          },
-          {
-            "id": "mason",
-            "name": "Jordan Mason",
-            "season": 2024,
             "missed": 5
           }
         ]
@@ -1262,14 +1262,14 @@
     },
     "foot": {
       "label": "Foot & toe",
-      "episodes": 94,
-      "players": 64,
-      "shareOfAll": 7.7,
+      "episodes": 92,
+      "players": 63,
+      "shareOfAll": 7.5,
       "reportedAs": [
         {
           "part": "Foot",
-          "episodes": 50,
-          "players": 39
+          "episodes": 48,
+          "players": 38
         },
         {
           "part": "Toe",
