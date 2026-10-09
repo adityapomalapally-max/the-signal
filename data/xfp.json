@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-10-06T17:11:20.676Z",
+    "generated": "2026-10-09T17:28:29.662Z",
     "builtBy": "scripts/build-scheme.js via lib/xfp.js",
     "seasons": [
       2024,
@@ -11,10 +11,10 @@
     "scoring": "Full PPR — 1 per reception, 0.1 per yard, 6 per touchdown — matching nflverse fantasy_points_ppr, which is what every other points figure on this site already is.",
     "method": "EMPIRICAL, NOT FITTED. A cell's price is the mean fantasy points the plays in that cell actually produced. No regression, no coefficients, nothing trained — anyone with the same CSV recomputes the same number. A season prices itself once it has the plays to do it; until then it borrows the last finished season's table, and meta.build.pricedFrom says which season paid for the prices above.",
     "build": {
-      "opportunities": 7317,
-      "targets": 4003,
-      "carries": 3314,
-      "playersQualified": 131,
+      "opportunities": 7434,
+      "targets": 4070,
+      "carries": 3364,
+      "playersQualified": 132,
       "passersDropped": 2,
       "minPasserAttempts": 20,
       "minCell": 100,
@@ -23,16 +23,16 @@
       "skippedNoLine": 0,
       "pricedFromSuppliedTable": true,
       "unpriced": 0,
-      "leagueFp": 5988.9,
-      "leagueXfp": 6051.5,
-      "leagueRatio": 0.9897,
-      "selfFallbackPct": 13.17,
+      "leagueFp": 6156.2,
+      "leagueXfp": 6194,
+      "leagueRatio": 0.9939,
+      "selfFallbackPct": 13.16,
       "season": 2026,
       "pricedFrom": 2025
     },
     "caveats": [
-      "THESE PRICES ARE 2025'S. 2026 has not played enough football to price itself — its own table would put 13.17% of opportunities on a marginal cell against the 0.9% these prices manage — so every expectation here is what the same chance was worth in 2025. Measured on 2025: priced this way a two-week season lands 0.165 points a game from what those plays were really worth, against 0.313 priced off its own two weeks. It switches to its own table the moment that table fits.",
-      "EARLY IN A SEASON EVERY QUALIFIED PLAYER LOOKS GOOD, and that is the qualifier rather than the football. The floor is 20+ opportunities, which over a season admits a rotational player and after one week admits only the workhorses — who are the players getting that volume because they are producing. League actual against these prices (0.9897x) is computed over exactly those qualified players, so read it as who cleared the floor, not as the league scoring more than it did last year, and not as a consistency check: carried prices are not means over these plays.",
+      "THESE PRICES ARE 2025'S. 2026 has not played enough football to price itself — its own table would put 13.16% of opportunities on a marginal cell against the 0.9% these prices manage — so every expectation here is what the same chance was worth in 2025. Measured on 2025: priced this way a two-week season lands 0.165 points a game from what those plays were really worth, against 0.313 priced off its own two weeks. It switches to its own table the moment that table fits.",
+      "EARLY IN A SEASON EVERY QUALIFIED PLAYER LOOKS GOOD, and that is the qualifier rather than the football. The floor is 20+ opportunities, which over a season admits a rotational player and after one week admits only the workhorses — who are the players getting that volume because they are producing. League actual against these prices (0.9939x) is computed over exactly those qualified players, so read it as who cleared the floor, not as the league scoring more than it did last year, and not as a consistency check: carried prices are not means over these plays.",
       "PASSING IS NOT PRICED, so quarterbacks are absent rather than wrong. A quarterback's points are overwhelmingly passing, and showing his rushing expectation beside his total would put every quarterback in the league hundreds of points \"over expected\".",
       "Fumbles lost and two-point conversions are excluded from BOTH sides. They are outcomes rather than opportunities and have no situation to price. Measured against stats.json, this leaves a median gap of 0.0 points across a season and a 10th-to-90th range of plus or minus 2 — which is one fumble, or one two-point conversion.",
       "THE GAP IS MOSTLY TOUCHDOWNS, AND TOUCHDOWNS DO NOT REPEAT. A player far over expected is usually not a player who will stay there. That is the reading this file is for.",
@@ -57556,15 +57556,15 @@
       },
       "00-0036997": {
         "team": "DAL",
-        "games": 4,
-        "targets": 17,
-        "carries": 62,
-        "fp": 81.8,
-        "xfp": 79.8,
-        "diff": 2,
-        "fpPerG": 20.45,
-        "xfpPerG": 19.96,
-        "diffPerG": 0.49,
+        "games": 5,
+        "targets": 20,
+        "carries": 74,
+        "fp": 96,
+        "xfp": 94.2,
+        "diff": 1.8,
+        "fpPerG": 19.2,
+        "xfpPerG": 18.84,
+        "diffPerG": 0.36,
         "weeks": [
           {
             "week": 1,
@@ -57589,20 +57589,26 @@
             "fp": 31.3,
             "xfp": 27.6,
             "opps": 24
+          },
+          {
+            "week": 5,
+            "fp": 14.2,
+            "xfp": 14.3,
+            "opps": 15
           }
         ]
       },
       "00-0036358": {
         "team": "DAL",
-        "games": 4,
-        "targets": 46,
+        "games": 5,
+        "targets": 51,
         "carries": 2,
-        "fp": 110.2,
-        "xfp": 82.3,
-        "diff": 27.9,
-        "fpPerG": 27.55,
-        "xfpPerG": 20.57,
-        "diffPerG": 6.98,
+        "fp": 113.1,
+        "xfp": 90.1,
+        "diff": 23,
+        "fpPerG": 22.62,
+        "xfpPerG": 18.03,
+        "diffPerG": 4.59,
         "weeks": [
           {
             "week": 1,
@@ -57627,20 +57633,26 @@
             "fp": 41.3,
             "xfp": 35.6,
             "opps": 22
+          },
+          {
+            "week": 5,
+            "fp": 2.9,
+            "xfp": 7.9,
+            "opps": 5
           }
         ]
       },
       "00-0037247": {
         "team": "DAL",
-        "games": 4,
-        "targets": 28,
+        "games": 5,
+        "targets": 41,
         "carries": 0,
-        "fp": 40.5,
-        "xfp": 50.5,
-        "diff": -10,
-        "fpPerG": 10.13,
-        "xfpPerG": 12.61,
-        "diffPerG": -2.49,
+        "fp": 68.5,
+        "xfp": 74.2,
+        "diff": -5.7,
+        "fpPerG": 13.7,
+        "xfpPerG": 14.83,
+        "diffPerG": -1.13,
         "weeks": [
           {
             "week": 1,
@@ -57665,6 +57677,12 @@
             "fp": 9.5,
             "xfp": 5.3,
             "opps": 3
+          },
+          {
+            "week": 5,
+            "fp": 28,
+            "xfp": 23.7,
+            "opps": 13
           }
         ]
       },
@@ -57784,15 +57802,15 @@
       },
       "00-0039410": {
         "team": "DAL",
-        "games": 4,
-        "targets": 23,
+        "games": 5,
+        "targets": 27,
         "carries": 0,
-        "fp": 23.4,
-        "xfp": 39.1,
-        "diff": -15.7,
-        "fpPerG": 5.85,
-        "xfpPerG": 9.77,
-        "diffPerG": -3.92,
+        "fp": 35.4,
+        "xfp": 45.2,
+        "diff": -9.8,
+        "fpPerG": 7.08,
+        "xfpPerG": 9.05,
+        "diffPerG": -1.97,
         "weeks": [
           {
             "week": 1,
@@ -57817,6 +57835,56 @@
             "fp": 7.7,
             "xfp": 7.5,
             "opps": 5
+          },
+          {
+            "week": 5,
+            "fp": 12,
+            "xfp": 6.2,
+            "opps": 4
+          }
+        ]
+      },
+      "00-0038041": {
+        "team": "DAL",
+        "games": 5,
+        "targets": 21,
+        "carries": 0,
+        "fp": 43.2,
+        "xfp": 36.1,
+        "diff": 7.1,
+        "fpPerG": 8.64,
+        "xfpPerG": 7.23,
+        "diffPerG": 1.42,
+        "weeks": [
+          {
+            "week": 1,
+            "fp": 2.6,
+            "xfp": 4.4,
+            "opps": 2
+          },
+          {
+            "week": 2,
+            "fp": 20.3,
+            "xfp": 9.1,
+            "opps": 4
+          },
+          {
+            "week": 3,
+            "fp": 11.3,
+            "xfp": 7.9,
+            "opps": 5
+          },
+          {
+            "week": 4,
+            "fp": 4.1,
+            "xfp": 5.9,
+            "opps": 4
+          },
+          {
+            "week": 5,
+            "fp": 4.9,
+            "xfp": 8.8,
+            "opps": 6
           }
         ]
       },
@@ -59826,15 +59894,15 @@
       },
       "00-0039361": {
         "team": "TB",
-        "games": 4,
-        "targets": 15,
-        "carries": 56,
-        "fp": 49.2,
-        "xfp": 52.4,
-        "diff": -3.2,
-        "fpPerG": 12.3,
-        "xfpPerG": 13.11,
-        "diffPerG": -0.81,
+        "games": 5,
+        "targets": 18,
+        "carries": 77,
+        "fp": 80.7,
+        "xfp": 72.1,
+        "diff": 8.6,
+        "fpPerG": 16.14,
+        "xfpPerG": 14.43,
+        "diffPerG": 1.71,
         "weeks": [
           {
             "week": 1,
@@ -59859,20 +59927,26 @@
             "fp": 6.1,
             "xfp": 8.6,
             "opps": 16
+          },
+          {
+            "week": 5,
+            "fp": 31.5,
+            "xfp": 19.7,
+            "opps": 24
           }
         ]
       },
       "00-0040129": {
         "team": "TB",
-        "games": 4,
-        "targets": 24,
-        "carries": 1,
-        "fp": 36.1,
-        "xfp": 43,
-        "diff": -6.9,
-        "fpPerG": 9.02,
-        "xfpPerG": 10.76,
-        "diffPerG": -1.74,
+        "games": 5,
+        "targets": 33,
+        "carries": 2,
+        "fp": 53.3,
+        "xfp": 59.3,
+        "diff": -6,
+        "fpPerG": 10.66,
+        "xfpPerG": 11.87,
+        "diffPerG": -1.21,
         "weeks": [
           {
             "week": 1,
@@ -59897,20 +59971,26 @@
             "fp": 3.3,
             "xfp": 7.5,
             "opps": 4
+          },
+          {
+            "week": 5,
+            "fp": 17.2,
+            "xfp": 16.3,
+            "opps": 10
           }
         ]
       },
       "00-0033921": {
         "team": "TB",
-        "games": 4,
-        "targets": 18,
-        "carries": 2,
-        "fp": 31.7,
-        "xfp": 27.5,
-        "diff": 4.2,
-        "fpPerG": 7.93,
-        "xfpPerG": 6.87,
-        "diffPerG": 1.05,
+        "games": 5,
+        "targets": 21,
+        "carries": 3,
+        "fp": 38.7,
+        "xfp": 32.3,
+        "diff": 6.4,
+        "fpPerG": 7.74,
+        "xfpPerG": 6.46,
+        "diffPerG": 1.28,
         "weeks": [
           {
             "week": 1,
@@ -59935,20 +60015,26 @@
             "fp": 9.1,
             "xfp": 10.1,
             "opps": 7
+          },
+          {
+            "week": 5,
+            "fp": 7,
+            "xfp": 4.8,
+            "opps": 4
           }
         ]
       },
       "00-0036919": {
         "team": "TB",
-        "games": 4,
-        "targets": 12,
-        "carries": 13,
-        "fp": 21,
-        "xfp": 27.5,
-        "diff": -6.5,
-        "fpPerG": 5.25,
-        "xfpPerG": 6.88,
-        "diffPerG": -1.63,
+        "games": 5,
+        "targets": 16,
+        "carries": 17,
+        "fp": 26.8,
+        "xfp": 35,
+        "diff": -8.2,
+        "fpPerG": 5.36,
+        "xfpPerG": 7.01,
+        "diffPerG": -1.65,
         "weeks": [
           {
             "week": 1,
@@ -59973,6 +60059,12 @@
             "fp": 10.7,
             "xfp": 5.9,
             "opps": 5
+          },
+          {
+            "week": 5,
+            "fp": 5.8,
+            "xfp": 7.5,
+            "opps": 8
           }
         ]
       },
@@ -60054,15 +60146,15 @@
       },
       "00-0038129": {
         "team": "TB",
-        "games": 4,
-        "targets": 23,
+        "games": 5,
+        "targets": 27,
         "carries": 0,
-        "fp": 30.7,
-        "xfp": 36.5,
-        "diff": -5.8,
-        "fpPerG": 7.68,
-        "xfpPerG": 9.13,
-        "diffPerG": -1.46,
+        "fp": 36.2,
+        "xfp": 42.6,
+        "diff": -6.4,
+        "fpPerG": 7.24,
+        "xfpPerG": 8.52,
+        "diffPerG": -1.28,
         "weeks": [
           {
             "week": 1,
@@ -60087,6 +60179,12 @@
             "fp": 7.7,
             "xfp": 8.8,
             "opps": 6
+          },
+          {
+            "week": 5,
+            "fp": 5.5,
+            "xfp": 6,
+            "opps": 4
           }
         ]
       },

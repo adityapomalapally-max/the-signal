@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-anatomy.js",
-    "builtAt": "2026-10-08T17:51:25.785Z",
+    "builtAt": "2026-10-09T17:26:53.679Z",
     "layers": {
       "frequency": "counted from data/injuries.json — the official NFL injury reports for this pool",
       "recovery": "from data/injury-curves.json, derived from those same reports",
@@ -12,7 +12,7 @@
       "A named condition without a research entry is listed because it genuinely occurs at that region, NOT because we have data on it. The page says so rather than printing a timeline nobody can check.",
       "Recovery figures are the median across this pool over three seasons, not a prognosis for any individual. Sample sizes are stated and several are small."
     ],
-    "totalEpisodes": 1248,
+    "totalEpisodes": 1255,
     "unmappedParts": [
       {
         "part": "Undisclosed",
@@ -48,22 +48,22 @@
       }
     ],
     "coverage": {
-      "mappedEpisodes": 1069,
-      "totalEpisodes": 1248,
-      "pct": 85.7
+      "mappedEpisodes": 1073,
+      "totalEpisodes": 1255,
+      "pct": 85.5
     }
   },
   "regions": {
     "head": {
       "label": "Head & neck",
-      "episodes": 74,
-      "players": 60,
-      "shareOfAll": 5.9,
+      "episodes": 77,
+      "players": 63,
+      "shareOfAll": 6.1,
       "reportedAs": [
         {
           "part": "Concussion",
-          "episodes": 52,
-          "players": 46
+          "episodes": 55,
+          "players": 49
         },
         {
           "part": "Neck",
@@ -183,14 +183,14 @@
     },
     "shoulder": {
       "label": "Shoulder",
-      "episodes": 94,
-      "players": 72,
-      "shareOfAll": 7.5,
+      "episodes": 93,
+      "players": 71,
+      "shareOfAll": 7.4,
       "reportedAs": [
         {
           "part": "Shoulder",
-          "episodes": 86,
-          "players": 66
+          "episodes": 85,
+          "players": 65
         },
         {
           "part": "Right Shoulder",
@@ -521,19 +521,19 @@
     },
     "core": {
       "label": "Ribs, chest & core",
-      "episodes": 56,
-      "players": 50,
-      "shareOfAll": 4.5,
+      "episodes": 58,
+      "players": 51,
+      "shareOfAll": 4.6,
       "reportedAs": [
         {
           "part": "Chest",
-          "episodes": 12,
-          "players": 12
+          "episodes": 13,
+          "players": 13
         },
         {
           "part": "Ribs",
-          "episodes": 11,
-          "players": 11
+          "episodes": 12,
+          "players": 12
         },
         {
           "part": "Oblique",
@@ -593,13 +593,13 @@
     },
     "back": {
       "label": "Back",
-      "episodes": 40,
+      "episodes": 39,
       "players": 31,
-      "shareOfAll": 3.2,
+      "shareOfAll": 3.1,
       "reportedAs": [
         {
           "part": "Back",
-          "episodes": 40,
+          "episodes": 39,
           "players": 31
         }
       ],
@@ -643,14 +643,14 @@
     },
     "hip": {
       "label": "Hip & groin",
-      "episodes": 102,
-      "players": 74,
-      "shareOfAll": 8.2,
+      "episodes": 101,
+      "players": 73,
+      "shareOfAll": 8,
       "reportedAs": [
         {
           "part": "Hip",
-          "episodes": 58,
-          "players": 45
+          "episodes": 57,
+          "players": 44
         },
         {
           "part": "Groin",
@@ -760,14 +760,14 @@
     },
     "thigh": {
       "label": "Hamstring, quad & thigh",
-      "episodes": 138,
-      "players": 98,
-      "shareOfAll": 11.1,
+      "episodes": 140,
+      "players": 100,
+      "shareOfAll": 11.2,
       "reportedAs": [
         {
           "part": "Hamstring",
-          "episodes": 103,
-          "players": 76
+          "episodes": 105,
+          "players": 78
         },
         {
           "part": "Quadricep",
@@ -877,14 +877,14 @@
     },
     "knee": {
       "label": "Knee",
-      "episodes": 177,
-      "players": 113,
+      "episodes": 178,
+      "players": 114,
       "shareOfAll": 14.2,
       "reportedAs": [
         {
           "part": "Knee",
-          "episodes": 177,
-          "players": 113
+          "episodes": 178,
+          "players": 114
         }
       ],
       "recovery": {
@@ -1145,13 +1145,13 @@
     },
     "ankle": {
       "label": "Ankle",
-      "episodes": 171,
+      "episodes": 170,
       "players": 119,
-      "shareOfAll": 13.7,
+      "shareOfAll": 13.5,
       "reportedAs": [
         {
           "part": "Ankle",
-          "episodes": 171,
+          "episodes": 170,
           "players": 119
         }
       ],
@@ -1166,7 +1166,7 @@
           {
             "label": "Games 1–2 back",
             "n": 16,
-            "pct": 80
+            "pct": 83
           },
           {
             "label": "Games 3–5",
@@ -1175,8 +1175,8 @@
           },
           {
             "label": "Games 6–8",
-            "n": 9,
-            "pct": 98
+            "n": 10,
+            "pct": 101
           }
         ],
         "examples": [
@@ -1184,6 +1184,12 @@
             "id": "willis",
             "name": "Malik Willis",
             "season": 2025,
+            "missed": 9
+          },
+          {
+            "id": "thornton",
+            "name": "Tyquan Thornton",
+            "season": 2024,
             "missed": 9
           },
           {
@@ -1196,12 +1202,6 @@
             "id": "godwin",
             "name": "Chris Godwin",
             "season": 2025,
-            "missed": 5
-          },
-          {
-            "id": "mason",
-            "name": "Jordan Mason",
-            "season": 2024,
             "missed": 5
           }
         ]
