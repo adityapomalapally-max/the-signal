@@ -8,6 +8,30 @@ on:
   pull_request:
   workflow_dispatch:
 
+# ONE AUTHORITATIVE NUMBER PER BRANCH, because the mutation gate takes about
+# half an hour and four of them raced on 2026-10-02. They reported out of order
+# — a run measuring a commit two behind landed after a newer one — and a stale
+# 42 was within one keystroke of being recorded as the baseline. The ratchet is
+# only meaningful if the number describes the tip.
+#
+# Cancelling a gate run is safe HERE and would not be locally: mutate.js edits
+# scripts/lib/*.js in place and restores them in a `finally`, which a kill
+# skips. On a runner the checkout is thrown away, so a cancelled run leaves a
+# poisoned tree nobody will ever read. On a laptop it leaves one in the repo,
+# which is why mutate.js heals from a note in .git before it measures.
+#
+# THE DATA RUN DELIBERATELY DOES NOT DO THIS. daily-update.yml and health.yml
+# carry the same concurrency key with cancel-in-progress FALSE, because killing a
+# half-finished data build is a different and worse thing than killing a
+# measurement: it loses the day's fetches and can leave data/ half-written
+# between the build steps and the commit. A test run holds nothing anybody needs.
+#
+# Keyed on the workflow AND the ref, so main and a branch do not cancel each
+# other, and a pull_request run does not cancel the push run for the same commit.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
