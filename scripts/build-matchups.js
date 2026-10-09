@@ -54,9 +54,22 @@ const MIN_GAMES = 4;
 // And a floor on observations, for the pathological case of four games against
 // one player. Deliberately low: it is a backstop, not the qualifier.
 const MIN_PLAYER_GAMES = 4;
-// And a player needs a real season behind him before his own average is a
-// baseline worth measuring anything against.
-const MIN_BASELINE_GAMES = 6;
+// A player needs enough games for his own average to mean something — and the
+// floor was SIX, which cost the trusted column the whole first month of every
+// season. Four weeks into 2026, vsBaseline was null for all 32 defences, so the
+// board led with the raw number this file's own header warns about.
+//
+// MEASURED in scripts/research-matchup-baseline.js over 2024 and 2025 before
+// moving it. Dropping 6 -> 4 changes a FINISHED season's board hardly at all:
+// no defence moves five or more places at either RB or WR, at most three move
+// three or more, and it adds 0.3 to 0.9 observations per cell. What it buys is
+// the whole 32-defence board at week 4 instead of week 7 — at a floor of 6,
+// nothing is publishable in the first month, because nobody has six games.
+//
+// Four rather than three because it leaves a baseline of at least three OTHER
+// games, and because it is the same number as MIN_GAMES: one vocabulary for
+// "enough football to say something".
+const MIN_BASELINE_GAMES = 4;
 
 const POSITIONS = ['QB', 'RB', 'WR', 'TE'];
 const log = (...a) => console.log('[matchups]', ...a);
@@ -122,14 +135,26 @@ async function main() {
       if (!seasons.includes(String(season))) continue;
       if (!Array.isArray(games) || !games.length) continue;
 
-      // The baseline is the player's own average across the games he PLAYED
-      // that season. Computed per season, because a player is not the same
-      // player two years apart.
+      // THE BASELINE LEAVES OUT THE GAME BEING MEASURED, and it used not to.
+      //
+      // A player's average across every game he played INCLUDES the performance
+      // under test, so the delta came out as
+      //     x_i - mean(all) = (n-1)/n * (x_i - mean(others))
+      // — an exact shrinkage toward zero of (n-1)/n. Six per cent over a
+      // seventeen-game season, and TWENTY-FIVE over four. The page prints these
+      // as values ("-2.19 points"), not only as ranks, so a quarter of the
+      // number going missing in September is the number being wrong.
+      //
+      // Removing it barely reorders a finished board — measured: no defence
+      // moves five or more places, max one or two — because over a full season
+      // it is close to a uniform rescaling. It matters in the month when n
+      // varies between three and five from player to player, which is exactly
+      // the month this column was previously absent for.
       const scored = games.filter(g => typeof g.fpts === 'number');
-      const baseline = scored.length >= MIN_BASELINE_GAMES
-        ? scored.reduce((s, g) => s + g.fpts, 0) / scored.length
-        : null;
-      if (!baseline) skippedThinBaseline++;
+      const total = scored.reduce((s, g) => s + g.fpts, 0);
+      const enough = scored.length >= MIN_BASELINE_GAMES;
+      if (!enough) skippedThinBaseline++;
+      const baselineFor = (g) => (enough ? (total - g.fpts) / (scored.length - 1) : null);
 
       for (const g of games) {
         if (typeof g.fpts !== 'number' || !g.opp) continue;
@@ -142,6 +167,7 @@ async function main() {
         cell.weeks.add(g.week);
         cell.points += g.fpts;
         cell.playerGames++;
+        const baseline = baselineFor(g);
         if (baseline !== null) { cell.delta += g.fpts - baseline; cell.deltaN++; }
         counted++;
       }
@@ -181,7 +207,9 @@ async function main() {
         + `1.07 quarterbacks, so a flat player-game floor asks three times as much of a quarterback `
         + `board as of a receiver one.`,
       playerGames: `${MIN_PLAYER_GAMES}+ player-games as a backstop, for four games against one player`,
-      baseline: `a player needs ${MIN_BASELINE_GAMES}+ games that season before his own average is used as a baseline`,
+      baseline: `a player needs ${MIN_BASELINE_GAMES}+ games that season before his own average is used as a `
+        + 'baseline, and the game being measured is LEFT OUT of it — including it shrinks every delta by '
+        + '(n-1)/n, which is a quarter of the number over four games',
     },
     readThis: 'This board is DESCRIPTIVE. It records what a defence has already allowed; it is not a '
       + 'forecast of what it will allow. Of the two numbers, vsBaseline is the sounder — '
@@ -193,6 +221,15 @@ async function main() {
       + 'r = 0.05 to 0.32 for QB, RB and WR, and it does NOT improve as the sample grows — the week-8 '
       + 'split is no better than the week-4 one. Reproduce with scripts/research-matchup-stability.js. '
       + 'Read this board as a record of what happened, not as a projection of what will.',
+    // The corrected column is published from week 4 now, so what a FOUR-WEEK
+    // correction is worth has to be stated where a reader meets it.
+    earlySeason: 'THE FIRST MONTH\'S CORRECTION IS A RECORD OF THAT MONTH AND NOTHING MORE. '
+      + 'Measured over 2024 and 2025 in scripts/research-matchup-baseline.js: a defence\'s vsBaseline '
+      + 'over weeks 1-4 against its vsBaseline over the rest of the season gives r = -0.12 to 0.46 '
+      + 'depending on position and year — 2025 WR came out at 0.46 and 2025 RB at -0.12, which is to '
+      + 'say there is no relationship rather than a weak one. It is published this early because the '
+      + 'alternative was publishing only the RAW number, which conflates a defence with the offences '
+      + 'it drew, and that is worse than a small sample honestly labelled.',
     caveats: [
       'The population is the top-350 fantasy pool, so this is points allowed to players worth '
       + 'starting rather than to everybody at the position. For a start/sit decision that is the '

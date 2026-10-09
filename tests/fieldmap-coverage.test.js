@@ -206,3 +206,58 @@ test('a qualified passer gets his own cells, not twelve empty ones (line 260)', 
   assert.strictEqual(Object.keys(qb.cells).length, 12);
   assert.ok(qb.cells['middle-behind'].thin, 'an empty cell is not marked thin');
 });
+
+// ── A season appears only when it can fill the boards (2026-10-09) ──────────
+
+test('one qualified player does not make a season', () => {
+  // 2026-10-09: fieldmap.json published 2026 off `passers 0, receivers 1,
+  // rushers 0`. The old gate summed the three groups and asked for more than
+  // nought, so a single receiver clearing 50 targets shipped a season whose QB
+  // and RB boards were empty — and three daily runs in a week went red on a
+  // render test that expects a passer in the newest season.
+  //
+  // EVERY GROUP has to clear the floor, because the position picker offers them
+  // separately: a season that fills one board and not the other three is three
+  // empty boards with a tab inviting a click.
+  const { fieldmapIsRenderable, FM_MIN_PER_GROUP, FM_GROUPS } = require('../scripts/build-scheme.js');
+  const group = (n) => Object.fromEntries(Array.from({ length: n }, (_, i) => [`p${i}`, {}]));
+  const map = (p, r, ru) => ({ passers: group(p), receivers: group(r), rushers: group(ru) });
+
+  assert.strictEqual(fieldmapIsRenderable(map(0, 1, 0)), false, 'the shape that actually shipped');
+  assert.strictEqual(fieldmapIsRenderable(map(35, 119, 46)), true, 'a real season was refused');
+  assert.strictEqual(fieldmapIsRenderable(null), false);
+
+  // ON the floor, and one under it, for each group in turn — a floor that only
+  // holds for passers is a floor nobody checked.
+  const f = FM_MIN_PER_GROUP;
+  assert.strictEqual(fieldmapIsRenderable(map(f, f, f)), true, 'exactly the floor was refused');
+  for (const [i, g] of FM_GROUPS.entries()) {
+    const counts = [f, f, f];
+    counts[i] = f - 1;
+    assert.strictEqual(fieldmapIsRenderable(map(...counts)), false,
+      `${g} one under the floor still published the season`);
+  }
+});
+
+test('the published file never carries a season it cannot render', () => {
+  // The property, against the file on disk: whatever seasons fieldmap.json
+  // claims, each has to be able to fill every board.
+  const fs2 = require('node:fs');
+  const path2 = require('node:path');
+  const f = path2.join(__dirname, '..', 'data', 'fieldmap.json');
+  if (!fs2.existsSync(f)) return;
+  const doc = JSON.parse(fs2.readFileSync(f, 'utf8'));
+  const { FM_MIN_PER_GROUP, FM_GROUPS } = require('../scripts/build-scheme.js');
+  for (const year of (doc.meta.seasons || [])) {
+    const s = doc.seasons[year] || {};
+    for (const g of FM_GROUPS) {
+      const n = Object.keys(s[g] || {}).length;
+      assert.ok(n >= FM_MIN_PER_GROUP,
+        `${year} is published with ${n} ${g} — under the ${FM_MIN_PER_GROUP} it needs to render a board`);
+    }
+  }
+  // And a season held back says why, rather than being quietly absent.
+  if (doc.meta.pending) {
+    assert.match(doc.meta.pending.reason, /\d/, 'the pending reason must carry the counts it is holding back on');
+  }
+});

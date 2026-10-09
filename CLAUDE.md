@@ -580,6 +580,35 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   nav (both bars), page markup, ROUTE_PAGES, route metadata, the render hook, the sitemap note, and a
   308 from the retired URL. `/film` redirects to `/draft` rather than quietly rendering the home page.
 
+## Four weeks in, and what the rollover broke (2026-10-09)
+- A SEASON APPEARS IN A LAYER ONLY WHEN IT CAN FILL THE BOARDS. fieldmap.json published 2026 off
+  `passers 0, receivers 1, rushers 0`: the gate summed the three groups and asked for more than
+  nought, so ONE receiver clearing 50 targets shipped a season whose QB and RB boards were empty.
+  Three daily runs in a week went red on a render test that expects a passer in the newest season —
+  and the comment at the call site had already named the failure, "writing the empty year would
+  offer a tab that draws nothing and select it by default". The intent was right; the threshold was
+  one player. `fieldmapIsRenderable()` now needs 5+ in EVERY group, because the position picker
+  offers them separately and a season that fills one board renders three empty ones.
+- THE MATCHUP BOARD'S TRUSTED COLUMN WAS NULL ALL SEASON. `vsBaseline` — the number the file itself
+  calls the sounder of the two, because raw points allowed conflates a defence with the offences it
+  drew — needed 6 games per player, and nobody has six until about week 7. So for the first quarter
+  of every season the board led with the number its own header warns about. Floor is 4 now, and
+  **measured before moving it** (`scripts/research-matchup-baseline.js`, over 2024 and 2025): 6 -> 4
+  moves NO defence five or more places on a finished season, at most three move three or more, and
+  it adds 0.3 to 0.9 observations per cell. What it buys is all 32 defences at week 4 instead of
+  week 7.
+- AND THE BASELINE ATE ITS OWN TAIL. It was the player's average across every game he played
+  INCLUDING the one being measured, so `delta = x_i - mean(all) = (n-1)/n * (x_i - mean(others))` —
+  an exact shrinkage of **6% over a season and 25% over four games**, on a number the page prints as
+  a value rather than a rank. Leave-one-out now. It barely reorders a finished board (no defence
+  moves 5+, max 1-2) because over a full season it is nearly a uniform rescale; it matters in the
+  month when n varies from three to five between players, which is the month the column was absent.
+- WHAT A FOUR-WEEK CORRECTION IS WORTH, measured and published in `meta.earlySeason`: a defence's
+  vsBaseline over weeks 1-4 against its rest-of-season vsBaseline runs **r = -0.12 to +0.46** across
+  positions and years (2025 WR 0.46, 2025 RB -0.12). That is no relationship rather than a weak one.
+  It is published anyway because the alternative was publishing only the raw number, and a small
+  sample honestly labelled beats a confounded one.
+
 ## In season
 - `data/ros.json` — rest-of-season projections, built by `scripts/build-ros.js`. From the first
   Sunday, projections-2026.json answers a question nobody is asking: what matters in Week 8 is

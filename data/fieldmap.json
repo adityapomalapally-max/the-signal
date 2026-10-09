@@ -1,11 +1,10 @@
 {
   "meta": {
-    "generated": "2026-10-09T17:28:29.615Z",
+    "generated": "2026-10-09T19:14:05.206Z",
     "seasons": [
       2023,
       2024,
-      2025,
-      2026
+      2025
     ],
     "source": "nflverse pbp — pass_location x air_yards for throws, run_location x run_gap for carries",
     "coverage": {
@@ -74,7 +73,11 @@
       "RUN BLOCKING SCHEME IS NOT IN THIS FILE AND IS NOT AVAILABLE. Wide zone against inside zone is a blocking call; run_gap records WHERE THE BALL WENT, which is a different question — a wide-zone run can hit any gap. No free feed carries the concept.",
       "About 7% of pass attempts carry no location — throwaways, batted balls and spikes. They are excluded rather than assigned to a cell, so the shares are of LOCATED attempts.",
       "Air yards are where the ball crossed the line, not where the catch was made. A short throw taken 40 yards is a short throw here, which is the point of splitting it from YAC."
-    ]
+    ],
+    "pending": {
+      "season": 2026,
+      "reason": "the map needs 5+ qualified players in each of passers, receivers and rushers and this season has 0 passers, 1 receivers, 0 rushers — a passer needs 200+ attempts, a receiver 50+ targets and a rusher 100+ carries, which is about week 6. A season that can fill one board and not the other three is three empty boards."
+    }
   },
   "seasons": {
     "2023": {
@@ -51978,74 +51981,6 @@
           }
         }
       }
-    },
-    "2026": {
-      "passers": {},
-      "receivers": {
-        "00-0036358": {
-          "targets": 51,
-          "depth": {
-            "behind": {
-              "n": 5,
-              "share": 9.8,
-              "thin": true
-            },
-            "short": {
-              "n": 26,
-              "share": 51,
-              "compPct": 80.8,
-              "ypa": 6.69,
-              "epa": 0.537,
-              "tdRate": 7.7,
-              "success": 65.4,
-              "cpoe": 10.6
-            },
-            "inter": {
-              "n": 14,
-              "share": 27.5,
-              "compPct": 64.3,
-              "ypa": 11.64,
-              "epa": 0.92,
-              "tdRate": 7.1,
-              "success": 64.3,
-              "cpoe": 5.3
-            },
-            "deep": {
-              "n": 6,
-              "share": 11.8,
-              "thin": true
-            }
-          },
-          "side": {
-            "left": {
-              "n": 23,
-              "share": 45.1,
-              "compPct": 82.6,
-              "ypa": 9.65,
-              "epa": 0.705,
-              "tdRate": 4.3,
-              "success": 65.2,
-              "cpoe": 14.9
-            },
-            "middle": {
-              "n": 7,
-              "share": 13.7,
-              "thin": true
-            },
-            "right": {
-              "n": 21,
-              "share": 41.2,
-              "compPct": 66.7,
-              "ypa": 9.9,
-              "epa": 0.493,
-              "tdRate": 4.8,
-              "success": 57.1,
-              "cpoe": 3.1
-            }
-          }
-        }
-      },
-      "rushers": {}
     }
   }
 }

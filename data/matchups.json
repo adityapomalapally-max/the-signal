@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-10-09T17:28:25.933Z",
+    "generated": "2026-10-09T19:10:58.759Z",
     "seasons": [
       2024,
       2025,
@@ -11,10 +11,11 @@
     "qualifiers": {
       "games": "4+ separate games against the position before any rate is published. The sample is GAMES, not player-games: a defence faces about 2.4 pool receivers a game and only 1.07 quarterbacks, so a flat player-game floor asks three times as much of a quarterback board as of a receiver one.",
       "playerGames": "4+ player-games as a backstop, for four games against one player",
-      "baseline": "a player needs 6+ games that season before his own average is used as a baseline"
+      "baseline": "a player needs 4+ games that season before his own average is used as a baseline, and the game being measured is LEFT OUT of it — including it shrinks every delta by (n-1)/n, which is a quarter of the number over four games"
     },
     "readThis": "This board is DESCRIPTIVE. It records what a defence has already allowed; it is not a forecast of what it will allow. Of the two numbers, vsBaseline is the sounder — pointsAllowedPerGame conflates the defence with the offences it happened to face, while vsBaseline measures each performance against that player's own season average, so a defence is not credited for drawing weak opponents.",
     "predictiveness": "MEASURED, AND IT IS WEAK. Splitting 2023-25 at several points and correlating a defence's vsBaseline over the first N weeks with its rating over the rest of the season gives r = 0.05 to 0.32 for QB, RB and WR, and it does NOT improve as the sample grows — the week-8 split is no better than the week-4 one. Reproduce with scripts/research-matchup-stability.js. Read this board as a record of what happened, not as a projection of what will.",
+    "earlySeason": "THE FIRST MONTH'S CORRECTION IS A RECORD OF THAT MONTH AND NOTHING MORE. Measured over 2024 and 2025 in scripts/research-matchup-baseline.js: a defence's vsBaseline over weeks 1-4 against its vsBaseline over the rest of the season gives r = -0.12 to 0.46 depending on position and year — 2025 WR came out at 0.46 and 2025 RB at -0.12, which is to say there is no relationship rather than a weak one. It is published this early because the alternative was publishing only the RAW number, which conflates a defence with the offences it drew, and that is worse than a small sample honestly labelled.",
     "caveats": [
       "The population is the top-350 fantasy pool, so this is points allowed to players worth starting rather than to everybody at the position. For a start/sit decision that is the right population; it is not the whole league.",
       "A baseline is the player's average across the games he PLAYED that season, so it already contains his good and bad matchups. It corrects for who a defence faced, not for when in the season they faced them.",
@@ -29,25 +30,25 @@
             "playerGames": 16,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 16.06,
-            "vsBaseline": -0.46
+            "vsBaseline": -0.47
           },
           "RB": {
             "playerGames": 28,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 11.44,
-            "vsBaseline": 0.57
+            "vsBaseline": 0.59
           },
           "WR": {
             "playerGames": 36,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.76,
-            "vsBaseline": -1.31
+            "vsBaseline": -1.13
           },
           "TE": {
             "playerGames": 13,
             "gamesPlayed": 12,
             "pointsAllowedPerGame": 5.3,
-            "vsBaseline": -2.84
+            "vsBaseline": -3.05
           }
         },
         "ATL": {
@@ -55,25 +56,25 @@
             "playerGames": 12,
             "gamesPlayed": 12,
             "pointsAllowedPerGame": 22.29,
-            "vsBaseline": 4.61
+            "vsBaseline": 4.91
           },
           "RB": {
             "playerGames": 22,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 11.94,
-            "vsBaseline": 0.06
+            "vsBaseline": 0.1
           },
           "WR": {
             "playerGames": 31,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 13.13,
-            "vsBaseline": 0.98
+            "vsBaseline": 1.06
           },
           "TE": {
             "playerGames": 13,
             "gamesPlayed": 11,
             "pointsAllowedPerGame": 7.59,
-            "vsBaseline": -1.1
+            "vsBaseline": -1.18
           }
         },
         "BAL": {
@@ -81,25 +82,25 @@
             "playerGames": 13,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 19.39,
-            "vsBaseline": 1.28
+            "vsBaseline": 1.44
           },
           "RB": {
             "playerGames": 18,
             "gamesPlayed": 12,
             "pointsAllowedPerGame": 11.59,
-            "vsBaseline": -0.22
+            "vsBaseline": -0.19
           },
           "WR": {
             "playerGames": 32,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 13.89,
-            "vsBaseline": 0.62
+            "vsBaseline": 0.63
           },
           "TE": {
             "playerGames": 16,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 9.24,
-            "vsBaseline": 0.81
+            "vsBaseline": 0.93
           }
         },
         "BUF": {
@@ -107,25 +108,25 @@
             "playerGames": 17,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 12.92,
-            "vsBaseline": -2.86
+            "vsBaseline": -3.14
           },
           "RB": {
             "playerGames": 28,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 12.14,
-            "vsBaseline": 1.34
+            "vsBaseline": 1.21
           },
           "WR": {
             "playerGames": 33,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 12.68,
-            "vsBaseline": 0.86
+            "vsBaseline": 0.94
           },
           "TE": {
             "playerGames": 19,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 6.03,
-            "vsBaseline": -1.28
+            "vsBaseline": -1.35
           }
         },
         "CAR": {
@@ -133,25 +134,25 @@
             "playerGames": 14,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 19.53,
-            "vsBaseline": 0.85
+            "vsBaseline": 2.39
           },
           "RB": {
             "playerGames": 22,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 16.85,
-            "vsBaseline": 3.85
+            "vsBaseline": 4.1
           },
           "WR": {
             "playerGames": 38,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 12.3,
-            "vsBaseline": 0.21
+            "vsBaseline": 0.19
           },
           "TE": {
             "playerGames": 13,
             "gamesPlayed": 12,
             "pointsAllowedPerGame": 6.38,
-            "vsBaseline": -2.83
+            "vsBaseline": -3.02
           }
         },
         "CHI": {
@@ -159,25 +160,25 @@
             "playerGames": 18,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 11.95,
-            "vsBaseline": -3.55
+            "vsBaseline": -3.86
           },
           "RB": {
             "playerGames": 23,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 12.93,
-            "vsBaseline": 0.57
+            "vsBaseline": 0.61
           },
           "WR": {
             "playerGames": 38,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 9.61,
-            "vsBaseline": -2.14
+            "vsBaseline": -2.3
           },
           "TE": {
             "playerGames": 18,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 9.02,
-            "vsBaseline": 0.88
+            "vsBaseline": 1
           }
         },
         "CIN": {
@@ -185,25 +186,25 @@
             "playerGames": 12,
             "gamesPlayed": 11,
             "pointsAllowedPerGame": 18.58,
-            "vsBaseline": 1.88
+            "vsBaseline": 1.9
           },
           "RB": {
             "playerGames": 21,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 12.82,
-            "vsBaseline": 1.17
+            "vsBaseline": 1.31
           },
           "WR": {
             "playerGames": 29,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.94,
-            "vsBaseline": -0.57
+            "vsBaseline": -0.48
           },
           "TE": {
             "playerGames": 17,
             "gamesPlayed": 12,
             "pointsAllowedPerGame": 10.68,
-            "vsBaseline": 1.9
+            "vsBaseline": 2.04
           }
         },
         "CLE": {
@@ -211,25 +212,25 @@
             "playerGames": 14,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 15.72,
-            "vsBaseline": -1.85
+            "vsBaseline": -2
           },
           "RB": {
             "playerGames": 23,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 9.7,
-            "vsBaseline": -2.04
+            "vsBaseline": -2.19
           },
           "WR": {
             "playerGames": 34,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 11.87,
-            "vsBaseline": 0.25
+            "vsBaseline": 0.11
           },
           "TE": {
             "playerGames": 19,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 6.4,
-            "vsBaseline": -1.84
+            "vsBaseline": -2
           }
         },
         "DAL": {
@@ -237,25 +238,25 @@
             "playerGames": 15,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 19.41,
-            "vsBaseline": 1.48
+            "vsBaseline": 1.59
           },
           "RB": {
             "playerGames": 21,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 13.15,
-            "vsBaseline": -0.59
+            "vsBaseline": -0.64
           },
           "WR": {
             "playerGames": 31,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 14.4,
-            "vsBaseline": 0.74
+            "vsBaseline": 0.83
           },
           "TE": {
             "playerGames": 15,
             "gamesPlayed": 12,
             "pointsAllowedPerGame": 6.71,
-            "vsBaseline": -1.72
+            "vsBaseline": -1.86
           }
         },
         "DEN": {
@@ -263,25 +264,25 @@
             "playerGames": 14,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 16.37,
-            "vsBaseline": 0.94
+            "vsBaseline": 0.27
           },
           "RB": {
             "playerGames": 24,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 8.83,
-            "vsBaseline": -2.26
+            "vsBaseline": -2.41
           },
           "WR": {
             "playerGames": 32,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.84,
-            "vsBaseline": -1.34
+            "vsBaseline": -1.25
           },
           "TE": {
             "playerGames": 15,
             "gamesPlayed": 11,
             "pointsAllowedPerGame": 9.59,
-            "vsBaseline": 0.77
+            "vsBaseline": 0.84
           }
         },
         "DET": {
@@ -289,25 +290,25 @@
             "playerGames": 16,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 16.87,
-            "vsBaseline": 0.69
+            "vsBaseline": 0.66
           },
           "RB": {
             "playerGames": 23,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 10.72,
-            "vsBaseline": -1.19
+            "vsBaseline": -1.26
           },
           "WR": {
             "playerGames": 44,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 11.95,
-            "vsBaseline": 0.51
+            "vsBaseline": 0.57
           },
           "TE": {
             "playerGames": 19,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 6.15,
-            "vsBaseline": -1.74
+            "vsBaseline": -1.89
           }
         },
         "GB": {
@@ -315,25 +316,25 @@
             "playerGames": 14,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 15.21,
-            "vsBaseline": -1.27
+            "vsBaseline": -1.31
           },
           "RB": {
             "playerGames": 25,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 11.32,
-            "vsBaseline": -0.67
+            "vsBaseline": -0.93
           },
           "WR": {
             "playerGames": 36,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 10.34,
-            "vsBaseline": -1.29
+            "vsBaseline": -1.4
           },
           "TE": {
             "playerGames": 19,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 7.76,
-            "vsBaseline": -0.07
+            "vsBaseline": -0.05
           }
         },
         "HOU": {
@@ -341,25 +342,25 @@
             "playerGames": 15,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 15.94,
-            "vsBaseline": -0.6
+            "vsBaseline": -0.65
           },
           "RB": {
             "playerGames": 27,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 9.67,
-            "vsBaseline": -1.62
+            "vsBaseline": -1.75
           },
           "WR": {
             "playerGames": 38,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 12.32,
-            "vsBaseline": 1.98
+            "vsBaseline": 2.06
           },
           "TE": {
             "playerGames": 20,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 6.19,
-            "vsBaseline": -0.7
+            "vsBaseline": -0.77
           }
         },
         "IND": {
@@ -367,25 +368,25 @@
             "playerGames": 13,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 17.25,
-            "vsBaseline": 2.34
+            "vsBaseline": 2.66
           },
           "RB": {
             "playerGames": 25,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 11.3,
-            "vsBaseline": 0.28
+            "vsBaseline": 0.32
           },
           "WR": {
             "playerGames": 36,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 12.09,
-            "vsBaseline": 0.45
+            "vsBaseline": 0.52
           },
           "TE": {
             "playerGames": 20,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 8.15,
-            "vsBaseline": 2.16
+            "vsBaseline": 2.31
           }
         },
         "JAX": {
@@ -393,25 +394,25 @@
             "playerGames": 16,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 19.31,
-            "vsBaseline": 4.1
+            "vsBaseline": 4.45
           },
           "RB": {
             "playerGames": 23,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 12.31,
-            "vsBaseline": 1.27
+            "vsBaseline": 1.35
           },
           "WR": {
             "playerGames": 39,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 13.13,
-            "vsBaseline": 1.54
+            "vsBaseline": 1.67
           },
           "TE": {
             "playerGames": 17,
             "gamesPlayed": 12,
             "pointsAllowedPerGame": 9.71,
-            "vsBaseline": 3.48
+            "vsBaseline": 3.74
           }
         },
         "KC": {
@@ -419,25 +420,25 @@
             "playerGames": 14,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 15.71,
-            "vsBaseline": -1.02
+            "vsBaseline": -1.12
           },
           "RB": {
             "playerGames": 20,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 8.68,
-            "vsBaseline": -3.02
+            "vsBaseline": -3.23
           },
           "WR": {
             "playerGames": 31,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 12.15,
-            "vsBaseline": 0.98
+            "vsBaseline": 1.04
           },
           "TE": {
             "playerGames": 14,
             "gamesPlayed": 11,
             "pointsAllowedPerGame": 12.09,
-            "vsBaseline": 3.02
+            "vsBaseline": 3.21
           }
         },
         "LAC": {
@@ -445,25 +446,25 @@
             "playerGames": 14,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 15.07,
-            "vsBaseline": -1.31
+            "vsBaseline": -1.46
           },
           "RB": {
             "playerGames": 22,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 10.11,
-            "vsBaseline": -1.28
+            "vsBaseline": -1.4
           },
           "WR": {
             "playerGames": 33,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 12.8,
-            "vsBaseline": 1.56
+            "vsBaseline": 1.7
           },
           "TE": {
             "playerGames": 18,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 6.91,
-            "vsBaseline": -2.73
+            "vsBaseline": -2.93
           }
         },
         "LAR": {
@@ -471,25 +472,25 @@
             "playerGames": 15,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 19.05,
-            "vsBaseline": 1.75
+            "vsBaseline": 1.84
           },
           "RB": {
             "playerGames": 23,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 11.88,
-            "vsBaseline": -0.68
+            "vsBaseline": -0.74
           },
           "WR": {
             "playerGames": 33,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 12.16,
-            "vsBaseline": 0.85
+            "vsBaseline": 0.91
           },
           "TE": {
             "playerGames": 14,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 11.96,
-            "vsBaseline": 2.1
+            "vsBaseline": 2.22
           }
         },
         "LV": {
@@ -497,25 +498,25 @@
             "playerGames": 15,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 17.6,
-            "vsBaseline": 0.93
+            "vsBaseline": 1.06
           },
           "RB": {
             "playerGames": 25,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 11.18,
-            "vsBaseline": 0.46
+            "vsBaseline": 0.48
           },
           "WR": {
             "playerGames": 27,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 12.17,
-            "vsBaseline": 0.52
+            "vsBaseline": 0.56
           },
           "TE": {
             "playerGames": 17,
             "gamesPlayed": 12,
             "pointsAllowedPerGame": 8.51,
-            "vsBaseline": 1.67
+            "vsBaseline": 1.82
           }
         },
         "MIA": {
@@ -523,25 +524,25 @@
             "playerGames": 14,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 15.04,
-            "vsBaseline": -0.68
+            "vsBaseline": -0.74
           },
           "RB": {
             "playerGames": 24,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 11.79,
-            "vsBaseline": 2.3
+            "vsBaseline": 2.49
           },
           "WR": {
             "playerGames": 37,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 11.05,
-            "vsBaseline": -0.47
+            "vsBaseline": -0.52
           },
           "TE": {
             "playerGames": 17,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 8.58,
-            "vsBaseline": 0.34
+            "vsBaseline": 0.31
           }
         },
         "MIN": {
@@ -549,25 +550,25 @@
             "playerGames": 16,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 14.19,
-            "vsBaseline": -0.91
+            "vsBaseline": -1.08
           },
           "RB": {
             "playerGames": 28,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.02,
-            "vsBaseline": -1.54
+            "vsBaseline": -1.64
           },
           "WR": {
             "playerGames": 40,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 13.31,
-            "vsBaseline": 0.96
+            "vsBaseline": 1.03
           },
           "TE": {
             "playerGames": 20,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 7.51,
-            "vsBaseline": -0.24
+            "vsBaseline": -0.26
           }
         },
         "NE": {
@@ -575,25 +576,25 @@
             "playerGames": 14,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 17.27,
-            "vsBaseline": 0.79
+            "vsBaseline": 0.88
           },
           "RB": {
             "playerGames": 26,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 12.02,
-            "vsBaseline": 1.34
+            "vsBaseline": 1.43
           },
           "WR": {
             "playerGames": 33,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 12.33,
-            "vsBaseline": 0.4
+            "vsBaseline": 0.44
           },
           "TE": {
             "playerGames": 13,
             "gamesPlayed": 11,
             "pointsAllowedPerGame": 7.05,
-            "vsBaseline": -0.43
+            "vsBaseline": -0.47
           }
         },
         "NO": {
@@ -601,25 +602,25 @@
             "playerGames": 17,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 14.01,
-            "vsBaseline": -1.05
+            "vsBaseline": -1.18
           },
           "RB": {
             "playerGames": 25,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 13.64,
-            "vsBaseline": 2.82
+            "vsBaseline": 3.01
           },
           "WR": {
             "playerGames": 32,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 12.08,
-            "vsBaseline": 0.19
+            "vsBaseline": 0.09
           },
           "TE": {
             "playerGames": 11,
             "gamesPlayed": 9,
             "pointsAllowedPerGame": 9.99,
-            "vsBaseline": 1.17
+            "vsBaseline": 1.31
           }
         },
         "NYG": {
@@ -627,25 +628,25 @@
             "playerGames": 14,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 16.77,
-            "vsBaseline": -0.19
+            "vsBaseline": -0.38
           },
           "RB": {
             "playerGames": 24,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 14.38,
-            "vsBaseline": 2.08
+            "vsBaseline": 2.25
           },
           "WR": {
             "playerGames": 30,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 11.46,
-            "vsBaseline": -1.17
+            "vsBaseline": -1.26
           },
           "TE": {
             "playerGames": 12,
             "gamesPlayed": 9,
             "pointsAllowedPerGame": 6.7,
-            "vsBaseline": -1.07
+            "vsBaseline": -1.14
           }
         },
         "NYJ": {
@@ -653,25 +654,25 @@
             "playerGames": 16,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 13.97,
-            "vsBaseline": -1.19
+            "vsBaseline": -1.22
           },
           "RB": {
             "playerGames": 25,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 11,
-            "vsBaseline": 0.17
+            "vsBaseline": 0.18
           },
           "WR": {
             "playerGames": 37,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.73,
-            "vsBaseline": 0.37
+            "vsBaseline": 0.34
           },
           "TE": {
             "playerGames": 19,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 5.81,
-            "vsBaseline": -0.97
+            "vsBaseline": -1.03
           }
         },
         "PHI": {
@@ -679,25 +680,25 @@
             "playerGames": 14,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 15.39,
-            "vsBaseline": -0.73
+            "vsBaseline": -0.92
           },
           "RB": {
             "playerGames": 26,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 8.1,
-            "vsBaseline": -3.31
+            "vsBaseline": -3.56
           },
           "WR": {
             "playerGames": 28,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 11.35,
-            "vsBaseline": -1.46
+            "vsBaseline": -1.61
           },
           "TE": {
             "playerGames": 13,
             "gamesPlayed": 11,
             "pointsAllowedPerGame": 8.42,
-            "vsBaseline": -0.06
+            "vsBaseline": -0.08
           }
         },
         "PIT": {
@@ -705,25 +706,25 @@
             "playerGames": 17,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 14.06,
-            "vsBaseline": -3.48
+            "vsBaseline": -3.72
           },
           "RB": {
             "playerGames": 20,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 10.81,
-            "vsBaseline": -0.83
+            "vsBaseline": -0.97
           },
           "WR": {
             "playerGames": 37,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.74,
-            "vsBaseline": -1.71
+            "vsBaseline": -1.79
           },
           "TE": {
             "playerGames": 18,
             "gamesPlayed": 12,
             "pointsAllowedPerGame": 9.59,
-            "vsBaseline": 1.27
+            "vsBaseline": 1.34
           }
         },
         "SEA": {
@@ -731,25 +732,25 @@
             "playerGames": 16,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 15.52,
-            "vsBaseline": 0.39
+            "vsBaseline": -0.2
           },
           "RB": {
             "playerGames": 29,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 9.91,
-            "vsBaseline": -0.9
+            "vsBaseline": -0.81
           },
           "WR": {
             "playerGames": 36,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 11.49,
-            "vsBaseline": -0.13
+            "vsBaseline": -0.16
           },
           "TE": {
             "playerGames": 15,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 9.93,
-            "vsBaseline": 1.68
+            "vsBaseline": 1.79
           }
         },
         "SF": {
@@ -757,25 +758,25 @@
             "playerGames": 17,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 15.69,
-            "vsBaseline": -0.56
+            "vsBaseline": -0.61
           },
           "RB": {
             "playerGames": 24,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 13.31,
-            "vsBaseline": 1.19
+            "vsBaseline": 1.36
           },
           "WR": {
             "playerGames": 29,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 11.19,
-            "vsBaseline": -0.33
+            "vsBaseline": -0.46
           },
           "TE": {
             "playerGames": 14,
             "gamesPlayed": 12,
             "pointsAllowedPerGame": 8.11,
-            "vsBaseline": -0.38
+            "vsBaseline": -0.4
           }
         },
         "TB": {
@@ -783,25 +784,25 @@
             "playerGames": 12,
             "gamesPlayed": 12,
             "pointsAllowedPerGame": 22.72,
-            "vsBaseline": 5.19
+            "vsBaseline": 5.58
           },
           "RB": {
             "playerGames": 21,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 11.14,
-            "vsBaseline": -1.63
+            "vsBaseline": -1.34
           },
           "WR": {
             "playerGames": 30,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 11.3,
-            "vsBaseline": -0.18
+            "vsBaseline": -0.22
           },
           "TE": {
             "playerGames": 14,
             "gamesPlayed": 12,
             "pointsAllowedPerGame": 12.76,
-            "vsBaseline": 3.22
+            "vsBaseline": 3.47
           }
         },
         "TEN": {
@@ -809,25 +810,25 @@
             "playerGames": 16,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 16.6,
-            "vsBaseline": 1.16
+            "vsBaseline": 1.4
           },
           "RB": {
             "playerGames": 26,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 12.39,
-            "vsBaseline": 1.83
+            "vsBaseline": 1.91
           },
           "WR": {
             "playerGames": 39,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 9.97,
-            "vsBaseline": -1.52
+            "vsBaseline": -1.57
           },
           "TE": {
             "playerGames": 15,
             "gamesPlayed": 12,
             "pointsAllowedPerGame": 5.16,
-            "vsBaseline": -2.39
+            "vsBaseline": -2.6
           }
         },
         "WAS": {
@@ -835,25 +836,25 @@
             "playerGames": 13,
             "gamesPlayed": 12,
             "pointsAllowedPerGame": 13.81,
-            "vsBaseline": -3.23
+            "vsBaseline": -2.97
           },
           "RB": {
             "playerGames": 25,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 11.9,
-            "vsBaseline": -0.55
+            "vsBaseline": -0.59
           },
           "WR": {
             "playerGames": 32,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 12.07,
-            "vsBaseline": -0.67
+            "vsBaseline": -0.72
           },
           "TE": {
             "playerGames": 15,
             "gamesPlayed": 12,
             "pointsAllowedPerGame": 6.86,
-            "vsBaseline": -1.51
+            "vsBaseline": -1.63
           }
         }
       },
@@ -866,25 +867,25 @@
             "playerGames": 18,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 15.44,
-            "vsBaseline": 0.02
+            "vsBaseline": 0.03
           },
           "RB": {
             "playerGames": 36,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 11.49,
-            "vsBaseline": 0.74
+            "vsBaseline": 0.95
           },
           "WR": {
             "playerGames": 42,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.67,
-            "vsBaseline": -0.6
+            "vsBaseline": -0.64
           },
           "TE": {
             "playerGames": 22,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 10.24,
-            "vsBaseline": 2
+            "vsBaseline": 2.14
           }
         },
         "ATL": {
@@ -892,7 +893,7 @@
             "playerGames": 16,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 16.02,
-            "vsBaseline": 0.52
+            "vsBaseline": 0.53
           },
           "RB": {
             "playerGames": 32,
@@ -904,13 +905,13 @@
             "playerGames": 39,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 11.25,
-            "vsBaseline": 1.94
+            "vsBaseline": 1.97
           },
           "TE": {
             "playerGames": 15,
             "gamesPlayed": 11,
             "pointsAllowedPerGame": 6.21,
-            "vsBaseline": -2.58
+            "vsBaseline": -2.78
           }
         },
         "BAL": {
@@ -918,25 +919,25 @@
             "playerGames": 16,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 17.59,
-            "vsBaseline": 0.42
+            "vsBaseline": 1.92
           },
           "RB": {
             "playerGames": 36,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.01,
-            "vsBaseline": -0.09
+            "vsBaseline": -0.1
           },
           "WR": {
             "playerGames": 39,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 10.64,
-            "vsBaseline": 0.91
+            "vsBaseline": 0.92
           },
           "TE": {
             "playerGames": 22,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 6.58,
-            "vsBaseline": -1.46
+            "vsBaseline": -1.58
           }
         },
         "BUF": {
@@ -944,25 +945,25 @@
             "playerGames": 13,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 13.67,
-            "vsBaseline": -2.25
+            "vsBaseline": -2.39
           },
           "RB": {
             "playerGames": 32,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 11.34,
-            "vsBaseline": 1.44
+            "vsBaseline": 1.38
           },
           "WR": {
             "playerGames": 36,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 9.92,
-            "vsBaseline": -0.19
+            "vsBaseline": -0.21
           },
           "TE": {
             "playerGames": 16,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 6.58,
-            "vsBaseline": -2.09
+            "vsBaseline": -2.23
           }
         },
         "CAR": {
@@ -970,25 +971,25 @@
             "playerGames": 20,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 11.6,
-            "vsBaseline": -4.5
+            "vsBaseline": -4.79
           },
           "RB": {
             "playerGames": 35,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 10.41,
-            "vsBaseline": -0.3
+            "vsBaseline": -0.35
           },
           "WR": {
             "playerGames": 42,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 9.25,
-            "vsBaseline": -1.06
+            "vsBaseline": -1.42
           },
           "TE": {
             "playerGames": 22,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 8.9,
-            "vsBaseline": -0.56
+            "vsBaseline": -0.61
           }
         },
         "CHI": {
@@ -996,25 +997,25 @@
             "playerGames": 15,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 18.05,
-            "vsBaseline": 3.01
+            "vsBaseline": 3.13
           },
           "RB": {
             "playerGames": 31,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.35,
-            "vsBaseline": -0.66
+            "vsBaseline": -0.74
           },
           "WR": {
             "playerGames": 43,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 11.41,
-            "vsBaseline": 1.29
+            "vsBaseline": 1.22
           },
           "TE": {
             "playerGames": 15,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 9.43,
-            "vsBaseline": 0.26
+            "vsBaseline": 0.28
           }
         },
         "CIN": {
@@ -1022,25 +1023,25 @@
             "playerGames": 15,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 18.68,
-            "vsBaseline": 2.1
+            "vsBaseline": 2.21
           },
           "RB": {
             "playerGames": 33,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 12.94,
-            "vsBaseline": 3.27
+            "vsBaseline": 3.31
           },
           "WR": {
             "playerGames": 36,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 8.44,
-            "vsBaseline": -0.94
+            "vsBaseline": -1.04
           },
           "TE": {
             "playerGames": 24,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 11.84,
-            "vsBaseline": 3.42
+            "vsBaseline": 3.67
           }
         },
         "CLE": {
@@ -1048,25 +1049,25 @@
             "playerGames": 18,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 11.67,
-            "vsBaseline": -4.06
+            "vsBaseline": -4.43
           },
           "RB": {
             "playerGames": 33,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.38,
-            "vsBaseline": -1.07
+            "vsBaseline": -1.14
           },
           "WR": {
             "playerGames": 32,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 10.41,
-            "vsBaseline": -0.19
+            "vsBaseline": -0.25
           },
           "TE": {
             "playerGames": 26,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 5.23,
-            "vsBaseline": -2.45
+            "vsBaseline": -2.68
           }
         },
         "DAL": {
@@ -1074,25 +1075,25 @@
             "playerGames": 18,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 19.86,
-            "vsBaseline": 4.62
+            "vsBaseline": 4.98
           },
           "RB": {
             "playerGames": 27,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 13.56,
-            "vsBaseline": 2.74
+            "vsBaseline": 2.91
           },
           "WR": {
             "playerGames": 38,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 14.3,
-            "vsBaseline": 3.41
+            "vsBaseline": 4.41
           },
           "TE": {
             "playerGames": 16,
             "gamesPlayed": 12,
             "pointsAllowedPerGame": 8.51,
-            "vsBaseline": -0.7
+            "vsBaseline": -0.86
           }
         },
         "DEN": {
@@ -1100,25 +1101,25 @@
             "playerGames": 14,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 14.2,
-            "vsBaseline": -1.75
+            "vsBaseline": -1.88
           },
           "RB": {
             "playerGames": 29,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 8.44,
-            "vsBaseline": -0.99
+            "vsBaseline": -1.09
           },
           "WR": {
             "playerGames": 48,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 7.79,
-            "vsBaseline": -1.9
+            "vsBaseline": -2
           },
           "TE": {
             "playerGames": 17,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 8.68,
-            "vsBaseline": -1.01
+            "vsBaseline": -1.1
           }
         },
         "DET": {
@@ -1126,25 +1127,25 @@
             "playerGames": 15,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 19.02,
-            "vsBaseline": 1.63
+            "vsBaseline": 1.8
           },
           "RB": {
             "playerGames": 34,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 9.19,
-            "vsBaseline": -0.41
+            "vsBaseline": -0.44
           },
           "WR": {
             "playerGames": 39,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 11.8,
-            "vsBaseline": 1.1
+            "vsBaseline": 1.29
           },
           "TE": {
             "playerGames": 21,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 8.77,
-            "vsBaseline": 0.89
+            "vsBaseline": 0.79
           }
         },
         "GB": {
@@ -1152,25 +1153,25 @@
             "playerGames": 16,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 15.05,
-            "vsBaseline": -0.39
+            "vsBaseline": -0.45
           },
           "RB": {
             "playerGames": 27,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 11.07,
-            "vsBaseline": -0.38
+            "vsBaseline": -0.41
           },
           "WR": {
             "playerGames": 39,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 9.83,
-            "vsBaseline": -0.76
+            "vsBaseline": -0.83
           },
           "TE": {
             "playerGames": 17,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 9.06,
-            "vsBaseline": 0.13
+            "vsBaseline": 0.15
           }
         },
         "HOU": {
@@ -1178,25 +1179,25 @@
             "playerGames": 15,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 12.93,
-            "vsBaseline": -3.62
+            "vsBaseline": -3.85
           },
           "RB": {
             "playerGames": 31,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 9.38,
-            "vsBaseline": -1.2
+            "vsBaseline": -1.21
           },
           "WR": {
             "playerGames": 42,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 8.4,
-            "vsBaseline": -1.97
+            "vsBaseline": -2.18
           },
           "TE": {
             "playerGames": 22,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 7.35,
-            "vsBaseline": -1.55
+            "vsBaseline": -1.68
           }
         },
         "IND": {
@@ -1204,25 +1205,25 @@
             "playerGames": 18,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 15.73,
-            "vsBaseline": 0.13
+            "vsBaseline": 0.14
           },
           "RB": {
             "playerGames": 29,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 9.26,
-            "vsBaseline": -1.13
+            "vsBaseline": -1.19
           },
           "WR": {
             "playerGames": 45,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.64,
-            "vsBaseline": 0.86
+            "vsBaseline": 0.91
           },
           "TE": {
             "playerGames": 19,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 10.39,
-            "vsBaseline": 0.9
+            "vsBaseline": 0.95
           }
         },
         "JAX": {
@@ -1230,25 +1231,25 @@
             "playerGames": 14,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 14.09,
-            "vsBaseline": -1.84
+            "vsBaseline": -2.04
           },
           "RB": {
             "playerGames": 24,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 10.14,
-            "vsBaseline": -1.37
+            "vsBaseline": -1.46
           },
           "WR": {
             "playerGames": 42,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.14,
-            "vsBaseline": 0.19
+            "vsBaseline": 0.18
           },
           "TE": {
             "playerGames": 21,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 9.89,
-            "vsBaseline": 1.54
+            "vsBaseline": 1.56
           }
         },
         "KC": {
@@ -1256,25 +1257,25 @@
             "playerGames": 16,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 15.43,
-            "vsBaseline": -1.47
+            "vsBaseline": -1.6
           },
           "RB": {
             "playerGames": 26,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.64,
-            "vsBaseline": -1.55
+            "vsBaseline": -1.6
           },
           "WR": {
             "playerGames": 48,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 8.7,
-            "vsBaseline": -0.91
+            "vsBaseline": -1.26
           },
           "TE": {
             "playerGames": 18,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 7.43,
-            "vsBaseline": -0.11
+            "vsBaseline": -0.21
           }
         },
         "LAC": {
@@ -1282,25 +1283,25 @@
             "playerGames": 16,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 12.94,
-            "vsBaseline": -3.28
+            "vsBaseline": -3.49
           },
           "RB": {
             "playerGames": 29,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 9.21,
-            "vsBaseline": -0.95
+            "vsBaseline": -1.04
           },
           "WR": {
             "playerGames": 44,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 8.46,
-            "vsBaseline": -1.05
+            "vsBaseline": -1.43
           },
           "TE": {
             "playerGames": 18,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 8.64,
-            "vsBaseline": -0.57
+            "vsBaseline": -0.61
           }
         },
         "LAR": {
@@ -1308,25 +1309,25 @@
             "playerGames": 16,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 15.56,
-            "vsBaseline": 0.71
+            "vsBaseline": 0.78
           },
           "RB": {
             "playerGames": 29,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 10.49,
-            "vsBaseline": -0.43
+            "vsBaseline": -0.46
           },
           "WR": {
             "playerGames": 38,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 11.9,
-            "vsBaseline": 1.43
+            "vsBaseline": 1.55
           },
           "TE": {
             "playerGames": 20,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 9.38,
-            "vsBaseline": 0.13
+            "vsBaseline": 0.18
           }
         },
         "LV": {
@@ -1334,25 +1335,25 @@
             "playerGames": 17,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 15.81,
-            "vsBaseline": -0.38
+            "vsBaseline": -0.37
           },
           "RB": {
             "playerGames": 29,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 10.33,
-            "vsBaseline": 0.73
+            "vsBaseline": 0.74
           },
           "WR": {
             "playerGames": 47,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 9.41,
-            "vsBaseline": -0.34
+            "vsBaseline": -0.36
           },
           "TE": {
             "playerGames": 17,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 8.19,
-            "vsBaseline": -0.41
+            "vsBaseline": -0.12
           }
         },
         "MIA": {
@@ -1360,25 +1361,25 @@
             "playerGames": 16,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 18.8,
-            "vsBaseline": 2.31
+            "vsBaseline": 2.58
           },
           "RB": {
             "playerGames": 34,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 11.04,
-            "vsBaseline": 0.85
+            "vsBaseline": 0.81
           },
           "WR": {
             "playerGames": 42,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 9.61,
-            "vsBaseline": 0.46
+            "vsBaseline": 0.89
           },
           "TE": {
             "playerGames": 21,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 8.81,
-            "vsBaseline": 0.95
+            "vsBaseline": 1.03
           }
         },
         "MIN": {
@@ -1386,25 +1387,25 @@
             "playerGames": 16,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 10.21,
-            "vsBaseline": -5.64
+            "vsBaseline": -6.81
           },
           "RB": {
             "playerGames": 34,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 9.06,
-            "vsBaseline": -0.8
+            "vsBaseline": -0.83
           },
           "WR": {
             "playerGames": 40,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 9.17,
-            "vsBaseline": -1.86
+            "vsBaseline": -2
           },
           "TE": {
             "playerGames": 18,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 7.71,
-            "vsBaseline": -0.7
+            "vsBaseline": -0.71
           }
         },
         "NE": {
@@ -1412,25 +1413,25 @@
             "playerGames": 13,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 15.77,
-            "vsBaseline": 0.56
+            "vsBaseline": 0.64
           },
           "RB": {
             "playerGames": 31,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 9.08,
-            "vsBaseline": -1.18
+            "vsBaseline": -1.27
           },
           "WR": {
             "playerGames": 31,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 9.84,
-            "vsBaseline": 1.38
+            "vsBaseline": 1.48
           },
           "TE": {
             "playerGames": 20,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 7.51,
-            "vsBaseline": -0.42
+            "vsBaseline": -0.44
           }
         },
         "NO": {
@@ -1438,25 +1439,25 @@
             "playerGames": 17,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 13.76,
-            "vsBaseline": -0.86
+            "vsBaseline": -0.62
           },
           "RB": {
             "playerGames": 35,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 9.83,
-            "vsBaseline": -1.3
+            "vsBaseline": -1.31
           },
           "WR": {
             "playerGames": 37,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.53,
-            "vsBaseline": 0.62
+            "vsBaseline": 0.7
           },
           "TE": {
             "playerGames": 24,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 6.1,
-            "vsBaseline": -1.71
+            "vsBaseline": -1.84
           }
         },
         "NYG": {
@@ -1464,25 +1465,25 @@
             "playerGames": 17,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 16.87,
-            "vsBaseline": 0.8
+            "vsBaseline": 0.27
           },
           "RB": {
             "playerGames": 27,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 13.66,
-            "vsBaseline": 2.8
+            "vsBaseline": 3.01
           },
           "WR": {
             "playerGames": 48,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.03,
-            "vsBaseline": 0.12
+            "vsBaseline": 0.14
           },
           "TE": {
             "playerGames": 15,
             "gamesPlayed": 13,
             "pointsAllowedPerGame": 9.03,
-            "vsBaseline": -0.4
+            "vsBaseline": -0.42
           }
         },
         "NYJ": {
@@ -1490,25 +1491,25 @@
             "playerGames": 15,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 19.09,
-            "vsBaseline": 3.1
+            "vsBaseline": 3.32
           },
           "RB": {
             "playerGames": 33,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 13.37,
-            "vsBaseline": 2.56
+            "vsBaseline": 2.75
           },
           "WR": {
             "playerGames": 38,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 9.54,
-            "vsBaseline": 0.11
+            "vsBaseline": 0.13
           },
           "TE": {
             "playerGames": 20,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 8.86,
-            "vsBaseline": 0.15
+            "vsBaseline": 0.13
           }
         },
         "PHI": {
@@ -1516,25 +1517,25 @@
             "playerGames": 14,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 15.65,
-            "vsBaseline": -2.32
+            "vsBaseline": -2.49
           },
           "RB": {
             "playerGames": 31,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 11.32,
-            "vsBaseline": 0.18
+            "vsBaseline": 0.25
           },
           "WR": {
             "playerGames": 43,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 8.68,
-            "vsBaseline": -1.98
+            "vsBaseline": -2.14
           },
           "TE": {
             "playerGames": 12,
             "gamesPlayed": 11,
             "pointsAllowedPerGame": 7.88,
-            "vsBaseline": -1.39
+            "vsBaseline": -1.5
           }
         },
         "PIT": {
@@ -1542,25 +1543,25 @@
             "playerGames": 15,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 19.3,
-            "vsBaseline": 3.42
+            "vsBaseline": 3.72
           },
           "RB": {
             "playerGames": 32,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 8.8,
-            "vsBaseline": -2.01
+            "vsBaseline": -1.95
           },
           "WR": {
             "playerGames": 44,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 11.65,
-            "vsBaseline": 1.38
+            "vsBaseline": 1.49
           },
           "TE": {
             "playerGames": 24,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 9.16,
-            "vsBaseline": 1.87
+            "vsBaseline": 2.1
           }
         },
         "SEA": {
@@ -1568,25 +1569,25 @@
             "playerGames": 15,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 14.81,
-            "vsBaseline": -1.54
+            "vsBaseline": -1.62
           },
           "RB": {
             "playerGames": 31,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 8.73,
-            "vsBaseline": -1.82
+            "vsBaseline": -1.81
           },
           "WR": {
             "playerGames": 34,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 9.68,
-            "vsBaseline": -1.32
+            "vsBaseline": -1.43
           },
           "TE": {
             "playerGames": 20,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 10.1,
-            "vsBaseline": 0.37
+            "vsBaseline": 0.38
           }
         },
         "SF": {
@@ -1594,7 +1595,7 @@
             "playerGames": 16,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 15.76,
-            "vsBaseline": 1.24
+            "vsBaseline": 1.12
           },
           "RB": {
             "playerGames": 31,
@@ -1606,13 +1607,13 @@
             "playerGames": 35,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.99,
-            "vsBaseline": -0.49
+            "vsBaseline": -0.53
           },
           "TE": {
             "playerGames": 23,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 9.33,
-            "vsBaseline": 0.25
+            "vsBaseline": 0.28
           }
         },
         "TB": {
@@ -1620,25 +1621,25 @@
             "playerGames": 16,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 18.46,
-            "vsBaseline": 4.03
+            "vsBaseline": 4.38
           },
           "RB": {
             "playerGames": 25,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 11.67,
-            "vsBaseline": -0.89
+            "vsBaseline": -0.77
           },
           "WR": {
             "playerGames": 37,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.24,
-            "vsBaseline": -0.6
+            "vsBaseline": -0.59
           },
           "TE": {
             "playerGames": 19,
             "gamesPlayed": 14,
             "pointsAllowedPerGame": 10.97,
-            "vsBaseline": 1.61
+            "vsBaseline": 1.66
           }
         },
         "TEN": {
@@ -1646,25 +1647,25 @@
             "playerGames": 17,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 17.68,
-            "vsBaseline": 2.15
+            "vsBaseline": 2.27
           },
           "RB": {
             "playerGames": 27,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 10.63,
-            "vsBaseline": 0.28
+            "vsBaseline": 0.21
           },
           "WR": {
             "playerGames": 49,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 10.66,
-            "vsBaseline": 0.69
+            "vsBaseline": 0.73
           },
           "TE": {
             "playerGames": 20,
             "gamesPlayed": 16,
             "pointsAllowedPerGame": 10,
-            "vsBaseline": 0.71
+            "vsBaseline": 0.8
           }
         },
         "WAS": {
@@ -1672,25 +1673,25 @@
             "playerGames": 16,
             "gamesPlayed": 15,
             "pointsAllowedPerGame": 19.18,
-            "vsBaseline": 4.19
+            "vsBaseline": 4.51
           },
           "RB": {
             "playerGames": 31,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 12.14,
-            "vsBaseline": 1.52
+            "vsBaseline": 1.42
           },
           "WR": {
             "playerGames": 45,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 11.69,
-            "vsBaseline": 0.95
+            "vsBaseline": 0.97
           },
           "TE": {
             "playerGames": 21,
             "gamesPlayed": 17,
             "pointsAllowedPerGame": 9.67,
-            "vsBaseline": 0.7
+            "vsBaseline": 0.99
           }
         }
       },
@@ -1708,19 +1709,19 @@
             "playerGames": 10,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 5.97,
-            "vsBaseline": null
+            "vsBaseline": -2.72
           },
           "WR": {
             "playerGames": 11,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 13.23,
-            "vsBaseline": null
+            "vsBaseline": 3.96
           },
           "TE": {
             "playerGames": 8,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 9.31,
-            "vsBaseline": null
+            "vsBaseline": 3.76
           }
         },
         "ATL": {
@@ -1728,25 +1729,25 @@
             "playerGames": 4,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 17.75,
-            "vsBaseline": null
+            "vsBaseline": -1.5
           },
           "RB": {
             "playerGames": 10,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 6.77,
-            "vsBaseline": null
+            "vsBaseline": -2.87
           },
           "WR": {
             "playerGames": 10,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 12.83,
-            "vsBaseline": null
+            "vsBaseline": 0.59
           },
           "TE": {
             "playerGames": 6,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 9.37,
-            "vsBaseline": null
+            "vsBaseline": 1.53
           }
         },
         "BAL": {
@@ -1754,25 +1755,25 @@
             "playerGames": 4,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 16.47,
-            "vsBaseline": null
+            "vsBaseline": 0.86
           },
           "RB": {
             "playerGames": 10,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 7.64,
-            "vsBaseline": null
+            "vsBaseline": 0.37
           },
           "WR": {
             "playerGames": 15,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 9.98,
-            "vsBaseline": null
+            "vsBaseline": 0.31
           },
           "TE": {
             "playerGames": 5,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 7.1,
-            "vsBaseline": null
+            "vsBaseline": -2.01
           }
         },
         "BUF": {
@@ -1780,25 +1781,25 @@
             "playerGames": 4,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 21.3,
-            "vsBaseline": null
+            "vsBaseline": 7.93
           },
           "RB": {
             "playerGames": 8,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 12.76,
-            "vsBaseline": null
+            "vsBaseline": 3.87
           },
           "WR": {
             "playerGames": 12,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 11.27,
-            "vsBaseline": null
+            "vsBaseline": 3.29
           },
           "TE": {
             "playerGames": 5,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 7.62,
-            "vsBaseline": null
+            "vsBaseline": -0.39
           }
         },
         "CAR": {
@@ -1811,19 +1812,19 @@
             "playerGames": 6,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 16.7,
-            "vsBaseline": null
+            "vsBaseline": -2.23
           },
           "WR": {
             "playerGames": 10,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 8.83,
-            "vsBaseline": null
+            "vsBaseline": -2.49
           },
           "TE": {
             "playerGames": 6,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 10.75,
-            "vsBaseline": null
+            "vsBaseline": 5.89
           }
         },
         "CHI": {
@@ -1836,13 +1837,13 @@
             "playerGames": 7,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 8.54,
-            "vsBaseline": null
+            "vsBaseline": 0.61
           },
           "WR": {
             "playerGames": 8,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 10.78,
-            "vsBaseline": null
+            "vsBaseline": -6.59
           },
           "TE": {
             "playerGames": 4,
@@ -1861,19 +1862,19 @@
             "playerGames": 8,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 9.65,
-            "vsBaseline": null
+            "vsBaseline": 0.84
           },
           "WR": {
             "playerGames": 11,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 6.76,
-            "vsBaseline": null
+            "vsBaseline": -1.42
           },
           "TE": {
             "playerGames": 5,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 12.58,
-            "vsBaseline": null
+            "vsBaseline": 5.22
           }
         },
         "CLE": {
@@ -1887,19 +1888,19 @@
             "playerGames": 7,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 8.59,
-            "vsBaseline": null
+            "vsBaseline": -2.93
           },
           "WR": {
             "playerGames": 13,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 8.25,
-            "vsBaseline": null
+            "vsBaseline": -0.28
           },
           "TE": {
             "playerGames": 5,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 10.32,
-            "vsBaseline": null
+            "vsBaseline": 2.32
           }
         },
         "DAL": {
@@ -1913,19 +1914,19 @@
             "playerGames": 11,
             "gamesPlayed": 5,
             "pointsAllowedPerGame": 10.04,
-            "vsBaseline": null
+            "vsBaseline": 1.45
           },
           "WR": {
             "playerGames": 13,
             "gamesPlayed": 5,
             "pointsAllowedPerGame": 11.6,
-            "vsBaseline": null
+            "vsBaseline": 2.01
           },
           "TE": {
             "playerGames": 6,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 7.63,
-            "vsBaseline": null
+            "vsBaseline": 0.3
           }
         },
         "DEN": {
@@ -1933,19 +1934,19 @@
             "playerGames": 4,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 17.1,
-            "vsBaseline": null
+            "vsBaseline": -3.12
           },
           "RB": {
             "playerGames": 9,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 11.22,
-            "vsBaseline": null
+            "vsBaseline": 0.07
           },
           "WR": {
             "playerGames": 10,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 9.36,
-            "vsBaseline": null
+            "vsBaseline": -1.79
           },
           "TE": {
             "playerGames": 5,
@@ -1959,25 +1960,25 @@
             "playerGames": 4,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 27.88,
-            "vsBaseline": null
+            "vsBaseline": 8.16
           },
           "RB": {
             "playerGames": 7,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 12.14,
-            "vsBaseline": null
+            "vsBaseline": 2.77
           },
           "WR": {
             "playerGames": 10,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 15.17,
-            "vsBaseline": null
+            "vsBaseline": 7.6
           },
           "TE": {
             "playerGames": 5,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 14,
-            "vsBaseline": null
+            "vsBaseline": 6.95
           }
         },
         "GB": {
@@ -1990,19 +1991,19 @@
             "playerGames": 9,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 12.74,
-            "vsBaseline": null
+            "vsBaseline": 0.65
           },
           "WR": {
             "playerGames": 11,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 9.94,
-            "vsBaseline": null
+            "vsBaseline": -0.84
           },
           "TE": {
             "playerGames": 5,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 7.12,
-            "vsBaseline": null
+            "vsBaseline": -1.74
           }
         },
         "HOU": {
@@ -2010,19 +2011,19 @@
             "playerGames": 4,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 19.48,
-            "vsBaseline": null
+            "vsBaseline": 0.94
           },
           "RB": {
             "playerGames": 8,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 8.46,
-            "vsBaseline": null
+            "vsBaseline": -2.62
           },
           "WR": {
             "playerGames": 11,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 14.85,
-            "vsBaseline": null
+            "vsBaseline": 4.34
           },
           "TE": {
             "playerGames": 3,
@@ -2041,13 +2042,13 @@
             "playerGames": 7,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 13.04,
-            "vsBaseline": null
+            "vsBaseline": 1.19
           },
           "WR": {
             "playerGames": 10,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 8.87,
-            "vsBaseline": null
+            "vsBaseline": -2.48
           },
           "TE": {
             "playerGames": 4,
@@ -2061,19 +2062,19 @@
             "playerGames": 4,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 13.9,
-            "vsBaseline": null
+            "vsBaseline": -2.18
           },
           "RB": {
             "playerGames": 8,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 7.45,
-            "vsBaseline": null
+            "vsBaseline": -2.39
           },
           "WR": {
             "playerGames": 12,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 9.03,
-            "vsBaseline": null
+            "vsBaseline": 0.4
           },
           "TE": {
             "playerGames": 6,
@@ -2087,19 +2088,19 @@
             "playerGames": 4,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 12.35,
-            "vsBaseline": null
+            "vsBaseline": -1.36
           },
           "RB": {
             "playerGames": 8,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 9.8,
-            "vsBaseline": null
+            "vsBaseline": 0.63
           },
           "WR": {
             "playerGames": 11,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 6.24,
-            "vsBaseline": null
+            "vsBaseline": -0.02
           },
           "TE": {
             "playerGames": 5,
@@ -2119,19 +2120,19 @@
             "playerGames": 7,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 11.77,
-            "vsBaseline": null
+            "vsBaseline": 1.6
           },
           "WR": {
             "playerGames": 14,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 8.17,
-            "vsBaseline": null
+            "vsBaseline": -0.87
           },
           "TE": {
             "playerGames": 4,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 8.95,
-            "vsBaseline": null
+            "vsBaseline": -3.35
           }
         },
         "LAR": {
@@ -2145,13 +2146,13 @@
             "playerGames": 8,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 7.05,
-            "vsBaseline": null
+            "vsBaseline": -0.67
           },
           "WR": {
             "playerGames": 11,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 8.16,
-            "vsBaseline": null
+            "vsBaseline": 0.12
           },
           "TE": {
             "playerGames": 5,
@@ -2164,19 +2165,19 @@
             "playerGames": 4,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 16.35,
-            "vsBaseline": null
+            "vsBaseline": 0.62
           },
           "RB": {
             "playerGames": 10,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 8.43,
-            "vsBaseline": null
+            "vsBaseline": 0.89
           },
           "WR": {
             "playerGames": 13,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 8.26,
-            "vsBaseline": null
+            "vsBaseline": -0.41
           },
           "TE": {
             "playerGames": 6,
@@ -2196,19 +2197,19 @@
             "playerGames": 10,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 10.58,
-            "vsBaseline": null
+            "vsBaseline": 2.23
           },
           "WR": {
             "playerGames": 12,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 6.03,
-            "vsBaseline": null
+            "vsBaseline": -7.03
           },
           "TE": {
             "playerGames": 4,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 16.5,
-            "vsBaseline": null
+            "vsBaseline": 4.72
           }
         },
         "MIN": {
@@ -2222,19 +2223,19 @@
             "playerGames": 8,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 7.1,
-            "vsBaseline": null
+            "vsBaseline": -5.03
           },
           "WR": {
             "playerGames": 11,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 9.67,
-            "vsBaseline": null
+            "vsBaseline": 1.26
           },
           "TE": {
             "playerGames": 5,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 4.38,
-            "vsBaseline": null
+            "vsBaseline": -1.89
           }
         },
         "NE": {
@@ -2248,19 +2249,19 @@
             "playerGames": 11,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 6.94,
-            "vsBaseline": null
+            "vsBaseline": -1.73
           },
           "WR": {
             "playerGames": 11,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 11,
-            "vsBaseline": null
+            "vsBaseline": 0.56
           },
           "TE": {
             "playerGames": 5,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 4.06,
-            "vsBaseline": null
+            "vsBaseline": -6.17
           }
         },
         "NO": {
@@ -2274,19 +2275,19 @@
             "playerGames": 7,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 18.89,
-            "vsBaseline": null
+            "vsBaseline": 2.85
           },
           "WR": {
             "playerGames": 11,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 9.85,
-            "vsBaseline": null
+            "vsBaseline": 2.68
           },
           "TE": {
             "playerGames": 6,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 11.68,
-            "vsBaseline": null
+            "vsBaseline": 1.01
           }
         },
         "NYG": {
@@ -2294,19 +2295,19 @@
             "playerGames": 4,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 15.3,
-            "vsBaseline": null
+            "vsBaseline": -0.55
           },
           "RB": {
             "playerGames": 7,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 11.94,
-            "vsBaseline": null
+            "vsBaseline": 0.52
           },
           "WR": {
             "playerGames": 12,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 10.44,
-            "vsBaseline": null
+            "vsBaseline": 1.72
           },
           "TE": {
             "playerGames": 6,
@@ -2325,19 +2326,19 @@
             "playerGames": 8,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 12.63,
-            "vsBaseline": null
+            "vsBaseline": 2.86
           },
           "WR": {
             "playerGames": 12,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 9.07,
-            "vsBaseline": null
+            "vsBaseline": -2.12
           },
           "TE": {
             "playerGames": 5,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 6.54,
-            "vsBaseline": null
+            "vsBaseline": -0.93
           }
         },
         "PHI": {
@@ -2350,13 +2351,13 @@
             "playerGames": 9,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 9.83,
-            "vsBaseline": null
+            "vsBaseline": 0.56
           },
           "WR": {
             "playerGames": 12,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 10.04,
-            "vsBaseline": null
+            "vsBaseline": -0.79
           },
           "TE": {
             "playerGames": 4,
@@ -2374,13 +2375,13 @@
             "playerGames": 8,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 10.56,
-            "vsBaseline": null
+            "vsBaseline": -1.9
           },
           "WR": {
             "playerGames": 10,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 10.16,
-            "vsBaseline": null
+            "vsBaseline": 0.61
           },
           "TE": {
             "playerGames": 6,
@@ -2400,13 +2401,13 @@
             "playerGames": 9,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 8.84,
-            "vsBaseline": null
+            "vsBaseline": -0.33
           },
           "WR": {
             "playerGames": 11,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 5.54,
-            "vsBaseline": null
+            "vsBaseline": -6.19
           },
           "TE": {
             "playerGames": 4,
@@ -2419,19 +2420,19 @@
             "playerGames": 4,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 13.95,
-            "vsBaseline": null
+            "vsBaseline": 0.3
           },
           "RB": {
             "playerGames": 9,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 9.81,
-            "vsBaseline": null
+            "vsBaseline": 0.49
           },
           "WR": {
             "playerGames": 11,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 8.1,
-            "vsBaseline": null
+            "vsBaseline": -0.49
           },
           "TE": {
             "playerGames": 7,
@@ -2445,25 +2446,25 @@
             "playerGames": 5,
             "gamesPlayed": 5,
             "pointsAllowedPerGame": 14,
-            "vsBaseline": null
+            "vsBaseline": -3.63
           },
           "RB": {
             "playerGames": 9,
             "gamesPlayed": 5,
             "pointsAllowedPerGame": 9.08,
-            "vsBaseline": null
+            "vsBaseline": 1.5
           },
           "WR": {
             "playerGames": 15,
             "gamesPlayed": 5,
             "pointsAllowedPerGame": 9.12,
-            "vsBaseline": null
+            "vsBaseline": -2
           },
           "TE": {
             "playerGames": 8,
             "gamesPlayed": 5,
             "pointsAllowedPerGame": 8.59,
-            "vsBaseline": null
+            "vsBaseline": -2.2
           }
         },
         "TEN": {
@@ -2477,13 +2478,13 @@
             "playerGames": 9,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 8.61,
-            "vsBaseline": null
+            "vsBaseline": -0.42
           },
           "WR": {
             "playerGames": 12,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 10,
-            "vsBaseline": null
+            "vsBaseline": -1.61
           },
           "TE": {
             "playerGames": 5,
@@ -2503,13 +2504,13 @@
             "playerGames": 8,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 7.28,
-            "vsBaseline": null
+            "vsBaseline": -1.74
           },
           "WR": {
             "playerGames": 12,
             "gamesPlayed": 4,
             "pointsAllowedPerGame": 12.05,
-            "vsBaseline": null
+            "vsBaseline": 2.12
           },
           "TE": {
             "playerGames": 4,

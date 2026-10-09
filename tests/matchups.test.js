@@ -220,3 +220,61 @@ test('the build is in the daily action', () => {
   assert.ok(yml.indexOf('fetch-stats.js') < yml.indexOf('build-matchups.js'),
     'matchups are built before the weekly stats they read are refreshed');
 });
+
+// ── The baseline leaves out the game it is measuring (2026-10-09) ───────────
+
+test('a player is not his own baseline for the game being measured', () => {
+  // THE ALGEBRA THE OLD BASELINE COULD NOT ESCAPE. Including the measured game
+  // makes the delta (n-1)/n of the truth — 6% off over a season, 25% off over
+  // four games — and the page prints these as values, not just ranks.
+  //
+  // Four identical games and one outlier: against the outlier's defence the
+  // delta must be the gap to the OTHER four, not the gap to an average that has
+  // already absorbed a fifth of it.
+  const src = fs.readFileSync(path.join(__dirname, '..', 'scripts', 'build-matchups.js'), 'utf8');
+  assert.match(src, /\(total - g\.fpts\) \/ \(scored\.length - 1\)/,
+    'the baseline no longer leaves the measured game out');
+  assert.ok(!/scored\.reduce\(\(s, g\) => s \+ g\.fpts, 0\) \/ scored\.length/.test(src),
+    'the self-inclusive baseline is still in the file');
+});
+
+test('the baseline floor is low enough to exist in the first month', () => {
+  // It was SIX, and nobody has six games until about week 7 — so for the first
+  // quarter of every season the board published only the raw number its own
+  // header warns about. Measured in research-matchup-baseline.js before moving:
+  // 6 -> 4 moves no defence five or more places on a finished season.
+  const src = fs.readFileSync(path.join(__dirname, '..', 'scripts', 'build-matchups.js'), 'utf8');
+  const m = src.match(/const MIN_BASELINE_GAMES = (\d+)/);
+  assert.ok(m, 'MIN_BASELINE_GAMES is gone');
+  const floor = Number(m[1]);
+  assert.ok(floor <= 4, `a baseline floor of ${floor} cannot be met until about week ${floor + 3}`);
+  assert.ok(floor >= 3, 'a baseline off fewer than two other games is not a baseline');
+});
+
+test('the live season actually carries the trusted column', () => {
+  // THE WHOLE POINT, asserted against the file on disk rather than the code: if
+  // the newest season has games in it, the column the file calls the sounder of
+  // the two has to be there for the positions with enough sample.
+  const seasons = Object.keys(M.seasons).map(Number).sort((a, b) => a - b);
+  const latest = String(seasons[seasons.length - 1]);
+  const defs = M.seasons[latest].defenses;
+  const played = Object.values(defs).some(d => (d.WR || {}).gamesPlayed >= 4);
+  if (!played) return;                      // before week 4 there is nothing to ask
+  const withBaseline = Object.values(defs).filter(d => typeof (d.WR || {}).vsBaseline === 'number');
+  assert.ok(withBaseline.length >= 24,
+    `only ${withBaseline.length} of 32 defences carry a WR vsBaseline in ${latest} — `
+    + 'the corrected column is the one the file says to trust and it is missing in season');
+});
+
+test('what a four-week correction is worth is stated, with the numbers', () => {
+  // The corrected column is published from week 4 now, and the first month's
+  // correction has NO stable relationship with the rest of the season — measured
+  // at r = -0.12 to 0.46 across positions and years. A reader meeting a
+  // four-game number needs that on the page, not in a research script.
+  if (!M) return;
+  assert.ok(M.meta.earlySeason, 'the file publishes an early-season correction and says nothing about it');
+  assert.match(M.meta.earlySeason, /r = -?0\.\d+ to 0?\.\d+/,
+    'the early-season caveat must carry the measured range rather than the word "weak"');
+  assert.match(M.meta.earlySeason, /research-matchup-baseline/,
+    'and name the script that reproduces it, or it gets re-litigated from memory');
+});

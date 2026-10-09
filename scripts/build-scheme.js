@@ -506,7 +506,34 @@ async function buildCharting(season, plays, gsisIndex) {
 // keyed by player, and all three are empty until someone clears the qualifier.
 function fieldmapPlayers(fm) {
   if (!fm) return 0;
-  return ['passers', 'receivers', 'rushers'].reduce((n, k) => n + Object.keys(fm[k] || {}).length, 0);
+  return FM_GROUPS.reduce((n, k) => n + Object.keys(fm[k] || {}).length, 0);
+}
+
+const FM_GROUPS = ['passers', 'receivers', 'rushers'];
+// A BOARD NEEDS ENOUGH ROWS TO BE A BOARD, AND THE OLD GATE ASKED FOR ONE.
+//
+// 2026-10-09: fieldmap.json published 2026 off `passers 0, receivers 1,
+// rushers 0`. One receiver in the whole league had cleared 50 targets, the TOTAL
+// was therefore non-zero, and the season went out — so the Lab offered a 2026
+// Field Map tab whose quarterback and running back boards were empty, and three
+// daily runs in a week went red on a render test that quite reasonably expects a
+// passer to exist in the newest season.
+//
+// Which is the exact failure the comment at the call site already described:
+// "writing the empty year would offer a tab that draws nothing and select it by
+// default". The intent was right and the threshold was one player.
+//
+// EVERY GROUP HAS TO CLEAR IT, not the sum, because the page's position picker
+// offers QB, RB, WR and TE separately — a season that can fill one of them and
+// not the others is a season that renders three empty boards. Five is the floor:
+// below that there is nothing to rank, and the colour scale already refuses to
+// paint a column too sparse to scale.
+const FM_MIN_PER_GROUP = 5;
+
+/** Whether a season can fill the boards a reader is able to select. */
+function fieldmapIsRenderable(fm) {
+  if (!fm) return false;
+  return FM_GROUPS.every(k => Object.keys(fm[k] || {}).length >= FM_MIN_PER_GROUP);
 }
 
 async function buildSeason(season, opts) {
@@ -973,9 +1000,17 @@ async function main() {
       // which nobody meets until around Week 6 — and the Lab's season picker is
       // built from meta.seasons, so writing the empty year would offer a tab
       // that draws nothing and select it by default.
-      if (fieldmap && fieldmapPlayers(fieldmap)) { fieldmapSeasons[season] = fieldmap; fmCoverageLatest = fmCoverage; }
-      else markPending(OUT_FIELDMAP, season, `no passer at ${MIN_ATTEMPTS}+ attempts, receiver at ${MIN_TARGETS}+ `
-        + `targets or rusher at ${MIN_CARRIES}+ carries yet — the map needs a season's volume and this one is young`);
+      if (fieldmap && fieldmapIsRenderable(fieldmap)) { fieldmapSeasons[season] = fieldmap; fmCoverageLatest = fmCoverage; }
+      else if (fieldmap) {
+        const have = FM_GROUPS.map(k => `${Object.keys(fieldmap[k] || {}).length} ${k}`).join(', ');
+        markPending(OUT_FIELDMAP, season, `the map needs ${FM_MIN_PER_GROUP}+ qualified players in each of `
+          + `passers, receivers and rushers and this season has ${have} — a passer needs ${MIN_ATTEMPTS}+ `
+          + `attempts, a receiver ${MIN_TARGETS}+ targets and a rusher ${MIN_CARRIES}+ carries, which is `
+          + `about week 6. A season that can fill one board and not the other three is three empty boards.`);
+      } else {
+        markPending(OUT_FIELDMAP, season, `no passer at ${MIN_ATTEMPTS}+ attempts, receiver at ${MIN_TARGETS}+ `
+          + `targets or rusher at ${MIN_CARRIES}+ carries yet — the map needs a season's volume and this one is young`);
+      }
       if (weekly && Object.keys(weekly).length) weeklySeasons[season] = weekly;
       else markPending(OUT_WEEKLY, season, 'no snap counts or targets published for this season yet');
       if (rushing && Object.keys(rushing.players).length) rushingSeasons[season] = rushing.players;
@@ -1511,4 +1546,4 @@ if (require.main === module) {
   main().catch(e => { console.error('[scheme] fatal:', e.message); process.exit(1); });
 }
 
-module.exports = { leanPbp, teamKey };
+module.exports = { leanPbp, teamKey, fieldmapIsRenderable, fieldmapPlayers, FM_MIN_PER_GROUP, FM_GROUPS };
