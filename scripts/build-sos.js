@@ -33,6 +33,10 @@ const { fetchCSV, parseCSV } = require('./lib/match');
 const { hasResult, weeksPlayedFrom, regularSeasonGames } = require('./lib/schedule');
 const seasonLib = require('./lib/season');
 const { writeJSONIfChanged } = require('./lib/write');
+// Two feeds reach this file — the schedule and the weekly stats — and BOTH
+// call the Rams `LA`. Unaliased, sos.json keyed them `LA` while teams.json
+// keyed them `LAR`, so the page's own lookup from one into the other missed.
+const { teamKey, assertCanonicalTeams } = require('./lib/teams');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA_DIR, 'sos.json');
@@ -143,9 +147,10 @@ async function main() {
     for (const r of rows) {
       if (r.season_type !== 'REG') continue;
       if (!POSITIONS.includes(r.position) || !r.opponent_team) continue;
-      const k = `${r.opponent_team}|${r.position}`;
+      const def = teamKey(r.opponent_team);
+      const k = `${def}|${r.position}`;
       totals[k] = (totals[k] || 0) + (r.fantasy_points_ppr || 0);
-      (weeksFaced[r.opponent_team] ||= new Set()).add(r.week);
+      (weeksFaced[def] ||= new Set()).add(r.week);
     }
     return { totals, weeksFaced, defenses: Object.keys(weeksFaced) };
   };
@@ -207,8 +212,9 @@ async function main() {
   const schedule = {};
   for (const g of games) {
     if (!g.away_team || !g.home_team) continue;
-    (schedule[g.away_team] ||= []).push({ week: g.week, opp: g.home_team });
-    (schedule[g.home_team] ||= []).push({ week: g.week, opp: g.away_team });
+    const away = teamKey(g.away_team), home = teamKey(g.home_team);
+    (schedule[away] ||= []).push({ week: g.week, opp: home });
+    (schedule[home] ||= []).push({ week: g.week, opp: away });
   }
 
   const teams = {};
@@ -283,6 +289,15 @@ async function main() {
     defense,
     teams
   };
+
+  // BOTH HALVES OF THIS FILE ARE LOOKED UP BY KEY FROM teams.json, so a code
+  // that disagrees with that file is not a cosmetic difference — it is a
+  // tooltip and a rest-of-season slate that silently return nothing.
+  assertCanonicalTeams(Object.keys(teams), 'sos.json teams');
+  assertCanonicalTeams(Object.keys(defense), 'sos.json defense');
+  assertCanonicalTeams(
+    Object.values(schedule).flat().map(g => g.opp),
+    'sos.json schedule opponents', Object.keys(defense));
 
   const wrote = writeJSONIfChanged(OUT, out);
   if (!wrote) log('unchanged — not rewritten');

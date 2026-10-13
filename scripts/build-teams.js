@@ -27,6 +27,10 @@ const path = require('path');
 const { fetchCSV, parseCSV } = require('./lib/match');
 const { writeJSONIfChanged } = require('./lib/write');
 const season = require('./lib/season');
+// THE ONE VOCABULARY. This file had never required it, which is the only
+// reason the Rams went a whole season with no schedule: the alias it needed
+// was sitting in lib/teams.js the entire time.
+const { teamKey, assertCanonicalTeams } = require('./lib/teams');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA_DIR, 'teams.json');
@@ -73,7 +77,13 @@ async function main() {
   for (const g of games) {
     const done = g.result !== null && g.result !== undefined && g.result !== '';
     playedWeeks[g.week] = playedWeeks[g.week] || done;
-    for (const [team, opp, home] of [[g.away_team, g.home_team, false], [g.home_team, g.away_team, true]]) {
+    // The schedule feed writes the Rams `LA`; the roster feed, teams.json's
+    // keys and every other layer write `LAR`. Normalise on the way IN, so the
+    // mismatch cannot reach a key or an opponent.
+    for (const [team, opp, home] of [
+      [teamKey(g.away_team), teamKey(g.home_team), false],
+      [teamKey(g.home_team), teamKey(g.away_team), true],
+    ]) {
       if (!team) continue;
       (schedule[team] ||= []).push({
         week: g.week, opp, home, date: g.gameday || null,
@@ -93,8 +103,8 @@ async function main() {
   const opponentOf = new Map();
   for (const g of parseCSV(await fetchCSV(SCHEDULE_URL))) {
     if (g.game_type !== 'REG' || g.season !== STATS_SEASON) continue;
-    opponentOf.set(`${g.week}|${g.home_team}`, g.away_team);
-    opponentOf.set(`${g.week}|${g.away_team}`, g.home_team);
+    opponentOf.set(`${g.week}|${teamKey(g.home_team)}`, teamKey(g.away_team));
+    opponentOf.set(`${g.week}|${teamKey(g.away_team)}`, teamKey(g.home_team));
   }
   function producedFor(playerId) {
     let weekly;
@@ -103,7 +113,10 @@ async function main() {
     } catch (e) { return null; }
     const votes = {};
     for (const g of (weekly[STATS_SEASON] || [])) {
-      const t = opponentOf.get(`${g.week}|${g.opp}`);
+      // Normalised on BOTH sides. The game logs on disk still carry whatever
+      // the stats feed wrote when they were built, so aliasing only the map
+      // would break the lookup it was meant to fix.
+      const t = opponentOf.get(`${g.week}|${teamKey(g.opp)}`);
       if (t) votes[t] = (votes[t] || 0) + 1;
     }
     const best = Object.entries(votes).sort((a, b) => b[1] - a[1])[0];
@@ -171,6 +184,25 @@ async function main() {
   const n = Object.keys(out.teams).length;
   if (n < MIN_TEAMS) {
     log(`ABORT: only ${n} teams built (need ${MIN_TEAMS}). Roster or schedule feed moved.`);
+    process.exit(1);
+  }
+
+  // EVERY KEY CANONICAL, AND EVERY OPPONENT A KEY THAT EXISTS. The count above
+  // was already 32 all season while the Rams held an empty schedule, so a team
+  // count cannot stand in for this.
+  const keys = Object.keys(out.teams);
+  assertCanonicalTeams(keys, 'teams.json keys');
+  assertCanonicalTeams(
+    Object.values(out.teams).flatMap(t => t.schedule.map(g => g.opp)),
+    'teams.json schedule opponents', keys);
+
+  // A TEAM WITH NO SCHEDULE IS THE SHAPE THIS BUG TOOK, and it is invisible in
+  // every other check: the roster was full, the name resolved, the count was
+  // 32. Only the schedule was empty, and an empty schedule reads as a bye.
+  const noGames = keys.filter(k => !out.teams[k].schedule.length);
+  if (noGames.length) {
+    log(`ABORT: ${noGames.length} team(s) built with no schedule — ${noGames.join(', ')}. `
+      + 'The schedule feed renamed a team, or its codes stopped matching the roster feed.');
     process.exit(1);
   }
 

@@ -22,6 +22,7 @@
  */
 
 const { parseCSVLine } = require('./match');
+const { teamKey } = require('./teams');
 
 // WOPR's weights are the published ones. Shares go in as DECIMALS, not
 // percentages: a 25% target share is 0.25, and the result lands on roughly a
@@ -69,7 +70,9 @@ function usageFromPbp(pbpCsv) {
     const g = c => (I[c] === undefined || v[I[c]] === undefined) ? '' : v[I[c]].replace(/"/g, '').trim();
     // Regular season only, same as every other board on this site.
     if (g('season_type') && g('season_type') !== 'REG') continue;
-    const week = g('week'), team = g('posteam');
+    // Canonical the moment it leaves the feed: this becomes a denominator key
+  // AND the `team` published on every player-week.
+  const week = g('week'), team = teamKey(g('posteam'));
     if (!week || !team) continue;
 
     const tk = `${week}|${team}`;
@@ -128,7 +131,9 @@ function snapsFromCsv(snapCsv) {
     out.set(`${g('week')}|${id}`, {
       snaps,
       pct: Number.isNaN(pct) ? null : round(pct * 100, 1),
-      opp: g('opponent') || null,
+      // CANONICAL ON THE WAY IN. The snap-counts feed calls the Rams `LA`;
+      // every key on this site is `LAR`. See scripts/lib/teams.js.
+      opp: teamKey(g('opponent')) || null,
     });
   }
   return out;

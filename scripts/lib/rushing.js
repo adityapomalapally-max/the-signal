@@ -25,6 +25,7 @@
  */
 
 const { parseCSV } = require('./match');
+const { teamKey } = require('./teams');
 
 // A carry needs a real rusher and a real EPA. Kneels are filtered by play_type.
 const MIN_CARRIES = 20;
@@ -69,7 +70,8 @@ function buildRushing(csv) {
     cur.yards += num(r.yards_gained) || 0;
     // The team he was playing FOR on this carry, which is not necessarily the
     // team that employs him now.
-    cur.team = r.posteam || cur.team;
+    // pbp says `LA`; one vocabulary — see scripts/lib/teams.js.
+    cur.team = teamKey(r.posteam) || cur.team;
     by.set(id, cur);
   }
 

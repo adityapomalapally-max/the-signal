@@ -32,6 +32,9 @@ const path = require('path');
 const season = require('./lib/season');
 const { fetchCSV, parseCSV } = require('./lib/match');
 const { writeJSONIfChanged } = require('./lib/write');
+// Same schedule feed, same `LA`. This map is read with codes that come from
+// the player pool, which is canonical, so an unaliased key never matched.
+const { teamKey } = require('./lib/teams');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT = path.join(DATA_DIR, 'injury-curves.json');
@@ -103,7 +106,8 @@ async function teamWeeksBySeason() {
   let used = 0;
   for (const r of rows) {
     if (r.game_type !== 'REG' || !SEASONS.includes(r.season)) continue;
-    for (const [t, o] of [[r.away_team, r.home_team], [r.home_team, r.away_team]]) {
+    for (const [t, o] of [[teamKey(r.away_team), teamKey(r.home_team)],
+                          [teamKey(r.home_team), teamKey(r.away_team)]]) {
       if (!t || !o) continue;
       const k = `${r.season}|${t}`;
       if (!map.has(k)) map.set(k, new Set());

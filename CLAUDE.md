@@ -1858,3 +1858,47 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   for moving it, which is a different thing from there being evidence for it — and both priors sit
   under r = 0.25, which the reader-facing caveat now says out loud. Same bargain as the Vegas
   research: measure it, keep the number, stop the question being reopened from memory.
+
+## The alias was written, tested, and never called
+- THE RAMS HAD NO SCHEDULE FOR A WHOLE SEASON. teams.json held `LAR` with an EMPTY schedule array,
+  because the schedule feed writes the Rams `LA` and `build-teams.js` keyed `schedule[g.away_team]`
+  straight off it. Seventeen opponents got `opp: "LA"`, which resolves to nothing; the Rams' own
+  bye was computed off an empty array and published as **week 1, a week they played**; and
+  `sos.json` was keyed `LA` on both halves while the page looks them up with codes from teams.json
+  — so every Rams tooltip and their whole rest-of-season slate silently returned nothing.
+- NOTHING RANG, AND EVERY GUARD THAT EXISTED PASSED. 32 teams. Full roster. Name, nick, conference
+  and division all correct — because the ROSTER feed says `LAR` and only the SCHEDULE feed says
+  `LA`. The one thing missing was games, and a team with no games reads as a team on a bye.
+- THE RULE WAS ALREADY IN THIS FILE, TWICE, AND `teamKey()` WAS ALREADY UNIT-TESTED. advstats.test.js
+  has asserted `teamKey('LA') === 'LAR'` since August and passed every single day the bug was live.
+  **Prose in CLAUDE.md and a green test on a helper do not make a caller call it.** build-teams.js
+  had simply never required lib/teams; build-sos.js, lib/weekly.js, lib/rushing.js, lib/routes.js,
+  lib/xfp.js, fetch-stats.js and build-injury-curves.js had the same hole. Seven files, one alias,
+  nobody using it.
+- CANONICAL IS A STRICTER TEST THAN VALID AND THAT DISTINCTION IS THE FIX. `isTeam('LA')` is TRUE
+  and always was, so a validity check would have passed all season. `isCanonical(abbr)` asks whether
+  aliasing CHANGES it: a code is canonical when `teamKey(x) === x`. `assertCanonicalTeams(codes,
+  where, within)` throws on a non-canonical code and, given `within`, on a code that is canonical
+  but absent from the thing being built — the form an unresolvable `opp` takes.
+- IT THROWS RATHER THAN LOGS, which is a deliberate exception to "empty beats wrong". That rule
+  assumes the reader can SEE the hole; here the hole rendered as a bye week, which is a confident
+  false statement about a team that was playing. build-teams also aborts if any team has an empty
+  schedule — the exact shape, invisible to a team count.
+- A SEASON CARRIED FORWARD KEEPS THE VOCABULARY IT WAS WRITTEN WITH. build-scheme rebuilds the
+  current season and copies the rest from the committed file, so fixing the libraries corrected 2026
+  and left `LA` sitting in 2024 and 2025 — the fix looked complete and was half done.
+  `canonSeasons()` normalises every retained season on the way in (values AND team-keyed map keys),
+  so a vocabulary change never needs a rebuild to take effect. The next one is a relocation, not a bug.
+- DO NOT FIX THIS BY REBUILDING HISTORY. `--seasons 2024,2025` normalises the old data and also ADDS
+  those seasons to every layer that did not have them: weekly-usage went 1.9MB -> 3.0MB and
+  scoring.json 361KB -> 2.2MB, both lazy-loaded. Normalise on carry-forward and rebuild only the
+  live season.
+- `tests/team-vocabulary.test.js` SWEEPS EVERY data/*.json rather than naming files, because naming
+  them is how this lasted a season: teams.json and sos.json were found by reading the page,
+  weekly-usage and rushing only turned up in a grep afterwards, and xfp's was in a season no rebuild
+  had touched. It also pins the properties the files must have — every key canonical, every opponent
+  resolvable, no empty schedule, every team playing the same number of games, and a schedule
+  symmetric in both directions.
+- THE OBVIOUS ASSERTION ABOUT THE BYE PASSES ON THE BROKEN FILE. "The bye is not a week he plays" is
+  true of `bye: 1` against an EMPTY week set. The property that actually holds is that every team
+  plays the same number of games.

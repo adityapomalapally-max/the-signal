@@ -884,6 +884,40 @@ async function main() {
   const all = args.includes('--all');
   const explicit = args.includes('--seasons') ? args[args.indexOf('--seasons') + 1].split(',').map(Number) : null;
 
+  // A SEASON THIS RUN DOES NOT REBUILD IS CARRIED FORWARD VERBATIM, WHICH MEANS
+  // IT KEEPS WHATEVER VOCABULARY IT WAS WRITTEN WITH. That is how `LA` outlived
+  // the fix for it: the Rams alias was corrected in the libraries, the current
+  // season came out right, and every retained season went on saying `LA`
+  // because nothing re-read it. A team code is a join key, so a file holding
+  // two spellings of one franchise is a file that half-joins.
+  //
+  // Normalising on carry-forward costs one walk of data already in memory and
+  // means a rebuild is never required to adopt a vocabulary change — which
+  // matters because the next one is a relocation, not a bug.
+  //
+  // Targeted on purpose: `team` and `opp` are the only team-coded fields in
+  // these shapes, and scoring.json's `teams` map is keyed by one. A blind deep
+  // walk would also rewrite anything that merely looked like a code.
+  const canonSeasons = (bySeason) => {
+    const fix = (node) => {
+      if (Array.isArray(node)) { node.forEach(fix); return; }
+      if (!node || typeof node !== 'object') return;
+      for (const f of ['team', 'opp']) {
+        if (typeof node[f] === 'string' && node[f]) node[f] = teamKey(node[f]);
+      }
+      for (const v of Object.values(node)) fix(v);
+    };
+    for (const [yr, season] of Object.entries(bySeason)) {
+      fix(season);
+      // Team-keyed maps have the code in the KEY, which `fix` cannot see.
+      if (season && season.teams && typeof season.teams === 'object' && !Array.isArray(season.teams)) {
+        bySeason[yr].teams = Object.fromEntries(
+          Object.entries(season.teams).map(([k, v]) => [teamKey(k), v]));
+      }
+    }
+    return bySeason;
+  };
+
   const existing = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, 'utf8')) : { seasons: {} };
   log(`league is in ${await season.describe()}`);
   const live = await season.latestDataSeason();
@@ -891,26 +925,26 @@ async function main() {
 
   const existingUsage = fs.existsSync(OUT_USAGE) ? JSON.parse(fs.readFileSync(OUT_USAGE, 'utf8')) : { seasons: {} };
   const existingCharting = fs.existsSync(OUT_CHARTING) ? JSON.parse(fs.readFileSync(OUT_CHARTING, 'utf8')) : { seasons: {} };
-  const seasons = { ...(existing.seasons || {}) };
+  const seasons = canonSeasons({ ...(existing.seasons || {}) });
   const league = { ...(existing.league || {}) };
-  const usageSeasons = { ...(existingUsage.seasons || {}) };
-  const chartingSeasons = { ...(existingCharting.seasons || {}) };
+  const usageSeasons = canonSeasons({ ...(existingUsage.seasons || {}) });
+  const chartingSeasons = canonSeasons({ ...(existingCharting.seasons || {}) });
   const existingFieldmap = fs.existsSync(OUT_FIELDMAP) ? JSON.parse(fs.readFileSync(OUT_FIELDMAP, 'utf8')) : { seasons: {} };
-  const fieldmapSeasons = { ...(existingFieldmap.seasons || {}) };
+  const fieldmapSeasons = canonSeasons({ ...(existingFieldmap.seasons || {}) });
   let fmCoverageLatest = (existingFieldmap.meta || {}).coverage || null;
   const existingWeekly = fs.existsSync(OUT_WEEKLY) ? JSON.parse(fs.readFileSync(OUT_WEEKLY, 'utf8')) : { seasons: {} };
-  const weeklySeasons = { ...(existingWeekly.seasons || {}) };
+  const weeklySeasons = canonSeasons({ ...(existingWeekly.seasons || {}) });
   const existingRushing = fs.existsSync(OUT_RUSHING) ? JSON.parse(fs.readFileSync(OUT_RUSHING, 'utf8')) : { seasons: {} };
-  const rushingSeasons = { ...(existingRushing.seasons || {}) };
+  const rushingSeasons = canonSeasons({ ...(existingRushing.seasons || {}) });
   const existingScoring = fs.existsSync(OUT_SCORING) ? JSON.parse(fs.readFileSync(OUT_SCORING, 'utf8')) : { seasons: {} };
-  const scoringSeasons = { ...(existingScoring.seasons || {}) };
+  const scoringSeasons = canonSeasons({ ...(existingScoring.seasons || {}) });
   let scoringMetaLatest = (existingScoring.meta && existingScoring.meta.build) || null;
   const existingRoutes = fs.existsSync(OUT_ROUTES) ? JSON.parse(fs.readFileSync(OUT_ROUTES, 'utf8')) : { seasons: {} };
-  const routeSeasons = { ...(existingRoutes.seasons || {}) };
+  const routeSeasons = canonSeasons({ ...(existingRoutes.seasons || {}) });
   let routeLeagueLatest = existingRoutes.league || null;
   let routeMetaLatest = (existingRoutes.meta && existingRoutes.meta.build) || null;
   const existingXfp = fs.existsSync(OUT_XFP) ? JSON.parse(fs.readFileSync(OUT_XFP, 'utf8')) : { seasons: {} };
-  const xfpSeasons = { ...(existingXfp.seasons || {}) };
+  const xfpSeasons = canonSeasons({ ...(existingXfp.seasons || {}) });
   let xfpCellsLatest = (existingXfp.cells || null);
   let xfpMetaLatest = (existingXfp.meta && existingXfp.meta.build) || null;
   const failures = [];

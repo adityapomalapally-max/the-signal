@@ -48,6 +48,7 @@
  */
 
 const { parseCSVLine } = require('./match.js');
+const { teamKey } = require('./teams');
 
 // Full PPR, matching nflverse's own `fantasy_points_ppr`, which is what
 // fetch-stats reads and therefore what every other points figure on this site
@@ -195,7 +196,8 @@ function buildXfp(csv, opts) {
     const playType = g('play_type');
     const week = n('week');
     const yl = n('yardline_100');
-    const team = g('posteam');
+    // pbp calls the Rams `LA`; this team code is published per player.
+    const team = teamKey(g('posteam'));
 
     if (playType === 'pass' && n('pass_attempt') === 1) {
       const thrower = g('passer_player_id');

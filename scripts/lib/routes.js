@@ -34,6 +34,8 @@
 // A player needs enough charted targets before a share of them means anything.
 // Same discipline as every other board here: under this the mix is noise
 // wearing a percentage.
+const { teamKey } = require('./teams');
+
 const MIN_CHARTED_TARGETS = 25;
 
 // Below this a concept is not published for a player at all — one wheel route
@@ -94,8 +96,9 @@ function tallyRoute(acc, route, play, gsisIndex) {
   acc.attributed++;
 
   const p = acc.players[player.id] = acc.players[player.id]
-    || { name: player.name, pos: player.pos, team: play.posteam || null, concepts: {} };
-  p.team = play.posteam || p.team;
+    || { name: player.name, pos: player.pos, team: teamKey(play.posteam) || null, concepts: {} };
+  // pbp calls the Rams `LA`. One vocabulary — see scripts/lib/teams.js.
+  p.team = teamKey(play.posteam) || p.team;
   p.concepts[concept] = p.concepts[concept] || blank();
   bump(p.concepts[concept], play);
 }

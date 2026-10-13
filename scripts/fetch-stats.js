@@ -14,6 +14,10 @@ const fs = require('fs');
 const path = require('path');
 const { fetchCSV, parseCSV, buildMatchIndex, matchRow } = require('./lib/match');
 const seasonLib = require('./lib/season');
+// The opponent written into every game log is a join key for build-teams,
+// build-matchups and the profile page. The stats feed calls the Rams `LA`,
+// so unaliased it was a key that matched nothing in teams.json.
+const { teamKey } = require('./lib/teams');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 // Derived, never typed. These used to be a hand-written [2023, 2024, 2025] in each of
@@ -144,7 +148,7 @@ function buildWeeklyLog(weeks, pos) {
     .filter(w => w.season_type === 'REG' && (w.attempts > 0 || w.carries > 0 || w.targets > 0))
     .sort((a, b) => a.week - b.week)
     .map(w => {
-      const base = { week: w.week, opp: w.opponent_team, fpts: round(w.fantasy_points_ppr, 1) };
+      const base = { week: w.week, opp: teamKey(w.opponent_team), fpts: round(w.fantasy_points_ppr, 1) };
       if (pos === 'QB') {
         // `car` IS HERE BECAUSE ITS ABSENCE WAS A CONTRADICTION. This shape
         // published a quarterback's rushing PRODUCTION — rushYds, rushTD — and
