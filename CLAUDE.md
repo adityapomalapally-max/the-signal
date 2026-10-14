@@ -1902,3 +1902,48 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - THE OBVIOUS ASSERTION ABOUT THE BYE PASSES ON THE BROKEN FILE. "The bye is not a week he plays" is
   true of `bye: 1` against an EMPTY week set. The property that actually holds is that every team
   plays the same number of games.
+
+## "He always goes off against this team" — measured, and it is the wrong reading
+- `scripts/research-opponent-history.js` is RESEARCH: writes no file, not in the Action, same
+  bargain as research-vegas-weather.js. It pins its own window (`LAST_FINISHED_SEASON`, moved with
+  `--through`) rather than asking lib/season, because a research script that names finished seasons
+  cannot be surprised by a rollover — see the rollover note at the end of this section.
+- THE READ UNDER TEST is the bettor's oldest one and the mechanism behind Adi's own card: find a
+  player with a strong record against the specific opponent he is about to play. Measured over 12
+  seasons and **208,171 regular-season player-games**, every predictor built only from games
+  strictly earlier than the one being predicted.
+- IT DOES BEAT THE BASE RATE, which is why it survives as folklore. When a player's average against
+  this opponent is 1.25x his trailing eight-game form, he beats that form **+5.9 points more often
+  at QB rushing**, +0.7 at RB rushing, +2.9 at WR/TE receiving, against a base rate of 37-40%.
+  (Under 50% by construction: these stats are right-skewed, so a mean is beaten less than half the
+  time.)
+- AND A PLACEBO GETS THE SAME EDGE. Substituting his history against a DIFFERENT opponent faced
+  equally often — identical in every respect except being the team he is about to play — gives
+  **+4.1 / +2.3 / +2.3**. The differences bounce around zero with no consistent sign, and at RB
+  rushing the placebo WINS. The opponent's identity is not what the trigger is reading.
+- WHAT IT IS ACTUALLY READING IS MEAN REVERSION. The trigger selects players whose last eight games
+  sit below their own longer-run level, and those regress upward whoever they play. Tested directly
+  with no opponent in it: **QB rushing +6.6 points at 1.25x and +10.9 at 2.0x**, RB +3.2/+3.9,
+  WR/TE +4.1/+4.9 — larger than the opponent read in every market and MONOTONE in the threshold,
+  which the opponent version is not.
+- SO THE OPPONENT REQUIREMENT WAS COSTING OPPORTUNITIES, not finding them. Demanding two prior
+  meetings throws most of the board away and skews the sample toward divisional games. Without it,
+  QB rushing goes from 2,178 usable player-games to **4,574**, the trigger fires on 37% of them, and
+  the edge is **+7.0 points**.
+- The incremental RMSE agrees the opponent term is nothing: **+0.14% / -0.10% / +0.64%** over form
+  alone — the same order as the Vegas finding (+0.04%) that was measured and declined.
+- A SEPARATE FINDING WORTH MORE THAN THE ONE ASKED FOR: scaling a projection by how leaky the
+  opposing defence is made it **WORSE than form alone** in all three markets (-1.51% / -0.68% /
+  -0.06%). That is consistent with this repo's own measurement that a defence's rating predicts its
+  own future at r = 0.09 to 0.54. Do not multiply a player projection by a defensive rating.
+- WHAT STOPS ANY OF THIS REACHING A CARD: **"beats his own eight-game form" is not "beats the
+  book's line."** A posted prop is sharper than a trailing average and books plausibly price some
+  reversion already. There is no odds data in this repo, so this is a DESCRIPTIVE finding. The next
+  step is historical closing lines, not an EV column — the stock bot is the cautionary case
+  (`corr(expected_edge, realized) = -0.058` over 104 trades).
+- ROLLOVER NOTE, because the fix is the interesting part. The script first called
+  `seasonLib.lastCompletedSeason()`, and tests/rollover.test.js flagged it on that signature alone:
+  a per-season URL plus a lib/season import, with no `notPublishedYet` guard. The value can never BE
+  an unpublished season, so the guard would have been dead code — which that test's own comment
+  names as the thing not to write. The fix was to move the file into the category the test already
+  exempts, not to weaken the test.
