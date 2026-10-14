@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-anatomy.js",
-    "builtAt": "2026-10-13T18:07:38.640Z",
+    "builtAt": "2026-10-14T15:49:12.312Z",
     "layers": {
       "frequency": "counted from data/injuries.json — the official NFL injury reports for this pool",
       "recovery": "from data/injury-curves.json, derived from those same reports",
@@ -12,7 +12,7 @@
       "A named condition without a research entry is listed because it genuinely occurs at that region, NOT because we have data on it. The page says so rather than printing a timeline nobody can check.",
       "Recovery figures are the median across this pool over three seasons, not a prognosis for any individual. Sample sizes are stated and several are small."
     ],
-    "totalEpisodes": 1259,
+    "totalEpisodes": 1262,
     "unmappedParts": [
       {
         "part": "Undisclosed",
@@ -48,9 +48,9 @@
       }
     ],
     "coverage": {
-      "mappedEpisodes": 1077,
-      "totalEpisodes": 1259,
-      "pct": 85.5
+      "mappedEpisodes": 1080,
+      "totalEpisodes": 1262,
+      "pct": 85.6
     }
   },
   "regions": {
@@ -332,8 +332,8 @@
     },
     "arm": {
       "label": "Arm, elbow & hand",
-      "episodes": 79,
-      "players": 63,
+      "episodes": 80,
+      "players": 64,
       "shareOfAll": 6.3,
       "reportedAs": [
         {
@@ -348,8 +348,8 @@
         },
         {
           "part": "Elbow",
-          "episodes": 11,
-          "players": 8
+          "episodes": 12,
+          "players": 9
         },
         {
           "part": "Thumb",
@@ -643,8 +643,8 @@
     },
     "hip": {
       "label": "Hip & groin",
-      "episodes": 103,
-      "players": 75,
+      "episodes": 104,
+      "players": 76,
       "shareOfAll": 8.2,
       "reportedAs": [
         {
@@ -654,8 +654,8 @@
         },
         {
           "part": "Groin",
-          "episodes": 38,
-          "players": 30
+          "episodes": 39,
+          "players": 31
         },
         {
           "part": "Glute",
@@ -1145,14 +1145,14 @@
     },
     "ankle": {
       "label": "Ankle",
-      "episodes": 172,
-      "players": 121,
+      "episodes": 173,
+      "players": 122,
       "shareOfAll": 13.7,
       "reportedAs": [
         {
           "part": "Ankle",
-          "episodes": 172,
-          "players": 121
+          "episodes": 173,
+          "players": 122
         }
       ],
       "recovery": {
@@ -1268,13 +1268,13 @@
       "reportedAs": [
         {
           "part": "Foot",
-          "episodes": 51,
-          "players": 40
+          "episodes": 52,
+          "players": 41
         },
         {
           "part": "Toe",
-          "episodes": 28,
-          "players": 24
+          "episodes": 27,
+          "players": 23
         },
         {
           "part": "Achilles",
