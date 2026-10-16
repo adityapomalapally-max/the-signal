@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/fetch-advstats.js",
-    "builtAt": "2026-10-14T15:47:37.439Z",
+    "builtAt": "2026-10-16T15:20:56.804Z",
     "seasons": [
       2024,
       2025,
@@ -16,7 +16,7 @@
     ],
     "defenseNote": "aggregated across every charted defender on the team; rates recomputed from totals rather than averaged across players, so a nickel corner's 12 targets do not weigh the same as a No.1 corner's season",
     "coverage": {
-      "players": 316,
+      "players": 317,
       "of": 351
     }
   },
@@ -13173,6 +13173,66 @@
             "drops": 0,
             "dropPct": 0,
             "passerRatingWhenTargeted": 70.1
+          }
+        }
+      }
+    },
+    "pierce-d": {
+      "name": "Dameon Pierce",
+      "pos": "RB",
+      "seasons": {
+        "2024": {
+          "receiving": {
+            "targets": 4,
+            "rec": 2,
+            "yards": 2,
+            "firstDowns": 0,
+            "yardsBeforeCatch": -3,
+            "ybcPerRec": -1.5,
+            "yardsAfterCatch": 5,
+            "yacPerRec": 2.5,
+            "aDOT": -1.3,
+            "brokenTackles": 1,
+            "recPerBrokenTackle": 2,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 56.2
+          },
+          "rushing": {
+            "attempts": 40,
+            "yards": 293,
+            "firstDowns": 7,
+            "yardsBeforeContact": 77,
+            "ybcPerAttempt": 1.9,
+            "yardsAfterContact": 216,
+            "yacPerAttempt": 5.4,
+            "brokenTackles": 6,
+            "attPerBrokenTackle": 6.7
+          }
+        },
+        "2025": {
+          "receiving": {
+            "targets": 1,
+            "rec": 0,
+            "yards": 0,
+            "firstDowns": 0,
+            "yardsBeforeCatch": 0,
+            "yardsAfterCatch": 0,
+            "aDOT": -4,
+            "brokenTackles": 0,
+            "drops": 1,
+            "dropPct": 1,
+            "passerRatingWhenTargeted": 39.6
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 10,
+            "firstDowns": 0,
+            "yardsBeforeContact": 5,
+            "ybcPerAttempt": 1.3,
+            "yardsAfterContact": 5,
+            "yacPerAttempt": 1.3,
+            "brokenTackles": 0
           }
         }
       }
