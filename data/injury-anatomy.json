@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-anatomy.js",
-    "builtAt": "2026-10-16T15:22:31.410Z",
+    "builtAt": "2026-10-17T14:10:41.485Z",
     "layers": {
       "frequency": "counted from data/injuries.json — the official NFL injury reports for this pool",
       "recovery": "from data/injury-curves.json, derived from those same reports",
@@ -12,7 +12,7 @@
       "A named condition without a research entry is listed because it genuinely occurs at that region, NOT because we have data on it. The page says so rather than printing a timeline nobody can check.",
       "Recovery figures are the median across this pool over three seasons, not a prognosis for any individual. Sample sizes are stated and several are small."
     ],
-    "totalEpisodes": 1305,
+    "totalEpisodes": 1309,
     "unmappedParts": [
       {
         "part": "Undisclosed",
@@ -48,8 +48,8 @@
       }
     ],
     "coverage": {
-      "mappedEpisodes": 1117,
-      "totalEpisodes": 1305,
+      "mappedEpisodes": 1120,
+      "totalEpisodes": 1309,
       "pct": 85.6
     }
   },
@@ -334,7 +334,7 @@
       "label": "Arm, elbow & hand",
       "episodes": 83,
       "players": 66,
-      "shareOfAll": 6.4,
+      "shareOfAll": 6.3,
       "reportedAs": [
         {
           "part": "Wrist",
@@ -593,14 +593,14 @@
     },
     "back": {
       "label": "Back",
-      "episodes": 39,
-      "players": 31,
-      "shareOfAll": 3,
+      "episodes": 40,
+      "players": 32,
+      "shareOfAll": 3.1,
       "reportedAs": [
         {
           "part": "Back",
-          "episodes": 39,
-          "players": 31
+          "episodes": 40,
+          "players": 32
         }
       ],
       "recovery": null,
@@ -643,19 +643,19 @@
     },
     "hip": {
       "label": "Hip & groin",
-      "episodes": 106,
-      "players": 78,
-      "shareOfAll": 8.1,
+      "episodes": 108,
+      "players": 79,
+      "shareOfAll": 8.3,
       "reportedAs": [
         {
           "part": "Hip",
-          "episodes": 59,
+          "episodes": 60,
           "players": 46
         },
         {
           "part": "Groin",
-          "episodes": 41,
-          "players": 33
+          "episodes": 42,
+          "players": 34
         },
         {
           "part": "Glute",
@@ -1047,7 +1047,7 @@
       "label": "Calf & shin",
       "episodes": 49,
       "players": 42,
-      "shareOfAll": 3.8,
+      "shareOfAll": 3.7,
       "reportedAs": [
         {
           "part": "Calf",
