@@ -70,6 +70,53 @@ function board(pos, metricKey) {
   return evalIn(ctx, 'scoringRows(__m)');
 }
 
+test('the count a share was divided by reaches the row', () => {
+  // THE CLAIM THAT WAS NOT TRUE. The qualifier line under this board says "the
+  // count is published beside every share", and CLAUDE.md records the same rule
+  // — but scoringRows computed the count, used it to filter, and dropped it, so
+  // a share clearing the floor at three rendered identically to one built on
+  // twelve. The existing tests all passed: they checked the count exists as its
+  // own BOARD, never that it travels beside the share.
+  //
+  // Found by the site-curator agent on 2026-10-19, which is the job that brief
+  // exists to do: nothing tests prose, so a sentence can describe a feature
+  // nobody built.
+  for (const key of ['i5CarryShare', 'rzCarryShare', 'rzTargetShare']) {
+    const rows = board('RB', key).concat(board('WR', key));
+    assert.ok(rows.length, `${key} produced no rows to check`);
+    for (const r of rows) {
+      assert.ok(typeof r.n === 'number' && r.n > 0,
+        `${key}: ${r.name} carries no count, so the share is published bare`);
+      assert.ok(r.nLabel, `${key}: the count has no label, so no column can be headed honestly`);
+    }
+  }
+});
+
+test('a raw count carries no second count', () => {
+  // A count is its own denominator. Giving it an "n" column would print the
+  // same number twice and imply the board was qualified on something else.
+  for (const key of ['i5Carries', 'rzCarries', 'rzTargets', 'anyTd']) {
+    for (const r of board('RB', key)) {
+      assert.strictEqual(r.n, null, `${key}: a raw count should not carry its own count`);
+    }
+  }
+});
+
+test('the count survives every surface the board is read on', () => {
+  // Three renderers and an export, and the share means the same thing on all
+  // four. The exported PNG matters most: it travels with no qualifier line
+  // around it, so a count dropped there is the overstatement this prevents.
+  assert.match(SRC, /nLabel/, 'labTable never reads a count label, so the column cannot exist');
+  const table = SRC.slice(SRC.indexOf('function labTable'));
+  assert.match(table.slice(0, 1200), /showN/, 'labTable has no count column');
+  for (const fn of ['function labBarBoard', 'function labDotBoard']) {
+    const body = SRC.slice(SRC.indexOf(fn), SRC.indexOf(fn) + 2200);
+    assert.match(body, /nSuffix/, `${fn} drops the count from the value it prints`);
+  }
+  const exp = fs.readFileSync(path.join(ROOT, 'assets', 'app-export.js'), 'utf8');
+  assert.match(exp, /r\.n/, 'the PNG export drops the count');
+});
+
 test('a share is qualified on ITS OWN count, not on chances elsewhere', () => {
   // THE BUG THE REAL BOARD EXPOSED. The first qualifier counted total red-zone
   // chances, so a back with ONE goal-line carry and six red-zone carries cleared

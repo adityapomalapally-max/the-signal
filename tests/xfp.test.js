@@ -200,8 +200,18 @@ test('every player has the opportunities his totals were built from', () => {
       `${id} is published on ${opps} opportunities, under the stated floor`);
     assert.ok(p.xfp > 0, `${id} has ${opps} opportunities and ${p.xfp} expected points`);
     assert.ok(p.games >= 1 && p.games <= 23, `${id}: ${p.games} games`);
-    assert.strictEqual(p.diff, Math.round((p.fp - p.xfp) * 10) / 10,
-      `${id}: diff ${p.diff} does not equal fp ${p.fp} minus xfp ${p.xfp}`);
+    // ROUNDING TWICE IS NOT THE SAME AS ROUNDING ONCE, and the build is the one
+    // that is right. It publishes round(fp - xfp) off the full-precision pair;
+    // this used to recompute round(fp) - round(xfp) from the published numbers,
+    // which differs by exactly 0.1 whenever the two round opposite ways. On
+    // 2026-10-19 that was true of ONE player in 174 and it took the daily run
+    // down — fp 60.6, xfp 53.5, published diff 7.2 against a recomputed 7.1.
+    //
+    // The check it was written for still stands: a diff drawn from a DIFFERENT
+    // set of plays is off by points, not by a tenth. So allow the rounding
+    // boundary and nothing wider.
+    assert.ok(Math.abs(p.diff - (p.fp - p.xfp)) <= 0.1 + 1e-9,
+      `${id}: diff ${p.diff} is not fp ${p.fp} minus xfp ${p.xfp} (${(p.fp - p.xfp).toFixed(2)})`);
   }
 });
 

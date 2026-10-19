@@ -1812,7 +1812,15 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
 - A SHARE IS QUALIFIED ON THE COUNT IT DIVIDES. The board's first qualifier counted total red-zone
   chances, which let one goal-line carry beside six red-zone carries print a 100% goal-line share —
   the row the floor existed to stop. Every share metric carries `countedBy` and a test asserts it.
-- The floors are deliberately low and the COUNT travels with every share. In October nobody has a
+- The floors are deliberately low and the COUNT travels with every share — which was a CLAIM, not
+  a fact, for the first eighteen days this board was live. `scoringRows` computed the count, used
+  it to filter and dropped it on the floor, so 100% of three and 82% of eleven rendered as
+  identical bare percentages, under a qualifier line promising the opposite. The count rides the
+  row now and reaches all four surfaces — table column, bar, dot, and the PNG export, which
+  matters most because it travels with no qualifier line around it. **The old tests all passed:**
+  they checked the count existed as its own BOARD, never that it sat beside the share. Found by
+  the site-curator agent, which is exactly the job that brief exists for — nothing tests prose,
+  so a sentence can go on describing a feature nobody built. In October nobody has a
   large sample; hiding the thin rows would empty the board in the month it is wanted, so 100% of
   three and 82% of eleven both appear, each saying what it is.
 - A kneel or a spike inside the twenty is NOT a red-zone trip. Geometrically it is; this board

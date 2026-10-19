@@ -17,17 +17,22 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { loadPages, evalIn, setIn, ROOT } = require('./lib/pageharness.js');
+const { completedSeason } = require('./lib/sample');
 
 const players = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'players.json'), 'utf8'));
 const fieldmap = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'fieldmap.json'), 'utf8'));
 
-function ctxFor(pos, metricKey) {
+// A SEASON ARGUMENT, BECAUSE THE NEWEST ONE IS NOT ALWAYS THE RIGHT ONE TO ASK.
+// Defaults to the newest season present, which is what a render test wants —
+// that is the board a reader lands on. A test about SIZE has to pass a finished
+// season instead; see the scale assertions below.
+function ctxFor(pos, metricKey, season) {
   const ctx = loadPages();
   setIn(ctx, 'playersDB', players);
   setIn(ctx, 'labFieldmap', fieldmap);
   setIn(ctx, 'labMode', 'field');
   setIn(ctx, 'labPos', pos);
-  setIn(ctx, 'labSeason', String(Object.keys(fieldmap.seasons).sort().pop()));
+  setIn(ctx, 'labSeason', String(season || Object.keys(fieldmap.seasons).sort().pop()));
   const metrics = evalIn(ctx, 'FIELD_METRICS')[pos];
   const m = metrics.find(x => x.key === metricKey) || metrics[0];
   setIn(ctx, 'labMetricKey', m.key);
@@ -123,13 +128,24 @@ test('a thin cell reaches the row as null, never as its play count', () => {
     'no thin cells in the fixture — this assertion is not exercising anything');
 });
 
-test('every published value matches the data file exactly', () => {
+test('every published value matches the data file exactly', async () => {
   // The row builder reads one field out of a nested object. A wrong field is
   // invisible on the page: still a number, still sorts, still plausible.
-  const { ctx } = ctxFor('WR', 'compPct');
+  //
+  // THIS ASKS A FINISHED SEASON, and it learned that the hard way. It used to
+  // take the newest season present and demand more than ten receivers, which
+  // was true of every season on file until 2026-10-19 — the morning fieldmap
+  // first published a live season, at 10 passers / 12 receivers / 6 rushers.
+  // Twelve receivers is a correct young season, not a broken board, and the
+  // test went red on data that was right. Same failure as the six tests pinned
+  // to a full season on 2026-09-10: a young season is exempt from being BIG,
+  // never from being CONSISTENT, and the consistency half below is unchanged.
+  const full = await completedSeason(Object.keys(fieldmap.seasons));
+  assert.ok(full, 'fieldmap holds no finished season to check the shape of');
+  const { ctx } = ctxFor('WR', 'compPct', full);
   const rows = rowsFor(ctx, 'compPct');
-  assert.ok(rows.length > 10, `only ${rows.length} receivers`);
-  const season = String(Object.keys(fieldmap.seasons).sort().pop());
+  assert.ok(rows.length > 10, `only ${rows.length} receivers in ${full}`);
+  const season = String(full);
   const bank = fieldmap.seasons[season].receivers;
   let compared = 0;
   for (const row of rows.slice(0, 25)) {

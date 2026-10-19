@@ -258,11 +258,15 @@ function labBarBoard(rows, m) {
     const pos = r.value >= 0;
     const w = (Math.abs(r.value) / span) * 100;
     const left = pos ? zeroPct : zeroPct - w;
-    const tip = `${r.name} (${r.team}) — ${m.label}: ${r.value}${m.unit}`;
+    // The count rides the tooltip and the value cell for the same reason it has
+    // its own column in the table view: the share alone overstates a thin row.
+    const nSuffix = (r.n === null || r.n === undefined) ? '' : ` <span class="lab-n">(${r.n})</span>`;
+    const tip = `${r.name} (${r.team}) — ${m.label}: ${r.value}${m.unit}`
+      + ((r.n === null || r.n === undefined) ? '' : ` on ${r.n} ${r.nLabel || 'chances'}`);
     return `<div class="lab-row" tabindex="0" role="button" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}" ${labRowAction(r)}>
       <div class="lab-name"><span class="lab-rank">${i + 1}</span><span class="lab-player">${rankEsc(r.name)}</span><span class="lab-team">${rankEsc(r.team || '')}</span></div>
       <div class="lab-track"><div style="position:absolute;left:${left.toFixed(2)}%;width:${Math.max(w, 0.4).toFixed(2)}%;"><div class="lab-bar${pos ? '' : ' neg'}"></div></div></div>
-      <div class="lab-val">${r.value}${m.unit}</div>
+      <div class="lab-val">${r.value}${m.unit}${nSuffix}</div>
     </div>`;
   }).join('');
   h += `</div>`;
@@ -289,12 +293,14 @@ function labDotBoard(rows, m, lo, hi) {
   h += rows.map((r, i) => {
     // A defence row IS the team, so there is no second team to put in
     // brackets — unchecked it read "SEA () — Yards per Target Allowed".
+    const nSuffix = (r.n === null || r.n === undefined) ? '' : ` <span class="lab-n">(${r.n})</span>`;
     const tip = `${r.name}${r.team ? ` (${r.team})` : ''} — ${m.label}: ${r.value}${m.unit}`
+      + ((r.n === null || r.n === undefined) ? '' : ` on ${r.n} ${r.nLabel || 'chances'}`)
       + (typeof r.pct === 'number' ? ` — ${r.pct}th percentile at his position` : '');
     return `<div class="lab-row" tabindex="0" role="button" data-tip="${rankEsc(tip)}" aria-label="${rankEsc(tip)}" ${labRowAction(r)}>
       <div class="lab-name"><span class="lab-rank">${i + 1}</span><span class="lab-player">${rankEsc(r.name)}</span><span class="lab-team">${rankEsc(r.team || '')}</span></div>
       <div class="lab-track"><div class="lab-rule"></div><div class="lab-dot" style="left:${X(r.value).toFixed(2)}%;"></div></div>
-      <div class="lab-val">${r.value}${m.unit}</div>
+      <div class="lab-val">${r.value}${m.unit}${nSuffix}</div>
     </div>`;
   }).join('');
   return h + `</div>`;
@@ -305,12 +311,22 @@ function labTable(rows, m) {
   // "Team" heads an empty one. A column every row leaves blank is a column that
   // should not be there.
   const teams = labMode === 'defense';
+  // A SHARE GETS THE COUNT IT WAS DIVIDED BY, in its own column. 100% of three
+  // and 82% of eleven are not the same claim, and printed as bare percentages
+  // they look it. The column appears only when the rows actually carry a count,
+  // so no board grows a column every row would leave blank.
+  const nLabel = (rows.find(r => r.n !== null && r.n !== undefined) || {}).nLabel;
+  const showN = !!nLabel;
   let h = `<div class="table-scroll"><table class="players-table rank-table"><thead><tr><th>#</th><th>${teams ? 'Defence' : 'Player'}</th>`
     + (teams ? '' : '<th>Team</th>')
-    + `<th>${rankEsc(m.label)}</th></tr></thead><tbody>`;
+    + `<th>${rankEsc(m.label)}</th>`
+    + (showN ? `<th>${rankEsc(nLabel)}</th>` : '')
+    + `</tr></thead><tbody>`;
   h += rows.map((r, i) => `<tr ${labRowAction(r)}><td>${i + 1}</td><td>${rankEsc(r.name)}</td>`
     + (teams ? '' : `<td>${rankEsc(r.team || '')}</td>`)
-    + `<td>${r.value}${m.unit}</td></tr>`).join('');
+    + `<td>${r.value}${m.unit}</td>`
+    + (showN ? `<td>${r.n === null || r.n === undefined ? '' : r.n}</td>` : '')
+    + `</tr>`).join('');
   return h + '</tbody></table></div>';
 }
 
@@ -541,15 +557,15 @@ const RUSH_METRICS = [
    otherwise by hiding the small ones would leave the board empty in the only
    month it is wanted. */
 const SCORING_METRICS = [
-  { key: 'i5CarryShare', label: 'Goal-line Carry Share', get: r => pctOf(r.i5CarryShare), unit: '%', minChances: 3, countedBy: r => r.i5Carries,
+  { key: 'i5CarryShare', label: 'Goal-line Carry Share', get: r => pctOf(r.i5CarryShare), unit: '%', minChances: 3, countedBy: r => r.i5Carries, countLabel: 'GL carries',
     note: 'Of the carries his team took from inside the 5, how many were his. The goal line is a different eleven — short-yardage personnel — so this is the one share that says whether he is on the field when it matters most.' },
   { key: 'i5Carries', label: 'Goal-line Carries', get: r => r.i5Carries, unit: '', minChances: 1,
     note: 'The count behind the share. Read them together: a 100% share off two carries and a 70% share off eleven are not the same claim.' },
-  { key: 'rzCarryShare', label: 'Red-zone Carry Share', get: r => pctOf(r.rzCarryShare), unit: '%', minChances: 4, countedBy: r => r.rzCarries,
+  { key: 'rzCarryShare', label: 'Red-zone Carry Share', get: r => pctOf(r.rzCarryShare), unit: '%', minChances: 4, countedBy: r => r.rzCarries, countLabel: 'RZ carries',
     note: 'The same question over the whole red zone, where the passing game still exists and the personnel has not been compressed yet.' },
   { key: 'rzCarries', label: 'Red-zone Carries', get: r => r.rzCarries, unit: '', minChances: 1,
     note: 'Carries from inside the 20. THE ZONES NEST — every goal-line carry is also a red-zone carry, so this is a total and never a column to add beside the other.' },
-  { key: 'rzTargetShare', label: 'Red-zone Target Share', get: r => pctOf(r.rzTargetShare), unit: '%', minChances: 4, countedBy: r => r.rzTargets,
+  { key: 'rzTargetShare', label: 'Red-zone Target Share', get: r => pctOf(r.rzTargetShare), unit: '%', minChances: 4, countedBy: r => r.rzTargets, countLabel: 'RZ targets',
     note: 'For receivers, the half that corresponds to a back\'s goal-line share. A target counts whether it was caught — the bet is about the chance he was given.' },
   { key: 'rzTargets', label: 'Red-zone Targets', get: r => r.rzTargets, unit: '', minChances: 1,
     note: 'The count behind the share, including the fades nobody caught.' },
@@ -583,7 +599,16 @@ function scoringRows(m) {
     const t = teams[sc.team] || {};
     const v = m.get({ ...sc, teamRzTripsPerGame: t.rzTripsPerGame });
     if (typeof v !== 'number' || isNaN(v)) continue;
-    rows.push({ id: p.id, name: p.name, team: p.team, value: v });
+    // THE COUNT TRAVELS WITH THE SHARE. The qualifier line under this board has
+    // claimed since the board shipped that "the count is published beside every
+    // share", and CLAUDE.md records the same rule — but `counted` was computed,
+    // used to filter, and dropped right here, so a share clearing the floor on
+    // three carries rendered identically to one built on twelve. The floors are
+    // deliberately low so the thin rows still appear, and that only works if a
+    // reader can SEE which ones are thin. A raw count is its own denominator and
+    // carries no second column.
+    rows.push({ id: p.id, name: p.name, team: p.team, value: v,
+      n: m.countedBy ? counted : null, nLabel: m.countLabel || null });
   }
   return rows;
 }
@@ -1552,7 +1577,11 @@ function renderLabPage() {
     mode: rows.length && Math.min(...rows.map(r => r.value)) >= 0
       && (Math.max(...rows.map(r => r.value)) - Math.min(...rows.map(r => r.value))) / Math.max(...rows.map(r => r.value)) < 0.35
       ? 'dots' : 'bars',
-    rows: rows.map((r, i) => ({ rank: i + 1, name: r.name, team: r.team, value: r.value }))
+    // An exported board is the one most likely to be sent to somebody with no
+    // page around it, so the count has to survive the export or the PNG makes
+    // exactly the overstatement the column exists to prevent.
+    rows: rows.map((r, i) => ({ rank: i + 1, name: r.name, team: r.team, value: r.value,
+      n: r.n === undefined ? null : r.n, nLabel: r.nLabel || null }))
   } : null;
 
   let h = `<div class="lab-head"><span class="lab-title">${rankEsc(boardTitle)}</span>`

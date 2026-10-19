@@ -272,7 +272,10 @@ function exportRowChart(o) {
     ctx.font = exFont('400 14px $mono');
     ctx.fillStyle = EX_MUTED;
     ctx.textAlign = 'right';
-    ctx.fillText(`${r.value}${o.unit || ''}`, EXPORT_W - EXPORT_PAD, mid + 5);
+    // The count rides the exported value for the same reason it rides the page:
+    // a PNG travels without the qualifier line that explains the floor.
+    const nTxt = (r.n === null || r.n === undefined) ? '' : ` (${r.n})`;
+    ctx.fillText(`${r.value}${o.unit || ''}${nTxt}`, EXPORT_W - EXPORT_PAD, mid + 5);
     ctx.textAlign = 'left';
   });
 
