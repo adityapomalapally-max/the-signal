@@ -1245,9 +1245,23 @@ Vanilla HTML/CSS/JS SPA. No framework, no build step. Vercel auto-deploys from m
   Smith gave way to Raheem Morris (41.6% 12-personnel became 87.7% 11-personnel) and then another 42
   the following year with Morris still there. The shift is published per team WITH that comparison
   beside it, so the page never implies a new name means a new offence.
-- THE COORDINATOR IS INVISIBLE, and that is probably where the signal is. playcallers.json is
-  hand-kept and currently has 0 of 128 rows filled, so only a head-coach change can be seen. Filling
-  that file in is the single change that would make this measurement worth more.
+- THE COORDINATOR IS NO LONGER INVISIBLE FOR THIS SEASON. playcallers.json has **32 of 128 rows
+  filled — all of 2026**, each sourced to ESPN's league-wide play-caller survey, as of
+  2026-10-19. The split is even: 16 offences are called by the head coach and 16 by a
+  coordinator, so a scheme shift at half the league now has a name attached to it that a
+  head-coach change could never have shown. 2023-2025 stay blank and stay honest.
+- AND THE GENERATED HEAD COACH IS NOT ALWAYS RIGHT, which this file used to assume. The note
+  below said the schedule feed "carries every head coach months before kickoff"; measured on
+  2026-10-19 it carried **Sean McDermott at Buffalo nine months after he was fired**, Jonathan
+  Gannon at Arizona after a 3-14 season, and `Klint Kubliak` at Las Vegas, which is a typo
+  rather than a different man. nflverse appears to carry the previous season's coach through a
+  change. A row may now hold `headCoachSourced` + `headCoachSource`, hand-kept and required to
+  cite — the same precedence injury-overrides.json has over the status feed, for the same
+  reason. `headCoach` is left exactly as the feed wrote it so the disagreement stays visible
+  instead of being papered over, and build-playcallers refreshes only that column.
+  **The cross-check that found it is the method worth keeping**: ESPN said sixteen teams are
+  called by their head coach, the generated column agreed on thirteen, and all three
+  disagreements were the feed's fault.
 - THE CARD LEADS WITH CONTINUITY, not with the figures. Everything measurable describes a season that
   has finished; how many of the five starters are still listed first decides whether those figures
   describe this team at all. Miami 4 of 5, Philadelphia 5 of 5, Detroit and Baltimore 3 — and a team

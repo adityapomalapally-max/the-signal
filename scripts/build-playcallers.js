@@ -64,6 +64,9 @@ async function main() {
       }
       for (const [team, coach] of coachOf) {
         const key = `${target}|${team}`;
+        // Only `headCoach` is refreshed. headCoachSourced/headCoachSource are
+        // hand-held precisely BECAUSE this feed is wrong about them, so a run
+        // that overwrote them would undo the correction every morning.
         if (entries[key]) { entries[key].headCoach = coach || entries[key].headCoach; continue; }
         entries[key] = {
           season: Number(target), team, headCoach: coach || null,

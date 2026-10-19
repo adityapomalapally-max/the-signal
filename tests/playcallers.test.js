@@ -62,11 +62,22 @@ test('callerIsHeadCoach never contradicts the generated head coach', () => {
   for (const [key, e] of entries) {
     if (!e.playCaller) continue;
     assert.ok(e.callerIsHeadCoach === true || e.callerIsHeadCoach === false, `${key}: callerIsHeadCoach unanswered`);
-    if (e.headCoach && e.callerIsHeadCoach === true) {
-      assert.strictEqual(e.playCaller, e.headCoach, `${key}: claims the HC calls it but names someone else`);
+    // A SOURCED HEAD COACH OUTRANKS THE GENERATED ONE, because the generated one
+    // is not always right: nflverse's schedule carried Sean McDermott at Buffalo
+    // in October 2026, nine months after he was fired, Jonathan Gannon at
+    // Arizona, and "Klint Kubliak" at Las Vegas, which is a typo and not a man.
+    // `headCoach` is left exactly as the feed wrote it so the disagreement stays
+    // visible; the comparison answers to the sourced name where one exists.
+    const hc = e.headCoachSourced || e.headCoach;
+    if (e.headCoachSourced) {
+      assert.ok(e.headCoachSource && String(e.headCoachSource).trim(),
+        `${key}: overrides the head coach to ${e.headCoachSourced} with no source`);
     }
-    if (e.headCoach && e.callerIsHeadCoach === false) {
-      assert.notStrictEqual(e.playCaller, e.headCoach, `${key}: claims the HC does not call it but names him`);
+    if (hc && e.callerIsHeadCoach === true) {
+      assert.strictEqual(e.playCaller, hc, `${key}: claims the HC calls it but names someone else`);
+    }
+    if (hc && e.callerIsHeadCoach === false) {
+      assert.notStrictEqual(e.playCaller, hc, `${key}: claims the HC does not call it but names him`);
     }
   }
 });
@@ -97,7 +108,15 @@ test('the unplayed season names a coach for every team, and a fresh one', () => 
   const rows = entries.filter(([, e]) => Number(e.season) === y);
   for (const [key, e] of rows) {
     assert.ok(e.headCoach, `${key}: scaffolded with no head coach, which is the whole reason the row exists`);
-    assert.strictEqual(e.playCaller, null, `${key}: a season nobody has played cannot have a known play-caller`);
+    // IT USED TO DEMAND playCaller === null HERE, and that was a statement about
+    // effort rather than correctness. "Scaffolded" means nflverse has not
+    // published PARTICIPATION for the season, which it does only after the
+    // season ends — so the current year is scaffolded from kickoff to February
+    // while the play-callers have been public knowledge since the previous
+    // February. The assertion read "nobody has filled these in yet" as a rule
+    // and went red the morning somebody did, on 2026-10-19 with six weeks played.
+    // Same shape as the fieldmap scale assertion fixed that same morning.
+    // What a filled row still owes is a SOURCE, and the test above enforces it.
   }
   // At least one team must have changed coach, or the scaffold is just copying
   // last year forward — which is the bug it was written to fix.

@@ -50,10 +50,22 @@ function main() {
     if (e.callerIsHeadCoach === null || e.callerIsHeadCoach === undefined) {
       errors.push(`${label}: callerIsHeadCoach is unanswered`);
     }
-    if (e.callerIsHeadCoach === true && e.headCoach && e.playCaller !== e.headCoach) {
-      errors.push(`${label}: callerIsHeadCoach is true but ${e.playCaller} is not the head coach (${e.headCoach})`);
+    // THE GENERATED COLUMN IS NOT ALWAYS RIGHT, which this check used to assume.
+    // nflverse's schedule carries a coach who was fired in January for the whole
+    // following season — measured 2026-10-19, it still had Sean McDermott at
+    // Buffalo nine months after he was sacked, Jonathan Gannon at Arizona, and
+    // "Klint Kubliak" at Las Vegas, which is a typo rather than a person. A row
+    // may therefore hold a SOURCED head coach, and when it does that is the one
+    // the comparison answers to; `headCoach` stays as the feed wrote it so the
+    // disagreement is visible rather than papered over.
+    const hc = e.headCoachSourced || e.headCoach;
+    if (e.headCoachSourced && !String(e.headCoachSource || '').trim()) {
+      errors.push(`${label}: overrides the head coach to ${e.headCoachSourced} with no source`);
     }
-    if (e.callerIsHeadCoach === false && e.headCoach && e.playCaller === e.headCoach) {
+    if (e.callerIsHeadCoach === true && hc && e.playCaller !== hc) {
+      errors.push(`${label}: callerIsHeadCoach is true but ${e.playCaller} is not the head coach (${hc})`);
+    }
+    if (e.callerIsHeadCoach === false && hc && e.playCaller === hc) {
       errors.push(`${label}: callerIsHeadCoach is false but ${e.playCaller} IS the head coach`);
     }
   }

@@ -1942,9 +1942,16 @@ function environmentCard(team) {
     // being read from the same season as the measurements.
     const cs = row.callerSeason;
     const when = cs ? `${cs}: ` : '';
+    // A SOURCED HEAD COACH OUTRANKS THE GENERATED ONE. nflverse's schedule
+    // carries a coach who was fired in January for the whole following season —
+    // it still had Sean McDermott at Buffalo in October, nine months after he
+    // was sacked — so a row that names one by hand, with a source, is the one
+    // to print. This is the same order of precedence injury-overrides.json has
+    // over the status feed, and for the same reason.
+    const hc = c.headCoachSourced || c.headCoach;
     const who = c.playCaller
-      ? `${when}${c.playCaller} calls the plays${c.callerIsHeadCoach ? ', and is the head coach' : c.headCoach ? ` for ${c.headCoach}` : ''}`
-      : c.headCoach ? `${when}${c.headCoach} is the head coach; who calls the plays is not recorded` : '';
+      ? `${when}${c.playCaller} calls the plays${c.callerIsHeadCoach ? ', and is the head coach' : hc ? ` for ${hc}` : ''}`
+      : hc ? `${when}${hc} is the head coach; who calls the plays is not recorded` : '';
     if (who) h += `<div class="env-caller">${rankEsc(who)}${c.source ? ` · ${rankEsc(c.source)}` : ''}</div>`;
   }
 
