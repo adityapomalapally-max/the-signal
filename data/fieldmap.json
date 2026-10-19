@@ -1,18 +1,19 @@
 {
   "meta": {
-    "generated": "2026-10-13T18:09:17.128Z",
+    "generated": "2026-10-19T17:28:45.325Z",
     "seasons": [
       2023,
       2024,
-      2025
+      2025,
+      2026
     ],
     "source": "nflverse pbp — pass_location x air_yards for throws, run_location x run_gap for carries",
     "coverage": {
-      "attempts": 4565,
-      "located": 4263,
-      "locatedPct": 93.4,
-      "carries": 3096,
-      "gapped": 2227
+      "attempts": 6620,
+      "located": 6160,
+      "locatedPct": 93.1,
+      "carries": 4362,
+      "gapped": 3103
     },
     "bands": [
       {
@@ -73,11 +74,7 @@
       "RUN BLOCKING SCHEME IS NOT IN THIS FILE AND IS NOT AVAILABLE. Wide zone against inside zone is a blocking call; run_gap records WHERE THE BALL WENT, which is a different question — a wide-zone run can hit any gap. No free feed carries the concept.",
       "About 7% of pass attempts carry no location — throwaways, batted balls and spikes. They are excluded rather than assigned to a cell, so the shares are of LOCATED attempts.",
       "Air yards are where the ball crossed the line, not where the catch was made. A short throw taken 40 yards is a short throw here, which is the point of splitting it from YAC."
-    ],
-    "pending": {
-      "season": 2026,
-      "reason": "the map needs 5+ qualified players in each of passers, receivers and rushers and this season has 2 passers, 6 receivers, 4 rushers — a passer needs 200+ attempts, a receiver 50+ targets and a rusher 100+ carries, which is about week 6. A season that can fill one board and not the other three is three empty boards."
-    }
+    ]
   },
   "seasons": {
     "2023": {
@@ -51977,6 +51974,3286 @@
               "stuffPct": 22.5,
               "tenPct": 8.7,
               "td": 1
+            }
+          }
+        }
+      }
+    },
+    "2026": {
+      "passers": {
+        "00-0033119": {
+          "attempts": 232,
+          "cells": {
+            "left-behind": {
+              "n": 10,
+              "share": 4.3,
+              "compPct": 80,
+              "ypa": 2.1,
+              "epa": -0.644,
+              "tdRate": 0,
+              "success": 40,
+              "cpoe": -1.2
+            },
+            "left-short": {
+              "n": 53,
+              "share": 22.8,
+              "compPct": 71.7,
+              "ypa": 5.3,
+              "epa": 0.107,
+              "tdRate": 3.8,
+              "success": 60.4,
+              "cpoe": 2.5
+            },
+            "left-inter": {
+              "n": 10,
+              "share": 4.3,
+              "compPct": 70,
+              "ypa": 10.7,
+              "epa": 0.578,
+              "tdRate": 10,
+              "success": 70
+            },
+            "left-deep": {
+              "n": 9,
+              "share": 3.9,
+              "thin": true
+            },
+            "middle-behind": {
+              "n": 3,
+              "share": 1.3,
+              "thin": true
+            },
+            "middle-short": {
+              "n": 32,
+              "share": 13.8,
+              "compPct": 75,
+              "ypa": 6.13,
+              "epa": 0.295,
+              "tdRate": 3.1,
+              "success": 62.5,
+              "cpoe": 1.7
+            },
+            "middle-inter": {
+              "n": 9,
+              "share": 3.9,
+              "thin": true
+            },
+            "middle-deep": {
+              "n": 2,
+              "share": 0.9,
+              "thin": true
+            },
+            "right-behind": {
+              "n": 20,
+              "share": 8.6,
+              "compPct": 80,
+              "ypa": 3.3,
+              "epa": -0.138,
+              "tdRate": 5,
+              "success": 30,
+              "cpoe": 1.1
+            },
+            "right-short": {
+              "n": 51,
+              "share": 22,
+              "compPct": 82.4,
+              "ypa": 5.14,
+              "epa": 0.136,
+              "tdRate": 5.9,
+              "success": 52.9,
+              "cpoe": 12.1
+            },
+            "right-inter": {
+              "n": 22,
+              "share": 9.5,
+              "compPct": 50,
+              "ypa": 7.41,
+              "epa": 0.224,
+              "tdRate": 4.5,
+              "success": 50,
+              "cpoe": -1.7
+            },
+            "right-deep": {
+              "n": 11,
+              "share": 4.7,
+              "compPct": 18.2,
+              "ypa": 5.91,
+              "epa": -0.403,
+              "tdRate": 0,
+              "success": 18.2,
+              "cpoe": -19.5
+            }
+          },
+          "depth": {
+            "behind": {
+              "n": 33,
+              "share": 14.2,
+              "compPct": 72.7,
+              "ypa": 2.64,
+              "epa": -0.338,
+              "tdRate": 3,
+              "success": 30.3,
+              "cpoe": -5
+            },
+            "short": {
+              "n": 136,
+              "share": 58.6,
+              "compPct": 76.5,
+              "ypa": 5.43,
+              "epa": 0.162,
+              "tdRate": 4.4,
+              "success": 58.1,
+              "cpoe": 5.9
+            },
+            "inter": {
+              "n": 41,
+              "share": 17.7,
+              "compPct": 58.5,
+              "ypa": 9.34,
+              "epa": 0.458,
+              "tdRate": 4.9,
+              "success": 58.5,
+              "cpoe": 4.8
+            },
+            "deep": {
+              "n": 22,
+              "share": 9.5,
+              "compPct": 18.2,
+              "ypa": 5.41,
+              "epa": -0.399,
+              "tdRate": 0,
+              "success": 18.2,
+              "cpoe": -19.8
+            }
+          },
+          "side": {
+            "left": {
+              "n": 82,
+              "share": 35.3,
+              "compPct": 65.9,
+              "ypa": 5.39,
+              "epa": -0.02,
+              "tdRate": 3.7,
+              "success": 53.7,
+              "cpoe": 1.6
+            },
+            "middle": {
+              "n": 46,
+              "share": 19.8,
+              "compPct": 67.4,
+              "ypa": 7.17,
+              "epa": 0.389,
+              "tdRate": 2.2,
+              "success": 58.7,
+              "cpoe": -2.6
+            },
+            "right": {
+              "n": 104,
+              "share": 44.8,
+              "compPct": 68.3,
+              "ypa": 5.35,
+              "epa": 0.045,
+              "tdRate": 4.8,
+              "success": 44.2,
+              "cpoe": 3.7
+            }
+          }
+        },
+        "00-0023459": {
+          "attempts": 230,
+          "cells": {
+            "left-behind": {
+              "n": 21,
+              "share": 9.1,
+              "compPct": 81,
+              "ypa": 4.29,
+              "epa": -0.122,
+              "tdRate": 0,
+              "success": 33.3,
+              "cpoe": -3.4
+            },
+            "left-short": {
+              "n": 35,
+              "share": 15.2,
+              "compPct": 65.7,
+              "ypa": 5.57,
+              "epa": -0.16,
+              "tdRate": 2.9,
+              "success": 45.7,
+              "cpoe": -4.8
+            },
+            "left-inter": {
+              "n": 10,
+              "share": 4.3,
+              "compPct": 40,
+              "ypa": 7.8,
+              "epa": -0.145,
+              "tdRate": 0,
+              "success": 40
+            },
+            "left-deep": {
+              "n": 13,
+              "share": 5.7,
+              "compPct": 15.4,
+              "ypa": 5.08,
+              "epa": -0.277,
+              "tdRate": 7.7,
+              "success": 15.4,
+              "cpoe": -20.2
+            },
+            "middle-behind": {
+              "n": 3,
+              "share": 1.3,
+              "thin": true
+            },
+            "middle-short": {
+              "n": 28,
+              "share": 12.2,
+              "compPct": 85.7,
+              "ypa": 7.46,
+              "epa": 0.47,
+              "tdRate": 10.7,
+              "success": 60.7,
+              "cpoe": 11.9
+            },
+            "middle-inter": {
+              "n": 15,
+              "share": 6.5,
+              "compPct": 53.3,
+              "ypa": 8.6,
+              "epa": 0.481,
+              "tdRate": 0,
+              "success": 53.3,
+              "cpoe": -0.4
+            },
+            "middle-deep": {
+              "n": 4,
+              "share": 1.7,
+              "thin": true
+            },
+            "right-behind": {
+              "n": 25,
+              "share": 10.9,
+              "compPct": 68,
+              "ypa": 3.12,
+              "epa": -0.569,
+              "tdRate": 0,
+              "success": 32,
+              "cpoe": -11.7
+            },
+            "right-short": {
+              "n": 47,
+              "share": 20.4,
+              "compPct": 72.3,
+              "ypa": 7.64,
+              "epa": 0.261,
+              "tdRate": 8.5,
+              "success": 53.2,
+              "cpoe": 11.8
+            },
+            "right-inter": {
+              "n": 14,
+              "share": 6.1,
+              "compPct": 50,
+              "ypa": 7.57,
+              "epa": 0.222,
+              "tdRate": 0,
+              "success": 50,
+              "cpoe": 3.7
+            },
+            "right-deep": {
+              "n": 15,
+              "share": 6.5,
+              "compPct": 13.3,
+              "ypa": 4.4,
+              "epa": -0.496,
+              "tdRate": 6.7,
+              "success": 13.3,
+              "cpoe": -18.8
+            }
+          },
+          "depth": {
+            "behind": {
+              "n": 49,
+              "share": 21.3,
+              "compPct": 75.5,
+              "ypa": 4.27,
+              "epa": -0.245,
+              "tdRate": 2,
+              "success": 34.7,
+              "cpoe": -6
+            },
+            "short": {
+              "n": 110,
+              "share": 47.8,
+              "compPct": 73.6,
+              "ypa": 6.94,
+              "epa": 0.18,
+              "tdRate": 7.3,
+              "success": 52.7,
+              "cpoe": 6.3
+            },
+            "inter": {
+              "n": 39,
+              "share": 17,
+              "compPct": 48.7,
+              "ypa": 8.03,
+              "epa": 0.227,
+              "tdRate": 0,
+              "success": 48.7,
+              "cpoe": -2.3
+            },
+            "deep": {
+              "n": 32,
+              "share": 13.9,
+              "compPct": 18.8,
+              "ypa": 6.31,
+              "epa": -0.237,
+              "tdRate": 9.4,
+              "success": 18.8,
+              "cpoe": -16.1
+            }
+          },
+          "side": {
+            "left": {
+              "n": 79,
+              "share": 34.3,
+              "compPct": 58.2,
+              "ypa": 5.43,
+              "epa": -0.167,
+              "tdRate": 2.5,
+              "success": 36.7,
+              "cpoe": -8
+            },
+            "middle": {
+              "n": 50,
+              "share": 21.7,
+              "compPct": 74,
+              "ypa": 8.98,
+              "epa": 0.571,
+              "tdRate": 10,
+              "success": 58,
+              "cpoe": 8.4
+            },
+            "right": {
+              "n": 101,
+              "share": 43.9,
+              "compPct": 59.4,
+              "ypa": 6.03,
+              "epa": -0.062,
+              "tdRate": 5,
+              "success": 41.6,
+              "cpoe": 0.3
+            }
+          }
+        },
+        "00-0035710": {
+          "attempts": 217,
+          "cells": {
+            "left-behind": {
+              "n": 13,
+              "share": 6,
+              "compPct": 69.2,
+              "ypa": 5.77,
+              "epa": -0.359,
+              "tdRate": 0,
+              "success": 30.8,
+              "cpoe": -16.3
+            },
+            "left-short": {
+              "n": 52,
+              "share": 24,
+              "compPct": 73.1,
+              "ypa": 4.6,
+              "epa": 0.009,
+              "tdRate": 1.9,
+              "success": 48.1,
+              "cpoe": 3.8
+            },
+            "left-inter": {
+              "n": 8,
+              "share": 3.7,
+              "thin": true
+            },
+            "left-deep": {
+              "n": 12,
+              "share": 5.5,
+              "compPct": 8.3,
+              "ypa": 3,
+              "epa": -0.727,
+              "tdRate": 0,
+              "success": 8.3,
+              "cpoe": -27.7
+            },
+            "middle-behind": {
+              "n": 0,
+              "share": 0,
+              "thin": true
+            },
+            "middle-short": {
+              "n": 24,
+              "share": 11.1,
+              "compPct": 75,
+              "ypa": 6.5,
+              "epa": 0.266,
+              "tdRate": 8.3,
+              "success": 62.5,
+              "cpoe": 0.6
+            },
+            "middle-inter": {
+              "n": 15,
+              "share": 6.9,
+              "compPct": 53.3,
+              "ypa": 9.07,
+              "epa": 0.43,
+              "tdRate": 0,
+              "success": 53.3,
+              "cpoe": -12.3
+            },
+            "middle-deep": {
+              "n": 5,
+              "share": 2.3,
+              "thin": true
+            },
+            "right-behind": {
+              "n": 18,
+              "share": 8.3,
+              "compPct": 83.3,
+              "ypa": 4.17,
+              "epa": -0.181,
+              "tdRate": 0,
+              "success": 27.8,
+              "cpoe": 11.5
+            },
+            "right-short": {
+              "n": 39,
+              "share": 18,
+              "compPct": 64.1,
+              "ypa": 5.51,
+              "epa": 0.298,
+              "tdRate": 2.6,
+              "success": 53.8,
+              "cpoe": -0.9
+            },
+            "right-inter": {
+              "n": 20,
+              "share": 9.2,
+              "compPct": 40,
+              "ypa": 7.7,
+              "epa": -0.175,
+              "tdRate": 0,
+              "success": 40,
+              "cpoe": -8.4
+            },
+            "right-deep": {
+              "n": 11,
+              "share": 5.1,
+              "compPct": 18.2,
+              "ypa": 5.91,
+              "epa": -0.114,
+              "tdRate": 0,
+              "success": 18.2
+            }
+          },
+          "depth": {
+            "behind": {
+              "n": 31,
+              "share": 14.3,
+              "compPct": 77.4,
+              "ypa": 4.84,
+              "epa": -0.256,
+              "tdRate": 0,
+              "success": 29,
+              "cpoe": -1
+            },
+            "short": {
+              "n": 115,
+              "share": 53,
+              "compPct": 70.4,
+              "ypa": 5.3,
+              "epa": 0.161,
+              "tdRate": 3.5,
+              "success": 53,
+              "cpoe": 1.6
+            },
+            "inter": {
+              "n": 43,
+              "share": 19.8,
+              "compPct": 48.8,
+              "ypa": 8.86,
+              "epa": 0.11,
+              "tdRate": 0,
+              "success": 48.8,
+              "cpoe": -5.9
+            },
+            "deep": {
+              "n": 28,
+              "share": 12.9,
+              "compPct": 14.3,
+              "ypa": 5.32,
+              "epa": -0.436,
+              "tdRate": 0,
+              "success": 14.3,
+              "cpoe": -23.1
+            }
+          },
+          "side": {
+            "left": {
+              "n": 85,
+              "share": 39.2,
+              "compPct": 62.4,
+              "ypa": 5.19,
+              "epa": -0.131,
+              "tdRate": 1.2,
+              "success": 41.2,
+              "cpoe": -3.1
+            },
+            "middle": {
+              "n": 44,
+              "share": 20.3,
+              "compPct": 61.4,
+              "ypa": 7.73,
+              "epa": 0.241,
+              "tdRate": 4.5,
+              "success": 54.5,
+              "cpoe": -6.3
+            },
+            "right": {
+              "n": 88,
+              "share": 40.6,
+              "compPct": 56.8,
+              "ypa": 5.78,
+              "epa": 0.041,
+              "tdRate": 1.1,
+              "success": 40.9,
+              "cpoe": -2
+            }
+          }
+        },
+        "00-0039163": {
+          "attempts": 215,
+          "cells": {
+            "left-behind": {
+              "n": 11,
+              "share": 5.1,
+              "compPct": 81.8,
+              "ypa": 1.18,
+              "epa": -0.633,
+              "tdRate": 0,
+              "success": 18.2,
+              "cpoe": 8.5
+            },
+            "left-short": {
+              "n": 28,
+              "share": 13,
+              "compPct": 71.4,
+              "ypa": 5.39,
+              "epa": 0.246,
+              "tdRate": 10.7,
+              "success": 64.3,
+              "cpoe": -0.7
+            },
+            "left-inter": {
+              "n": 10,
+              "share": 4.7,
+              "compPct": 40,
+              "ypa": 6.6,
+              "epa": -0.055,
+              "tdRate": 0,
+              "success": 40,
+              "cpoe": -19.7
+            },
+            "left-deep": {
+              "n": 8,
+              "share": 3.7,
+              "thin": true
+            },
+            "middle-behind": {
+              "n": 2,
+              "share": 0.9,
+              "thin": true
+            },
+            "middle-short": {
+              "n": 29,
+              "share": 13.5,
+              "compPct": 75.9,
+              "ypa": 7.76,
+              "epa": 0.23,
+              "tdRate": 3.4,
+              "success": 58.6,
+              "cpoe": -0.1
+            },
+            "middle-inter": {
+              "n": 20,
+              "share": 9.3,
+              "compPct": 70,
+              "ypa": 13.45,
+              "epa": 0.663,
+              "tdRate": 5,
+              "success": 70,
+              "cpoe": 1.1
+            },
+            "middle-deep": {
+              "n": 5,
+              "share": 2.3,
+              "thin": true
+            },
+            "right-behind": {
+              "n": 9,
+              "share": 4.2,
+              "thin": true
+            },
+            "right-short": {
+              "n": 52,
+              "share": 24.2,
+              "compPct": 78.8,
+              "ypa": 7.37,
+              "epa": 0.234,
+              "tdRate": 3.8,
+              "success": 53.8,
+              "cpoe": 12.6
+            },
+            "right-inter": {
+              "n": 22,
+              "share": 10.2,
+              "compPct": 50,
+              "ypa": 7.45,
+              "epa": 0.483,
+              "tdRate": 4.5,
+              "success": 50,
+              "cpoe": 0.9
+            },
+            "right-deep": {
+              "n": 19,
+              "share": 8.8,
+              "compPct": 42.1,
+              "ypa": 10.68,
+              "epa": 0.46,
+              "tdRate": 5.3,
+              "success": 42.1,
+              "cpoe": 11.1
+            }
+          },
+          "depth": {
+            "behind": {
+              "n": 22,
+              "share": 10.2,
+              "compPct": 77.3,
+              "ypa": 2.45,
+              "epa": -0.418,
+              "tdRate": 0,
+              "success": 22.7,
+              "cpoe": 4.1
+            },
+            "short": {
+              "n": 109,
+              "share": 50.7,
+              "compPct": 76.1,
+              "ypa": 6.96,
+              "epa": 0.236,
+              "tdRate": 5.5,
+              "success": 57.8,
+              "cpoe": 5.5
+            },
+            "inter": {
+              "n": 52,
+              "share": 24.2,
+              "compPct": 55.8,
+              "ypa": 9.6,
+              "epa": 0.448,
+              "tdRate": 3.8,
+              "success": 55.8,
+              "cpoe": -3.2
+            },
+            "deep": {
+              "n": 32,
+              "share": 14.9,
+              "compPct": 43.8,
+              "ypa": 12.56,
+              "epa": 0.604,
+              "tdRate": 3.1,
+              "success": 43.8,
+              "cpoe": 10.3
+            }
+          },
+          "side": {
+            "left": {
+              "n": 57,
+              "share": 26.5,
+              "compPct": 63.2,
+              "ypa": 5.86,
+              "epa": 0.062,
+              "tdRate": 5.3,
+              "success": 47.4,
+              "cpoe": -2.1
+            },
+            "middle": {
+              "n": 56,
+              "share": 26,
+              "compPct": 71.4,
+              "ypa": 10.68,
+              "epa": 0.477,
+              "tdRate": 3.6,
+              "success": 62.5,
+              "cpoe": 1.4
+            },
+            "right": {
+              "n": 102,
+              "share": 47.4,
+              "compPct": 65.7,
+              "ypa": 7.67,
+              "epa": 0.283,
+              "tdRate": 3.9,
+              "success": 48,
+              "cpoe": 8.9
+            }
+          }
+        },
+        "00-0039150": {
+          "attempts": 200,
+          "cells": {
+            "left-behind": {
+              "n": 15,
+              "share": 7.5,
+              "compPct": 66.7,
+              "ypa": 2.73,
+              "epa": -0.631,
+              "tdRate": 0,
+              "success": 6.7,
+              "cpoe": -1.1
+            },
+            "left-short": {
+              "n": 42,
+              "share": 21,
+              "compPct": 59.5,
+              "ypa": 5.29,
+              "epa": 0.122,
+              "tdRate": 9.5,
+              "success": 50,
+              "cpoe": -0.8
+            },
+            "left-inter": {
+              "n": 17,
+              "share": 8.5,
+              "compPct": 47.1,
+              "ypa": 7.24,
+              "epa": 0.289,
+              "tdRate": 0,
+              "success": 47.1,
+              "cpoe": 2.5
+            },
+            "left-deep": {
+              "n": 11,
+              "share": 5.5,
+              "compPct": 36.4,
+              "ypa": 12.45,
+              "epa": 0.39,
+              "tdRate": 9.1,
+              "success": 36.4,
+              "cpoe": 0.4
+            },
+            "middle-behind": {
+              "n": 4,
+              "share": 2,
+              "thin": true
+            },
+            "middle-short": {
+              "n": 15,
+              "share": 7.5,
+              "compPct": 73.3,
+              "ypa": 11.13,
+              "epa": 0.588,
+              "tdRate": 0,
+              "success": 60,
+              "cpoe": 2.2
+            },
+            "middle-inter": {
+              "n": 15,
+              "share": 7.5,
+              "compPct": 86.7,
+              "ypa": 14.33,
+              "epa": 1.227,
+              "tdRate": 13.3,
+              "success": 80,
+              "cpoe": 22.8
+            },
+            "middle-deep": {
+              "n": 7,
+              "share": 3.5,
+              "thin": true
+            },
+            "right-behind": {
+              "n": 9,
+              "share": 4.5,
+              "thin": true
+            },
+            "right-short": {
+              "n": 40,
+              "share": 20,
+              "compPct": 65,
+              "ypa": 5.73,
+              "epa": 0.216,
+              "tdRate": 5,
+              "success": 45,
+              "cpoe": -0.6
+            },
+            "right-inter": {
+              "n": 17,
+              "share": 8.5,
+              "compPct": 47.1,
+              "ypa": 6.76,
+              "epa": 0.34,
+              "tdRate": 5.9,
+              "success": 41.2,
+              "cpoe": 2.6
+            },
+            "right-deep": {
+              "n": 8,
+              "share": 4,
+              "thin": true
+            }
+          },
+          "depth": {
+            "behind": {
+              "n": 28,
+              "share": 14,
+              "compPct": 64.3,
+              "ypa": 3.14,
+              "epa": -0.484,
+              "tdRate": 0,
+              "success": 21.4,
+              "cpoe": -6.8
+            },
+            "short": {
+              "n": 97,
+              "share": 48.5,
+              "compPct": 63.9,
+              "ypa": 6.37,
+              "epa": 0.233,
+              "tdRate": 6.2,
+              "success": 49.5,
+              "cpoe": -0.2
+            },
+            "inter": {
+              "n": 49,
+              "share": 24.5,
+              "compPct": 59.2,
+              "ypa": 9.24,
+              "epa": 0.594,
+              "tdRate": 6.1,
+              "success": 55.1,
+              "cpoe": 9.3
+            },
+            "deep": {
+              "n": 26,
+              "share": 13,
+              "compPct": 46.2,
+              "ypa": 15,
+              "epa": 0.811,
+              "tdRate": 7.7,
+              "success": 46.2,
+              "cpoe": 12
+            }
+          },
+          "side": {
+            "left": {
+              "n": 85,
+              "share": 42.5,
+              "compPct": 55.3,
+              "ypa": 6.15,
+              "epa": 0.057,
+              "tdRate": 5.9,
+              "success": 40,
+              "cpoe": 0
+            },
+            "middle": {
+              "n": 41,
+              "share": 20.5,
+              "compPct": 68.3,
+              "ypa": 11.54,
+              "epa": 0.651,
+              "tdRate": 4.9,
+              "success": 58.5,
+              "cpoe": 10.3
+            },
+            "right": {
+              "n": 74,
+              "share": 37,
+              "compPct": 62.2,
+              "ypa": 7.47,
+              "epa": 0.373,
+              "tdRate": 5.4,
+              "success": 47.3,
+              "cpoe": 2.3
+            }
+          }
+        },
+        "00-0033077": {
+          "attempts": 246,
+          "cells": {
+            "left-behind": {
+              "n": 14,
+              "share": 5.7,
+              "compPct": 50,
+              "ypa": 1.64,
+              "epa": -0.462,
+              "tdRate": 0,
+              "success": 21.4,
+              "cpoe": -30.2
+            },
+            "left-short": {
+              "n": 57,
+              "share": 23.2,
+              "compPct": 77.2,
+              "ypa": 7.21,
+              "epa": 0.415,
+              "tdRate": 3.5,
+              "success": 63.2,
+              "cpoe": 4.8
+            },
+            "left-inter": {
+              "n": 23,
+              "share": 9.3,
+              "compPct": 52.2,
+              "ypa": 8.83,
+              "epa": 0.34,
+              "tdRate": 4.3,
+              "success": 52.2,
+              "cpoe": -0.4
+            },
+            "left-deep": {
+              "n": 6,
+              "share": 2.4,
+              "thin": true
+            },
+            "middle-behind": {
+              "n": 3,
+              "share": 1.2,
+              "thin": true
+            },
+            "middle-short": {
+              "n": 26,
+              "share": 10.6,
+              "compPct": 65.4,
+              "ypa": 4.42,
+              "epa": 0.011,
+              "tdRate": 3.8,
+              "success": 42.3,
+              "cpoe": -5.4
+            },
+            "middle-inter": {
+              "n": 12,
+              "share": 4.9,
+              "compPct": 58.3,
+              "ypa": 7.33,
+              "epa": -0.133,
+              "tdRate": 25,
+              "success": 58.3,
+              "cpoe": -1
+            },
+            "middle-deep": {
+              "n": 4,
+              "share": 1.6,
+              "thin": true
+            },
+            "right-behind": {
+              "n": 23,
+              "share": 9.3,
+              "compPct": 87,
+              "ypa": 4.3,
+              "epa": -0.089,
+              "tdRate": 0,
+              "success": 47.8,
+              "cpoe": 6.5
+            },
+            "right-short": {
+              "n": 51,
+              "share": 20.7,
+              "compPct": 76.5,
+              "ypa": 6,
+              "epa": 0.278,
+              "tdRate": 2,
+              "success": 51,
+              "cpoe": 9.2
+            },
+            "right-inter": {
+              "n": 19,
+              "share": 7.7,
+              "compPct": 42.1,
+              "ypa": 7.21,
+              "epa": 0.155,
+              "tdRate": 5.3,
+              "success": 42.1,
+              "cpoe": -11
+            },
+            "right-deep": {
+              "n": 8,
+              "share": 3.3,
+              "thin": true
+            }
+          },
+          "depth": {
+            "behind": {
+              "n": 40,
+              "share": 16.3,
+              "compPct": 72.5,
+              "ypa": 3.15,
+              "epa": -0.362,
+              "tdRate": 0,
+              "success": 37.5,
+              "cpoe": -8
+            },
+            "short": {
+              "n": 134,
+              "share": 54.5,
+              "compPct": 74.6,
+              "ypa": 6.21,
+              "epa": 0.284,
+              "tdRate": 3,
+              "success": 54.5,
+              "cpoe": 4.5
+            },
+            "inter": {
+              "n": 54,
+              "share": 22,
+              "compPct": 50,
+              "ypa": 7.93,
+              "epa": 0.17,
+              "tdRate": 9.3,
+              "success": 50,
+              "cpoe": -4.2
+            },
+            "deep": {
+              "n": 18,
+              "share": 7.3,
+              "compPct": 38.9,
+              "ypa": 14.06,
+              "epa": 0.611,
+              "tdRate": 5.6,
+              "success": 38.9,
+              "cpoe": 7.7
+            }
+          },
+          "side": {
+            "left": {
+              "n": 100,
+              "share": 40.7,
+              "compPct": 64,
+              "ypa": 6.86,
+              "epa": 0.262,
+              "tdRate": 3,
+              "success": 52,
+              "cpoe": -1.6
+            },
+            "middle": {
+              "n": 45,
+              "share": 18.3,
+              "compPct": 66.7,
+              "ypa": 7.82,
+              "epa": 0.035,
+              "tdRate": 8.9,
+              "success": 51.1,
+              "cpoe": 0.2
+            },
+            "right": {
+              "n": 101,
+              "share": 41.1,
+              "compPct": 68.3,
+              "ypa": 5.95,
+              "epa": 0.159,
+              "tdRate": 3,
+              "success": 46.5,
+              "cpoe": 3.5
+            }
+          }
+        },
+        "00-0036264": {
+          "attempts": 226,
+          "cells": {
+            "left-behind": {
+              "n": 18,
+              "share": 8,
+              "compPct": 72.2,
+              "ypa": 4.22,
+              "epa": 0.008,
+              "tdRate": 0,
+              "success": 44.4,
+              "cpoe": -9.4
+            },
+            "left-short": {
+              "n": 31,
+              "share": 13.7,
+              "compPct": 67.7,
+              "ypa": 5.65,
+              "epa": 0.024,
+              "tdRate": 0,
+              "success": 45.2,
+              "cpoe": -2.6
+            },
+            "left-inter": {
+              "n": 17,
+              "share": 7.5,
+              "compPct": 47.1,
+              "ypa": 9.18,
+              "epa": 0.226,
+              "tdRate": 0,
+              "success": 47.1,
+              "cpoe": -7.1
+            },
+            "left-deep": {
+              "n": 10,
+              "share": 4.4,
+              "compPct": 40,
+              "ypa": 12.5,
+              "epa": 0.539,
+              "tdRate": 10,
+              "success": 40,
+              "cpoe": 8.3
+            },
+            "middle-behind": {
+              "n": 2,
+              "share": 0.9,
+              "thin": true
+            },
+            "middle-short": {
+              "n": 30,
+              "share": 13.3,
+              "compPct": 73.3,
+              "ypa": 5.2,
+              "epa": 0.27,
+              "tdRate": 10,
+              "success": 63.3,
+              "cpoe": 2.7
+            },
+            "middle-inter": {
+              "n": 17,
+              "share": 7.5,
+              "compPct": 58.8,
+              "ypa": 15.35,
+              "epa": 0.567,
+              "tdRate": 5.9,
+              "success": 58.8,
+              "cpoe": -6.1
+            },
+            "middle-deep": {
+              "n": 9,
+              "share": 4,
+              "thin": true
+            },
+            "right-behind": {
+              "n": 25,
+              "share": 11.1,
+              "compPct": 68,
+              "ypa": 3.32,
+              "epa": -0.143,
+              "tdRate": 4,
+              "success": 28,
+              "cpoe": -9.3
+            },
+            "right-short": {
+              "n": 42,
+              "share": 18.6,
+              "compPct": 59.5,
+              "ypa": 4.57,
+              "epa": 0.057,
+              "tdRate": 7.1,
+              "success": 40.5,
+              "cpoe": -9.8
+            },
+            "right-inter": {
+              "n": 10,
+              "share": 4.4,
+              "compPct": 60,
+              "ypa": 11.5,
+              "epa": 0.573,
+              "tdRate": 10,
+              "success": 60,
+              "cpoe": 13
+            },
+            "right-deep": {
+              "n": 15,
+              "share": 6.6,
+              "compPct": 26.7,
+              "ypa": 10.13,
+              "epa": 0.105,
+              "tdRate": 0,
+              "success": 26.7,
+              "cpoe": -3.9
+            }
+          },
+          "depth": {
+            "behind": {
+              "n": 45,
+              "share": 19.9,
+              "compPct": 68.9,
+              "ypa": 3.91,
+              "epa": -0.046,
+              "tdRate": 2.2,
+              "success": 35.6,
+              "cpoe": -8.6
+            },
+            "short": {
+              "n": 103,
+              "share": 45.6,
+              "compPct": 66,
+              "ypa": 5.08,
+              "epa": 0.109,
+              "tdRate": 5.8,
+              "success": 48.5,
+              "cpoe": -4
+            },
+            "inter": {
+              "n": 44,
+              "share": 19.5,
+              "compPct": 54.5,
+              "ypa": 12.09,
+              "epa": 0.437,
+              "tdRate": 4.5,
+              "success": 54.5,
+              "cpoe": -2.2
+            },
+            "deep": {
+              "n": 34,
+              "share": 15,
+              "compPct": 35.3,
+              "ypa": 13.32,
+              "epa": 0.493,
+              "tdRate": 5.9,
+              "success": 35.3,
+              "cpoe": 2.2
+            }
+          },
+          "side": {
+            "left": {
+              "n": 76,
+              "share": 33.6,
+              "compPct": 60.5,
+              "ypa": 7,
+              "epa": 0.133,
+              "tdRate": 1.3,
+              "success": 44.7,
+              "cpoe": -3.7
+            },
+            "middle": {
+              "n": 58,
+              "share": 25.7,
+              "compPct": 63.8,
+              "ypa": 10.52,
+              "epa": 0.498,
+              "tdRate": 8.6,
+              "success": 58.6,
+              "cpoe": 0.7
+            },
+            "right": {
+              "n": 92,
+              "share": 40.7,
+              "compPct": 56.5,
+              "ypa": 5.89,
+              "epa": 0.067,
+              "tdRate": 5.4,
+              "success": 37,
+              "cpoe": -6.2
+            }
+          }
+        },
+        "00-0029604": {
+          "attempts": 210,
+          "cells": {
+            "left-behind": {
+              "n": 15,
+              "share": 7.1,
+              "compPct": 93.3,
+              "ypa": 5.53,
+              "epa": -0.095,
+              "tdRate": 0,
+              "success": 46.7,
+              "cpoe": 8.1
+            },
+            "left-short": {
+              "n": 39,
+              "share": 18.6,
+              "compPct": 64.1,
+              "ypa": 5.72,
+              "epa": 0.012,
+              "tdRate": 7.7,
+              "success": 46.2,
+              "cpoe": -0.6
+            },
+            "left-inter": {
+              "n": 15,
+              "share": 7.1,
+              "compPct": 46.7,
+              "ypa": 8.8,
+              "epa": -0.018,
+              "tdRate": 6.7,
+              "success": 46.7,
+              "cpoe": -7
+            },
+            "left-deep": {
+              "n": 14,
+              "share": 6.7,
+              "compPct": 57.1,
+              "ypa": 16.36,
+              "epa": 1.274,
+              "tdRate": 14.3,
+              "success": 64.3,
+              "cpoe": 16.9
+            },
+            "middle-behind": {
+              "n": 3,
+              "share": 1.4,
+              "thin": true
+            },
+            "middle-short": {
+              "n": 35,
+              "share": 16.7,
+              "compPct": 68.6,
+              "ypa": 7.17,
+              "epa": 0.329,
+              "tdRate": 5.7,
+              "success": 57.1,
+              "cpoe": -6.1
+            },
+            "middle-inter": {
+              "n": 18,
+              "share": 8.6,
+              "compPct": 38.9,
+              "ypa": 7.39,
+              "epa": -0.019,
+              "tdRate": 0,
+              "success": 38.9,
+              "cpoe": -26
+            },
+            "middle-deep": {
+              "n": 4,
+              "share": 1.9,
+              "thin": true
+            },
+            "right-behind": {
+              "n": 11,
+              "share": 5.2,
+              "compPct": 72.7,
+              "ypa": 4.27,
+              "epa": -0.246,
+              "tdRate": 0,
+              "success": 45.5
+            },
+            "right-short": {
+              "n": 35,
+              "share": 16.7,
+              "compPct": 74.3,
+              "ypa": 6.4,
+              "epa": 0.152,
+              "tdRate": 2.9,
+              "success": 60,
+              "cpoe": 1.3
+            },
+            "right-inter": {
+              "n": 14,
+              "share": 6.7,
+              "compPct": 71.4,
+              "ypa": 10.29,
+              "epa": 1.315,
+              "tdRate": 21.4,
+              "success": 71.4,
+              "cpoe": 20.2
+            },
+            "right-deep": {
+              "n": 7,
+              "share": 3.3,
+              "thin": true
+            }
+          },
+          "depth": {
+            "behind": {
+              "n": 29,
+              "share": 13.8,
+              "compPct": 82.8,
+              "ypa": 4.52,
+              "epa": -0.271,
+              "tdRate": 0,
+              "success": 41.4,
+              "cpoe": 3.9
+            },
+            "short": {
+              "n": 109,
+              "share": 51.9,
+              "compPct": 68.8,
+              "ypa": 6.4,
+              "epa": 0.159,
+              "tdRate": 5.5,
+              "success": 54.1,
+              "cpoe": -1.8
+            },
+            "inter": {
+              "n": 47,
+              "share": 22.4,
+              "compPct": 51.1,
+              "ypa": 8.7,
+              "epa": 0.379,
+              "tdRate": 8.5,
+              "success": 51.1,
+              "cpoe": -6.1
+            },
+            "deep": {
+              "n": 25,
+              "share": 11.9,
+              "compPct": 48,
+              "ypa": 13.76,
+              "epa": 0.946,
+              "tdRate": 16,
+              "success": 52,
+              "cpoe": 9.4
+            }
+          },
+          "side": {
+            "left": {
+              "n": 83,
+              "share": 39.5,
+              "compPct": 65.1,
+              "ypa": 8.04,
+              "epa": 0.2,
+              "tdRate": 7.2,
+              "success": 49.4,
+              "cpoe": 2.9
+            },
+            "middle": {
+              "n": 60,
+              "share": 28.6,
+              "compPct": 60,
+              "ypa": 8,
+              "epa": 0.258,
+              "tdRate": 5,
+              "success": 50,
+              "cpoe": -10.4
+            },
+            "right": {
+              "n": 67,
+              "share": 31.9,
+              "compPct": 67.2,
+              "ypa": 6.49,
+              "epa": 0.28,
+              "tdRate": 7.5,
+              "success": 55.2,
+              "cpoe": 3.8
+            }
+          }
+        },
+        "00-0040743": {
+          "attempts": 234,
+          "cells": {
+            "left-behind": {
+              "n": 11,
+              "share": 4.7,
+              "compPct": 100,
+              "ypa": 4,
+              "epa": -0.251,
+              "tdRate": 0,
+              "success": 27.3,
+              "cpoe": 13.7
+            },
+            "left-short": {
+              "n": 56,
+              "share": 23.9,
+              "compPct": 76.8,
+              "ypa": 5.04,
+              "epa": 0.16,
+              "tdRate": 8.9,
+              "success": 58.9,
+              "cpoe": 4.4
+            },
+            "left-inter": {
+              "n": 22,
+              "share": 9.4,
+              "compPct": 45.5,
+              "ypa": 6.27,
+              "epa": 0.113,
+              "tdRate": 0,
+              "success": 50,
+              "cpoe": -10.8
+            },
+            "left-deep": {
+              "n": 12,
+              "share": 5.1,
+              "compPct": 25,
+              "ypa": 7.25,
+              "epa": -0.204,
+              "tdRate": 0,
+              "success": 25,
+              "cpoe": -13.8
+            },
+            "middle-behind": {
+              "n": 1,
+              "share": 0.4,
+              "thin": true
+            },
+            "middle-short": {
+              "n": 14,
+              "share": 6,
+              "compPct": 64.3,
+              "ypa": 4.5,
+              "epa": -0.326,
+              "tdRate": 7.1,
+              "success": 42.9,
+              "cpoe": -6.3
+            },
+            "middle-inter": {
+              "n": 7,
+              "share": 3,
+              "thin": true
+            },
+            "middle-deep": {
+              "n": 6,
+              "share": 2.6,
+              "thin": true
+            },
+            "right-behind": {
+              "n": 24,
+              "share": 10.3,
+              "compPct": 79.2,
+              "ypa": 3.92,
+              "epa": -0.252,
+              "tdRate": 4.2,
+              "success": 25,
+              "cpoe": -3.7
+            },
+            "right-short": {
+              "n": 54,
+              "share": 23.1,
+              "compPct": 64.8,
+              "ypa": 4.93,
+              "epa": 0.139,
+              "tdRate": 5.6,
+              "success": 48.1,
+              "cpoe": -5.7
+            },
+            "right-inter": {
+              "n": 19,
+              "share": 8.1,
+              "compPct": 57.9,
+              "ypa": 9.47,
+              "epa": 0.523,
+              "tdRate": 5.3,
+              "success": 57.9,
+              "cpoe": 12.4
+            },
+            "right-deep": {
+              "n": 8,
+              "share": 3.4,
+              "thin": true
+            }
+          },
+          "depth": {
+            "behind": {
+              "n": 36,
+              "share": 15.4,
+              "compPct": 83.3,
+              "ypa": 3.83,
+              "epa": -0.297,
+              "tdRate": 2.8,
+              "success": 25,
+              "cpoe": -0.4
+            },
+            "short": {
+              "n": 124,
+              "share": 53,
+              "compPct": 70.2,
+              "ypa": 4.93,
+              "epa": 0.096,
+              "tdRate": 7.3,
+              "success": 52.4,
+              "cpoe": -1
+            },
+            "inter": {
+              "n": 48,
+              "share": 20.5,
+              "compPct": 56.3,
+              "ypa": 8.54,
+              "epa": 0.404,
+              "tdRate": 2.1,
+              "success": 58.3,
+              "cpoe": 1.7
+            },
+            "deep": {
+              "n": 26,
+              "share": 11.1,
+              "compPct": 34.6,
+              "ypa": 10.92,
+              "epa": 0.128,
+              "tdRate": 3.8,
+              "success": 34.6,
+              "cpoe": -3.4
+            }
+          },
+          "side": {
+            "left": {
+              "n": 101,
+              "share": 43.2,
+              "compPct": 66.3,
+              "ypa": 5.46,
+              "epa": 0.062,
+              "tdRate": 5,
+              "success": 49.5,
+              "cpoe": 0
+            },
+            "middle": {
+              "n": 28,
+              "share": 12,
+              "compPct": 64.3,
+              "ypa": 8.82,
+              "epa": 0.17,
+              "tdRate": 7.1,
+              "success": 53.6,
+              "cpoe": 0.5
+            },
+            "right": {
+              "n": 105,
+              "share": 44.9,
+              "compPct": 64.8,
+              "ypa": 6.14,
+              "epa": 0.123,
+              "tdRate": 4.8,
+              "success": 43.8,
+              "cpoe": -1.8
+            }
+          }
+        },
+        "00-0026498": {
+          "attempts": 246,
+          "cells": {
+            "left-behind": {
+              "n": 10,
+              "share": 4.1,
+              "compPct": 70,
+              "ypa": 5.2,
+              "epa": -0.088,
+              "tdRate": 0,
+              "success": 40,
+              "cpoe": -15.5
+            },
+            "left-short": {
+              "n": 43,
+              "share": 17.5,
+              "compPct": 81.4,
+              "ypa": 5.88,
+              "epa": 0.032,
+              "tdRate": 7,
+              "success": 55.8,
+              "cpoe": 7.2
+            },
+            "left-inter": {
+              "n": 20,
+              "share": 8.1,
+              "compPct": 85,
+              "ypa": 14.4,
+              "epa": 1.124,
+              "tdRate": 5,
+              "success": 85,
+              "cpoe": 30.1
+            },
+            "left-deep": {
+              "n": 11,
+              "share": 4.5,
+              "compPct": 9.1,
+              "ypa": 2.09,
+              "epa": -0.687,
+              "tdRate": 0,
+              "success": 9.1,
+              "cpoe": -26.3
+            },
+            "middle-behind": {
+              "n": 1,
+              "share": 0.4,
+              "thin": true
+            },
+            "middle-short": {
+              "n": 30,
+              "share": 12.2,
+              "compPct": 83.3,
+              "ypa": 7.43,
+              "epa": 0.286,
+              "tdRate": 6.7,
+              "success": 60,
+              "cpoe": 10.2
+            },
+            "middle-inter": {
+              "n": 10,
+              "share": 4.1,
+              "compPct": 50,
+              "ypa": 12.6,
+              "epa": 0.562,
+              "tdRate": 10,
+              "success": 50,
+              "cpoe": -16.8
+            },
+            "middle-deep": {
+              "n": 4,
+              "share": 1.6,
+              "thin": true
+            },
+            "right-behind": {
+              "n": 19,
+              "share": 7.7,
+              "compPct": 73.7,
+              "ypa": 4.26,
+              "epa": -0.06,
+              "tdRate": 5.3,
+              "success": 31.6,
+              "cpoe": 6.9
+            },
+            "right-short": {
+              "n": 60,
+              "share": 24.4,
+              "compPct": 71.7,
+              "ypa": 5.38,
+              "epa": 0.132,
+              "tdRate": 3.3,
+              "success": 53.3,
+              "cpoe": -1.2
+            },
+            "right-inter": {
+              "n": 27,
+              "share": 11,
+              "compPct": 40.7,
+              "ypa": 7.59,
+              "epa": -0.134,
+              "tdRate": 0,
+              "success": 40.7,
+              "cpoe": -14.8
+            },
+            "right-deep": {
+              "n": 11,
+              "share": 4.5,
+              "compPct": 45.5,
+              "ypa": 18.09,
+              "epa": 0.449,
+              "tdRate": 9.1,
+              "success": 45.5,
+              "cpoe": 8
+            }
+          },
+          "depth": {
+            "behind": {
+              "n": 30,
+              "share": 12.2,
+              "compPct": 70,
+              "ypa": 4.43,
+              "epa": -0.094,
+              "tdRate": 3.3,
+              "success": 33.3,
+              "cpoe": -5.2
+            },
+            "short": {
+              "n": 133,
+              "share": 54.1,
+              "compPct": 77.4,
+              "ypa": 6.01,
+              "epa": 0.135,
+              "tdRate": 5.3,
+              "success": 55.6,
+              "cpoe": 4.1
+            },
+            "inter": {
+              "n": 57,
+              "share": 23.2,
+              "compPct": 57.9,
+              "ypa": 10.86,
+              "epa": 0.43,
+              "tdRate": 3.5,
+              "success": 57.9,
+              "cpoe": 0.6
+            },
+            "deep": {
+              "n": 26,
+              "share": 10.6,
+              "compPct": 26.9,
+              "ypa": 9.35,
+              "epa": -0.12,
+              "tdRate": 3.8,
+              "success": 26.9,
+              "cpoe": -9.4
+            }
+          },
+          "side": {
+            "left": {
+              "n": 84,
+              "share": 34.1,
+              "compPct": 71.4,
+              "ypa": 7.33,
+              "epa": 0.184,
+              "tdRate": 4.8,
+              "success": 54.8,
+              "cpoe": 5.6
+            },
+            "middle": {
+              "n": 45,
+              "share": 18.3,
+              "compPct": 68.9,
+              "ypa": 8.22,
+              "epa": 0.287,
+              "tdRate": 6.7,
+              "success": 53.3,
+              "cpoe": 0
+            },
+            "right": {
+              "n": 117,
+              "share": 47.6,
+              "compPct": 62.4,
+              "ypa": 6.91,
+              "epa": 0.07,
+              "tdRate": 3.4,
+              "success": 46.2,
+              "cpoe": -2.5
+            }
+          }
+        }
+      },
+      "receivers": {
+        "00-0037744": {
+          "targets": 65,
+          "depth": {
+            "behind": {
+              "n": 8,
+              "share": 12.3,
+              "compPct": 87.5,
+              "ypa": 1.63,
+              "epa": -0.281,
+              "tdRate": 0,
+              "success": 37.5,
+              "cpoe": 3.3
+            },
+            "short": {
+              "n": 46,
+              "share": 70.8,
+              "compPct": 76.1,
+              "ypa": 4.87,
+              "epa": 0.166,
+              "tdRate": 6.5,
+              "success": 60.9,
+              "cpoe": 5.6
+            },
+            "inter": {
+              "n": 8,
+              "share": 12.3,
+              "compPct": 75,
+              "ypa": 12.13,
+              "epa": 0.912,
+              "tdRate": 0,
+              "success": 75,
+              "cpoe": 12
+            },
+            "deep": {
+              "n": 3,
+              "share": 4.6,
+              "thin": true
+            }
+          },
+          "side": {
+            "left": {
+              "n": 20,
+              "share": 30.8,
+              "compPct": 70,
+              "ypa": 3.6,
+              "epa": 0.024,
+              "tdRate": 10,
+              "success": 65,
+              "cpoe": 1.2
+            },
+            "middle": {
+              "n": 13,
+              "share": 20,
+              "compPct": 84.6,
+              "ypa": 10,
+              "epa": 0.911,
+              "tdRate": 0,
+              "success": 84.6,
+              "cpoe": 12.7
+            },
+            "right": {
+              "n": 32,
+              "share": 49.2,
+              "compPct": 75,
+              "ypa": 4.97,
+              "epa": 0.008,
+              "tdRate": 3.1,
+              "success": 43.8,
+              "cpoe": 5.4
+            }
+          }
+        },
+        "00-0038559": {
+          "targets": 58,
+          "depth": {
+            "behind": {
+              "n": 7,
+              "share": 12.1,
+              "thin": true
+            },
+            "short": {
+              "n": 24,
+              "share": 41.4,
+              "compPct": 75,
+              "ypa": 5,
+              "epa": -0.032,
+              "tdRate": 0,
+              "success": 58.3,
+              "cpoe": 6.3
+            },
+            "inter": {
+              "n": 18,
+              "share": 31,
+              "compPct": 61.1,
+              "ypa": 9.5,
+              "epa": 0.326,
+              "tdRate": 0,
+              "success": 61.1,
+              "cpoe": 6.7
+            },
+            "deep": {
+              "n": 9,
+              "share": 15.5,
+              "compPct": 0,
+              "ypa": 0,
+              "epa": -0.962,
+              "tdRate": 0,
+              "success": 0,
+              "cpoe": -35.7
+            }
+          },
+          "side": {
+            "left": {
+              "n": 19,
+              "share": 32.8,
+              "compPct": 52.6,
+              "ypa": 5.05,
+              "epa": -0.498,
+              "tdRate": 0,
+              "success": 52.6,
+              "cpoe": -6.5
+            },
+            "middle": {
+              "n": 4,
+              "share": 6.9,
+              "thin": true
+            },
+            "right": {
+              "n": 35,
+              "share": 60.3,
+              "compPct": 62.9,
+              "ypa": 6.09,
+              "epa": 0.155,
+              "tdRate": 2.9,
+              "success": 48.6,
+              "cpoe": 1.4
+            }
+          }
+        },
+        "00-0035640": {
+          "targets": 52,
+          "depth": {
+            "behind": {
+              "n": 8,
+              "share": 15.4,
+              "compPct": 87.5,
+              "ypa": 3.5,
+              "epa": 0.081,
+              "tdRate": 0,
+              "success": 25,
+              "cpoe": 0.2
+            },
+            "short": {
+              "n": 21,
+              "share": 40.4,
+              "compPct": 66.7,
+              "ypa": 5.14,
+              "epa": -0.004,
+              "tdRate": 4.8,
+              "success": 57.1,
+              "cpoe": -5.3
+            },
+            "inter": {
+              "n": 10,
+              "share": 19.2,
+              "compPct": 70,
+              "ypa": 11.1,
+              "epa": 0.737,
+              "tdRate": 0,
+              "success": 70,
+              "cpoe": 14.4
+            },
+            "deep": {
+              "n": 13,
+              "share": 25,
+              "compPct": 15.4,
+              "ypa": 5.46,
+              "epa": -0.487,
+              "tdRate": 0,
+              "success": 15.4,
+              "cpoe": -19.1
+            }
+          },
+          "side": {
+            "left": {
+              "n": 20,
+              "share": 38.5,
+              "compPct": 45,
+              "ypa": 4.35,
+              "epa": -0.374,
+              "tdRate": 0,
+              "success": 35,
+              "cpoe": -15.7
+            },
+            "middle": {
+              "n": 10,
+              "share": 19.2,
+              "compPct": 60,
+              "ypa": 5.9,
+              "epa": 0.208,
+              "tdRate": 10,
+              "success": 50,
+              "cpoe": 1.9
+            },
+            "right": {
+              "n": 22,
+              "share": 42.3,
+              "compPct": 68.2,
+              "ypa": 7.82,
+              "epa": 0.319,
+              "tdRate": 0,
+              "success": 50,
+              "cpoe": 3.8
+            }
+          }
+        },
+        "00-0036358": {
+          "targets": 69,
+          "depth": {
+            "behind": {
+              "n": 7,
+              "share": 10.1,
+              "thin": true
+            },
+            "short": {
+              "n": 35,
+              "share": 50.7,
+              "compPct": 77.1,
+              "ypa": 6.49,
+              "epa": 0.402,
+              "tdRate": 5.7,
+              "success": 60,
+              "cpoe": 7
+            },
+            "inter": {
+              "n": 20,
+              "share": 29,
+              "compPct": 50,
+              "ypa": 8.95,
+              "epa": 0.095,
+              "tdRate": 5,
+              "success": 50,
+              "cpoe": -5.2
+            },
+            "deep": {
+              "n": 7,
+              "share": 10.1,
+              "thin": true
+            }
+          },
+          "side": {
+            "left": {
+              "n": 29,
+              "share": 42,
+              "compPct": 72.4,
+              "ypa": 8.45,
+              "epa": 0.355,
+              "tdRate": 3.4,
+              "success": 58.6,
+              "cpoe": 7.4
+            },
+            "middle": {
+              "n": 11,
+              "share": 15.9,
+              "compPct": 63.6,
+              "ypa": 8.55,
+              "epa": 0.58,
+              "tdRate": 18.2,
+              "success": 63.6,
+              "cpoe": 4.2
+            },
+            "right": {
+              "n": 29,
+              "share": 42,
+              "compPct": 69,
+              "ypa": 8.21,
+              "epa": 0.267,
+              "tdRate": 3.4,
+              "success": 48.3,
+              "cpoe": 4
+            }
+          }
+        },
+        "00-0037247": {
+          "targets": 52,
+          "depth": {
+            "behind": {
+              "n": 1,
+              "share": 1.9,
+              "thin": true
+            },
+            "short": {
+              "n": 30,
+              "share": 57.7,
+              "compPct": 70,
+              "ypa": 6.8,
+              "epa": 0.378,
+              "tdRate": 0,
+              "success": 60,
+              "cpoe": 1.2
+            },
+            "inter": {
+              "n": 15,
+              "share": 28.8,
+              "compPct": 60,
+              "ypa": 9.73,
+              "epa": 0.502,
+              "tdRate": 6.7,
+              "success": 60,
+              "cpoe": 5.9
+            },
+            "deep": {
+              "n": 6,
+              "share": 11.5,
+              "thin": true
+            }
+          },
+          "side": {
+            "left": {
+              "n": 28,
+              "share": 53.8,
+              "compPct": 71.4,
+              "ypa": 9.14,
+              "epa": 0.583,
+              "tdRate": 3.6,
+              "success": 67.9,
+              "cpoe": 6.1
+            },
+            "middle": {
+              "n": 6,
+              "share": 11.5,
+              "thin": true
+            },
+            "right": {
+              "n": 18,
+              "share": 34.6,
+              "compPct": 44.4,
+              "ypa": 3.67,
+              "epa": -0.123,
+              "tdRate": 0,
+              "success": 27.8,
+              "cpoe": -10.8
+            }
+          }
+        },
+        "00-0039337": {
+          "targets": 61,
+          "depth": {
+            "behind": {
+              "n": 8,
+              "share": 13.1,
+              "compPct": 87.5,
+              "ypa": 1.13,
+              "epa": -0.56,
+              "tdRate": 0,
+              "success": 25,
+              "cpoe": -0.1
+            },
+            "short": {
+              "n": 25,
+              "share": 41,
+              "compPct": 80,
+              "ypa": 6.72,
+              "epa": 0.231,
+              "tdRate": 0,
+              "success": 68,
+              "cpoe": 8.5
+            },
+            "inter": {
+              "n": 16,
+              "share": 26.2,
+              "compPct": 43.8,
+              "ypa": 6.5,
+              "epa": -0.195,
+              "tdRate": 6.3,
+              "success": 43.8,
+              "cpoe": -11.9
+            },
+            "deep": {
+              "n": 12,
+              "share": 19.7,
+              "compPct": 58.3,
+              "ypa": 17.75,
+              "epa": 1.207,
+              "tdRate": 8.3,
+              "success": 58.3,
+              "cpoe": 20.5
+            }
+          },
+          "side": {
+            "left": {
+              "n": 23,
+              "share": 37.7,
+              "compPct": 69.6,
+              "ypa": 5.87,
+              "epa": -0.069,
+              "tdRate": 0,
+              "success": 43.5,
+              "cpoe": 2.1
+            },
+            "middle": {
+              "n": 15,
+              "share": 24.6,
+              "compPct": 73.3,
+              "ypa": 13.87,
+              "epa": 0.69,
+              "tdRate": 13.3,
+              "success": 73.3,
+              "cpoe": 14.5
+            },
+            "right": {
+              "n": 23,
+              "share": 37.7,
+              "compPct": 60.9,
+              "ypa": 6.57,
+              "epa": 0.169,
+              "tdRate": 0,
+              "success": 52.2,
+              "cpoe": 0.1
+            }
+          }
+        },
+        "00-0037838": {
+          "targets": 59,
+          "depth": {
+            "behind": {
+              "n": 8,
+              "share": 13.6,
+              "compPct": 75,
+              "ypa": 3.38,
+              "epa": -0.186,
+              "tdRate": 12.5,
+              "success": 50,
+              "cpoe": -7.1
+            },
+            "short": {
+              "n": 27,
+              "share": 45.8,
+              "compPct": 74.1,
+              "ypa": 4.78,
+              "epa": 0.266,
+              "tdRate": 7.4,
+              "success": 55.6,
+              "cpoe": -1.1
+            },
+            "inter": {
+              "n": 19,
+              "share": 32.2,
+              "compPct": 57.9,
+              "ypa": 8.89,
+              "epa": 0.162,
+              "tdRate": 5.3,
+              "success": 57.9,
+              "cpoe": 0.6
+            },
+            "deep": {
+              "n": 5,
+              "share": 8.5,
+              "thin": true
+            }
+          },
+          "side": {
+            "left": {
+              "n": 21,
+              "share": 35.6,
+              "compPct": 66.7,
+              "ypa": 7.76,
+              "epa": 0.234,
+              "tdRate": 4.8,
+              "success": 52.4,
+              "cpoe": 0.3
+            },
+            "middle": {
+              "n": 18,
+              "share": 30.5,
+              "compPct": 61.1,
+              "ypa": 5.33,
+              "epa": 0.076,
+              "tdRate": 5.6,
+              "success": 61.1,
+              "cpoe": -7.7
+            },
+            "right": {
+              "n": 20,
+              "share": 33.9,
+              "compPct": 70,
+              "ypa": 6.2,
+              "epa": 0.368,
+              "tdRate": 15,
+              "success": 50,
+              "cpoe": 3.9
+            }
+          }
+        },
+        "00-0040667": {
+          "targets": 57,
+          "depth": {
+            "behind": {
+              "n": 3,
+              "share": 5.3,
+              "thin": true
+            },
+            "short": {
+              "n": 23,
+              "share": 40.4,
+              "compPct": 65.2,
+              "ypa": 6.7,
+              "epa": 0.315,
+              "tdRate": 8.7,
+              "success": 52.2,
+              "cpoe": -1.3
+            },
+            "inter": {
+              "n": 16,
+              "share": 28.1,
+              "compPct": 43.8,
+              "ypa": 8,
+              "epa": -0.069,
+              "tdRate": 6.3,
+              "success": 43.8,
+              "cpoe": -7
+            },
+            "deep": {
+              "n": 15,
+              "share": 26.3,
+              "compPct": 33.3,
+              "ypa": 12.93,
+              "epa": 0.427,
+              "tdRate": 0,
+              "success": 33.3,
+              "cpoe": 0.6
+            }
+          },
+          "side": {
+            "left": {
+              "n": 22,
+              "share": 38.6,
+              "compPct": 45.5,
+              "ypa": 6.95,
+              "epa": -0.217,
+              "tdRate": 0,
+              "success": 36.4,
+              "cpoe": -12.8
+            },
+            "middle": {
+              "n": 10,
+              "share": 17.5,
+              "compPct": 70,
+              "ypa": 13.8,
+              "epa": 0.888,
+              "tdRate": 10,
+              "success": 60,
+              "cpoe": 8.1
+            },
+            "right": {
+              "n": 25,
+              "share": 43.9,
+              "compPct": 52,
+              "ypa": 8.4,
+              "epa": 0.398,
+              "tdRate": 8,
+              "success": 48,
+              "cpoe": 4.3
+            }
+          }
+        },
+        "00-0038543": {
+          "targets": 66,
+          "depth": {
+            "behind": {
+              "n": 4,
+              "share": 6.1,
+              "thin": true
+            },
+            "short": {
+              "n": 30,
+              "share": 45.5,
+              "compPct": 73.3,
+              "ypa": 7.17,
+              "epa": 0.575,
+              "tdRate": 13.3,
+              "success": 70,
+              "cpoe": 4.6
+            },
+            "inter": {
+              "n": 22,
+              "share": 33.3,
+              "compPct": 68.2,
+              "ypa": 9.27,
+              "epa": 0.424,
+              "tdRate": 9.1,
+              "success": 68.2,
+              "cpoe": 8.4
+            },
+            "deep": {
+              "n": 10,
+              "share": 15.2,
+              "compPct": 80,
+              "ypa": 28.2,
+              "epa": 1.949,
+              "tdRate": 10,
+              "success": 80,
+              "cpoe": 40
+            }
+          },
+          "side": {
+            "left": {
+              "n": 22,
+              "share": 33.3,
+              "compPct": 72.7,
+              "ypa": 9.73,
+              "epa": 0.647,
+              "tdRate": 9.1,
+              "success": 68.2,
+              "cpoe": 12
+            },
+            "middle": {
+              "n": 17,
+              "share": 25.8,
+              "compPct": 76.5,
+              "ypa": 11.41,
+              "epa": 0.873,
+              "tdRate": 11.8,
+              "success": 70.6,
+              "cpoe": 14.3
+            },
+            "right": {
+              "n": 27,
+              "share": 40.9,
+              "compPct": 74.1,
+              "ypa": 11.44,
+              "epa": 0.632,
+              "tdRate": 11.1,
+              "success": 66.7,
+              "cpoe": 9.8
+            }
+          }
+        },
+        "00-0036963": {
+          "targets": 57,
+          "depth": {
+            "behind": {
+              "n": 7,
+              "share": 12.3,
+              "thin": true
+            },
+            "short": {
+              "n": 30,
+              "share": 52.6,
+              "compPct": 70,
+              "ypa": 4.83,
+              "epa": -0.058,
+              "tdRate": 10,
+              "success": 43.3,
+              "cpoe": 1.6
+            },
+            "inter": {
+              "n": 18,
+              "share": 31.6,
+              "compPct": 50,
+              "ypa": 10.28,
+              "epa": 0.57,
+              "tdRate": 5.6,
+              "success": 50,
+              "cpoe": -7
+            },
+            "deep": {
+              "n": 2,
+              "share": 3.5,
+              "thin": true
+            }
+          },
+          "side": {
+            "left": {
+              "n": 24,
+              "share": 42.1,
+              "compPct": 54.2,
+              "ypa": 5.67,
+              "epa": 0.136,
+              "tdRate": 8.3,
+              "success": 37.5,
+              "cpoe": -10.7
+            },
+            "middle": {
+              "n": 13,
+              "share": 22.8,
+              "compPct": 61.5,
+              "ypa": 6.69,
+              "epa": -0.02,
+              "tdRate": 7.7,
+              "success": 38.5,
+              "cpoe": -5.1
+            },
+            "right": {
+              "n": 20,
+              "share": 35.1,
+              "compPct": 80,
+              "ypa": 7.9,
+              "epa": 0.389,
+              "tdRate": 10,
+              "success": 55,
+              "cpoe": 13.3
+            }
+          }
+        },
+        "00-0037239": {
+          "targets": 61,
+          "depth": {
+            "behind": {
+              "n": 4,
+              "share": 6.6,
+              "thin": true
+            },
+            "short": {
+              "n": 26,
+              "share": 42.6,
+              "compPct": 73.1,
+              "ypa": 5.65,
+              "epa": 0.301,
+              "tdRate": 0,
+              "success": 57.7,
+              "cpoe": -1.2
+            },
+            "inter": {
+              "n": 17,
+              "share": 27.9,
+              "compPct": 88.2,
+              "ypa": 12.53,
+              "epa": 1.362,
+              "tdRate": 5.9,
+              "success": 88.2,
+              "cpoe": 27.5
+            },
+            "deep": {
+              "n": 14,
+              "share": 23,
+              "compPct": 42.9,
+              "ypa": 14.07,
+              "epa": 0.483,
+              "tdRate": 7.1,
+              "success": 42.9,
+              "cpoe": 5.7
+            }
+          },
+          "side": {
+            "left": {
+              "n": 26,
+              "share": 42.6,
+              "compPct": 69.2,
+              "ypa": 8.69,
+              "epa": 0.538,
+              "tdRate": 0,
+              "success": 65.4,
+              "cpoe": 9.7
+            },
+            "middle": {
+              "n": 10,
+              "share": 16.4,
+              "compPct": 70,
+              "ypa": 13.3,
+              "epa": 0.904,
+              "tdRate": 10,
+              "success": 70,
+              "cpoe": 8.2
+            },
+            "right": {
+              "n": 25,
+              "share": 41,
+              "compPct": 72,
+              "ypa": 8.84,
+              "epa": 0.644,
+              "tdRate": 4,
+              "success": 56,
+              "cpoe": 5.3
+            }
+          }
+        },
+        "00-0039075": {
+          "targets": 52,
+          "depth": {
+            "behind": {
+              "n": 7,
+              "share": 13.5,
+              "thin": true
+            },
+            "short": {
+              "n": 25,
+              "share": 48.1,
+              "compPct": 88,
+              "ypa": 6.44,
+              "epa": 0.227,
+              "tdRate": 4,
+              "success": 60,
+              "cpoe": 11.8
+            },
+            "inter": {
+              "n": 12,
+              "share": 23.1,
+              "compPct": 50,
+              "ypa": 12.75,
+              "epa": 0.524,
+              "tdRate": 0,
+              "success": 50,
+              "cpoe": -13.1
+            },
+            "deep": {
+              "n": 8,
+              "share": 15.4,
+              "compPct": 25,
+              "ypa": 7.5,
+              "epa": -0.405,
+              "tdRate": 0,
+              "success": 25,
+              "cpoe": -11.2
+            }
+          },
+          "side": {
+            "left": {
+              "n": 13,
+              "share": 25,
+              "compPct": 84.6,
+              "ypa": 4.92,
+              "epa": 0.013,
+              "tdRate": 7.7,
+              "success": 46.2,
+              "cpoe": 11.1
+            },
+            "middle": {
+              "n": 14,
+              "share": 26.9,
+              "compPct": 64.3,
+              "ypa": 8.64,
+              "epa": 0.158,
+              "tdRate": 0,
+              "success": 42.9,
+              "cpoe": -4.5
+            },
+            "right": {
+              "n": 25,
+              "share": 48.1,
+              "compPct": 68,
+              "ypa": 9.28,
+              "epa": 0.168,
+              "tdRate": 0,
+              "success": 52,
+              "cpoe": 2
+            }
+          }
+        }
+      },
+      "rushers": {
+        "00-0038542": {
+          "carries": 111,
+          "gaps": {
+            "left-end": {
+              "n": 13,
+              "share": 11.7,
+              "ypc": 11.54,
+              "epa": 0.468,
+              "success": 46.2,
+              "stuffPct": 30.8,
+              "tenPct": 23.1,
+              "td": 1
+            },
+            "left-tackle": {
+              "n": 23,
+              "share": 20.7,
+              "ypc": 4.96,
+              "epa": 0.033,
+              "success": 34.8,
+              "stuffPct": 13,
+              "tenPct": 8.7,
+              "td": 1
+            },
+            "left-guard": {
+              "n": 22,
+              "share": 19.8,
+              "ypc": 4.41,
+              "epa": 0.034,
+              "success": 54.5,
+              "stuffPct": 13.6,
+              "tenPct": 4.5,
+              "td": 2
+            },
+            "middle": {
+              "n": 23,
+              "share": 20.7,
+              "ypc": 3.83,
+              "epa": -0.204,
+              "success": 43.5,
+              "stuffPct": 13,
+              "tenPct": 17.4,
+              "td": 0
+            },
+            "right-guard": {
+              "n": 8,
+              "share": 7.2,
+              "ypc": 5.63,
+              "epa": -0.132,
+              "success": 37.5,
+              "stuffPct": 0,
+              "tenPct": 12.5,
+              "td": 0
+            },
+            "right-tackle": {
+              "n": 9,
+              "share": 8.1,
+              "ypc": 3.78,
+              "epa": 0.068,
+              "success": 66.7,
+              "stuffPct": 11.1,
+              "tenPct": 0,
+              "td": 0
+            },
+            "right-end": {
+              "n": 13,
+              "share": 11.7,
+              "ypc": 8.69,
+              "epa": 0.494,
+              "success": 76.9,
+              "stuffPct": 0,
+              "tenPct": 30.8,
+              "td": 0
+            }
+          },
+          "situations": {
+            "goalline": {
+              "n": 7,
+              "share": 6.3,
+              "thin": true
+            },
+            "shortYardage": {
+              "n": 5,
+              "share": 4.5,
+              "thin": true
+            },
+            "openField": {
+              "n": 91,
+              "share": 82,
+              "ypc": 6.42,
+              "epa": 0.118,
+              "success": 49.5,
+              "stuffPct": 11,
+              "tenPct": 15.4,
+              "td": 1
+            }
+          }
+        },
+        "00-0036223": {
+          "carries": 121,
+          "gaps": {
+            "left-end": {
+              "n": 12,
+              "share": 9.9,
+              "ypc": 3,
+              "epa": 0.338,
+              "success": 50,
+              "stuffPct": 16.7,
+              "tenPct": 0,
+              "td": 3
+            },
+            "left-tackle": {
+              "n": 15,
+              "share": 12.4,
+              "ypc": 5.73,
+              "epa": 0.111,
+              "success": 46.7,
+              "stuffPct": 13.3,
+              "tenPct": 20,
+              "td": 0
+            },
+            "left-guard": {
+              "n": 19,
+              "share": 15.7,
+              "ypc": 3.21,
+              "epa": -0.081,
+              "success": 36.8,
+              "stuffPct": 10.5,
+              "tenPct": 10.5,
+              "td": 0
+            },
+            "middle": {
+              "n": 19,
+              "share": 15.7,
+              "ypc": 2.95,
+              "epa": -0.199,
+              "success": 31.6,
+              "stuffPct": 15.8,
+              "tenPct": 10.5,
+              "td": 0
+            },
+            "right-guard": {
+              "n": 10,
+              "share": 8.3,
+              "ypc": 3.5,
+              "epa": -0.266,
+              "success": 30,
+              "stuffPct": 20,
+              "tenPct": 20,
+              "td": 0
+            },
+            "right-tackle": {
+              "n": 28,
+              "share": 23.1,
+              "ypc": 4.14,
+              "epa": -0.108,
+              "success": 39.3,
+              "stuffPct": 25,
+              "tenPct": 10.7,
+              "td": 2
+            },
+            "right-end": {
+              "n": 18,
+              "share": 14.9,
+              "ypc": 5.44,
+              "epa": 0.19,
+              "success": 50,
+              "stuffPct": 16.7,
+              "tenPct": 16.7,
+              "td": 2
+            }
+          },
+          "situations": {
+            "goalline": {
+              "n": 13,
+              "share": 10.7,
+              "ypc": 1.77,
+              "epa": 0.481,
+              "success": 46.2,
+              "stuffPct": 30.8,
+              "tenPct": 0,
+              "td": 6
+            },
+            "shortYardage": {
+              "n": 10,
+              "share": 8.3,
+              "ypc": 3.8,
+              "epa": 0.333,
+              "success": 50,
+              "stuffPct": 20,
+              "tenPct": 10,
+              "td": 1
+            },
+            "openField": {
+              "n": 96,
+              "share": 79.3,
+              "ypc": 4.49,
+              "epa": -0.059,
+              "success": 40.6,
+              "stuffPct": 14.6,
+              "tenPct": 14.6,
+              "td": 1
+            }
+          }
+        },
+        "00-0032764": {
+          "carries": 130,
+          "gaps": {
+            "left-end": {
+              "n": 20,
+              "share": 15.4,
+              "ypc": 4.4,
+              "epa": 0.008,
+              "success": 45,
+              "stuffPct": 30,
+              "tenPct": 15,
+              "td": 1
+            },
+            "left-tackle": {
+              "n": 22,
+              "share": 16.9,
+              "ypc": 5.14,
+              "epa": -0.305,
+              "success": 36.4,
+              "stuffPct": 18.2,
+              "tenPct": 9.1,
+              "td": 1
+            },
+            "left-guard": {
+              "n": 20,
+              "share": 15.4,
+              "ypc": 2.1,
+              "epa": -0.208,
+              "success": 45,
+              "stuffPct": 30,
+              "tenPct": 0,
+              "td": 2
+            },
+            "middle": {
+              "n": 16,
+              "share": 12.3,
+              "ypc": 3.56,
+              "epa": -0.333,
+              "success": 31.3,
+              "stuffPct": 18.8,
+              "tenPct": 12.5,
+              "td": 0
+            },
+            "right-guard": {
+              "n": 16,
+              "share": 12.3,
+              "ypc": 4.44,
+              "epa": -0.117,
+              "success": 37.5,
+              "stuffPct": 18.8,
+              "tenPct": 18.8,
+              "td": 0
+            },
+            "right-tackle": {
+              "n": 17,
+              "share": 13.1,
+              "ypc": 4.71,
+              "epa": 0.028,
+              "success": 29.4,
+              "stuffPct": 23.5,
+              "tenPct": 17.6,
+              "td": 1
+            },
+            "right-end": {
+              "n": 19,
+              "share": 14.6,
+              "ypc": 4.37,
+              "epa": 0.184,
+              "success": 63.2,
+              "stuffPct": 5.3,
+              "tenPct": 5.3,
+              "td": 2
+            }
+          },
+          "situations": {
+            "goalline": {
+              "n": 15,
+              "share": 11.5,
+              "ypc": 1.47,
+              "epa": -0.104,
+              "success": 46.7,
+              "stuffPct": 33.3,
+              "tenPct": 0,
+              "td": 6
+            },
+            "shortYardage": {
+              "n": 8,
+              "share": 6.2,
+              "ypc": 0.25,
+              "epa": -1.446,
+              "success": 25,
+              "stuffPct": 62.5,
+              "tenPct": 0,
+              "td": 1
+            },
+            "openField": {
+              "n": 98,
+              "share": 75.4,
+              "ypc": 4.45,
+              "epa": -0.141,
+              "success": 38.8,
+              "stuffPct": 19.4,
+              "tenPct": 12.2,
+              "td": 1
+            }
+          }
+        },
+        "00-0037248": {
+          "carries": 117,
+          "gaps": {
+            "left-end": {
+              "n": 3,
+              "share": 2.6,
+              "thin": true
+            },
+            "left-tackle": {
+              "n": 15,
+              "share": 12.8,
+              "ypc": 4.13,
+              "epa": -0.15,
+              "success": 26.7,
+              "stuffPct": 13.3,
+              "tenPct": 13.3,
+              "td": 0
+            },
+            "left-guard": {
+              "n": 21,
+              "share": 17.9,
+              "ypc": 6.05,
+              "epa": 0.281,
+              "success": 61.9,
+              "stuffPct": 0,
+              "tenPct": 9.5,
+              "td": 1
+            },
+            "middle": {
+              "n": 40,
+              "share": 34.2,
+              "ypc": 5.38,
+              "epa": -0.145,
+              "success": 50,
+              "stuffPct": 20,
+              "tenPct": 25,
+              "td": 2
+            },
+            "right-guard": {
+              "n": 17,
+              "share": 14.5,
+              "ypc": 4.82,
+              "epa": -0.027,
+              "success": 35.3,
+              "stuffPct": 0,
+              "tenPct": 11.8,
+              "td": 0
+            },
+            "right-tackle": {
+              "n": 15,
+              "share": 12.8,
+              "ypc": 5.33,
+              "epa": 0.252,
+              "success": 60,
+              "stuffPct": 13.3,
+              "tenPct": 26.7,
+              "td": 2
+            },
+            "right-end": {
+              "n": 6,
+              "share": 5.1,
+              "thin": true
+            }
+          },
+          "situations": {
+            "goalline": {
+              "n": 8,
+              "share": 6.8,
+              "ypc": 1.5,
+              "epa": 0.367,
+              "success": 62.5,
+              "stuffPct": 25,
+              "tenPct": 0,
+              "td": 4
+            },
+            "shortYardage": {
+              "n": 1,
+              "share": 0.9,
+              "thin": true
+            },
+            "openField": {
+              "n": 95,
+              "share": 81.2,
+              "ypc": 5.81,
+              "epa": 0,
+              "success": 50.5,
+              "stuffPct": 9.5,
+              "tenPct": 21.1,
+              "td": 0
+            }
+          }
+        },
+        "00-0038134": {
+          "carries": 106,
+          "gaps": {
+            "left-end": {
+              "n": 15,
+              "share": 14.2,
+              "ypc": 11.13,
+              "epa": 0.735,
+              "success": 66.7,
+              "stuffPct": 6.7,
+              "tenPct": 46.7,
+              "td": 1
+            },
+            "left-tackle": {
+              "n": 11,
+              "share": 10.4,
+              "ypc": 7,
+              "epa": 0.541,
+              "success": 72.7,
+              "stuffPct": 9.1,
+              "tenPct": 18.2,
+              "td": 1
+            },
+            "left-guard": {
+              "n": 15,
+              "share": 14.2,
+              "ypc": 4.2,
+              "epa": -0.309,
+              "success": 46.7,
+              "stuffPct": 13.3,
+              "tenPct": 6.7,
+              "td": 0
+            },
+            "middle": {
+              "n": 40,
+              "share": 37.7,
+              "ypc": 4.28,
+              "epa": -0.079,
+              "success": 42.5,
+              "stuffPct": 20,
+              "tenPct": 10,
+              "td": 3
+            },
+            "right-guard": {
+              "n": 12,
+              "share": 11.3,
+              "ypc": 9.33,
+              "epa": 0.158,
+              "success": 33.3,
+              "stuffPct": 33.3,
+              "tenPct": 16.7,
+              "td": 0
+            },
+            "right-tackle": {
+              "n": 6,
+              "share": 5.7,
+              "thin": true
+            },
+            "right-end": {
+              "n": 7,
+              "share": 6.6,
+              "thin": true
+            }
+          },
+          "situations": {
+            "goalline": {
+              "n": 11,
+              "share": 10.4,
+              "ypc": 0.45,
+              "epa": -0.566,
+              "success": 27.3,
+              "stuffPct": 63.6,
+              "tenPct": 0,
+              "td": 2
+            },
+            "shortYardage": {
+              "n": 13,
+              "share": 12.3,
+              "ypc": 9.85,
+              "epa": 0.335,
+              "success": 61.5,
+              "stuffPct": 30.8,
+              "tenPct": 23.1,
+              "td": 3
+            },
+            "openField": {
+              "n": 79,
+              "share": 74.5,
+              "ypc": 7.71,
+              "epa": 0.287,
+              "success": 53.2,
+              "stuffPct": 7.6,
+              "tenPct": 21.5,
+              "td": 3
+            }
+          }
+        },
+        "00-0039139": {
+          "carries": 105,
+          "gaps": {
+            "left-end": {
+              "n": 7,
+              "share": 6.7,
+              "thin": true
+            },
+            "left-tackle": {
+              "n": 14,
+              "share": 13.3,
+              "ypc": 6.5,
+              "epa": -0.125,
+              "success": 64.3,
+              "stuffPct": 21.4,
+              "tenPct": 35.7,
+              "td": 0
+            },
+            "left-guard": {
+              "n": 10,
+              "share": 9.5,
+              "ypc": 4.2,
+              "epa": 0.073,
+              "success": 50,
+              "stuffPct": 10,
+              "tenPct": 10,
+              "td": 2
+            },
+            "middle": {
+              "n": 34,
+              "share": 32.4,
+              "ypc": 3.79,
+              "epa": 0.078,
+              "success": 55.9,
+              "stuffPct": 11.8,
+              "tenPct": 5.9,
+              "td": 3
+            },
+            "right-guard": {
+              "n": 9,
+              "share": 8.6,
+              "ypc": 3,
+              "epa": -0.211,
+              "success": 22.2,
+              "stuffPct": 22.2,
+              "tenPct": 11.1,
+              "td": 0
+            },
+            "right-tackle": {
+              "n": 20,
+              "share": 19,
+              "ypc": 5.55,
+              "epa": 0.022,
+              "success": 40,
+              "stuffPct": 20,
+              "tenPct": 20,
+              "td": 0
+            },
+            "right-end": {
+              "n": 11,
+              "share": 10.5,
+              "ypc": 7.36,
+              "epa": 0.485,
+              "success": 54.5,
+              "stuffPct": 18.2,
+              "tenPct": 27.3,
+              "td": 2
+            }
+          },
+          "situations": {
+            "goalline": {
+              "n": 13,
+              "share": 12.4,
+              "ypc": 1.62,
+              "epa": 0.38,
+              "success": 76.9,
+              "stuffPct": 7.7,
+              "tenPct": 0,
+              "td": 6
+            },
+            "shortYardage": {
+              "n": 5,
+              "share": 4.8,
+              "thin": true
+            },
+            "openField": {
+              "n": 75,
+              "share": 71.4,
+              "ypc": 5.51,
+              "epa": 0.018,
+              "success": 49.3,
+              "stuffPct": 18.7,
+              "tenPct": 21.3,
+              "td": 0
             }
           }
         }
