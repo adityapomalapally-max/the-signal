@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-anatomy.js",
-    "builtAt": "2026-10-23T15:44:18.587Z",
+    "builtAt": "2026-10-25T14:58:36.270Z",
     "layers": {
       "frequency": "counted from data/injuries.json — the official NFL injury reports for this pool",
       "recovery": "from data/injury-curves.json, derived from those same reports",
@@ -12,7 +12,7 @@
       "A named condition without a research entry is listed because it genuinely occurs at that region, NOT because we have data on it. The page says so rather than printing a timeline nobody can check.",
       "Recovery figures are the median across this pool over three seasons, not a prognosis for any individual. Sample sizes are stated and several are small."
     ],
-    "totalEpisodes": 1341,
+    "totalEpisodes": 1340,
     "unmappedParts": [
       {
         "part": "Undisclosed",
@@ -48,22 +48,22 @@
       }
     ],
     "coverage": {
-      "mappedEpisodes": 1155,
-      "totalEpisodes": 1341,
-      "pct": 86.1
+      "mappedEpisodes": 1153,
+      "totalEpisodes": 1340,
+      "pct": 86
     }
   },
   "regions": {
     "head": {
       "label": "Head & neck",
-      "episodes": 82,
-      "players": 68,
-      "shareOfAll": 6.1,
+      "episodes": 81,
+      "players": 67,
+      "shareOfAll": 6,
       "reportedAs": [
         {
           "part": "Concussion",
-          "episodes": 58,
-          "players": 52
+          "episodes": 57,
+          "players": 51
         },
         {
           "part": "Neck",
@@ -183,14 +183,14 @@
     },
     "shoulder": {
       "label": "Shoulder",
-      "episodes": 96,
-      "players": 73,
+      "episodes": 97,
+      "players": 74,
       "shareOfAll": 7.2,
       "reportedAs": [
         {
           "part": "Shoulder",
-          "episodes": 88,
-          "players": 67
+          "episodes": 89,
+          "players": 68
         },
         {
           "part": "Right Shoulder",
@@ -593,14 +593,14 @@
     },
     "back": {
       "label": "Back",
-      "episodes": 43,
-      "players": 34,
-      "shareOfAll": 3.2,
+      "episodes": 42,
+      "players": 33,
+      "shareOfAll": 3.1,
       "reportedAs": [
         {
           "part": "Back",
-          "episodes": 43,
-          "players": 34
+          "episodes": 42,
+          "players": 33
         }
       ],
       "recovery": null,
@@ -877,14 +877,14 @@
     },
     "knee": {
       "label": "Knee",
-      "episodes": 183,
-      "players": 116,
+      "episodes": 182,
+      "players": 115,
       "shareOfAll": 13.6,
       "reportedAs": [
         {
           "part": "Knee",
-          "episodes": 183,
-          "players": 116
+          "episodes": 182,
+          "players": 115
         }
       ],
       "recovery": {
