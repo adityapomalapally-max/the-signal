@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-anatomy.js",
-    "builtAt": "2026-10-25T14:58:36.270Z",
+    "builtAt": "2026-10-27T16:21:50.882Z",
     "layers": {
       "frequency": "counted from data/injuries.json — the official NFL injury reports for this pool",
       "recovery": "from data/injury-curves.json, derived from those same reports",
@@ -12,7 +12,7 @@
       "A named condition without a research entry is listed because it genuinely occurs at that region, NOT because we have data on it. The page says so rather than printing a timeline nobody can check.",
       "Recovery figures are the median across this pool over three seasons, not a prognosis for any individual. Sample sizes are stated and several are small."
     ],
-    "totalEpisodes": 1340,
+    "totalEpisodes": 1339,
     "unmappedParts": [
       {
         "part": "Undisclosed",
@@ -49,8 +49,8 @@
     ],
     "coverage": {
       "mappedEpisodes": 1153,
-      "totalEpisodes": 1340,
-      "pct": 86
+      "totalEpisodes": 1339,
+      "pct": 86.1
     }
   },
   "regions": {
@@ -183,14 +183,14 @@
     },
     "shoulder": {
       "label": "Shoulder",
-      "episodes": 97,
-      "players": 74,
+      "episodes": 96,
+      "players": 73,
       "shareOfAll": 7.2,
       "reportedAs": [
         {
           "part": "Shoulder",
-          "episodes": 89,
-          "players": 68
+          "episodes": 88,
+          "players": 67
         },
         {
           "part": "Right Shoulder",
@@ -521,14 +521,14 @@
     },
     "core": {
       "label": "Ribs, chest & core",
-      "episodes": 60,
-      "players": 52,
-      "shareOfAll": 4.5,
+      "episodes": 61,
+      "players": 53,
+      "shareOfAll": 4.6,
       "reportedAs": [
         {
           "part": "Chest",
-          "episodes": 14,
-          "players": 14
+          "episodes": 15,
+          "players": 15
         },
         {
           "part": "Ribs",
