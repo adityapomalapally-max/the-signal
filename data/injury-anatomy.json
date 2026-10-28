@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-anatomy.js",
-    "builtAt": "2026-10-27T16:21:50.882Z",
+    "builtAt": "2026-10-28T17:07:05.123Z",
     "layers": {
       "frequency": "counted from data/injuries.json — the official NFL injury reports for this pool",
       "recovery": "from data/injury-curves.json, derived from those same reports",
@@ -12,7 +12,7 @@
       "A named condition without a research entry is listed because it genuinely occurs at that region, NOT because we have data on it. The page says so rather than printing a timeline nobody can check.",
       "Recovery figures are the median across this pool over three seasons, not a prognosis for any individual. Sample sizes are stated and several are small."
     ],
-    "totalEpisodes": 1339,
+    "totalEpisodes": 1337,
     "unmappedParts": [
       {
         "part": "Undisclosed",
@@ -48,22 +48,22 @@
       }
     ],
     "coverage": {
-      "mappedEpisodes": 1153,
-      "totalEpisodes": 1339,
+      "mappedEpisodes": 1151,
+      "totalEpisodes": 1337,
       "pct": 86.1
     }
   },
   "regions": {
     "head": {
       "label": "Head & neck",
-      "episodes": 81,
-      "players": 67,
-      "shareOfAll": 6,
+      "episodes": 82,
+      "players": 68,
+      "shareOfAll": 6.1,
       "reportedAs": [
         {
           "part": "Concussion",
-          "episodes": 57,
-          "players": 51
+          "episodes": 58,
+          "players": 52
         },
         {
           "part": "Neck",
@@ -334,7 +334,7 @@
       "label": "Arm, elbow & hand",
       "episodes": 85,
       "players": 68,
-      "shareOfAll": 6.3,
+      "shareOfAll": 6.4,
       "reportedAs": [
         {
           "part": "Wrist",
@@ -593,13 +593,13 @@
     },
     "back": {
       "label": "Back",
-      "episodes": 42,
+      "episodes": 41,
       "players": 33,
       "shareOfAll": 3.1,
       "reportedAs": [
         {
           "part": "Back",
-          "episodes": 42,
+          "episodes": 41,
           "players": 33
         }
       ],
@@ -877,14 +877,14 @@
     },
     "knee": {
       "label": "Knee",
-      "episodes": 182,
-      "players": 115,
-      "shareOfAll": 13.6,
+      "episodes": 183,
+      "players": 116,
+      "shareOfAll": 13.7,
       "reportedAs": [
         {
           "part": "Knee",
-          "episodes": 182,
-          "players": 115
+          "episodes": 183,
+          "players": 116
         }
       ],
       "recovery": {
@@ -1145,32 +1145,32 @@
     },
     "ankle": {
       "label": "Ankle",
-      "episodes": 185,
-      "players": 125,
-      "shareOfAll": 13.8,
+      "episodes": 182,
+      "players": 124,
+      "shareOfAll": 13.6,
       "reportedAs": [
         {
           "part": "Ankle",
-          "episodes": 185,
-          "players": 125
+          "episodes": 182,
+          "players": 124
         }
       ],
       "recovery": {
         "source": "injury-curves.json",
         "bucket": "Ankle",
-        "absences": 16,
-        "players": 15,
+        "absences": 15,
+        "players": 14,
         "medianGamesMissed": 3,
-        "baselinePpg": 8,
+        "baselinePpg": 8.9,
         "returnCurve": [
           {
             "label": "Games 1–2 back",
-            "n": 16,
-            "pct": 80
+            "n": 15,
+            "pct": 81
           },
           {
             "label": "Games 3–5",
-            "n": 16,
+            "n": 15,
             "pct": 141
           },
           {
@@ -1264,7 +1264,7 @@
       "label": "Foot & toe",
       "episodes": 105,
       "players": 72,
-      "shareOfAll": 7.8,
+      "shareOfAll": 7.9,
       "reportedAs": [
         {
           "part": "Foot",
