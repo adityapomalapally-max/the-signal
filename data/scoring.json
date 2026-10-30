@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-10-27T16:23:28.958Z",
+    "generated": "2026-10-30T17:04:06.176Z",
     "builtBy": "scripts/build-scheme.js via lib/scoring.js",
     "seasons": [
       2026
@@ -16,11 +16,11 @@
       "Returns and defensive scores are not here. anyTd is rushing plus receiving, which is what an anytime-touchdown market on a skill player is usually written on, but not always: check the book before pricing against it."
     ],
     "build": {
-      "plays": 15545,
-      "playsInZone": 2502,
-      "twoPointAttemptsExcluded": 48,
+      "plays": 15701,
+      "playsInZone": 2522,
+      "twoPointAttemptsExcluded": 49,
       "playsWithoutYardline": 0,
-      "nonScrimmageRowsExcluded": 1918,
+      "nonScrimmageRowsExcluded": 1936,
       "scrimmageTypes": [
         "run",
         "pass",
@@ -1655,20 +1655,20 @@
         },
         "00-0036555": {
           "team": "CAR",
-          "gamesWithTouch": 5,
-          "i5Carries": 4,
-          "i10Carries": 8,
-          "rzCarries": 13,
+          "gamesWithTouch": 6,
+          "i5Carries": 5,
+          "i10Carries": 11,
+          "rzCarries": 17,
           "i5Targets": 2,
           "i10Targets": 2,
-          "rzTargets": 4,
-          "rushTd": 4,
+          "rzTargets": 5,
+          "rushTd": 5,
           "recTd": 2,
-          "anyTd": 6,
+          "anyTd": 7,
           "i5CarryShare": 1,
-          "rzCarryShare": 0.542,
+          "rzCarryShare": 0.607,
           "i5TargetShare": 0.25,
-          "rzTargetShare": 0.133,
+          "rzTargetShare": 0.147,
           "weeks": [
             {
               "week": 1,
@@ -1724,25 +1724,36 @@
               "rzTargets": 1,
               "rushTd": 0,
               "recTd": 0
+            },
+            {
+              "week": 8,
+              "i5Carries": 1,
+              "i10Carries": 3,
+              "rzCarries": 4,
+              "i5Targets": 0,
+              "i10Targets": 0,
+              "rzTargets": 1,
+              "rushTd": 1,
+              "recTd": 0
             }
           ]
         },
         "00-0040187": {
           "team": "CAR",
-          "gamesWithTouch": 1,
+          "gamesWithTouch": 2,
           "i5Carries": 0,
           "i10Carries": 0,
           "rzCarries": 0,
           "i5Targets": 1,
           "i10Targets": 1,
-          "rzTargets": 2,
+          "rzTargets": 3,
           "rushTd": 0,
           "recTd": 0,
           "anyTd": 0,
           "i5CarryShare": 0,
           "rzCarryShare": 0,
           "i5TargetShare": 0.125,
-          "rzTargetShare": 0.067,
+          "rzTargetShare": 0.088,
           "weeks": [
             {
               "week": 1,
@@ -1752,6 +1763,17 @@
               "i5Targets": 1,
               "i10Targets": 1,
               "rzTargets": 2,
+              "rushTd": 0,
+              "recTd": 0
+            },
+            {
+              "week": 8,
+              "i5Carries": 0,
+              "i10Carries": 0,
+              "rzCarries": 0,
+              "i5Targets": 0,
+              "i10Targets": 0,
+              "rzTargets": 1,
               "rushTd": 0,
               "recTd": 0
             }
@@ -1992,7 +2014,7 @@
           "recTd": 0,
           "anyTd": 1,
           "i5CarryShare": 0,
-          "rzCarryShare": 0.208,
+          "rzCarryShare": 0.179,
           "i5TargetShare": 0,
           "rzTargetShare": 0,
           "weeks": [
@@ -2246,7 +2268,7 @@
           "i5CarryShare": 0,
           "rzCarryShare": 0,
           "i5TargetShare": 0.375,
-          "rzTargetShare": 0.233,
+          "rzTargetShare": 0.206,
           "weeks": [
             {
               "week": 1,
@@ -2307,20 +2329,20 @@
         },
         "00-0039491": {
           "team": "CAR",
-          "gamesWithTouch": 2,
+          "gamesWithTouch": 3,
           "i5Carries": 0,
           "i10Carries": 0,
           "rzCarries": 0,
           "i5Targets": 1,
           "i10Targets": 4,
-          "rzTargets": 5,
+          "rzTargets": 6,
           "rushTd": 0,
           "recTd": 1,
           "anyTd": 1,
           "i5CarryShare": 0,
           "rzCarryShare": 0,
           "i5TargetShare": 0.125,
-          "rzTargetShare": 0.167,
+          "rzTargetShare": 0.176,
           "weeks": [
             {
               "week": 1,
@@ -2341,6 +2363,17 @@
               "i5Targets": 1,
               "i10Targets": 3,
               "rzTargets": 4,
+              "rushTd": 0,
+              "recTd": 0
+            },
+            {
+              "week": 8,
+              "i5Carries": 0,
+              "i10Carries": 0,
+              "rzCarries": 0,
+              "i5Targets": 0,
+              "i10Targets": 0,
+              "rzTargets": 1,
               "rushTd": 0,
               "recTd": 0
             }
@@ -3719,8 +3752,8 @@
           "rushTd": 0,
           "recTd": 0,
           "anyTd": 0,
-          "i5CarryShare": 0.111,
-          "rzCarryShare": 0.176,
+          "i5CarryShare": 0.091,
+          "rzCarryShare": 0.15,
           "i5TargetShare": 0,
           "rzTargetShare": 0,
           "weeks": [
@@ -3773,8 +3806,8 @@
           "anyTd": 3,
           "i5CarryShare": 0,
           "rzCarryShare": 0,
-          "i5TargetShare": 0.375,
-          "rzTargetShare": 0.175,
+          "i5TargetShare": 0.3,
+          "rzTargetShare": 0.156,
           "weeks": [
             {
               "week": 1,
@@ -3834,10 +3867,10 @@
           "rushTd": 2,
           "recTd": 1,
           "anyTd": 3,
-          "i5CarryShare": 0.333,
-          "rzCarryShare": 0.382,
+          "i5CarryShare": 0.273,
+          "rzCarryShare": 0.325,
           "i5TargetShare": 0,
-          "rzTargetShare": 0.075,
+          "rzTargetShare": 0.067,
           "weeks": [
             {
               "week": 1,
@@ -3920,20 +3953,20 @@
         },
         "00-0040667": {
           "team": "GB",
-          "gamesWithTouch": 6,
+          "gamesWithTouch": 7,
           "i5Carries": 0,
           "i10Carries": 0,
           "rzCarries": 0,
           "i5Targets": 2,
           "i10Targets": 5,
-          "rzTargets": 13,
+          "rzTargets": 14,
           "rushTd": 0,
           "recTd": 3,
           "anyTd": 3,
           "i5CarryShare": 0,
           "rzCarryShare": 0,
-          "i5TargetShare": 0.25,
-          "rzTargetShare": 0.325,
+          "i5TargetShare": 0.2,
+          "rzTargetShare": 0.311,
           "weeks": [
             {
               "week": 1,
@@ -4000,6 +4033,17 @@
               "rzTargets": 2,
               "rushTd": 0,
               "recTd": 0
+            },
+            {
+              "week": 8,
+              "i5Carries": 0,
+              "i10Carries": 0,
+              "rzCarries": 0,
+              "i5Targets": 0,
+              "i10Targets": 0,
+              "rzTargets": 1,
+              "rushTd": 0,
+              "recTd": 0
             }
           ]
         },
@@ -4018,7 +4062,7 @@
           "i5CarryShare": 0,
           "rzCarryShare": 0,
           "i5TargetShare": 0,
-          "rzTargetShare": 0.025,
+          "rzTargetShare": 0.022,
           "weeks": [
             {
               "week": 1,
@@ -4201,8 +4245,8 @@
           "rushTd": 1,
           "recTd": 0,
           "anyTd": 1,
-          "i5CarryShare": 0.111,
-          "rzCarryShare": 0.059,
+          "i5CarryShare": 0.091,
+          "rzCarryShare": 0.05,
           "i5TargetShare": 0,
           "rzTargetShare": 0,
           "weeks": [
@@ -4308,7 +4352,7 @@
           "i5CarryShare": 0,
           "rzCarryShare": 0,
           "i5TargetShare": 0,
-          "rzTargetShare": 0.125,
+          "rzTargetShare": 0.111,
           "weeks": [
             {
               "week": 1,
@@ -8030,9 +8074,9 @@
           "recTd": 0,
           "anyTd": 0,
           "i5CarryShare": 0,
-          "rzCarryShare": 0.125,
+          "rzCarryShare": 0.107,
           "i5TargetShare": 0,
-          "rzTargetShare": 0.033,
+          "rzTargetShare": 0.029,
           "weeks": [
             {
               "week": 2,
@@ -8062,7 +8106,7 @@
           "i5CarryShare": 0,
           "rzCarryShare": 0,
           "i5TargetShare": 0,
-          "rzTargetShare": 0.033,
+          "rzTargetShare": 0.029,
           "weeks": [
             {
               "week": 2,
@@ -8092,7 +8136,7 @@
           "i5CarryShare": 0,
           "rzCarryShare": 0,
           "i5TargetShare": 0,
-          "rzTargetShare": 0.1,
+          "rzTargetShare": 0.088,
           "weeks": [
             {
               "week": 2,
@@ -8133,7 +8177,7 @@
           "i5CarryShare": 0,
           "rzCarryShare": 0,
           "i5TargetShare": 0,
-          "rzTargetShare": 0.133,
+          "rzTargetShare": 0.118,
           "weeks": [
             {
               "week": 2,
@@ -12026,19 +12070,19 @@
         },
         "00-0038996": {
           "team": "GB",
-          "gamesWithTouch": 5,
+          "gamesWithTouch": 6,
           "i5Carries": 0,
           "i10Carries": 1,
           "rzCarries": 1,
           "i5Targets": 3,
           "i10Targets": 3,
-          "rzTargets": 8,
+          "rzTargets": 9,
           "rushTd": 0,
-          "recTd": 2,
-          "anyTd": 2,
+          "recTd": 3,
+          "anyTd": 3,
           "i5CarryShare": 0,
-          "rzCarryShare": 0.029,
-          "i5TargetShare": 0.375,
+          "rzCarryShare": 0.025,
+          "i5TargetShare": 0.3,
           "rzTargetShare": 0.2,
           "weeks": [
             {
@@ -12095,6 +12139,17 @@
               "rzTargets": 2,
               "rushTd": 0,
               "recTd": 1
+            },
+            {
+              "week": 8,
+              "i5Carries": 0,
+              "i10Carries": 0,
+              "rzCarries": 0,
+              "i5Targets": 0,
+              "i10Targets": 0,
+              "rzTargets": 1,
+              "rushTd": 0,
+              "recTd": 1
             }
           ]
         },
@@ -12113,7 +12168,7 @@
           "i5CarryShare": 0,
           "rzCarryShare": 0,
           "i5TargetShare": 0,
-          "rzTargetShare": 0.025,
+          "rzTargetShare": 0.022,
           "weeks": [
             {
               "week": 3,
@@ -12409,20 +12464,20 @@
         },
         "00-0037614": {
           "team": "CAR",
-          "gamesWithTouch": 1,
+          "gamesWithTouch": 2,
           "i5Carries": 0,
           "i10Carries": 0,
           "rzCarries": 0,
           "i5Targets": 0,
           "i10Targets": 1,
-          "rzTargets": 1,
+          "rzTargets": 2,
           "rushTd": 0,
           "recTd": 1,
           "anyTd": 1,
           "i5CarryShare": 0,
           "rzCarryShare": 0,
           "i5TargetShare": 0,
-          "rzTargetShare": 0.033,
+          "rzTargetShare": 0.059,
           "weeks": [
             {
               "week": 3,
@@ -12434,6 +12489,17 @@
               "rzTargets": 1,
               "rushTd": 0,
               "recTd": 1
+            },
+            {
+              "week": 8,
+              "i5Carries": 0,
+              "i10Carries": 0,
+              "rzCarries": 0,
+              "i5Targets": 0,
+              "i10Targets": 0,
+              "rzTargets": 1,
+              "rushTd": 0,
+              "recTd": 0
             }
           ]
         },
@@ -14583,7 +14649,7 @@
           "recTd": 0,
           "anyTd": 0,
           "i5CarryShare": 0,
-          "rzCarryShare": 0.042,
+          "rzCarryShare": 0.036,
           "i5TargetShare": 0,
           "rzTargetShare": 0,
           "weeks": [
@@ -14615,7 +14681,7 @@
           "i5CarryShare": 0,
           "rzCarryShare": 0,
           "i5TargetShare": 0,
-          "rzTargetShare": 0.033,
+          "rzTargetShare": 0.029,
           "weeks": [
             {
               "week": 4,
@@ -14765,8 +14831,8 @@
           "rushTd": 0,
           "recTd": 0,
           "anyTd": 0,
-          "i5CarryShare": 0.222,
-          "rzCarryShare": 0.059,
+          "i5CarryShare": 0.182,
+          "rzCarryShare": 0.05,
           "i5TargetShare": 0,
           "rzTargetShare": 0,
           "weeks": [
@@ -15590,8 +15656,8 @@
           "rushTd": 0,
           "recTd": 0,
           "anyTd": 0,
-          "i5CarryShare": 0.111,
-          "rzCarryShare": 0.176,
+          "i5CarryShare": 0.091,
+          "rzCarryShare": 0.15,
           "i5TargetShare": 0,
           "rzTargetShare": 0,
           "weeks": [
@@ -16768,7 +16834,7 @@
           "recTd": 0,
           "anyTd": 0,
           "i5CarryShare": 0,
-          "rzCarryShare": 0.029,
+          "rzCarryShare": 0.025,
           "i5TargetShare": 0,
           "rzTargetShare": 0,
           "weeks": [
@@ -17551,20 +17617,20 @@
         },
         "00-0035700": {
           "team": "GB",
-          "gamesWithTouch": 1,
-          "i5Carries": 1,
-          "i10Carries": 2,
-          "rzCarries": 3,
-          "i5Targets": 0,
-          "i10Targets": 0,
-          "rzTargets": 2,
-          "rushTd": 0,
-          "recTd": 0,
-          "anyTd": 0,
-          "i5CarryShare": 0.111,
-          "rzCarryShare": 0.088,
-          "i5TargetShare": 0,
-          "rzTargetShare": 0.05,
+          "gamesWithTouch": 2,
+          "i5Carries": 3,
+          "i10Carries": 5,
+          "rzCarries": 9,
+          "i5Targets": 2,
+          "i10Targets": 2,
+          "rzTargets": 5,
+          "rushTd": 1,
+          "recTd": 1,
+          "anyTd": 2,
+          "i5CarryShare": 0.273,
+          "rzCarryShare": 0.225,
+          "i5TargetShare": 0.2,
+          "rzTargetShare": 0.111,
           "weeks": [
             {
               "week": 7,
@@ -17576,6 +17642,17 @@
               "rzTargets": 2,
               "rushTd": 0,
               "recTd": 0
+            },
+            {
+              "week": 8,
+              "i5Carries": 2,
+              "i10Carries": 3,
+              "rzCarries": 6,
+              "i5Targets": 2,
+              "i10Targets": 2,
+              "rzTargets": 3,
+              "rushTd": 1,
+              "recTd": 1
             }
           ]
         },
@@ -17832,7 +17909,7 @@
           "recTd": 0,
           "anyTd": 0,
           "i5CarryShare": 0,
-          "rzCarryShare": 0.042,
+          "rzCarryShare": 0.036,
           "i5TargetShare": 0,
           "rzTargetShare": 0,
           "weeks": [
@@ -17864,7 +17941,7 @@
           "i5CarryShare": 0,
           "rzCarryShare": 0,
           "i5TargetShare": 0.125,
-          "rzTargetShare": 0.033,
+          "rzTargetShare": 0.029,
           "weeks": [
             {
               "week": 7,
@@ -17892,7 +17969,7 @@
           "recTd": 0,
           "anyTd": 1,
           "i5CarryShare": 0,
-          "rzCarryShare": 0.042,
+          "rzCarryShare": 0.036,
           "i5TargetShare": 0,
           "rzTargetShare": 0,
           "weeks": [
@@ -18029,17 +18106,17 @@
           "rzTripsPerGame": 4.29
         },
         "CAR": {
-          "games": 6,
-          "rzTrips": 23,
-          "i5Carries": 4,
-          "i10Carries": 10,
-          "rzCarries": 24,
+          "games": 7,
+          "rzTrips": 25,
+          "i5Carries": 5,
+          "i10Carries": 13,
+          "rzCarries": 28,
           "i5Targets": 8,
           "i10Targets": 15,
-          "rzTargets": 30,
-          "rushTd": 6,
+          "rzTargets": 34,
+          "rushTd": 7,
           "recTd": 9,
-          "rzTripsPerGame": 3.83
+          "rzTripsPerGame": 3.57
         },
         "CLE": {
           "games": 7,
@@ -18133,17 +18210,17 @@
           "rzTripsPerGame": 2.5
         },
         "GB": {
-          "games": 7,
-          "rzTrips": 27,
-          "i5Carries": 9,
-          "i10Carries": 19,
-          "rzCarries": 34,
-          "i5Targets": 8,
-          "i10Targets": 18,
-          "rzTargets": 40,
-          "rushTd": 3,
-          "recTd": 9,
-          "rzTripsPerGame": 3.86
+          "games": 8,
+          "rzTrips": 30,
+          "i5Carries": 11,
+          "i10Carries": 22,
+          "rzCarries": 40,
+          "i5Targets": 10,
+          "i10Targets": 20,
+          "rzTargets": 45,
+          "rushTd": 4,
+          "recTd": 11,
+          "rzTripsPerGame": 3.75
         },
         "MIA": {
           "games": 6,
