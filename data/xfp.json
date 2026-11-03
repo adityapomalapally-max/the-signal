@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-11-02T20:46:33.185Z",
+    "generated": "2026-11-03T18:24:02.420Z",
     "builtBy": "scripts/build-scheme.js via lib/xfp.js",
     "seasons": [
       2024,
@@ -11,19 +11,19 @@
     "scoring": "Full PPR — 1 per reception, 0.1 per yard, 6 per touchdown — matching nflverse fantasy_points_ppr, which is what every other points figure on this site already is.",
     "method": "EMPIRICAL, NOT FITTED. A cell's price is the mean fantasy points the plays in that cell actually produced. No regression, no coefficients, nothing trained — anyone with the same CSV recomputes the same number. A season prices itself once it has the plays to do it; until then it borrows the last finished season's table, and meta.build.pricedFrom says which season paid for the prices above.",
     "build": {
-      "opportunities": 13837,
-      "targets": 7566,
-      "carries": 6271,
+      "opportunities": 13958,
+      "targets": 7634,
+      "carries": 6324,
       "playersQualified": 211,
       "passersDropped": 16,
       "minPasserAttempts": 20,
       "minCell": 100,
       "minOpportunities": 20,
-      "fallbackPct": 3.45,
+      "fallbackPct": 3.46,
       "skippedNoLine": 0,
-      "leagueFp": 14064.2,
-      "leagueXfp": 14173,
-      "leagueRatio": 0.9923,
+      "leagueFp": 14190.4,
+      "leagueXfp": 14293.4,
+      "leagueRatio": 0.9928,
       "season": 2026
     },
     "caveats": [
@@ -37,43 +37,43 @@
   "cells": {
     "targets": {
       "deep|21+": {
-        "n": 508,
+        "n": 513,
         "catchRate": 38.4,
-        "yardsPer": 12.78,
+        "yardsPer": 12.74,
         "tdRate": 0.6,
-        "price": 1.697,
+        "price": 1.693,
         "thin": false
       },
       "inter|21+": {
-        "n": 1206,
+        "n": 1219,
         "catchRate": 61.7,
-        "yardsPer": 11.14,
+        "yardsPer": 11.12,
         "tdRate": 0.6,
-        "price": 1.766,
+        "price": 1.763,
         "thin": false
       },
       "short|21+": {
-        "n": 2987,
-        "catchRate": 75.8,
-        "yardsPer": 6.61,
+        "n": 3006,
+        "catchRate": 75.6,
+        "yardsPer": 6.59,
         "tdRate": 0.3,
-        "price": 1.435,
+        "price": 1.431,
         "thin": false
       },
       "short|11-20": {
-        "n": 290,
-        "catchRate": 76.6,
-        "yardsPer": 6.56,
+        "n": 292,
+        "catchRate": 76.4,
+        "yardsPer": 6.53,
         "tdRate": 3.8,
-        "price": 1.649,
+        "price": 1.643,
         "thin": false
       },
       "inter|11-20": {
-        "n": 131,
-        "catchRate": 58,
-        "yardsPer": 9.52,
+        "n": 133,
+        "catchRate": 58.6,
+        "yardsPer": 9.59,
         "tdRate": 1.5,
-        "price": 1.624,
+        "price": 1.635,
         "thin": false
       },
       "deep|6-10": {
@@ -85,27 +85,27 @@
         "thin": true
       },
       "behind|11-20": {
-        "n": 113,
-        "catchRate": 79.6,
-        "yardsPer": 3.14,
-        "tdRate": 6.2,
-        "price": 1.482,
+        "n": 115,
+        "catchRate": 80,
+        "yardsPer": 3.05,
+        "tdRate": 6.1,
+        "price": 1.47,
         "thin": false
       },
       "short|6-10": {
-        "n": 127,
-        "catchRate": 73.2,
-        "yardsPer": 5.28,
-        "tdRate": 8.7,
+        "n": 130,
+        "catchRate": 73.8,
+        "yardsPer": 5.34,
+        "tdRate": 8.5,
         "price": 1.78,
         "thin": false
       },
       "inter|endzone": {
-        "n": 163,
-        "catchRate": 39.9,
-        "yardsPer": 5.37,
-        "tdRate": 39.9,
-        "price": 3.329,
+        "n": 164,
+        "catchRate": 39.6,
+        "yardsPer": 5.34,
+        "tdRate": 39.6,
+        "price": 3.309,
         "thin": false
       },
       "short|1-5": {
@@ -117,27 +117,27 @@
         "thin": false
       },
       "behind|21+": {
-        "n": 1186,
-        "catchRate": 80.4,
-        "yardsPer": 4.58,
+        "n": 1199,
+        "catchRate": 80.5,
+        "yardsPer": 4.61,
         "tdRate": 1,
-        "price": 1.323,
+        "price": 1.326,
         "thin": false
       },
       "short|endzone": {
-        "n": 240,
-        "catchRate": 49.2,
-        "yardsPer": 1.92,
-        "tdRate": 49.2,
-        "price": 3.634,
+        "n": 243,
+        "catchRate": 49.4,
+        "yardsPer": 1.93,
+        "tdRate": 49.4,
+        "price": 3.65,
         "thin": false
       },
       "deep|1-5": {
-        "n": 84,
-        "catchRate": 29.8,
-        "yardsPer": 10.57,
-        "tdRate": 16.7,
-        "price": 2.355,
+        "n": 86,
+        "catchRate": 29.1,
+        "yardsPer": 10.33,
+        "tdRate": 16.3,
+        "price": 2.3,
         "thin": true
       },
       "deep|endzone": {
@@ -157,19 +157,19 @@
         "thin": true
       },
       "behind|6-10": {
-        "n": 30,
-        "catchRate": 83.3,
-        "yardsPer": 2.3,
-        "tdRate": 20,
-        "price": 2.263,
+        "n": 31,
+        "catchRate": 80.6,
+        "yardsPer": 2.23,
+        "tdRate": 19.4,
+        "price": 2.19,
         "thin": true
       },
       "deep|11-20": {
-        "n": 122,
-        "catchRate": 37.7,
-        "yardsPer": 13.12,
-        "tdRate": 4.1,
-        "price": 1.935,
+        "n": 124,
+        "catchRate": 37.9,
+        "yardsPer": 13.26,
+        "tdRate": 4.8,
+        "price": 1.995,
         "thin": false
       },
       "inter|1-5": {
@@ -191,19 +191,19 @@
     },
     "carries": {
       "mid|early": {
-        "n": 1689,
+        "n": 1701,
         "catchRate": 0,
-        "yardsPer": 4.83,
+        "yardsPer": 4.82,
         "tdRate": 1.6,
-        "price": 0.579,
+        "price": 0.577,
         "thin": false
       },
       "mid|lateLong": {
-        "n": 151,
+        "n": 154,
         "catchRate": 0,
-        "yardsPer": 5.64,
+        "yardsPer": 5.89,
         "tdRate": 1.3,
-        "price": 0.643,
+        "price": 0.667,
         "thin": false
       },
       "mid|lateShort": {
@@ -215,35 +215,35 @@
         "thin": false
       },
       "rz|early": {
-        "n": 460,
+        "n": 465,
         "catchRate": 0,
-        "yardsPer": 3.81,
+        "yardsPer": 3.8,
         "tdRate": 2.8,
-        "price": 0.551,
+        "price": 0.548,
         "thin": false
       },
       "in10|early": {
-        "n": 191,
+        "n": 193,
         "catchRate": 0,
-        "yardsPer": 2.98,
-        "tdRate": 10.5,
-        "price": 0.927,
+        "yardsPer": 2.97,
+        "tdRate": 10.4,
+        "price": 0.919,
         "thin": false
       },
       "gl|early": {
-        "n": 301,
+        "n": 307,
         "catchRate": 0,
-        "yardsPer": 1.08,
-        "tdRate": 39.2,
-        "price": 2.46,
+        "yardsPer": 1.1,
+        "tdRate": 39.4,
+        "price": 2.475,
         "thin": false
       },
       "back|early": {
-        "n": 2734,
+        "n": 2753,
         "catchRate": 0,
-        "yardsPer": 4.69,
+        "yardsPer": 4.67,
         "tdRate": 0.1,
-        "price": 0.477,
+        "price": 0.476,
         "thin": false
       },
       "in10|lateLong": {
@@ -255,7 +255,7 @@
         "thin": true
       },
       "back|lateLong": {
-        "n": 145,
+        "n": 147,
         "catchRate": 0,
         "yardsPer": 7.18,
         "tdRate": 0,
@@ -271,19 +271,19 @@
         "thin": true
       },
       "back|lateShort": {
-        "n": 181,
+        "n": 183,
         "catchRate": 0,
-        "yardsPer": 3.77,
-        "tdRate": 0.6,
-        "price": 0.41,
+        "yardsPer": 3.78,
+        "tdRate": 0.5,
+        "price": 0.411,
         "thin": false
       },
       "gl|lateShort": {
-        "n": 75,
+        "n": 76,
         "catchRate": 0,
-        "yardsPer": 0.87,
-        "tdRate": 44,
-        "price": 2.727,
+        "yardsPer": 0.88,
+        "tdRate": 43.4,
+        "price": 2.693,
         "thin": true
       },
       "rz|lateLong": {
@@ -295,11 +295,11 @@
         "thin": true
       },
       "rz|lateShort": {
-        "n": 50,
+        "n": 51,
         "catchRate": 0,
-        "yardsPer": 1.58,
+        "yardsPer": 1.63,
         "tdRate": 0,
-        "price": 0.158,
+        "price": 0.163,
         "thin": true
       },
       "in10|lateShort": {
@@ -313,85 +313,85 @@
     },
     "targetsMarginal": {
       "21+": {
-        "n": 5887,
-        "catchRate": 70.6,
-        "yardsPer": 7.66,
+        "n": 5937,
+        "catchRate": 70.5,
+        "yardsPer": 7.65,
         "tdRate": 0.5,
-        "price": 1.503,
+        "price": 1.501,
         "thin": false
       },
       "11-20": {
-        "n": 656,
-        "catchRate": 66.2,
-        "yardsPer": 7.78,
-        "tdRate": 3.8,
-        "price": 1.668,
+        "n": 664,
+        "catchRate": 66.3,
+        "yardsPer": 7.8,
+        "tdRate": 3.9,
+        "price": 1.677,
         "thin": false
       },
       "6-10": {
-        "n": 256,
-        "catchRate": 64.1,
-        "yardsPer": 7.45,
-        "tdRate": 10.2,
-        "price": 1.995,
+        "n": 260,
+        "catchRate": 64.2,
+        "yardsPer": 7.43,
+        "tdRate": 10,
+        "price": 1.985,
         "thin": false
       },
       "endzone": {
-        "n": 510,
-        "catchRate": 42.7,
-        "yardsPer": 4.7,
-        "tdRate": 42.7,
-        "price": 3.463,
+        "n": 514,
+        "catchRate": 42.8,
+        "yardsPer": 4.68,
+        "tdRate": 42.8,
+        "price": 3.464,
         "thin": false
       },
       "1-5": {
-        "n": 257,
-        "catchRate": 49.8,
-        "yardsPer": 6.52,
-        "tdRate": 26.5,
-        "price": 2.738,
+        "n": 259,
+        "catchRate": 49.4,
+        "yardsPer": 6.47,
+        "tdRate": 26.3,
+        "price": 2.717,
         "thin": false
       }
     },
     "carriesMarginal": {
       "mid": {
-        "n": 2053,
+        "n": 2068,
         "catchRate": 0,
-        "yardsPer": 4.68,
-        "tdRate": 1.6,
+        "yardsPer": 4.69,
+        "tdRate": 1.5,
         "price": 0.562,
         "thin": false
       },
       "rz": {
-        "n": 554,
+        "n": 560,
         "catchRate": 0,
-        "yardsPer": 3.75,
+        "yardsPer": 3.74,
         "tdRate": 2.3,
-        "price": 0.516,
+        "price": 0.513,
         "thin": false
       },
       "in10": {
-        "n": 219,
+        "n": 221,
         "catchRate": 0,
-        "yardsPer": 3.05,
-        "tdRate": 11,
-        "price": 0.963,
+        "yardsPer": 3.04,
+        "tdRate": 10.9,
+        "price": 0.955,
         "thin": false
       },
       "gl": {
-        "n": 385,
+        "n": 392,
         "catchRate": 0,
-        "yardsPer": 1.06,
+        "yardsPer": 1.08,
         "tdRate": 40.3,
-        "price": 2.521,
+        "price": 2.526,
         "thin": false
       },
       "back": {
-        "n": 3060,
+        "n": 3083,
         "catchRate": 0,
-        "yardsPer": 4.75,
+        "yardsPer": 4.74,
         "tdRate": 0.2,
-        "price": 0.485,
+        "price": 0.484,
         "thin": false
       }
     }
@@ -55836,16 +55836,16 @@
         "targets": 86,
         "carries": 0,
         "fp": 150.4,
-        "xfp": 153.6,
-        "diff": -3.2,
+        "xfp": 153.4,
+        "diff": -3,
         "fpPerG": 18.8,
-        "xfpPerG": 19.2,
-        "diffPerG": -0.4,
+        "xfpPerG": 19.17,
+        "diffPerG": -0.37,
         "weeks": [
           {
             "week": 1,
             "fp": 24.5,
-            "xfp": 24,
+            "xfp": 24.1,
             "opps": 13
           },
           {
@@ -55863,19 +55863,19 @@
           {
             "week": 4,
             "fp": 10.1,
-            "xfp": 20.6,
+            "xfp": 20.5,
             "opps": 12
           },
           {
             "week": 5,
             "fp": 21.6,
-            "xfp": 17.4,
+            "xfp": 17.3,
             "opps": 10
           },
           {
             "week": 6,
             "fp": 12.3,
-            "xfp": 14.2,
+            "xfp": 14.1,
             "opps": 9
           },
           {
@@ -55887,7 +55887,7 @@
           {
             "week": 8,
             "fp": 20.2,
-            "xfp": 14.6,
+            "xfp": 14.5,
             "opps": 8
           }
         ]
@@ -55902,7 +55902,7 @@
         "diff": 6.4,
         "fpPerG": 10.51,
         "xfpPerG": 9.71,
-        "diffPerG": 0.8,
+        "diffPerG": 0.81,
         "weeks": [
           {
             "week": 1,
@@ -55937,7 +55937,7 @@
           {
             "week": 6,
             "fp": 5.8,
-            "xfp": 12.7,
+            "xfp": 12.6,
             "opps": 20
           },
           {
@@ -55960,11 +55960,11 @@
         "targets": 21,
         "carries": 0,
         "fp": 33.5,
-        "xfp": 41,
-        "diff": -7.5,
+        "xfp": 40.9,
+        "diff": -7.4,
         "fpPerG": 5.58,
-        "xfpPerG": 6.83,
-        "diffPerG": -1.25,
+        "xfpPerG": 6.82,
+        "diffPerG": -1.24,
         "weeks": [
           {
             "week": 1,
@@ -56010,11 +56010,11 @@
         "targets": 14,
         "carries": 76,
         "fp": 53.4,
-        "xfp": 67.1,
-        "diff": -13.7,
+        "xfp": 67,
+        "diff": -13.6,
         "fpPerG": 8.9,
-        "xfpPerG": 11.19,
-        "diffPerG": -2.29,
+        "xfpPerG": 11.16,
+        "diffPerG": -2.26,
         "weeks": [
           {
             "week": 1,
@@ -56031,7 +56031,7 @@
           {
             "week": 3,
             "fp": 21.9,
-            "xfp": 20.7,
+            "xfp": 20.6,
             "opps": 26
           },
           {
@@ -56060,11 +56060,11 @@
         "targets": 38,
         "carries": 0,
         "fp": 52.9,
-        "xfp": 61.8,
-        "diff": -8.9,
+        "xfp": 61.7,
+        "diff": -8.8,
         "fpPerG": 7.56,
-        "xfpPerG": 8.83,
-        "diffPerG": -1.28,
+        "xfpPerG": 8.82,
+        "diffPerG": -1.26,
         "weeks": [
           {
             "week": 1,
@@ -56087,7 +56087,7 @@
           {
             "week": 5,
             "fp": 12,
-            "xfp": 14.5,
+            "xfp": 14.4,
             "opps": 8
           },
           {
@@ -56119,8 +56119,8 @@
         "xfp": 73.5,
         "diff": -7.3,
         "fpPerG": 9.46,
-        "xfpPerG": 10.51,
-        "diffPerG": -1.05,
+        "xfpPerG": 10.5,
+        "diffPerG": -1.04,
         "weeks": [
           {
             "week": 1,
@@ -56149,7 +56149,7 @@
           {
             "week": 5,
             "fp": 4.9,
-            "xfp": 9,
+            "xfp": 8.9,
             "opps": 15
           },
           {
@@ -56172,11 +56172,11 @@
         "targets": 24,
         "carries": 0,
         "fp": 51.6,
-        "xfp": 44.4,
-        "diff": 7.2,
+        "xfp": 44.3,
+        "diff": 7.3,
         "fpPerG": 8.6,
-        "xfpPerG": 7.39,
-        "diffPerG": 1.21,
+        "xfpPerG": 7.38,
+        "diffPerG": 1.22,
         "weeks": [
           {
             "week": 1,
@@ -56222,11 +56222,11 @@
         "targets": 18,
         "carries": 39,
         "fp": 42.4,
-        "xfp": 45.8,
-        "diff": -3.4,
+        "xfp": 45.7,
+        "diff": -3.3,
         "fpPerG": 6.06,
-        "xfpPerG": 6.54,
-        "diffPerG": -0.48,
+        "xfpPerG": 6.53,
+        "diffPerG": -0.47,
         "weeks": [
           {
             "week": 1,
@@ -56278,11 +56278,11 @@
         "targets": 81,
         "carries": 3,
         "fp": 108.4,
-        "xfp": 163.9,
-        "diff": -55.5,
+        "xfp": 163.8,
+        "diff": -55.4,
         "fpPerG": 13.55,
-        "xfpPerG": 20.49,
-        "diffPerG": -6.94,
+        "xfpPerG": 20.48,
+        "diffPerG": -6.93,
         "weeks": [
           {
             "week": 1,
@@ -56317,7 +56317,7 @@
           {
             "week": 6,
             "fp": 7.2,
-            "xfp": 14.5,
+            "xfp": 14.4,
             "opps": 7
           },
           {
@@ -56329,7 +56329,7 @@
           {
             "week": 8,
             "fp": 26.8,
-            "xfp": 34.3,
+            "xfp": 34.4,
             "opps": 16
           }
         ]
@@ -56340,11 +56340,11 @@
         "targets": 26,
         "carries": 2,
         "fp": 32.5,
-        "xfp": 44.6,
-        "diff": -12.1,
+        "xfp": 44.5,
+        "diff": -12,
         "fpPerG": 5.42,
-        "xfpPerG": 7.43,
-        "diffPerG": -2.01,
+        "xfpPerG": 7.41,
+        "diffPerG": -2,
         "weeks": [
           {
             "week": 1,
@@ -56390,11 +56390,11 @@
         "targets": 26,
         "carries": 1,
         "fp": 38.7,
-        "xfp": 47.4,
-        "diff": -8.7,
+        "xfp": 47.2,
+        "diff": -8.5,
         "fpPerG": 5.53,
-        "xfpPerG": 6.77,
-        "diffPerG": -1.24,
+        "xfpPerG": 6.75,
+        "diffPerG": -1.22,
         "weeks": [
           {
             "week": 1,
@@ -56405,7 +56405,7 @@
           {
             "week": 2,
             "fp": 9.8,
-            "xfp": 4.8,
+            "xfp": 4.7,
             "opps": 2
           },
           {
@@ -56429,7 +56429,7 @@
           {
             "week": 6,
             "fp": 4.7,
-            "xfp": 11.2,
+            "xfp": 11.1,
             "opps": 5
           },
           {
@@ -56449,8 +56449,8 @@
         "xfp": 47.2,
         "diff": -3.6,
         "fpPerG": 7.27,
-        "xfpPerG": 7.87,
-        "diffPerG": -0.61,
+        "xfpPerG": 7.86,
+        "diffPerG": -0.59,
         "weeks": [
           {
             "week": 1,
@@ -56473,7 +56473,7 @@
           {
             "week": 4,
             "fp": 9,
-            "xfp": 8.4,
+            "xfp": 8.3,
             "opps": 5
           },
           {
@@ -56496,11 +56496,11 @@
         "targets": 36,
         "carries": 119,
         "fp": 142.8,
-        "xfp": 118.6,
-        "diff": 24.2,
+        "xfp": 118.5,
+        "diff": 24.3,
         "fpPerG": 17.85,
-        "xfpPerG": 14.83,
-        "diffPerG": 3.02,
+        "xfpPerG": 14.81,
+        "diffPerG": 3.04,
         "weeks": [
           {
             "week": 1,
@@ -56517,13 +56517,13 @@
           {
             "week": 3,
             "fp": 20.6,
-            "xfp": 14.3,
+            "xfp": 14.2,
             "opps": 21
           },
           {
             "week": 4,
             "fp": 15.6,
-            "xfp": 17,
+            "xfp": 16.9,
             "opps": 23
           },
           {
@@ -56558,11 +56558,11 @@
         "targets": 64,
         "carries": 1,
         "fp": 77.9,
-        "xfp": 110.8,
-        "diff": -32.9,
+        "xfp": 110.7,
+        "diff": -32.8,
         "fpPerG": 9.74,
         "xfpPerG": 13.84,
-        "diffPerG": -4.11,
+        "diffPerG": -4.1,
         "weeks": [
           {
             "week": 1,
@@ -56585,7 +56585,7 @@
           {
             "week": 4,
             "fp": 16.5,
-            "xfp": 14.3,
+            "xfp": 14.4,
             "opps": 9
           },
           {
@@ -56603,7 +56603,7 @@
           {
             "week": 7,
             "fp": 7.6,
-            "xfp": 11.7,
+            "xfp": 11.6,
             "opps": 6
           },
           {
@@ -56620,11 +56620,11 @@
         "targets": 33,
         "carries": 150,
         "fp": 151.9,
-        "xfp": 138,
-        "diff": 13.9,
+        "xfp": 137.9,
+        "diff": 14,
         "fpPerG": 18.99,
-        "xfpPerG": 17.25,
-        "diffPerG": 1.74,
+        "xfpPerG": 17.24,
+        "diffPerG": 1.75,
         "weeks": [
           {
             "week": 1,
@@ -56641,7 +56641,7 @@
           {
             "week": 3,
             "fp": 35.3,
-            "xfp": 27.9,
+            "xfp": 28,
             "opps": 31
           },
           {
@@ -56682,16 +56682,16 @@
         "targets": 17,
         "carries": 46,
         "fp": 44.6,
-        "xfp": 50.9,
-        "diff": -6.3,
+        "xfp": 50.8,
+        "diff": -6.2,
         "fpPerG": 8.92,
-        "xfpPerG": 10.18,
-        "diffPerG": -1.26,
+        "xfpPerG": 10.16,
+        "diffPerG": -1.24,
         "weeks": [
           {
             "week": 1,
             "fp": 4.1,
-            "xfp": 11.2,
+            "xfp": 11.1,
             "opps": 13
           },
           {
@@ -56709,7 +56709,7 @@
           {
             "week": 7,
             "fp": 14.6,
-            "xfp": 13.5,
+            "xfp": 13.4,
             "opps": 15
           },
           {
@@ -56729,7 +56729,7 @@
         "xfp": 66.2,
         "diff": 12.8,
         "fpPerG": 9.87,
-        "xfpPerG": 8.28,
+        "xfpPerG": 8.27,
         "diffPerG": 1.6,
         "weeks": [
           {
@@ -56771,7 +56771,7 @@
           {
             "week": 7,
             "fp": 4,
-            "xfp": 6.2,
+            "xfp": 6.3,
             "opps": 4
           },
           {
@@ -56791,8 +56791,8 @@
         "xfp": 39.7,
         "diff": 13.4,
         "fpPerG": 8.85,
-        "xfpPerG": 6.62,
-        "diffPerG": 2.23,
+        "xfpPerG": 6.61,
+        "diffPerG": 2.24,
         "weeks": [
           {
             "week": 1,
@@ -56809,7 +56809,7 @@
           {
             "week": 3,
             "fp": 11,
-            "xfp": 5.7,
+            "xfp": 5.6,
             "opps": 10
           },
           {
@@ -56821,7 +56821,7 @@
           {
             "week": 5,
             "fp": 1.6,
-            "xfp": 5.2,
+            "xfp": 5.3,
             "opps": 8
           },
           {
@@ -56841,8 +56841,8 @@
         "xfp": 57.4,
         "diff": 8.3,
         "fpPerG": 8.21,
-        "xfpPerG": 7.18,
-        "diffPerG": 1.03,
+        "xfpPerG": 7.17,
+        "diffPerG": 1.04,
         "weeks": [
           {
             "week": 1,
@@ -56877,13 +56877,13 @@
           {
             "week": 6,
             "fp": 23,
-            "xfp": 14.1,
+            "xfp": 14,
             "opps": 7
           },
           {
             "week": 7,
             "fp": 13.2,
-            "xfp": 9.1,
+            "xfp": 9.2,
             "opps": 5
           },
           {
@@ -56903,8 +56903,8 @@
         "xfp": 58,
         "diff": 1.7,
         "fpPerG": 7.46,
-        "xfpPerG": 7.25,
-        "diffPerG": 0.22,
+        "xfpPerG": 7.26,
+        "diffPerG": 0.21,
         "weeks": [
           {
             "week": 1,
@@ -56921,7 +56921,7 @@
           {
             "week": 3,
             "fp": 2.1,
-            "xfp": 4.8,
+            "xfp": 4.9,
             "opps": 3
           },
           {
@@ -56945,7 +56945,7 @@
           {
             "week": 7,
             "fp": 1.6,
-            "xfp": 4.8,
+            "xfp": 4.9,
             "opps": 3
           },
           {
@@ -56962,11 +56962,11 @@
         "targets": 62,
         "carries": 2,
         "fp": 109.2,
-        "xfp": 104.8,
-        "diff": 4.4,
+        "xfp": 104.7,
+        "diff": 4.5,
         "fpPerG": 13.65,
-        "xfpPerG": 13.1,
-        "diffPerG": 0.55,
+        "xfpPerG": 13.09,
+        "diffPerG": 0.56,
         "weeks": [
           {
             "week": 1,
@@ -56989,7 +56989,7 @@
           {
             "week": 4,
             "fp": 14.6,
-            "xfp": 9.7,
+            "xfp": 9.8,
             "opps": 6
           },
           {
@@ -57001,13 +57001,13 @@
           {
             "week": 6,
             "fp": 10.2,
-            "xfp": 19.8,
+            "xfp": 19.7,
             "opps": 10
           },
           {
             "week": 7,
             "fp": 21,
-            "xfp": 18.4,
+            "xfp": 18.3,
             "opps": 10
           },
           {
@@ -57027,8 +57027,8 @@
         "xfp": 45.9,
         "diff": -1.1,
         "fpPerG": 8.96,
-        "xfpPerG": 9.19,
-        "diffPerG": -0.23,
+        "xfpPerG": 9.18,
+        "diffPerG": -0.22,
         "weeks": [
           {
             "week": 1,
@@ -57068,11 +57068,11 @@
         "targets": 28,
         "carries": 0,
         "fp": 62.4,
-        "xfp": 54,
-        "diff": 8.4,
+        "xfp": 53.9,
+        "diff": 8.5,
         "fpPerG": 7.8,
-        "xfpPerG": 6.75,
-        "diffPerG": 1.05,
+        "xfpPerG": 6.74,
+        "diffPerG": 1.06,
         "weeks": [
           {
             "week": 1,
@@ -57130,16 +57130,16 @@
         "targets": 50,
         "carries": 0,
         "fp": 74.5,
-        "xfp": 82,
-        "diff": -7.5,
+        "xfp": 81.9,
+        "diff": -7.4,
         "fpPerG": 10.64,
-        "xfpPerG": 11.72,
-        "diffPerG": -1.08,
+        "xfpPerG": 11.69,
+        "diffPerG": -1.05,
         "weeks": [
           {
             "week": 1,
             "fp": 9.2,
-            "xfp": 9.2,
+            "xfp": 9.1,
             "opps": 6
           },
           {
@@ -57186,11 +57186,11 @@
         "targets": 51,
         "carries": 1,
         "fp": 69.7,
-        "xfp": 87.2,
-        "diff": -17.5,
+        "xfp": 87,
+        "diff": -17.3,
         "fpPerG": 8.71,
-        "xfpPerG": 10.9,
-        "diffPerG": -2.19,
+        "xfpPerG": 10.88,
+        "diffPerG": -2.16,
         "weeks": [
           {
             "week": 1,
@@ -57207,7 +57207,7 @@
           {
             "week": 3,
             "fp": 12.7,
-            "xfp": 20.6,
+            "xfp": 20.5,
             "opps": 11
           },
           {
@@ -57219,13 +57219,13 @@
           {
             "week": 5,
             "fp": 7.7,
-            "xfp": 9.8,
+            "xfp": 9.9,
             "opps": 6
           },
           {
             "week": 6,
             "fp": 8.7,
-            "xfp": 13.6,
+            "xfp": 13.5,
             "opps": 9
           },
           {
@@ -57248,11 +57248,11 @@
         "targets": 31,
         "carries": 148,
         "fp": 150.2,
-        "xfp": 149.5,
-        "diff": 0.7,
+        "xfp": 149.6,
+        "diff": 0.6,
         "fpPerG": 18.78,
-        "xfpPerG": 18.69,
-        "diffPerG": 0.09,
+        "xfpPerG": 18.7,
+        "diffPerG": 0.08,
         "weeks": [
           {
             "week": 1,
@@ -57269,7 +57269,7 @@
           {
             "week": 3,
             "fp": 9.2,
-            "xfp": 15.8,
+            "xfp": 15.7,
             "opps": 26
           },
           {
@@ -57293,7 +57293,7 @@
           {
             "week": 7,
             "fp": 19,
-            "xfp": 13.8,
+            "xfp": 13.9,
             "opps": 21
           },
           {
@@ -57310,11 +57310,11 @@
         "targets": 58,
         "carries": 3,
         "fp": 122.2,
-        "xfp": 92.7,
-        "diff": 29.5,
+        "xfp": 92.5,
+        "diff": 29.7,
         "fpPerG": 17.46,
-        "xfpPerG": 13.24,
-        "diffPerG": 4.22,
+        "xfpPerG": 13.22,
+        "diffPerG": 4.24,
         "weeks": [
           {
             "week": 1,
@@ -57331,7 +57331,7 @@
           {
             "week": 4,
             "fp": 25.8,
-            "xfp": 15.3,
+            "xfp": 15.4,
             "opps": 10
           },
           {
@@ -57369,8 +57369,8 @@
         "xfp": 134.9,
         "diff": 1.8,
         "fpPerG": 17.09,
-        "xfpPerG": 16.87,
-        "diffPerG": 0.22,
+        "xfpPerG": 16.86,
+        "diffPerG": 0.23,
         "weeks": [
           {
             "week": 1,
@@ -57387,7 +57387,7 @@
           {
             "week": 3,
             "fp": 21.9,
-            "xfp": 26.8,
+            "xfp": 26.9,
             "opps": 27
           },
           {
@@ -57428,11 +57428,11 @@
         "targets": 28,
         "carries": 0,
         "fp": 37.5,
-        "xfp": 50.5,
-        "diff": -13,
+        "xfp": 50.4,
+        "diff": -12.9,
         "fpPerG": 4.69,
-        "xfpPerG": 6.31,
-        "diffPerG": -1.62,
+        "xfpPerG": 6.3,
+        "diffPerG": -1.61,
         "weeks": [
           {
             "week": 1,
@@ -57455,7 +57455,7 @@
           {
             "week": 4,
             "fp": 9.2,
-            "xfp": 11.1,
+            "xfp": 11,
             "opps": 6
           },
           {
@@ -57467,7 +57467,7 @@
           {
             "week": 6,
             "fp": 4.1,
-            "xfp": 8,
+            "xfp": 7.9,
             "opps": 5
           },
           {
@@ -57490,11 +57490,11 @@
         "targets": 46,
         "carries": 3,
         "fp": 75.7,
-        "xfp": 77.3,
-        "diff": -1.6,
+        "xfp": 77.2,
+        "diff": -1.5,
         "fpPerG": 12.62,
-        "xfpPerG": 12.89,
-        "diffPerG": -0.27,
+        "xfpPerG": 12.87,
+        "diffPerG": -0.26,
         "weeks": [
           {
             "week": 1,
@@ -57511,7 +57511,7 @@
           {
             "week": 3,
             "fp": 14.7,
-            "xfp": 15.3,
+            "xfp": 15.2,
             "opps": 11
           },
           {
@@ -57523,7 +57523,7 @@
           {
             "week": 5,
             "fp": 21.4,
-            "xfp": 19.5,
+            "xfp": 19.4,
             "opps": 10
           },
           {
@@ -57540,22 +57540,22 @@
         "targets": 41,
         "carries": 0,
         "fp": 56.8,
-        "xfp": 68.5,
-        "diff": -11.7,
+        "xfp": 68.3,
+        "diff": -11.5,
         "fpPerG": 7.1,
-        "xfpPerG": 8.56,
-        "diffPerG": -1.46,
+        "xfpPerG": 8.54,
+        "diffPerG": -1.44,
         "weeks": [
           {
             "week": 1,
             "fp": 8.9,
-            "xfp": 9.2,
+            "xfp": 9.1,
             "opps": 6
           },
           {
             "week": 2,
             "fp": 10.9,
-            "xfp": 10.4,
+            "xfp": 10.3,
             "opps": 7
           },
           {
@@ -57602,11 +57602,11 @@
         "targets": 25,
         "carries": 24,
         "fp": 42.9,
-        "xfp": 49.7,
-        "diff": -6.8,
+        "xfp": 49.8,
+        "diff": -6.9,
         "fpPerG": 5.36,
-        "xfpPerG": 6.22,
-        "diffPerG": -0.86,
+        "xfpPerG": 6.23,
+        "diffPerG": -0.87,
         "weeks": [
           {
             "week": 1,
@@ -57667,8 +57667,8 @@
         "xfp": 53.4,
         "diff": 0.4,
         "fpPerG": 6.73,
-        "xfpPerG": 6.68,
-        "diffPerG": 0.05,
+        "xfpPerG": 6.67,
+        "diffPerG": 0.06,
         "weeks": [
           {
             "week": 1,
@@ -57726,11 +57726,11 @@
         "targets": 5,
         "carries": 37,
         "fp": 21.5,
-        "xfp": 27.3,
-        "diff": -5.8,
+        "xfp": 27.2,
+        "diff": -5.7,
         "fpPerG": 2.69,
-        "xfpPerG": 3.41,
-        "diffPerG": -0.72,
+        "xfpPerG": 3.4,
+        "diffPerG": -0.71,
         "weeks": [
           {
             "week": 1,
@@ -57771,7 +57771,7 @@
           {
             "week": 7,
             "fp": 5.8,
-            "xfp": 7.3,
+            "xfp": 7.2,
             "opps": 12
           },
           {
@@ -57788,11 +57788,11 @@
         "targets": 17,
         "carries": 138,
         "fp": 135.7,
-        "xfp": 118.6,
-        "diff": 17.1,
+        "xfp": 118.5,
+        "diff": 17.2,
         "fpPerG": 19.39,
-        "xfpPerG": 16.94,
-        "diffPerG": 2.45,
+        "xfpPerG": 16.93,
+        "diffPerG": 2.46,
         "weeks": [
           {
             "week": 1,
@@ -57847,8 +57847,8 @@
         "xfp": 45.2,
         "diff": -1.6,
         "fpPerG": 8.72,
-        "xfpPerG": 9.05,
-        "diffPerG": -0.33,
+        "xfpPerG": 9.03,
+        "diffPerG": -0.31,
         "weeks": [
           {
             "week": 1,
@@ -57915,7 +57915,7 @@
           {
             "week": 4,
             "fp": 23.6,
-            "xfp": 15,
+            "xfp": 15.1,
             "opps": 7
           },
           {
@@ -57927,13 +57927,13 @@
           {
             "week": 6,
             "fp": 15.9,
-            "xfp": 12,
+            "xfp": 11.9,
             "opps": 6
           },
           {
             "week": 8,
             "fp": 1.4,
-            "xfp": 5.9,
+            "xfp": 5.8,
             "opps": 3
           }
         ]
@@ -57944,11 +57944,11 @@
         "targets": 35,
         "carries": 2,
         "fp": 76.1,
-        "xfp": 68.9,
-        "diff": 7.2,
+        "xfp": 68.8,
+        "diff": 7.3,
         "fpPerG": 15.22,
-        "xfpPerG": 13.77,
-        "diffPerG": 1.45,
+        "xfpPerG": 13.76,
+        "diffPerG": 1.46,
         "weeks": [
           {
             "week": 1,
@@ -57977,7 +57977,7 @@
           {
             "week": 7,
             "fp": 2.6,
-            "xfp": 7.7,
+            "xfp": 7.6,
             "opps": 5
           }
         ]
@@ -57988,11 +57988,11 @@
         "targets": 17,
         "carries": 77,
         "fp": 62.5,
-        "xfp": 71.8,
-        "diff": -9.3,
+        "xfp": 71.6,
+        "diff": -9.1,
         "fpPerG": 8.93,
-        "xfpPerG": 10.26,
-        "diffPerG": -1.33,
+        "xfpPerG": 10.24,
+        "diffPerG": -1.31,
         "weeks": [
           {
             "week": 1,
@@ -58003,7 +58003,7 @@
           {
             "week": 2,
             "fp": 8.5,
-            "xfp": 13.1,
+            "xfp": 13,
             "opps": 14
           },
           {
@@ -58021,7 +58021,7 @@
           {
             "week": 5,
             "fp": 12.5,
-            "xfp": 16,
+            "xfp": 15.9,
             "opps": 19
           },
           {
@@ -58044,16 +58044,16 @@
         "targets": 23,
         "carries": 0,
         "fp": 34.4,
-        "xfp": 39.6,
-        "diff": -5.2,
+        "xfp": 39.5,
+        "diff": -5.1,
         "fpPerG": 4.91,
-        "xfpPerG": 5.65,
-        "diffPerG": -0.74,
+        "xfpPerG": 5.64,
+        "diffPerG": -0.73,
         "weeks": [
           {
             "week": 1,
             "fp": 3.1,
-            "xfp": 3.8,
+            "xfp": 3.7,
             "opps": 2
           },
           {
@@ -58100,11 +58100,11 @@
         "targets": 38,
         "carries": 0,
         "fp": 67.4,
-        "xfp": 62.6,
-        "diff": 4.8,
+        "xfp": 62.5,
+        "diff": 4.9,
         "fpPerG": 9.63,
-        "xfpPerG": 8.94,
-        "diffPerG": 0.69,
+        "xfpPerG": 8.92,
+        "diffPerG": 0.71,
         "weeks": [
           {
             "week": 1,
@@ -58139,13 +58139,13 @@
           {
             "week": 6,
             "fp": 13.4,
-            "xfp": 10.9,
+            "xfp": 10.8,
             "opps": 6
           },
           {
             "week": 8,
             "fp": 11.4,
-            "xfp": 9.1,
+            "xfp": 9,
             "opps": 6
           }
         ]
@@ -58159,13 +58159,13 @@
         "xfp": 62.4,
         "diff": 16.7,
         "fpPerG": 11.3,
-        "xfpPerG": 8.92,
-        "diffPerG": 2.38,
+        "xfpPerG": 8.91,
+        "diffPerG": 2.39,
         "weeks": [
           {
             "week": 1,
             "fp": 18,
-            "xfp": 9.7,
+            "xfp": 9.6,
             "opps": 6
           },
           {
@@ -58212,11 +58212,11 @@
         "targets": 43,
         "carries": 0,
         "fp": 67.1,
-        "xfp": 68.2,
-        "diff": -1.1,
+        "xfp": 68.1,
+        "diff": -1,
         "fpPerG": 9.59,
-        "xfpPerG": 9.75,
-        "diffPerG": -0.16,
+        "xfpPerG": 9.73,
+        "diffPerG": -0.14,
         "weeks": [
           {
             "week": 1,
@@ -58227,7 +58227,7 @@
           {
             "week": 2,
             "fp": 26,
-            "xfp": 20.9,
+            "xfp": 20.8,
             "opps": 14
           },
           {
@@ -58268,8 +58268,8 @@
         "targets": 40,
         "carries": 4,
         "fp": 54.4,
-        "xfp": 74.2,
-        "diff": -19.8,
+        "xfp": 74.1,
+        "diff": -19.7,
         "fpPerG": 7.77,
         "xfpPerG": 10.59,
         "diffPerG": -2.82,
@@ -58324,11 +58324,11 @@
         "targets": 27,
         "carries": 3,
         "fp": 54.9,
-        "xfp": 53.5,
-        "diff": 1.4,
+        "xfp": 53.4,
+        "diff": 1.5,
         "fpPerG": 10.98,
-        "xfpPerG": 10.7,
-        "diffPerG": 0.28,
+        "xfpPerG": 10.69,
+        "diffPerG": 0.29,
         "weeks": [
           {
             "week": 1,
@@ -58357,7 +58357,7 @@
           {
             "week": 8,
             "fp": 18.6,
-            "xfp": 17,
+            "xfp": 16.9,
             "opps": 8
           }
         ]
@@ -58368,10 +58368,10 @@
         "targets": 23,
         "carries": 4,
         "fp": 66.7,
-        "xfp": 41.1,
-        "diff": 25.6,
+        "xfp": 41,
+        "diff": 25.7,
         "fpPerG": 9.53,
-        "xfpPerG": 5.87,
+        "xfpPerG": 5.86,
         "diffPerG": 3.66,
         "weeks": [
           {
@@ -58413,22 +58413,22 @@
           {
             "week": 7,
             "fp": 1.7,
-            "xfp": 2.6,
+            "xfp": 2.7,
             "opps": 2
           }
         ]
       },
       "00-0036275": {
         "team": "CHI",
-        "games": 7,
-        "targets": 25,
-        "carries": 116,
-        "fp": 126.8,
-        "xfp": 124.8,
-        "diff": 2,
-        "fpPerG": 18.11,
-        "xfpPerG": 17.82,
-        "diffPerG": 0.29,
+        "games": 8,
+        "targets": 28,
+        "carries": 143,
+        "fp": 154.7,
+        "xfp": 152.8,
+        "diff": 1.9,
+        "fpPerG": 19.34,
+        "xfpPerG": 19.11,
+        "diffPerG": 0.23,
         "weeks": [
           {
             "week": 1,
@@ -58471,20 +58471,26 @@
             "fp": 19,
             "xfp": 18.9,
             "opps": 26
+          },
+          {
+            "week": 8,
+            "fp": 27.9,
+            "xfp": 28,
+            "opps": 30
           }
         ]
       },
       "00-0040735": {
         "team": "CHI",
-        "games": 7,
-        "targets": 47,
+        "games": 8,
+        "targets": 56,
         "carries": 8,
-        "fp": 99,
-        "xfp": 87.4,
-        "diff": 11.6,
-        "fpPerG": 14.14,
-        "xfpPerG": 12.49,
-        "diffPerG": 1.65,
+        "fp": 117.6,
+        "xfp": 103.2,
+        "diff": 14.4,
+        "fpPerG": 14.7,
+        "xfpPerG": 12.91,
+        "diffPerG": 1.79,
         "weeks": [
           {
             "week": 1,
@@ -58495,7 +58501,7 @@
           {
             "week": 2,
             "fp": 6.2,
-            "xfp": 13.1,
+            "xfp": 13,
             "opps": 7
           },
           {
@@ -58513,7 +58519,7 @@
           {
             "week": 5,
             "fp": 8.9,
-            "xfp": 15.6,
+            "xfp": 15.7,
             "opps": 10
           },
           {
@@ -58527,6 +58533,12 @@
             "fp": 23.7,
             "xfp": 6.8,
             "opps": 5
+          },
+          {
+            "week": 8,
+            "fp": 18.6,
+            "xfp": 15.9,
+            "opps": 9
           }
         ]
       },
@@ -58539,8 +58551,8 @@
         "xfp": 39.1,
         "diff": 5.4,
         "fpPerG": 6.36,
-        "xfpPerG": 5.59,
-        "diffPerG": 0.77,
+        "xfpPerG": 5.58,
+        "diffPerG": 0.78,
         "weeks": [
           {
             "week": 1,
@@ -58569,7 +58581,7 @@
           {
             "week": 6,
             "fp": 20.6,
-            "xfp": 9.5,
+            "xfp": 9.4,
             "opps": 4
           },
           {
@@ -58592,11 +58604,11 @@
         "targets": 26,
         "carries": 118,
         "fp": 133,
-        "xfp": 113.4,
-        "diff": 19.6,
+        "xfp": 113.3,
+        "diff": 19.7,
         "fpPerG": 19,
-        "xfpPerG": 16.2,
-        "diffPerG": 2.8,
+        "xfpPerG": 16.19,
+        "diffPerG": 2.81,
         "weeks": [
           {
             "week": 1,
@@ -58619,7 +58631,7 @@
           {
             "week": 4,
             "fp": 25.9,
-            "xfp": 15,
+            "xfp": 14.9,
             "opps": 22
           },
           {
@@ -58648,11 +58660,11 @@
         "targets": 44,
         "carries": 0,
         "fp": 81.3,
-        "xfp": 78.7,
-        "diff": 2.6,
+        "xfp": 78.8,
+        "diff": 2.5,
         "fpPerG": 13.55,
-        "xfpPerG": 13.12,
-        "diffPerG": 0.43,
+        "xfpPerG": 13.14,
+        "diffPerG": 0.41,
         "weeks": [
           {
             "week": 1,
@@ -58663,13 +58675,13 @@
           {
             "week": 2,
             "fp": 14.6,
-            "xfp": 18.2,
+            "xfp": 18.3,
             "opps": 9
           },
           {
             "week": 3,
             "fp": 3.8,
-            "xfp": 6.7,
+            "xfp": 6.8,
             "opps": 4
           },
           {
@@ -58694,15 +58706,15 @@
       },
       "00-0032464": {
         "team": "CHI",
-        "games": 7,
-        "targets": 31,
-        "carries": 1,
-        "fp": 56.2,
-        "xfp": 48.6,
-        "diff": 7.6,
-        "fpPerG": 8.03,
-        "xfpPerG": 6.94,
-        "diffPerG": 1.09,
+        "games": 8,
+        "targets": 34,
+        "carries": 2,
+        "fp": 63.5,
+        "xfp": 54.2,
+        "diff": 9.3,
+        "fpPerG": 7.94,
+        "xfpPerG": 6.77,
+        "diffPerG": 1.17,
         "weeks": [
           {
             "week": 1,
@@ -58745,6 +58757,12 @@
             "fp": 0,
             "xfp": 3.1,
             "opps": 2
+          },
+          {
+            "week": 8,
+            "fp": 7.3,
+            "xfp": 5.6,
+            "opps": 4
           }
         ]
       },
@@ -58754,10 +58772,10 @@
         "targets": 5,
         "carries": 60,
         "fp": 59.3,
-        "xfp": 53.3,
-        "diff": 6,
+        "xfp": 53.2,
+        "diff": 6.1,
         "fpPerG": 14.82,
-        "xfpPerG": 13.32,
+        "xfpPerG": 13.31,
         "diffPerG": 1.51,
         "weeks": [
           {
@@ -58769,34 +58787,34 @@
           {
             "week": 2,
             "fp": 7.8,
-            "xfp": 9.1,
+            "xfp": 9,
             "opps": 12
           },
           {
             "week": 3,
             "fp": 3.1,
-            "xfp": 5.7,
+            "xfp": 5.6,
             "opps": 10
           },
           {
             "week": 4,
             "fp": 28,
-            "xfp": 29.6,
+            "xfp": 29.7,
             "opps": 31
           }
         ]
       },
       "00-0039919": {
         "team": "CHI",
-        "games": 7,
-        "targets": 38,
+        "games": 8,
+        "targets": 44,
         "carries": 0,
-        "fp": 63.3,
-        "xfp": 70,
-        "diff": -6.7,
-        "fpPerG": 9.04,
-        "xfpPerG": 10,
-        "diffPerG": -0.96,
+        "fp": 76,
+        "xfp": 81.5,
+        "diff": -5.5,
+        "fpPerG": 9.5,
+        "xfpPerG": 10.18,
+        "diffPerG": -0.68,
         "weeks": [
           {
             "week": 1,
@@ -58807,13 +58825,13 @@
           {
             "week": 2,
             "fp": 7.3,
-            "xfp": 6.4,
+            "xfp": 6.5,
             "opps": 4
           },
           {
             "week": 3,
             "fp": 7.4,
-            "xfp": 12.3,
+            "xfp": 12.4,
             "opps": 6
           },
           {
@@ -58837,8 +58855,14 @@
           {
             "week": 7,
             "fp": 10.9,
-            "xfp": 9.7,
+            "xfp": 9.6,
             "opps": 5
+          },
+          {
+            "week": 8,
+            "fp": 12.7,
+            "xfp": 11.4,
+            "opps": 6
           }
         ]
       },
@@ -58848,16 +58872,16 @@
         "targets": 65,
         "carries": 0,
         "fp": 111,
-        "xfp": 116.9,
-        "diff": -5.9,
+        "xfp": 116.8,
+        "diff": -5.8,
         "fpPerG": 15.86,
-        "xfpPerG": 16.71,
-        "diffPerG": -0.85,
+        "xfpPerG": 16.69,
+        "diffPerG": -0.83,
         "weeks": [
           {
             "week": 1,
             "fp": 12.5,
-            "xfp": 13.7,
+            "xfp": 13.8,
             "opps": 8
           },
           {
@@ -58875,13 +58899,13 @@
           {
             "week": 4,
             "fp": 45.2,
-            "xfp": 27.3,
+            "xfp": 27.2,
             "opps": 16
           },
           {
             "week": 6,
             "fp": 14.6,
-            "xfp": 16.1,
+            "xfp": 16,
             "opps": 9
           },
           {
@@ -58893,7 +58917,7 @@
           {
             "week": 8,
             "fp": 11.9,
-            "xfp": 19,
+            "xfp": 18.9,
             "opps": 11
           }
         ]
@@ -58907,8 +58931,8 @@
         "xfp": 44.3,
         "diff": 9.6,
         "fpPerG": 7.7,
-        "xfpPerG": 6.33,
-        "diffPerG": 1.37,
+        "xfpPerG": 6.32,
+        "diffPerG": 1.38,
         "weeks": [
           {
             "week": 1,
@@ -58943,7 +58967,7 @@
           {
             "week": 7,
             "fp": 12,
-            "xfp": 3.7,
+            "xfp": 3.8,
             "opps": 2
           },
           {
@@ -58956,15 +58980,15 @@
       },
       "00-0040126": {
         "team": "CHI",
-        "games": 7,
-        "targets": 42,
+        "games": 8,
+        "targets": 51,
         "carries": 0,
-        "fp": 62.4,
-        "xfp": 75.4,
-        "diff": -13,
-        "fpPerG": 8.91,
-        "xfpPerG": 10.77,
-        "diffPerG": -1.85,
+        "fp": 75.9,
+        "xfp": 88.7,
+        "diff": -12.8,
+        "fpPerG": 9.49,
+        "xfpPerG": 11.08,
+        "diffPerG": -1.59,
         "weeks": [
           {
             "week": 1,
@@ -59007,6 +59031,12 @@
             "fp": 19.9,
             "xfp": 18.6,
             "opps": 12
+          },
+          {
+            "week": 8,
+            "fp": 13.5,
+            "xfp": 13.4,
+            "opps": 9
           }
         ]
       },
@@ -59016,16 +59046,16 @@
         "targets": 23,
         "carries": 101,
         "fp": 86.6,
-        "xfp": 96.7,
-        "diff": -10.1,
+        "xfp": 96.6,
+        "diff": -10,
         "fpPerG": 12.37,
-        "xfpPerG": 13.81,
-        "diffPerG": -1.44,
+        "xfpPerG": 13.8,
+        "diffPerG": -1.42,
         "weeks": [
           {
             "week": 1,
             "fp": 7,
-            "xfp": 11.2,
+            "xfp": 11.1,
             "opps": 14
           },
           {
@@ -59037,7 +59067,7 @@
           {
             "week": 3,
             "fp": 9.9,
-            "xfp": 12.7,
+            "xfp": 12.6,
             "opps": 20
           },
           {
@@ -59055,7 +59085,7 @@
           {
             "week": 7,
             "fp": 23.4,
-            "xfp": 12.6,
+            "xfp": 12.5,
             "opps": 18
           },
           {
@@ -59134,11 +59164,11 @@
         "targets": 24,
         "carries": 0,
         "fp": 33.1,
-        "xfp": 37.9,
-        "diff": -4.8,
+        "xfp": 37.8,
+        "diff": -4.7,
         "fpPerG": 4.73,
-        "xfpPerG": 5.41,
-        "diffPerG": -0.68,
+        "xfpPerG": 5.4,
+        "diffPerG": -0.67,
         "weeks": [
           {
             "week": 1,
@@ -59173,7 +59203,7 @@
           {
             "week": 7,
             "fp": 6.1,
-            "xfp": 6,
+            "xfp": 5.9,
             "opps": 4
           },
           {
@@ -59190,11 +59220,11 @@
         "targets": 16,
         "carries": 110,
         "fp": 118.3,
-        "xfp": 89,
-        "diff": 29.3,
+        "xfp": 88.9,
+        "diff": 29.4,
         "fpPerG": 16.9,
-        "xfpPerG": 12.72,
-        "diffPerG": 4.18,
+        "xfpPerG": 12.7,
+        "diffPerG": 4.2,
         "weeks": [
           {
             "week": 1,
@@ -59217,13 +59247,13 @@
           {
             "week": 4,
             "fp": 11.1,
-            "xfp": 11.9,
+            "xfp": 11.8,
             "opps": 19
           },
           {
             "week": 5,
             "fp": 11.6,
-            "xfp": 18.1,
+            "xfp": 18,
             "opps": 25
           },
           {
@@ -59273,7 +59303,7 @@
           {
             "week": 4,
             "fp": 6.3,
-            "xfp": 8,
+            "xfp": 7.9,
             "opps": 4
           },
           {
@@ -59358,11 +59388,11 @@
         "targets": 48,
         "carries": 2,
         "fp": 95.5,
-        "xfp": 94.5,
-        "diff": 1,
+        "xfp": 94.3,
+        "diff": 1.2,
         "fpPerG": 13.64,
-        "xfpPerG": 13.5,
-        "diffPerG": 0.15,
+        "xfpPerG": 13.48,
+        "diffPerG": 0.16,
         "weeks": [
           {
             "week": 1,
@@ -59373,7 +59403,7 @@
           {
             "week": 2,
             "fp": 16.8,
-            "xfp": 20.4,
+            "xfp": 20.3,
             "opps": 12
           },
           {
@@ -59397,7 +59427,7 @@
           {
             "week": 6,
             "fp": 10.4,
-            "xfp": 22.5,
+            "xfp": 22.6,
             "opps": 11
           },
           {
@@ -59447,7 +59477,7 @@
           {
             "week": 5,
             "fp": 1.4,
-            "xfp": 7.3,
+            "xfp": 7.2,
             "opps": 4
           },
           {
@@ -59480,7 +59510,7 @@
         "diff": -9,
         "fpPerG": 4.81,
         "xfpPerG": 6.1,
-        "diffPerG": -1.29,
+        "diffPerG": -1.28,
         "weeks": [
           {
             "week": 1,
@@ -59532,11 +59562,11 @@
         "targets": 35,
         "carries": 0,
         "fp": 67.4,
-        "xfp": 56.8,
-        "diff": 10.6,
+        "xfp": 56.7,
+        "diff": 10.7,
         "fpPerG": 9.63,
-        "xfpPerG": 8.11,
-        "diffPerG": 1.52,
+        "xfpPerG": 8.09,
+        "diffPerG": 1.53,
         "weeks": [
           {
             "week": 1,
@@ -59559,7 +59589,7 @@
           {
             "week": 4,
             "fp": 16.5,
-            "xfp": 12.4,
+            "xfp": 12.3,
             "opps": 8
           },
           {
@@ -59571,7 +59601,7 @@
           {
             "week": 6,
             "fp": 9.4,
-            "xfp": 10.9,
+            "xfp": 10.8,
             "opps": 7
           },
           {
@@ -59597,7 +59627,7 @@
           {
             "week": 1,
             "fp": 5.6,
-            "xfp": 4.4,
+            "xfp": 4.5,
             "opps": 4
           },
           {
@@ -59632,16 +59662,16 @@
         "targets": 53,
         "carries": 0,
         "fp": 84.9,
-        "xfp": 109.1,
-        "diff": -24.2,
+        "xfp": 109,
+        "diff": -24.1,
         "fpPerG": 10.61,
-        "xfpPerG": 13.64,
-        "diffPerG": -3.03,
+        "xfpPerG": 13.63,
+        "diffPerG": -3.01,
         "weeks": [
           {
             "week": 1,
             "fp": 13.9,
-            "xfp": 11.1,
+            "xfp": 11,
             "opps": 4
           },
           {
@@ -59665,7 +59695,7 @@
           {
             "week": 5,
             "fp": 13.6,
-            "xfp": 14.4,
+            "xfp": 14.3,
             "opps": 7
           },
           {
@@ -59697,8 +59727,8 @@
         "xfp": 143.7,
         "diff": -6.5,
         "fpPerG": 17.15,
-        "xfpPerG": 17.96,
-        "diffPerG": -0.81,
+        "xfpPerG": 17.97,
+        "diffPerG": -0.82,
         "weeks": [
           {
             "week": 1,
@@ -59756,11 +59786,11 @@
         "targets": 92,
         "carries": 2,
         "fp": 166.3,
-        "xfp": 166.6,
-        "diff": -0.3,
+        "xfp": 166.5,
+        "diff": -0.2,
         "fpPerG": 20.79,
-        "xfpPerG": 20.82,
-        "diffPerG": -0.03,
+        "xfpPerG": 20.81,
+        "diffPerG": -0.02,
         "weeks": [
           {
             "week": 1,
@@ -59771,7 +59801,7 @@
           {
             "week": 2,
             "fp": 35.3,
-            "xfp": 18.9,
+            "xfp": 19,
             "opps": 9
           },
           {
@@ -59789,25 +59819,25 @@
           {
             "week": 5,
             "fp": 2.9,
-            "xfp": 7.8,
+            "xfp": 7.7,
             "opps": 5
           },
           {
             "week": 6,
             "fp": 16,
-            "xfp": 33.7,
+            "xfp": 33.6,
             "opps": 18
           },
           {
             "week": 7,
             "fp": 24.4,
-            "xfp": 25.2,
+            "xfp": 25.3,
             "opps": 12
           },
           {
             "week": 8,
             "fp": 12.8,
-            "xfp": 16.5,
+            "xfp": 16.4,
             "opps": 11
           }
         ]
@@ -59827,13 +59857,13 @@
           {
             "week": 1,
             "fp": 5.8,
-            "xfp": 9.6,
+            "xfp": 9.7,
             "opps": 6
           },
           {
             "week": 2,
             "fp": 10,
-            "xfp": 14.5,
+            "xfp": 14.4,
             "opps": 8
           },
           {
@@ -59845,13 +59875,13 @@
           {
             "week": 4,
             "fp": 9.5,
-            "xfp": 5.2,
+            "xfp": 5.3,
             "opps": 3
           },
           {
             "week": 5,
             "fp": 28,
-            "xfp": 24,
+            "xfp": 23.9,
             "opps": 13
           },
           {
@@ -59880,11 +59910,11 @@
         "targets": 13,
         "carries": 98,
         "fp": 72.4,
-        "xfp": 75.5,
-        "diff": -3.1,
+        "xfp": 75.4,
+        "diff": -3,
         "fpPerG": 12.07,
-        "xfpPerG": 12.59,
-        "diffPerG": -0.52,
+        "xfpPerG": 12.57,
+        "diffPerG": -0.51,
         "weeks": [
           {
             "week": 1,
@@ -59933,13 +59963,13 @@
         "xfp": 22.7,
         "diff": 10.8,
         "fpPerG": 8.38,
-        "xfpPerG": 5.68,
-        "diffPerG": 2.69,
+        "xfpPerG": 5.67,
+        "diffPerG": 2.7,
         "weeks": [
           {
             "week": 1,
             "fp": 13.8,
-            "xfp": 9.5,
+            "xfp": 9.4,
             "opps": 10
           },
           {
@@ -59968,11 +59998,11 @@
         "targets": 70,
         "carries": 0,
         "fp": 120.5,
-        "xfp": 124.8,
-        "diff": -4.3,
+        "xfp": 124.7,
+        "diff": -4.2,
         "fpPerG": 17.21,
-        "xfpPerG": 17.83,
-        "diffPerG": -0.61,
+        "xfpPerG": 17.82,
+        "diffPerG": -0.6,
         "weeks": [
           {
             "week": 1,
@@ -59995,13 +60025,13 @@
           {
             "week": 4,
             "fp": 23.2,
-            "xfp": 11.9,
+            "xfp": 11.8,
             "opps": 7
           },
           {
             "week": 5,
             "fp": 29.1,
-            "xfp": 39.6,
+            "xfp": 39.5,
             "opps": 20
           },
           {
@@ -60024,16 +60054,16 @@
         "targets": 63,
         "carries": 0,
         "fp": 110.5,
-        "xfp": 108.2,
-        "diff": 2.3,
+        "xfp": 108,
+        "diff": 2.5,
         "fpPerG": 15.79,
-        "xfpPerG": 15.45,
-        "diffPerG": 0.34,
+        "xfpPerG": 15.42,
+        "diffPerG": 0.36,
         "weeks": [
           {
             "week": 1,
             "fp": 27.8,
-            "xfp": 16.1,
+            "xfp": 16,
             "opps": 8
           },
           {
@@ -60063,7 +60093,7 @@
           {
             "week": 6,
             "fp": 21.9,
-            "xfp": 21.1,
+            "xfp": 21,
             "opps": 11
           },
           {
@@ -60080,11 +60110,11 @@
         "targets": 7,
         "carries": 19,
         "fp": 33.9,
-        "xfp": 24.5,
-        "diff": 9.4,
+        "xfp": 24.4,
+        "diff": 9.5,
         "fpPerG": 5.65,
-        "xfpPerG": 4.08,
-        "diffPerG": 1.57,
+        "xfpPerG": 4.07,
+        "diffPerG": 1.58,
         "weeks": [
           {
             "week": 1,
@@ -60133,8 +60163,8 @@
         "xfp": 53.4,
         "diff": -6.6,
         "fpPerG": 6.69,
-        "xfpPerG": 7.64,
-        "diffPerG": -0.95,
+        "xfpPerG": 7.63,
+        "diffPerG": -0.94,
         "weeks": [
           {
             "week": 1,
@@ -60169,7 +60199,7 @@
           {
             "week": 6,
             "fp": 3.9,
-            "xfp": 14.3,
+            "xfp": 14.2,
             "opps": 8
           },
           {
@@ -60186,11 +60216,11 @@
         "targets": 44,
         "carries": 1,
         "fp": 76.5,
-        "xfp": 77.3,
-        "diff": -0.8,
+        "xfp": 77.2,
+        "diff": -0.7,
         "fpPerG": 9.56,
-        "xfpPerG": 9.66,
-        "diffPerG": -0.1,
+        "xfpPerG": 9.65,
+        "diffPerG": -0.09,
         "weeks": [
           {
             "week": 1,
@@ -60225,7 +60255,7 @@
           {
             "week": 6,
             "fp": 17,
-            "xfp": 16.3,
+            "xfp": 16.2,
             "opps": 9
           },
           {
@@ -60248,11 +60278,11 @@
         "targets": 22,
         "carries": 3,
         "fp": 23.5,
-        "xfp": 40.3,
-        "diff": -16.8,
+        "xfp": 40.2,
+        "diff": -16.7,
         "fpPerG": 3.36,
-        "xfpPerG": 5.76,
-        "diffPerG": -2.4,
+        "xfpPerG": 5.75,
+        "diffPerG": -2.39,
         "weeks": [
           {
             "week": 1,
@@ -60304,11 +60334,11 @@
         "targets": 25,
         "carries": 0,
         "fp": 46.5,
-        "xfp": 45.4,
-        "diff": 1.1,
+        "xfp": 45.3,
+        "diff": 1.2,
         "fpPerG": 6.64,
-        "xfpPerG": 6.48,
-        "diffPerG": 0.16,
+        "xfpPerG": 6.47,
+        "diffPerG": 0.17,
         "weeks": [
           {
             "week": 1,
@@ -60363,8 +60393,8 @@
         "xfp": 76.4,
         "diff": -17.1,
         "fpPerG": 7.41,
-        "xfpPerG": 9.55,
-        "diffPerG": -2.14,
+        "xfpPerG": 9.54,
+        "diffPerG": -2.13,
         "weeks": [
           {
             "week": 1,
@@ -60426,7 +60456,7 @@
         "diff": -22.6,
         "fpPerG": 6.01,
         "xfpPerG": 8.84,
-        "diffPerG": -2.82,
+        "diffPerG": -2.83,
         "weeks": [
           {
             "week": 1,
@@ -60443,13 +60473,13 @@
           {
             "week": 3,
             "fp": 7.6,
-            "xfp": 16.6,
+            "xfp": 16.5,
             "opps": 7
           },
           {
             "week": 4,
             "fp": 1.4,
-            "xfp": 10.6,
+            "xfp": 10.7,
             "opps": 6
           },
           {
@@ -60467,7 +60497,7 @@
           {
             "week": 7,
             "fp": 7.5,
-            "xfp": 10,
+            "xfp": 9.9,
             "opps": 5
           },
           {
@@ -60484,11 +60514,11 @@
         "targets": 32,
         "carries": 141,
         "fp": 160.1,
-        "xfp": 148.5,
-        "diff": 11.6,
+        "xfp": 148.3,
+        "diff": 11.8,
         "fpPerG": 22.87,
-        "xfpPerG": 21.22,
-        "diffPerG": 1.66,
+        "xfpPerG": 21.19,
+        "diffPerG": 1.68,
         "weeks": [
           {
             "week": 1,
@@ -60499,7 +60529,7 @@
           {
             "week": 2,
             "fp": 23.8,
-            "xfp": 34.3,
+            "xfp": 34.2,
             "opps": 34
           },
           {
@@ -60529,7 +60559,7 @@
           {
             "week": 8,
             "fp": 12.4,
-            "xfp": 21.3,
+            "xfp": 21.2,
             "opps": 26
           }
         ]
@@ -60540,11 +60570,11 @@
         "targets": 42,
         "carries": 0,
         "fp": 82,
-        "xfp": 67.1,
-        "diff": 14.9,
+        "xfp": 67,
+        "diff": 15,
         "fpPerG": 11.71,
-        "xfpPerG": 9.59,
-        "diffPerG": 2.13,
+        "xfpPerG": 9.58,
+        "diffPerG": 2.14,
         "weeks": [
           {
             "week": 1,
@@ -60555,7 +60585,7 @@
           {
             "week": 2,
             "fp": 25.1,
-            "xfp": 16.6,
+            "xfp": 16.7,
             "opps": 11
           },
           {
@@ -60585,7 +60615,7 @@
           {
             "week": 8,
             "fp": 11.7,
-            "xfp": 10.9,
+            "xfp": 10.8,
             "opps": 7
           }
         ]
@@ -60629,7 +60659,7 @@
           {
             "week": 6,
             "fp": 14.3,
-            "xfp": 10.2,
+            "xfp": 10.1,
             "opps": 7
           },
           {
@@ -60641,7 +60671,7 @@
           {
             "week": 8,
             "fp": 4.3,
-            "xfp": 12.1,
+            "xfp": 12,
             "opps": 6
           }
         ]
@@ -60652,11 +60682,11 @@
         "targets": 28,
         "carries": 24,
         "fp": 67.4,
-        "xfp": 54.9,
-        "diff": 12.5,
+        "xfp": 54.8,
+        "diff": 12.6,
         "fpPerG": 11.23,
-        "xfpPerG": 9.14,
-        "diffPerG": 2.09,
+        "xfpPerG": 9.13,
+        "diffPerG": 2.1,
         "weeks": [
           {
             "week": 1,
@@ -60679,7 +60709,7 @@
           {
             "week": 5,
             "fp": 0.7,
-            "xfp": 4.4,
+            "xfp": 4.3,
             "opps": 4
           },
           {
@@ -60711,7 +60741,7 @@
           {
             "week": 1,
             "fp": 14.3,
-            "xfp": 9,
+            "xfp": 8.9,
             "opps": 5
           },
           {
@@ -60764,8 +60794,8 @@
         "targets": 16,
         "carries": 20,
         "fp": 51.4,
-        "xfp": 32.8,
-        "diff": 18.6,
+        "xfp": 32.9,
+        "diff": 18.5,
         "fpPerG": 7.34,
         "xfpPerG": 4.69,
         "diffPerG": 2.65,
@@ -60785,7 +60815,7 @@
           {
             "week": 3,
             "fp": 1.7,
-            "xfp": 3.3,
+            "xfp": 3.4,
             "opps": 6
           },
           {
@@ -60820,8 +60850,8 @@
         "targets": 51,
         "carries": 2,
         "fp": 74.8,
-        "xfp": 85,
-        "diff": -10.2,
+        "xfp": 84.9,
+        "diff": -10.1,
         "fpPerG": 9.35,
         "xfpPerG": 10.62,
         "diffPerG": -1.27,
@@ -60841,7 +60871,7 @@
           {
             "week": 3,
             "fp": 4.4,
-            "xfp": 11.2,
+            "xfp": 11.3,
             "opps": 8
           },
           {
@@ -60882,11 +60912,11 @@
         "targets": 25,
         "carries": 0,
         "fp": 56.3,
-        "xfp": 38.6,
-        "diff": 17.7,
+        "xfp": 38.5,
+        "diff": 17.8,
         "fpPerG": 14.08,
-        "xfpPerG": 9.65,
-        "diffPerG": 4.43,
+        "xfpPerG": 9.63,
+        "diffPerG": 4.44,
         "weeks": [
           {
             "week": 1,
@@ -60920,11 +60950,11 @@
         "targets": 21,
         "carries": 110,
         "fp": 81.8,
-        "xfp": 88.6,
-        "diff": -6.8,
+        "xfp": 88.4,
+        "diff": -6.6,
         "fpPerG": 11.69,
-        "xfpPerG": 12.66,
-        "diffPerG": -0.97,
+        "xfpPerG": 12.63,
+        "diffPerG": -0.95,
         "weeks": [
           {
             "week": 1,
@@ -60935,19 +60965,19 @@
           {
             "week": 2,
             "fp": 10.5,
-            "xfp": 11.6,
+            "xfp": 11.5,
             "opps": 23
           },
           {
             "week": 3,
             "fp": 14.2,
-            "xfp": 17,
+            "xfp": 16.9,
             "opps": 23
           },
           {
             "week": 4,
             "fp": 16.8,
-            "xfp": 21.6,
+            "xfp": 21.5,
             "opps": 28
           },
           {
@@ -60959,7 +60989,7 @@
           {
             "week": 7,
             "fp": 3.6,
-            "xfp": 5.6,
+            "xfp": 5.5,
             "opps": 9
           },
           {
@@ -60976,11 +61006,11 @@
         "targets": 49,
         "carries": 2,
         "fp": 88.5,
-        "xfp": 85.8,
-        "diff": 2.7,
+        "xfp": 85.7,
+        "diff": 2.8,
         "fpPerG": 11.06,
-        "xfpPerG": 10.72,
-        "diffPerG": 0.34,
+        "xfpPerG": 10.71,
+        "diffPerG": 0.35,
         "weeks": [
           {
             "week": 1,
@@ -60997,7 +61027,7 @@
           {
             "week": 3,
             "fp": 6.6,
-            "xfp": 12.1,
+            "xfp": 12,
             "opps": 8
           },
           {
@@ -61021,7 +61051,7 @@
           {
             "week": 7,
             "fp": 14.8,
-            "xfp": 11.9,
+            "xfp": 11.8,
             "opps": 6
           },
           {
@@ -61047,13 +61077,13 @@
           {
             "week": 1,
             "fp": 2.9,
-            "xfp": 5.5,
+            "xfp": 5.4,
             "opps": 8
           },
           {
             "week": 2,
             "fp": 3.6,
-            "xfp": 5.3,
+            "xfp": 5.2,
             "opps": 6
           },
           {
@@ -61076,16 +61106,16 @@
         "targets": 82,
         "carries": 1,
         "fp": 130,
-        "xfp": 159.9,
-        "diff": -29.9,
+        "xfp": 159.8,
+        "diff": -29.8,
         "fpPerG": 16.25,
-        "xfpPerG": 19.99,
-        "diffPerG": -3.74,
+        "xfpPerG": 19.98,
+        "diffPerG": -3.73,
         "weeks": [
           {
             "week": 1,
             "fp": 15.5,
-            "xfp": 23.6,
+            "xfp": 23.5,
             "opps": 12
           },
           {
@@ -61138,11 +61168,11 @@
         "targets": 40,
         "carries": 1,
         "fp": 84.4,
-        "xfp": 72.3,
-        "diff": 12.1,
+        "xfp": 72.2,
+        "diff": 12.2,
         "fpPerG": 14.07,
-        "xfpPerG": 12.05,
-        "diffPerG": 2.02,
+        "xfpPerG": 12.03,
+        "diffPerG": 2.04,
         "weeks": [
           {
             "week": 1,
@@ -61153,7 +61183,7 @@
           {
             "week": 2,
             "fp": 8.5,
-            "xfp": 11.4,
+            "xfp": 11.3,
             "opps": 6
           },
           {
@@ -61191,8 +61221,8 @@
         "xfp": 25.6,
         "diff": -4.9,
         "fpPerG": 6.9,
-        "xfpPerG": 8.54,
-        "diffPerG": -1.64,
+        "xfpPerG": 8.52,
+        "diffPerG": -1.62,
         "weeks": [
           {
             "week": 1,
@@ -61224,7 +61254,7 @@
         "diff": 12.3,
         "fpPerG": 11.21,
         "xfpPerG": 9.46,
-        "diffPerG": 1.75,
+        "diffPerG": 1.76,
         "weeks": [
           {
             "week": 1,
@@ -61276,8 +61306,8 @@
         "targets": 66,
         "carries": 0,
         "fp": 148.8,
-        "xfp": 122.7,
-        "diff": 26.1,
+        "xfp": 122.6,
+        "diff": 26.2,
         "fpPerG": 18.6,
         "xfpPerG": 15.33,
         "diffPerG": 3.27,
@@ -61341,13 +61371,13 @@
         "xfp": 59.3,
         "diff": -12.2,
         "fpPerG": 7.85,
-        "xfpPerG": 9.88,
-        "diffPerG": -2.03,
+        "xfpPerG": 9.89,
+        "diffPerG": -2.04,
         "weeks": [
           {
             "week": 1,
             "fp": 0,
-            "xfp": 3.8,
+            "xfp": 3.7,
             "opps": 2
           },
           {
@@ -61388,11 +61418,11 @@
         "targets": 17,
         "carries": 57,
         "fp": 53.3,
-        "xfp": 62.6,
-        "diff": -9.3,
+        "xfp": 62.5,
+        "diff": -9.2,
         "fpPerG": 6.66,
-        "xfpPerG": 7.83,
-        "diffPerG": -1.16,
+        "xfpPerG": 7.82,
+        "diffPerG": -1.15,
         "weeks": [
           {
             "week": 1,
@@ -61453,8 +61483,8 @@
         "xfp": 37.9,
         "diff": -13.3,
         "fpPerG": 8.2,
-        "xfpPerG": 12.63,
-        "diffPerG": -4.43,
+        "xfpPerG": 12.62,
+        "diffPerG": -4.42,
         "weeks": [
           {
             "week": 1,
@@ -61465,7 +61495,7 @@
           {
             "week": 2,
             "fp": 12.3,
-            "xfp": 22,
+            "xfp": 21.9,
             "opps": 26
           },
           {
@@ -61486,18 +61516,18 @@
         "diff": -6.5,
         "fpPerG": 10.53,
         "xfpPerG": 11.45,
-        "diffPerG": -0.92,
+        "diffPerG": -0.93,
         "weeks": [
           {
             "week": 1,
             "fp": 8.3,
-            "xfp": 13.2,
+            "xfp": 13.3,
             "opps": 8
           },
           {
             "week": 2,
             "fp": 8.7,
-            "xfp": 8,
+            "xfp": 8.1,
             "opps": 6
           },
           {
@@ -61541,7 +61571,7 @@
         "xfp": 147.2,
         "diff": -14.9,
         "fpPerG": 16.54,
-        "xfpPerG": 18.4,
+        "xfpPerG": 18.39,
         "diffPerG": -1.86,
         "weeks": [
           {
@@ -61565,7 +61595,7 @@
           {
             "week": 4,
             "fp": 18.6,
-            "xfp": 19.2,
+            "xfp": 19.1,
             "opps": 23
           },
           {
@@ -61600,11 +61630,11 @@
         "targets": 24,
         "carries": 0,
         "fp": 29.3,
-        "xfp": 46.6,
-        "diff": -17.3,
+        "xfp": 46.5,
+        "diff": -17.2,
         "fpPerG": 4.88,
-        "xfpPerG": 7.77,
-        "diffPerG": -2.88,
+        "xfpPerG": 7.74,
+        "diffPerG": -2.86,
         "weeks": [
           {
             "week": 1,
@@ -61650,11 +61680,11 @@
         "targets": 43,
         "carries": 0,
         "fp": 77.1,
-        "xfp": 69.7,
-        "diff": 7.4,
+        "xfp": 69.6,
+        "diff": 7.5,
         "fpPerG": 9.64,
-        "xfpPerG": 8.71,
-        "diffPerG": 0.93,
+        "xfpPerG": 8.7,
+        "diffPerG": 0.94,
         "weeks": [
           {
             "week": 1,
@@ -61677,7 +61707,7 @@
           {
             "week": 4,
             "fp": 16.2,
-            "xfp": 14.7,
+            "xfp": 14.6,
             "opps": 10
           },
           {
@@ -61689,7 +61719,7 @@
           {
             "week": 6,
             "fp": 16.5,
-            "xfp": 13.2,
+            "xfp": 13.1,
             "opps": 9
           },
           {
@@ -61701,7 +61731,7 @@
           {
             "week": 8,
             "fp": 10.3,
-            "xfp": 11.2,
+            "xfp": 11.3,
             "opps": 6
           }
         ]
@@ -61712,11 +61742,11 @@
         "targets": 48,
         "carries": 2,
         "fp": 99.8,
-        "xfp": 86.6,
-        "diff": 13.2,
+        "xfp": 86.5,
+        "diff": 13.3,
         "fpPerG": 12.47,
-        "xfpPerG": 10.83,
-        "diffPerG": 1.65,
+        "xfpPerG": 10.81,
+        "diffPerG": 1.66,
         "weeks": [
           {
             "week": 1,
@@ -61745,7 +61775,7 @@
           {
             "week": 5,
             "fp": 7.5,
-            "xfp": 9.7,
+            "xfp": 9.6,
             "opps": 7
           },
           {
@@ -61825,7 +61855,7 @@
           {
             "week": 8,
             "fp": 8.3,
-            "xfp": 25.8,
+            "xfp": 25.9,
             "opps": 25
           }
         ]
@@ -61857,7 +61887,7 @@
           {
             "week": 3,
             "fp": 10.5,
-            "xfp": 11.2,
+            "xfp": 11.1,
             "opps": 7
           },
           {
@@ -61875,7 +61905,7 @@
           {
             "week": 8,
             "fp": 8.3,
-            "xfp": 9.2,
+            "xfp": 9.1,
             "opps": 6
           }
         ]
@@ -61889,8 +61919,8 @@
         "xfp": 42,
         "diff": -12.8,
         "fpPerG": 4.17,
-        "xfpPerG": 6.01,
-        "diffPerG": -1.83,
+        "xfpPerG": 5.99,
+        "diffPerG": -1.82,
         "weeks": [
           {
             "week": 1,
@@ -61945,7 +61975,7 @@
         "xfp": 14.7,
         "diff": -10.6,
         "fpPerG": 0.68,
-        "xfpPerG": 2.46,
+        "xfpPerG": 2.45,
         "diffPerG": -1.77,
         "weeks": [
           {
@@ -61969,7 +61999,7 @@
           {
             "week": 5,
             "fp": 1.1,
-            "xfp": 3,
+            "xfp": 2.9,
             "opps": 6
           },
           {
@@ -61992,11 +62022,11 @@
         "targets": 21,
         "carries": 0,
         "fp": 28.2,
-        "xfp": 40.7,
-        "diff": -12.5,
+        "xfp": 40.8,
+        "diff": -12.6,
         "fpPerG": 4.7,
-        "xfpPerG": 6.79,
-        "diffPerG": -2.09,
+        "xfpPerG": 6.8,
+        "diffPerG": -2.1,
         "weeks": [
           {
             "week": 1,
@@ -62019,7 +62049,7 @@
           {
             "week": 5,
             "fp": 12,
-            "xfp": 13.3,
+            "xfp": 13.4,
             "opps": 7
           },
           {
@@ -62038,15 +62068,15 @@
       },
       "00-0041512": {
         "team": "SEA",
-        "games": 3,
-        "targets": 7,
-        "carries": 28,
-        "fp": 18,
-        "xfp": 28.9,
-        "diff": -10.9,
-        "fpPerG": 6,
-        "xfpPerG": 9.62,
-        "diffPerG": -3.62,
+        "games": 4,
+        "targets": 11,
+        "carries": 38,
+        "fp": 23.7,
+        "xfp": 39.9,
+        "diff": -16.2,
+        "fpPerG": 5.93,
+        "xfpPerG": 9.98,
+        "diffPerG": -4.06,
         "weeks": [
           {
             "week": 1,
@@ -62065,25 +62095,31 @@
             "fp": 3.2,
             "xfp": 7.3,
             "opps": 8
+          },
+          {
+            "week": 8,
+            "fp": 5.7,
+            "xfp": 11.1,
+            "opps": 14
           }
         ]
       },
       "00-0038543": {
         "team": "SEA",
-        "games": 7,
-        "targets": 78,
+        "games": 8,
+        "targets": 89,
         "carries": 3,
-        "fp": 195.6,
-        "xfp": 144,
-        "diff": 51.6,
-        "fpPerG": 27.94,
-        "xfpPerG": 20.57,
-        "diffPerG": 7.38,
+        "fp": 219.4,
+        "xfp": 163.2,
+        "diff": 56.2,
+        "fpPerG": 27.42,
+        "xfpPerG": 20.4,
+        "diffPerG": 7.02,
         "weeks": [
           {
             "week": 1,
             "fp": 26.2,
-            "xfp": 19.2,
+            "xfp": 19.1,
             "opps": 11
           },
           {
@@ -62119,22 +62155,28 @@
           {
             "week": 7,
             "fp": 31.3,
-            "xfp": 23.9,
+            "xfp": 23.8,
             "opps": 14
+          },
+          {
+            "week": 8,
+            "fp": 23.8,
+            "xfp": 19.5,
+            "opps": 11
           }
         ]
       },
       "00-0039299": {
         "team": "SEA",
-        "games": 7,
-        "targets": 14,
-        "carries": 36,
-        "fp": 37.6,
-        "xfp": 48.3,
-        "diff": -10.7,
-        "fpPerG": 5.37,
-        "xfpPerG": 6.91,
-        "diffPerG": -1.54,
+        "games": 8,
+        "targets": 15,
+        "carries": 37,
+        "fp": 38.5,
+        "xfp": 50.5,
+        "diff": -12,
+        "fpPerG": 4.81,
+        "xfpPerG": 6.31,
+        "diffPerG": -1.5,
         "weeks": [
           {
             "week": 1,
@@ -62169,7 +62211,7 @@
           {
             "week": 6,
             "fp": 8,
-            "xfp": 4.5,
+            "xfp": 4.6,
             "opps": 5
           },
           {
@@ -62177,6 +62219,12 @@
             "fp": 3.3,
             "xfp": 7.5,
             "opps": 7
+          },
+          {
+            "week": 8,
+            "fp": 0.9,
+            "xfp": 2.1,
+            "opps": 2
           }
         ]
       },
@@ -62189,7 +62237,7 @@
         "xfp": 52.9,
         "diff": -10.7,
         "fpPerG": 6.03,
-        "xfpPerG": 7.56,
+        "xfpPerG": 7.55,
         "diffPerG": -1.53,
         "weeks": [
           {
@@ -62213,13 +62261,13 @@
           {
             "week": 4,
             "fp": 12.3,
-            "xfp": 6.5,
+            "xfp": 6.6,
             "opps": 5
           },
           {
             "week": 5,
             "fp": 4.3,
-            "xfp": 7.1,
+            "xfp": 7,
             "opps": 4
           },
           {
@@ -62242,8 +62290,8 @@
         "targets": 27,
         "carries": 96,
         "fp": 98.9,
-        "xfp": 93.9,
-        "diff": 5,
+        "xfp": 93.8,
+        "diff": 5.1,
         "fpPerG": 12.36,
         "xfpPerG": 11.73,
         "diffPerG": 0.63,
@@ -62287,7 +62335,7 @@
           {
             "week": 7,
             "fp": 22.5,
-            "xfp": 11.1,
+            "xfp": 11,
             "opps": 11
           },
           {
@@ -62307,7 +62355,7 @@
         "xfp": 37.9,
         "diff": -2,
         "fpPerG": 8.98,
-        "xfpPerG": 9.48,
+        "xfpPerG": 9.47,
         "diffPerG": -0.5,
         "weeks": [
           {
@@ -62331,7 +62379,7 @@
           {
             "week": 4,
             "fp": 8.3,
-            "xfp": 6.8,
+            "xfp": 6.9,
             "opps": 4
           }
         ]
@@ -62345,8 +62393,8 @@
         "xfp": 36,
         "diff": -16.9,
         "fpPerG": 6.37,
-        "xfpPerG": 12.01,
-        "diffPerG": -5.64,
+        "xfpPerG": 12,
+        "diffPerG": -5.63,
         "weeks": [
           {
             "week": 1,
@@ -62363,7 +62411,7 @@
           {
             "week": 7,
             "fp": 7.8,
-            "xfp": 11.7,
+            "xfp": 11.8,
             "opps": 6
           }
         ]
@@ -62426,20 +62474,20 @@
       },
       "00-0033908": {
         "team": "SEA",
-        "games": 7,
-        "targets": 27,
+        "games": 8,
+        "targets": 30,
         "carries": 0,
-        "fp": 43.9,
-        "xfp": 46.8,
-        "diff": -2.9,
-        "fpPerG": 6.27,
-        "xfpPerG": 6.68,
-        "diffPerG": -0.41,
+        "fp": 51.6,
+        "xfp": 57.4,
+        "diff": -5.8,
+        "fpPerG": 6.45,
+        "xfpPerG": 7.18,
+        "diffPerG": -0.73,
         "weeks": [
           {
             "week": 1,
             "fp": 5.5,
-            "xfp": 5.3,
+            "xfp": 5.4,
             "opps": 3
           },
           {
@@ -62477,6 +62525,12 @@
             "fp": 4,
             "xfp": 2.9,
             "opps": 2
+          },
+          {
+            "week": 8,
+            "fp": 7.7,
+            "xfp": 10.6,
+            "opps": 3
           }
         ]
       },
@@ -62486,11 +62540,11 @@
         "targets": 2,
         "carries": 42,
         "fp": 22.5,
-        "xfp": 25.5,
-        "diff": -3,
+        "xfp": 25.4,
+        "diff": -2.9,
         "fpPerG": 3.21,
-        "xfpPerG": 3.64,
-        "diffPerG": -0.42,
+        "xfpPerG": 3.62,
+        "diffPerG": -0.41,
         "weeks": [
           {
             "week": 1,
@@ -62513,7 +62567,7 @@
           {
             "week": 5,
             "fp": 6.9,
-            "xfp": 5.1,
+            "xfp": 5,
             "opps": 7
           },
           {
@@ -62542,11 +62596,11 @@
         "targets": 37,
         "carries": 0,
         "fp": 83.2,
-        "xfp": 67.7,
-        "diff": 15.5,
+        "xfp": 67.6,
+        "diff": 15.6,
         "fpPerG": 10.4,
-        "xfpPerG": 8.47,
-        "diffPerG": 1.93,
+        "xfpPerG": 8.46,
+        "diffPerG": 1.94,
         "weeks": [
           {
             "week": 1,
@@ -62607,7 +62661,7 @@
         "xfp": 39.5,
         "diff": 2.8,
         "fpPerG": 6.04,
-        "xfpPerG": 5.64,
+        "xfpPerG": 5.65,
         "diffPerG": 0.4,
         "weeks": [
           {
@@ -62619,7 +62673,7 @@
           {
             "week": 2,
             "fp": 4,
-            "xfp": 1.9,
+            "xfp": 2,
             "opps": 1
           },
           {
@@ -62649,7 +62703,7 @@
           {
             "week": 8,
             "fp": 1.5,
-            "xfp": 6.2,
+            "xfp": 6.1,
             "opps": 4
           }
         ]
@@ -62660,11 +62714,11 @@
         "targets": 34,
         "carries": 0,
         "fp": 73.6,
-        "xfp": 59.2,
-        "diff": 14.4,
+        "xfp": 59.1,
+        "diff": 14.5,
         "fpPerG": 9.2,
-        "xfpPerG": 7.4,
-        "diffPerG": 1.8,
+        "xfpPerG": 7.39,
+        "diffPerG": 1.81,
         "weeks": [
           {
             "week": 1,
@@ -62718,15 +62772,15 @@
       },
       "00-0039793": {
         "team": "SEA",
-        "games": 7,
-        "targets": 29,
+        "games": 8,
+        "targets": 34,
         "carries": 4,
-        "fp": 43.5,
-        "xfp": 50.9,
-        "diff": -7.4,
-        "fpPerG": 6.21,
-        "xfpPerG": 7.27,
-        "diffPerG": -1.05,
+        "fp": 47.8,
+        "xfp": 58.3,
+        "diff": -10.5,
+        "fpPerG": 5.98,
+        "xfpPerG": 7.28,
+        "diffPerG": -1.31,
         "weeks": [
           {
             "week": 1,
@@ -62755,7 +62809,7 @@
           {
             "week": 5,
             "fp": 5,
-            "xfp": 7.1,
+            "xfp": 7,
             "opps": 5
           },
           {
@@ -62767,8 +62821,14 @@
           {
             "week": 7,
             "fp": 8.6,
-            "xfp": 8.8,
+            "xfp": 8.7,
             "opps": 8
+          },
+          {
+            "week": 8,
+            "fp": 4.3,
+            "xfp": 7.4,
+            "opps": 5
           }
         ]
       },
@@ -62778,11 +62838,11 @@
         "targets": 24,
         "carries": 0,
         "fp": 58.1,
-        "xfp": 51.1,
-        "diff": 7,
+        "xfp": 51,
+        "diff": 7.1,
         "fpPerG": 9.68,
-        "xfpPerG": 8.52,
-        "diffPerG": 1.16,
+        "xfpPerG": 8.51,
+        "diffPerG": 1.18,
         "weeks": [
           {
             "week": 1,
@@ -62793,13 +62853,13 @@
           {
             "week": 2,
             "fp": 12.6,
-            "xfp": 6.2,
+            "xfp": 6.1,
             "opps": 4
           },
           {
             "week": 3,
             "fp": 7.9,
-            "xfp": 7,
+            "xfp": 6.9,
             "opps": 4
           },
           {
@@ -62828,22 +62888,22 @@
         "targets": 44,
         "carries": 157,
         "fp": 198.9,
-        "xfp": 175.5,
-        "diff": 23.4,
+        "xfp": 175.4,
+        "diff": 23.5,
         "fpPerG": 28.41,
-        "xfpPerG": 25.08,
-        "diffPerG": 3.34,
+        "xfpPerG": 25.06,
+        "diffPerG": 3.36,
         "weeks": [
           {
             "week": 1,
             "fp": 35.6,
-            "xfp": 31.6,
+            "xfp": 31.7,
             "opps": 34
           },
           {
             "week": 2,
             "fp": 23.3,
-            "xfp": 22.6,
+            "xfp": 22.5,
             "opps": 24
           },
           {
@@ -62867,7 +62927,7 @@
           {
             "week": 7,
             "fp": 19.3,
-            "xfp": 23.8,
+            "xfp": 23.7,
             "opps": 35
           },
           {
@@ -62884,11 +62944,11 @@
         "targets": 76,
         "carries": 2,
         "fp": 141.9,
-        "xfp": 137.6,
-        "diff": 4.3,
+        "xfp": 137.5,
+        "diff": 4.4,
         "fpPerG": 20.27,
-        "xfpPerG": 19.65,
-        "diffPerG": 0.62,
+        "xfpPerG": 19.64,
+        "diffPerG": 0.63,
         "weeks": [
           {
             "week": 1,
@@ -62899,7 +62959,7 @@
           {
             "week": 2,
             "fp": 35.2,
-            "xfp": 23.6,
+            "xfp": 23.7,
             "opps": 13
           },
           {
@@ -62911,7 +62971,7 @@
           {
             "week": 4,
             "fp": 16.4,
-            "xfp": 19.3,
+            "xfp": 19.2,
             "opps": 11
           },
           {
@@ -62943,8 +63003,8 @@
         "xfp": 35.6,
         "diff": -6.7,
         "fpPerG": 9.63,
-        "xfpPerG": 11.88,
-        "diffPerG": -2.25,
+        "xfpPerG": 11.87,
+        "diffPerG": -2.23,
         "weeks": [
           {
             "week": 1,
@@ -62976,12 +63036,12 @@
         "diff": -0.6,
         "fpPerG": 12.26,
         "xfpPerG": 12.34,
-        "diffPerG": -0.09,
+        "diffPerG": -0.08,
         "weeks": [
           {
             "week": 1,
             "fp": 19.9,
-            "xfp": 15.6,
+            "xfp": 15.7,
             "opps": 9
           },
           {
@@ -63078,11 +63138,11 @@
         "targets": 13,
         "carries": 57,
         "fp": 40.6,
-        "xfp": 59.2,
-        "diff": -18.6,
+        "xfp": 59.1,
+        "diff": -18.5,
         "fpPerG": 6.77,
-        "xfpPerG": 9.86,
-        "diffPerG": -3.09,
+        "xfpPerG": 9.85,
+        "diffPerG": -3.08,
         "weeks": [
           {
             "week": 1,
@@ -63131,8 +63191,8 @@
         "xfp": 83.4,
         "diff": 2.5,
         "fpPerG": 12.27,
-        "xfpPerG": 11.92,
-        "diffPerG": 0.35,
+        "xfpPerG": 11.91,
+        "diffPerG": 0.36,
         "weeks": [
           {
             "week": 1,
@@ -63161,13 +63221,13 @@
           {
             "week": 5,
             "fp": 19.8,
-            "xfp": 8.1,
+            "xfp": 8,
             "opps": 5
           },
           {
             "week": 7,
             "fp": 2.8,
-            "xfp": 3.8,
+            "xfp": 3.7,
             "opps": 2
           },
           {
@@ -63199,7 +63259,7 @@
           {
             "week": 2,
             "fp": 4.6,
-            "xfp": 11,
+            "xfp": 10.9,
             "opps": 5
           },
           {
@@ -63223,7 +63283,7 @@
           {
             "week": 7,
             "fp": 2,
-            "xfp": 4.8,
+            "xfp": 4.7,
             "opps": 2
           }
         ]
@@ -63238,12 +63298,12 @@
         "diff": 14.4,
         "fpPerG": 14.39,
         "xfpPerG": 12.33,
-        "diffPerG": 2.06,
+        "diffPerG": 2.05,
         "weeks": [
           {
             "week": 1,
             "fp": 8.5,
-            "xfp": 15.8,
+            "xfp": 15.7,
             "opps": 9
           },
           {
@@ -63273,7 +63333,7 @@
           {
             "week": 7,
             "fp": 26.1,
-            "xfp": 20.7,
+            "xfp": 20.8,
             "opps": 9
           },
           {
@@ -63293,13 +63353,13 @@
         "xfp": 66.1,
         "diff": 3.4,
         "fpPerG": 9.93,
-        "xfpPerG": 9.44,
-        "diffPerG": 0.49,
+        "xfpPerG": 9.45,
+        "diffPerG": 0.48,
         "weeks": [
           {
             "week": 1,
             "fp": 14.4,
-            "xfp": 15.8,
+            "xfp": 15.9,
             "opps": 7
           },
           {
@@ -63323,7 +63383,7 @@
           {
             "week": 5,
             "fp": 5.6,
-            "xfp": 7,
+            "xfp": 6.9,
             "opps": 5
           },
           {
@@ -63346,11 +63406,11 @@
         "targets": 6,
         "carries": 27,
         "fp": 22.8,
-        "xfp": 22.8,
-        "diff": 0,
+        "xfp": 22.7,
+        "diff": 0.1,
         "fpPerG": 3.26,
         "xfpPerG": 3.25,
-        "diffPerG": 0,
+        "diffPerG": 0.01,
         "weeks": [
           {
             "week": 1,
@@ -63402,22 +63462,22 @@
         "targets": 71,
         "carries": 0,
         "fp": 124.6,
-        "xfp": 120.9,
-        "diff": 3.7,
+        "xfp": 120.7,
+        "diff": 3.9,
         "fpPerG": 17.8,
-        "xfpPerG": 17.27,
-        "diffPerG": 0.53,
+        "xfpPerG": 17.25,
+        "diffPerG": 0.55,
         "weeks": [
           {
             "week": 1,
             "fp": 28.2,
-            "xfp": 20.9,
+            "xfp": 20.8,
             "opps": 13
           },
           {
             "week": 2,
             "fp": 22.6,
-            "xfp": 17.8,
+            "xfp": 17.9,
             "opps": 10
           },
           {
@@ -63441,7 +63501,7 @@
           {
             "week": 6,
             "fp": 14.3,
-            "xfp": 11.7,
+            "xfp": 11.6,
             "opps": 7
           },
           {
@@ -63485,7 +63545,7 @@
           {
             "week": 4,
             "fp": 1.7,
-            "xfp": 10.3,
+            "xfp": 10.4,
             "opps": 5
           },
           {
@@ -63518,7 +63578,7 @@
         "diff": -5.1,
         "fpPerG": 14.17,
         "xfpPerG": 15.87,
-        "diffPerG": -1.71,
+        "diffPerG": -1.7,
         "weeks": [
           {
             "week": 1,
@@ -63608,11 +63668,11 @@
         "targets": 63,
         "carries": 0,
         "fp": 113.7,
-        "xfp": 110.9,
-        "diff": 2.8,
+        "xfp": 110.7,
+        "diff": 3,
         "fpPerG": 14.21,
-        "xfpPerG": 13.87,
-        "diffPerG": 0.35,
+        "xfpPerG": 13.84,
+        "diffPerG": 0.38,
         "weeks": [
           {
             "week": 1,
@@ -63629,7 +63689,7 @@
           {
             "week": 3,
             "fp": 26.7,
-            "xfp": 21,
+            "xfp": 20.9,
             "opps": 13
           },
           {
@@ -63659,7 +63719,7 @@
           {
             "week": 8,
             "fp": 14.3,
-            "xfp": 26.6,
+            "xfp": 26.5,
             "opps": 12
           }
         ]
@@ -63670,11 +63730,11 @@
         "targets": 21,
         "carries": 133,
         "fp": 116.5,
-        "xfp": 122.4,
-        "diff": -5.9,
+        "xfp": 122.3,
+        "diff": -5.8,
         "fpPerG": 14.56,
-        "xfpPerG": 15.3,
-        "diffPerG": -0.74,
+        "xfpPerG": 15.29,
+        "diffPerG": -0.72,
         "weeks": [
           {
             "week": 1,
@@ -63691,7 +63751,7 @@
           {
             "week": 3,
             "fp": 13.6,
-            "xfp": 16.6,
+            "xfp": 16.5,
             "opps": 21
           },
           {
@@ -63703,7 +63763,7 @@
           {
             "week": 5,
             "fp": 5.2,
-            "xfp": 8.8,
+            "xfp": 8.7,
             "opps": 15
           },
           {
@@ -63732,11 +63792,11 @@
         "targets": 50,
         "carries": 1,
         "fp": 79.3,
-        "xfp": 83.7,
-        "diff": -4.4,
+        "xfp": 83.6,
+        "diff": -4.3,
         "fpPerG": 9.91,
-        "xfpPerG": 10.46,
-        "diffPerG": -0.55,
+        "xfpPerG": 10.45,
+        "diffPerG": -0.53,
         "weeks": [
           {
             "week": 1,
@@ -63794,11 +63854,11 @@
         "targets": 51,
         "carries": 0,
         "fp": 81.3,
-        "xfp": 90.1,
-        "diff": -8.8,
+        "xfp": 89.9,
+        "diff": -8.6,
         "fpPerG": 11.61,
-        "xfpPerG": 12.87,
-        "diffPerG": -1.25,
+        "xfpPerG": 12.85,
+        "diffPerG": -1.24,
         "weeks": [
           {
             "week": 1,
@@ -63850,11 +63910,11 @@
         "targets": 23,
         "carries": 0,
         "fp": 42.6,
-        "xfp": 42.7,
-        "diff": -0.1,
+        "xfp": 42.6,
+        "diff": 0,
         "fpPerG": 8.52,
-        "xfpPerG": 8.54,
-        "diffPerG": -0.02,
+        "xfpPerG": 8.52,
+        "diffPerG": 0,
         "weeks": [
           {
             "week": 1,
@@ -63877,7 +63937,7 @@
           {
             "week": 7,
             "fp": 23.2,
-            "xfp": 14.1,
+            "xfp": 14,
             "opps": 6
           },
           {
@@ -63897,8 +63957,8 @@
         "xfp": 32.4,
         "diff": -3.3,
         "fpPerG": 4.85,
-        "xfpPerG": 5.4,
-        "diffPerG": -0.55,
+        "xfpPerG": 5.41,
+        "diffPerG": -0.56,
         "weeks": [
           {
             "week": 1,
@@ -63944,16 +64004,16 @@
         "targets": 26,
         "carries": 0,
         "fp": 33,
-        "xfp": 43.5,
-        "diff": -10.5,
+        "xfp": 43.4,
+        "diff": -10.4,
         "fpPerG": 4.71,
-        "xfpPerG": 6.21,
-        "diffPerG": -1.49,
+        "xfpPerG": 6.2,
+        "diffPerG": -1.48,
         "weeks": [
           {
             "week": 1,
             "fp": 6.8,
-            "xfp": 9.1,
+            "xfp": 9,
             "opps": 5
           },
           {
@@ -64000,11 +64060,11 @@
         "targets": 22,
         "carries": 112,
         "fp": 99.6,
-        "xfp": 95.7,
-        "diff": 3.9,
+        "xfp": 95.6,
+        "diff": 4,
         "fpPerG": 12.45,
-        "xfpPerG": 11.96,
-        "diffPerG": 0.49,
+        "xfpPerG": 11.95,
+        "diffPerG": 0.5,
         "weeks": [
           {
             "week": 1,
@@ -64062,16 +64122,16 @@
         "targets": 27,
         "carries": 0,
         "fp": 48.5,
-        "xfp": 47.8,
-        "diff": 0.7,
+        "xfp": 48,
+        "diff": 0.5,
         "fpPerG": 12.13,
-        "xfpPerG": 11.96,
-        "diffPerG": 0.17,
+        "xfpPerG": 11.99,
+        "diffPerG": 0.13,
         "weeks": [
           {
             "week": 1,
             "fp": 9,
-            "xfp": 5.1,
+            "xfp": 5.2,
             "opps": 3
           },
           {
@@ -64100,16 +64160,16 @@
         "targets": 26,
         "carries": 0,
         "fp": 40.1,
-        "xfp": 53,
-        "diff": -12.9,
+        "xfp": 52.9,
+        "diff": -12.8,
         "fpPerG": 5.01,
         "xfpPerG": 6.62,
-        "diffPerG": -1.61,
+        "diffPerG": -1.6,
         "weeks": [
           {
             "week": 1,
             "fp": 8.1,
-            "xfp": 7.8,
+            "xfp": 7.7,
             "opps": 3
           },
           {
@@ -64145,7 +64205,7 @@
           {
             "week": 7,
             "fp": 7.4,
-            "xfp": 12.7,
+            "xfp": 12.8,
             "opps": 7
           },
           {
@@ -64162,11 +64222,11 @@
         "targets": 74,
         "carries": 5,
         "fp": 138.6,
-        "xfp": 125.4,
-        "diff": 13.2,
+        "xfp": 125.3,
+        "diff": 13.3,
         "fpPerG": 23.1,
-        "xfpPerG": 20.9,
-        "diffPerG": 2.2,
+        "xfpPerG": 20.88,
+        "diffPerG": 2.22,
         "weeks": [
           {
             "week": 1,
@@ -64227,19 +64287,19 @@
           {
             "week": 2,
             "fp": 17.7,
-            "xfp": 11.4,
+            "xfp": 11.3,
             "opps": 14
           },
           {
             "week": 3,
             "fp": 21.8,
-            "xfp": 18.2,
+            "xfp": 18.1,
             "opps": 22
           },
           {
             "week": 4,
             "fp": 36.7,
-            "xfp": 31.4,
+            "xfp": 31.3,
             "opps": 29
           },
           {
@@ -64274,11 +64334,11 @@
         "targets": 42,
         "carries": 84,
         "fp": 146,
-        "xfp": 130.7,
-        "diff": 15.3,
+        "xfp": 130.6,
+        "diff": 15.4,
         "fpPerG": 20.86,
         "xfpPerG": 18.66,
-        "diffPerG": 2.19,
+        "diffPerG": 2.2,
         "weeks": [
           {
             "week": 1,
@@ -64330,16 +64390,16 @@
         "targets": 46,
         "carries": 0,
         "fp": 106.5,
-        "xfp": 86.1,
-        "diff": 20.4,
+        "xfp": 85.9,
+        "diff": 20.6,
         "fpPerG": 15.21,
-        "xfpPerG": 12.3,
-        "diffPerG": 2.91,
+        "xfpPerG": 12.28,
+        "diffPerG": 2.94,
         "weeks": [
           {
             "week": 1,
             "fp": 3.2,
-            "xfp": 9.3,
+            "xfp": 9.2,
             "opps": 5
           },
           {
@@ -64389,7 +64449,7 @@
         "xfp": 74.3,
         "diff": 26.7,
         "fpPerG": 16.83,
-        "xfpPerG": 12.38,
+        "xfpPerG": 12.39,
         "diffPerG": 4.45,
         "weeks": [
           {
@@ -64436,11 +64496,11 @@
         "targets": 20,
         "carries": 9,
         "fp": 48.4,
-        "xfp": 38.5,
-        "diff": 9.9,
+        "xfp": 38.4,
+        "diff": 10,
         "fpPerG": 9.68,
-        "xfpPerG": 7.7,
-        "diffPerG": 1.98,
+        "xfpPerG": 7.69,
+        "diffPerG": 1.99,
         "weeks": [
           {
             "week": 1,
@@ -64480,11 +64540,11 @@
         "targets": 6,
         "carries": 57,
         "fp": 32.7,
-        "xfp": 44.9,
-        "diff": -12.2,
+        "xfp": 44.8,
+        "diff": -12.1,
         "fpPerG": 4.67,
-        "xfpPerG": 6.41,
-        "diffPerG": -1.74,
+        "xfpPerG": 6.4,
+        "diffPerG": -1.73,
         "weeks": [
           {
             "week": 1,
@@ -64501,7 +64561,7 @@
           {
             "week": 3,
             "fp": 1.7,
-            "xfp": 3.9,
+            "xfp": 3.8,
             "opps": 5
           },
           {
@@ -64519,7 +64579,7 @@
           {
             "week": 6,
             "fp": 4.7,
-            "xfp": 5.8,
+            "xfp": 5.7,
             "opps": 9
           },
           {
@@ -64536,11 +64596,11 @@
         "targets": 15,
         "carries": 75,
         "fp": 82.8,
-        "xfp": 64.1,
-        "diff": 18.7,
+        "xfp": 64,
+        "diff": 18.8,
         "fpPerG": 10.35,
-        "xfpPerG": 8.01,
-        "diffPerG": 2.34,
+        "xfpPerG": 8,
+        "diffPerG": 2.35,
         "weeks": [
           {
             "week": 1,
@@ -64563,7 +64623,7 @@
           {
             "week": 4,
             "fp": 3.1,
-            "xfp": 5.5,
+            "xfp": 5.4,
             "opps": 7
           },
           {
@@ -64601,8 +64661,8 @@
         "xfp": 92.4,
         "diff": 9.6,
         "fpPerG": 17,
-        "xfpPerG": 15.4,
-        "diffPerG": 1.6,
+        "xfpPerG": 15.39,
+        "diffPerG": 1.61,
         "weeks": [
           {
             "week": 1,
@@ -64648,11 +64708,11 @@
         "targets": 34,
         "carries": 0,
         "fp": 60.4,
-        "xfp": 54.4,
-        "diff": 6,
+        "xfp": 54.3,
+        "diff": 6.1,
         "fpPerG": 8.63,
-        "xfpPerG": 7.77,
-        "diffPerG": 0.86,
+        "xfpPerG": 7.75,
+        "diffPerG": 0.87,
         "weeks": [
           {
             "week": 1,
@@ -64675,7 +64735,7 @@
           {
             "week": 5,
             "fp": 13.3,
-            "xfp": 9.3,
+            "xfp": 9.2,
             "opps": 6
           },
           {
@@ -64760,11 +64820,11 @@
         "targets": 23,
         "carries": 147,
         "fp": 134.6,
-        "xfp": 120.6,
-        "diff": 14,
+        "xfp": 120.4,
+        "diff": 14.2,
         "fpPerG": 16.82,
-        "xfpPerG": 15.07,
-        "diffPerG": 1.75,
+        "xfpPerG": 15.05,
+        "diffPerG": 1.78,
         "weeks": [
           {
             "week": 1,
@@ -64775,13 +64835,13 @@
           {
             "week": 2,
             "fp": 13,
-            "xfp": 14.6,
+            "xfp": 14.5,
             "opps": 21
           },
           {
             "week": 3,
             "fp": 7.8,
-            "xfp": 13.8,
+            "xfp": 13.7,
             "opps": 19
           },
           {
@@ -64793,7 +64853,7 @@
           {
             "week": 5,
             "fp": 31.5,
-            "xfp": 18.7,
+            "xfp": 18.6,
             "opps": 24
           },
           {
@@ -64822,11 +64882,11 @@
         "targets": 49,
         "carries": 2,
         "fp": 71.1,
-        "xfp": 87.8,
-        "diff": -16.7,
+        "xfp": 87.7,
+        "diff": -16.6,
         "fpPerG": 11.85,
-        "xfpPerG": 14.63,
-        "diffPerG": -2.78,
+        "xfpPerG": 14.62,
+        "diffPerG": -2.77,
         "weeks": [
           {
             "week": 1,
@@ -64843,7 +64903,7 @@
           {
             "week": 3,
             "fp": 11.2,
-            "xfp": 14.6,
+            "xfp": 14.5,
             "opps": 9
           },
           {
@@ -64872,11 +64932,11 @@
         "targets": 35,
         "carries": 3,
         "fp": 53.1,
-        "xfp": 55.1,
-        "diff": -2,
+        "xfp": 55,
+        "diff": -1.9,
         "fpPerG": 6.64,
         "xfpPerG": 6.88,
-        "diffPerG": -0.25,
+        "diffPerG": -0.24,
         "weeks": [
           {
             "week": 1,
@@ -64985,7 +65045,7 @@
           {
             "week": 8,
             "fp": 14,
-            "xfp": 14.5,
+            "xfp": 14.6,
             "opps": 26
           }
         ]
@@ -64996,11 +65056,11 @@
         "targets": 42,
         "carries": 94,
         "fp": 94.9,
-        "xfp": 116.8,
-        "diff": -21.9,
+        "xfp": 116.6,
+        "diff": -21.7,
         "fpPerG": 13.56,
-        "xfpPerG": 16.68,
-        "diffPerG": -3.12,
+        "xfpPerG": 16.66,
+        "diffPerG": -3.11,
         "weeks": [
           {
             "week": 1,
@@ -65017,13 +65077,13 @@
           {
             "week": 3,
             "fp": 8.9,
-            "xfp": 9.5,
+            "xfp": 9.4,
             "opps": 15
           },
           {
             "week": 4,
             "fp": 19.1,
-            "xfp": 20.3,
+            "xfp": 20.2,
             "opps": 20
           },
           {
@@ -65052,11 +65112,11 @@
         "targets": 61,
         "carries": 0,
         "fp": 128.2,
-        "xfp": 113.4,
-        "diff": 14.8,
+        "xfp": 113.3,
+        "diff": 14.9,
         "fpPerG": 18.31,
-        "xfpPerG": 16.2,
-        "diffPerG": 2.11,
+        "xfpPerG": 16.19,
+        "diffPerG": 2.12,
         "weeks": [
           {
             "week": 1,
@@ -65067,7 +65127,7 @@
           {
             "week": 2,
             "fp": 26.5,
-            "xfp": 16.8,
+            "xfp": 16.7,
             "opps": 9
           },
           {
@@ -65108,16 +65168,16 @@
         "targets": 30,
         "carries": 0,
         "fp": 37.6,
-        "xfp": 49.4,
-        "diff": -11.8,
+        "xfp": 49.3,
+        "diff": -11.7,
         "fpPerG": 5.37,
         "xfpPerG": 7.05,
-        "diffPerG": -1.68,
+        "diffPerG": -1.67,
         "weeks": [
           {
             "week": 1,
             "fp": 5.6,
-            "xfp": 9.3,
+            "xfp": 9.2,
             "opps": 5
           },
           {
@@ -65129,7 +65189,7 @@
           {
             "week": 3,
             "fp": 8.6,
-            "xfp": 9.8,
+            "xfp": 9.7,
             "opps": 6
           },
           {
@@ -65167,8 +65227,8 @@
         "xfp": 50.4,
         "diff": 26.7,
         "fpPerG": 12.85,
-        "xfpPerG": 8.41,
-        "diffPerG": 4.44,
+        "xfpPerG": 8.39,
+        "diffPerG": 4.46,
         "weeks": [
           {
             "week": 1,
@@ -65185,7 +65245,7 @@
           {
             "week": 4,
             "fp": 13,
-            "xfp": 10.7,
+            "xfp": 10.6,
             "opps": 5
           },
           {
@@ -65217,8 +65277,8 @@
         "xfp": 106.9,
         "diff": 32.7,
         "fpPerG": 19.94,
-        "xfpPerG": 15.28,
-        "diffPerG": 4.67,
+        "xfpPerG": 15.26,
+        "diffPerG": 4.68,
         "weeks": [
           {
             "week": 1,
@@ -65229,7 +65289,7 @@
           {
             "week": 2,
             "fp": 14.5,
-            "xfp": 15.3,
+            "xfp": 15.2,
             "opps": 10
           },
           {
@@ -65241,19 +65301,19 @@
           {
             "week": 4,
             "fp": 26.7,
-            "xfp": 27.6,
+            "xfp": 27.7,
             "opps": 16
           },
           {
             "week": 5,
             "fp": 4.2,
-            "xfp": 6.2,
+            "xfp": 6.3,
             "opps": 4
           },
           {
             "week": 7,
             "fp": 26.8,
-            "xfp": 13.8,
+            "xfp": 13.7,
             "opps": 7
           },
           {
@@ -65270,16 +65330,16 @@
         "targets": 11,
         "carries": 35,
         "fp": 40.6,
-        "xfp": 38.5,
-        "diff": 2.1,
+        "xfp": 38.4,
+        "diff": 2.2,
         "fpPerG": 5.8,
-        "xfpPerG": 5.5,
-        "diffPerG": 0.3,
+        "xfpPerG": 5.48,
+        "diffPerG": 0.32,
         "weeks": [
           {
             "week": 1,
             "fp": 8,
-            "xfp": 6.8,
+            "xfp": 6.7,
             "opps": 8
           },
           {
@@ -65303,7 +65363,7 @@
           {
             "week": 5,
             "fp": 15.8,
-            "xfp": 12.1,
+            "xfp": 12,
             "opps": 16
           },
           {
@@ -65326,11 +65386,11 @@
         "targets": 23,
         "carries": 1,
         "fp": 34.5,
-        "xfp": 37.3,
-        "diff": -2.8,
+        "xfp": 37.2,
+        "diff": -2.7,
         "fpPerG": 4.93,
-        "xfpPerG": 5.33,
-        "diffPerG": -0.4,
+        "xfpPerG": 5.32,
+        "diffPerG": -0.39,
         "weeks": [
           {
             "week": 1,
@@ -65382,11 +65442,11 @@
         "targets": 24,
         "carries": 0,
         "fp": 33.8,
-        "xfp": 48.5,
-        "diff": -14.7,
+        "xfp": 48.4,
+        "diff": -14.6,
         "fpPerG": 4.83,
-        "xfpPerG": 6.93,
-        "diffPerG": -2.1,
+        "xfpPerG": 6.92,
+        "diffPerG": -2.09,
         "weeks": [
           {
             "week": 1,
@@ -65397,7 +65457,7 @@
           {
             "week": 2,
             "fp": 4.7,
-            "xfp": 16.2,
+            "xfp": 16.1,
             "opps": 7
           },
           {
@@ -65438,11 +65498,11 @@
         "targets": 7,
         "carries": 67,
         "fp": 44.9,
-        "xfp": 49.1,
-        "diff": -4.2,
+        "xfp": 49,
+        "diff": -4.1,
         "fpPerG": 8.98,
-        "xfpPerG": 9.81,
-        "diffPerG": -0.83,
+        "xfpPerG": 9.8,
+        "diffPerG": -0.82,
         "weeks": [
           {
             "week": 1,
@@ -65485,8 +65545,8 @@
         "xfp": 62.6,
         "diff": 0.2,
         "fpPerG": 10.47,
-        "xfpPerG": 10.43,
-        "diffPerG": 0.04,
+        "xfpPerG": 10.44,
+        "diffPerG": 0.03,
         "weeks": [
           {
             "week": 1,
@@ -65497,19 +65557,19 @@
           {
             "week": 2,
             "fp": 14.3,
-            "xfp": 14.6,
+            "xfp": 14.5,
             "opps": 13
           },
           {
             "week": 3,
             "fp": 11.1,
-            "xfp": 8.1,
+            "xfp": 8.2,
             "opps": 9
           },
           {
             "week": 5,
             "fp": 3,
-            "xfp": 5.3,
+            "xfp": 5.4,
             "opps": 8
           },
           {
@@ -65532,11 +65592,11 @@
         "targets": 27,
         "carries": 0,
         "fp": 44,
-        "xfp": 50.1,
-        "diff": -6.1,
+        "xfp": 50,
+        "diff": -6,
         "fpPerG": 8.8,
-        "xfpPerG": 10.02,
-        "diffPerG": -1.22,
+        "xfpPerG": 10.01,
+        "diffPerG": -1.21,
         "weeks": [
           {
             "week": 1,
@@ -65576,11 +65636,11 @@
         "targets": 44,
         "carries": 0,
         "fp": 82.2,
-        "xfp": 80.4,
-        "diff": 1.8,
+        "xfp": 80.3,
+        "diff": 1.9,
         "fpPerG": 13.7,
-        "xfpPerG": 13.39,
-        "diffPerG": 0.31,
+        "xfpPerG": 13.38,
+        "diffPerG": 0.32,
         "weeks": [
           {
             "week": 1,
@@ -65597,7 +65657,7 @@
           {
             "week": 3,
             "fp": 7.3,
-            "xfp": 10.4,
+            "xfp": 10.3,
             "opps": 7
           },
           {
@@ -65626,11 +65686,11 @@
         "targets": 10,
         "carries": 56,
         "fp": 50.5,
-        "xfp": 51.2,
-        "diff": -0.7,
+        "xfp": 51.1,
+        "diff": -0.6,
         "fpPerG": 8.42,
-        "xfpPerG": 8.53,
-        "diffPerG": -0.11,
+        "xfpPerG": 8.52,
+        "diffPerG": -0.1,
         "weeks": [
           {
             "week": 1,
@@ -65659,7 +65719,7 @@
           {
             "week": 7,
             "fp": 15.1,
-            "xfp": 7.1,
+            "xfp": 7,
             "opps": 9
           },
           {
@@ -65676,11 +65736,11 @@
         "targets": 45,
         "carries": 1,
         "fp": 61.6,
-        "xfp": 70.2,
-        "diff": -8.6,
+        "xfp": 70,
+        "diff": -8.4,
         "fpPerG": 7.7,
-        "xfpPerG": 8.77,
-        "diffPerG": -1.07,
+        "xfpPerG": 8.75,
+        "diffPerG": -1.05,
         "weeks": [
           {
             "week": 1,
@@ -65697,7 +65757,7 @@
           {
             "week": 3,
             "fp": 5.9,
-            "xfp": 7.3,
+            "xfp": 7.2,
             "opps": 4
           },
           {
@@ -65709,7 +65769,7 @@
           {
             "week": 5,
             "fp": 9.3,
-            "xfp": 10.3,
+            "xfp": 10.2,
             "opps": 7
           },
           {
@@ -65738,11 +65798,11 @@
         "targets": 32,
         "carries": 0,
         "fp": 53.4,
-        "xfp": 57.1,
-        "diff": -3.7,
+        "xfp": 57,
+        "diff": -3.6,
         "fpPerG": 8.9,
-        "xfpPerG": 9.51,
-        "diffPerG": -0.61,
+        "xfpPerG": 9.5,
+        "diffPerG": -0.6,
         "weeks": [
           {
             "week": 1,
@@ -65759,25 +65819,25 @@
           {
             "week": 3,
             "fp": 5.2,
-            "xfp": 12.2,
+            "xfp": 12.1,
             "opps": 5
           },
           {
             "week": 4,
             "fp": 4.8,
-            "xfp": 7.7,
+            "xfp": 7.6,
             "opps": 5
           },
           {
             "week": 5,
             "fp": 11.3,
-            "xfp": 12.9,
+            "xfp": 12.8,
             "opps": 8
           },
           {
             "week": 6,
             "fp": 4.4,
-            "xfp": 6.3,
+            "xfp": 6.2,
             "opps": 4
           }
         ]
@@ -65826,11 +65886,11 @@
         "targets": 35,
         "carries": 1,
         "fp": 64,
-        "xfp": 54.7,
-        "diff": 9.3,
+        "xfp": 54.6,
+        "diff": 9.4,
         "fpPerG": 10.67,
-        "xfpPerG": 9.11,
-        "diffPerG": 1.55,
+        "xfpPerG": 9.09,
+        "diffPerG": 1.57,
         "weeks": [
           {
             "week": 1,
@@ -65885,7 +65945,7 @@
           {
             "week": 1,
             "fp": 3.6,
-            "xfp": 5.1,
+            "xfp": 5.2,
             "opps": 3
           },
           {
@@ -65920,16 +65980,16 @@
         "targets": 4,
         "carries": 28,
         "fp": 19.1,
-        "xfp": 23.2,
-        "diff": -4.1,
+        "xfp": 23.1,
+        "diff": -4,
         "fpPerG": 4.78,
-        "xfpPerG": 5.79,
-        "diffPerG": -1.02,
+        "xfpPerG": 5.78,
+        "diffPerG": -1.01,
         "weeks": [
           {
             "week": 1,
             "fp": 0.3,
-            "xfp": 0.6,
+            "xfp": 0.5,
             "opps": 1
           },
           {
@@ -65947,7 +66007,7 @@
           {
             "week": 4,
             "fp": 5.5,
-            "xfp": 9.6,
+            "xfp": 9.5,
             "opps": 15
           }
         ]
@@ -65962,7 +66022,7 @@
         "diff": -1.8,
         "fpPerG": 7.84,
         "xfpPerG": 8.1,
-        "diffPerG": -0.25,
+        "diffPerG": -0.26,
         "weeks": [
           {
             "week": 1,
@@ -66061,8 +66121,8 @@
         "xfp": 22.5,
         "diff": -10.1,
         "fpPerG": 2.48,
-        "xfpPerG": 4.5,
-        "diffPerG": -2.02,
+        "xfpPerG": 4.49,
+        "diffPerG": -2.01,
         "weeks": [
           {
             "week": 2,
@@ -66134,11 +66194,11 @@
         "targets": 9,
         "carries": 91,
         "fp": 72.2,
-        "xfp": 79.2,
-        "diff": -7,
+        "xfp": 79.3,
+        "diff": -7.1,
         "fpPerG": 12.03,
         "xfpPerG": 13.21,
-        "diffPerG": -1.17,
+        "diffPerG": -1.18,
         "weeks": [
           {
             "week": 2,
@@ -66173,7 +66233,7 @@
           {
             "week": 8,
             "fp": 6.9,
-            "xfp": 11.4,
+            "xfp": 11.3,
             "opps": 20
           }
         ]
@@ -66187,8 +66247,8 @@
         "xfp": 63.9,
         "diff": 1.9,
         "fpPerG": 10.97,
-        "xfpPerG": 10.66,
-        "diffPerG": 0.31,
+        "xfpPerG": 10.64,
+        "diffPerG": 0.32,
         "weeks": [
           {
             "week": 2,
@@ -66199,7 +66259,7 @@
           {
             "week": 3,
             "fp": 5.1,
-            "xfp": 5.8,
+            "xfp": 5.7,
             "opps": 10
           },
           {
@@ -66223,7 +66283,7 @@
           {
             "week": 7,
             "fp": 13.2,
-            "xfp": 13.4,
+            "xfp": 13.3,
             "opps": 13
           }
         ]
@@ -66237,8 +66297,8 @@
         "xfp": 22.1,
         "diff": -10.7,
         "fpPerG": 2.28,
-        "xfpPerG": 4.42,
-        "diffPerG": -2.14,
+        "xfpPerG": 4.41,
+        "diffPerG": -2.13,
         "weeks": [
           {
             "week": 2,
@@ -66278,11 +66338,11 @@
         "targets": 24,
         "carries": 0,
         "fp": 52.5,
-        "xfp": 45.5,
-        "diff": 7,
+        "xfp": 45.4,
+        "diff": 7.1,
         "fpPerG": 8.75,
-        "xfpPerG": 7.58,
-        "diffPerG": 1.17,
+        "xfpPerG": 7.56,
+        "diffPerG": 1.19,
         "weeks": [
           {
             "week": 2,
@@ -66293,7 +66353,7 @@
           {
             "week": 4,
             "fp": 18.3,
-            "xfp": 16.3,
+            "xfp": 16.2,
             "opps": 7
           },
           {
@@ -66317,7 +66377,7 @@
           {
             "week": 8,
             "fp": 3.9,
-            "xfp": 9.8,
+            "xfp": 9.7,
             "opps": 6
           }
         ]
@@ -66328,11 +66388,11 @@
         "targets": 7,
         "carries": 52,
         "fp": 34.6,
-        "xfp": 37.2,
-        "diff": -2.6,
+        "xfp": 37.1,
+        "diff": -2.5,
         "fpPerG": 5.77,
-        "xfpPerG": 6.21,
-        "diffPerG": -0.44,
+        "xfpPerG": 6.19,
+        "diffPerG": -0.42,
         "weeks": [
           {
             "week": 2,
@@ -66378,11 +66438,11 @@
         "targets": 42,
         "carries": 1,
         "fp": 66.8,
-        "xfp": 64.9,
-        "diff": 1.9,
+        "xfp": 64.8,
+        "diff": 2,
         "fpPerG": 9.54,
-        "xfpPerG": 9.27,
-        "diffPerG": 0.27,
+        "xfpPerG": 9.26,
+        "diffPerG": 0.28,
         "weeks": [
           {
             "week": 2,
@@ -66417,7 +66477,7 @@
           {
             "week": 7,
             "fp": 5.7,
-            "xfp": 7.7,
+            "xfp": 7.6,
             "opps": 5
           },
           {
@@ -66434,11 +66494,11 @@
         "targets": 20,
         "carries": 1,
         "fp": 37.5,
-        "xfp": 37.3,
-        "diff": 0.2,
+        "xfp": 37.2,
+        "diff": 0.3,
         "fpPerG": 5.36,
         "xfpPerG": 5.32,
-        "diffPerG": 0.03,
+        "diffPerG": 0.04,
         "weeks": [
           {
             "week": 2,
@@ -66479,7 +66539,7 @@
           {
             "week": 8,
             "fp": 8.7,
-            "xfp": 8,
+            "xfp": 7.9,
             "opps": 5
           }
         ]
@@ -66490,11 +66550,11 @@
         "targets": 9,
         "carries": 28,
         "fp": 26.5,
-        "xfp": 35.3,
-        "diff": -8.8,
+        "xfp": 35.2,
+        "diff": -8.7,
         "fpPerG": 5.3,
-        "xfpPerG": 7.05,
-        "diffPerG": -1.75,
+        "xfpPerG": 7.04,
+        "diffPerG": -1.74,
         "weeks": [
           {
             "week": 2,
@@ -66549,7 +66609,7 @@
           {
             "week": 3,
             "fp": 9.3,
-            "xfp": 4.7,
+            "xfp": 4.6,
             "opps": 2
           },
           {
@@ -66561,7 +66621,7 @@
           {
             "week": 5,
             "fp": 4.6,
-            "xfp": 10.2,
+            "xfp": 10.3,
             "opps": 5
           },
           {
@@ -66587,8 +66647,8 @@
         "xfp": 26.8,
         "diff": -11.9,
         "fpPerG": 2.98,
-        "xfpPerG": 5.37,
-        "diffPerG": -2.39,
+        "xfpPerG": 5.36,
+        "diffPerG": -2.38,
         "weeks": [
           {
             "week": 3,
@@ -66672,8 +66732,8 @@
         "targets": 14,
         "carries": 29,
         "fp": 39.2,
-        "xfp": 35.3,
-        "diff": 3.9,
+        "xfp": 35.2,
+        "diff": 4,
         "fpPerG": 7.84,
         "xfpPerG": 7.05,
         "diffPerG": 0.79,
@@ -66705,7 +66765,7 @@
           {
             "week": 8,
             "fp": 5,
-            "xfp": 7,
+            "xfp": 7.1,
             "opps": 10
           }
         ]
@@ -66760,11 +66820,11 @@
         "targets": 61,
         "carries": 0,
         "fp": 125.7,
-        "xfp": 114.8,
-        "diff": 10.9,
+        "xfp": 114.6,
+        "diff": 11.1,
         "fpPerG": 20.95,
-        "xfpPerG": 19.13,
-        "diffPerG": 1.82,
+        "xfpPerG": 19.11,
+        "diffPerG": 1.84,
         "weeks": [
           {
             "week": 3,
@@ -66781,7 +66841,7 @@
           {
             "week": 5,
             "fp": 25,
-            "xfp": 17.2,
+            "xfp": 17.1,
             "opps": 10
           },
           {
@@ -66813,8 +66873,8 @@
         "xfp": 15.5,
         "diff": -1.8,
         "fpPerG": 3.43,
-        "xfpPerG": 3.88,
-        "diffPerG": -0.46,
+        "xfpPerG": 3.87,
+        "diffPerG": -0.45,
         "weeks": [
           {
             "week": 4,
@@ -66844,15 +66904,15 @@
       },
       "00-0039021": {
         "team": "CHI",
-        "games": 4,
-        "targets": 10,
-        "carries": 24,
-        "fp": 28.9,
-        "xfp": 33.4,
-        "diff": -4.5,
-        "fpPerG": 7.22,
-        "xfpPerG": 8.36,
-        "diffPerG": -1.13,
+        "games": 5,
+        "targets": 11,
+        "carries": 29,
+        "fp": 32.7,
+        "xfp": 41.4,
+        "diff": -8.7,
+        "fpPerG": 6.54,
+        "xfpPerG": 8.28,
+        "diffPerG": -1.74,
         "weeks": [
           {
             "week": 4,
@@ -66877,6 +66937,12 @@
             "fp": 1.3,
             "xfp": 1.1,
             "opps": 2
+          },
+          {
+            "week": 8,
+            "fp": 3.8,
+            "xfp": 8,
+            "opps": 6
           }
         ]
       },
@@ -66889,8 +66955,8 @@
         "xfp": 24.8,
         "diff": -8.1,
         "fpPerG": 5.57,
-        "xfpPerG": 8.27,
-        "diffPerG": -2.71,
+        "xfpPerG": 8.26,
+        "diffPerG": -2.7,
         "weeks": [
           {
             "week": 5,
@@ -66921,8 +66987,8 @@
         "xfp": 16.1,
         "diff": 0.1,
         "fpPerG": 4.05,
-        "xfpPerG": 4.03,
-        "diffPerG": 0.02,
+        "xfpPerG": 4.02,
+        "diffPerG": 0.03,
         "weeks": [
           {
             "week": 5,
@@ -66959,13 +67025,13 @@
         "xfp": 43.2,
         "diff": -13.2,
         "fpPerG": 10,
-        "xfpPerG": 14.39,
-        "diffPerG": -4.39,
+        "xfpPerG": 14.4,
+        "diffPerG": -4.4,
         "weeks": [
           {
             "week": 5,
             "fp": 3.2,
-            "xfp": 12.9,
+            "xfp": 13,
             "opps": 16
           },
           {
@@ -66991,8 +67057,8 @@
         "xfp": 21,
         "diff": -6.9,
         "fpPerG": 7.05,
-        "xfpPerG": 10.48,
-        "diffPerG": -3.43,
+        "xfpPerG": 10.49,
+        "diffPerG": -3.44,
         "weeks": [
           {
             "week": 7,
@@ -67014,16 +67080,16 @@
         "targets": 13,
         "carries": 32,
         "fp": 43.3,
-        "xfp": 49.1,
-        "diff": -5.8,
+        "xfp": 49,
+        "diff": -5.7,
         "fpPerG": 21.65,
-        "xfpPerG": 24.55,
-        "diffPerG": -2.9,
+        "xfpPerG": 24.52,
+        "diffPerG": -2.87,
         "weeks": [
           {
             "week": 7,
             "fp": 20.1,
-            "xfp": 20.6,
+            "xfp": 20.5,
             "opps": 18
           },
           {

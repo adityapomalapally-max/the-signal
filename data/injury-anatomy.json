@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-anatomy.js",
-    "builtAt": "2026-10-31T16:03:13.064Z",
+    "builtAt": "2026-11-03T18:22:25.284Z",
     "layers": {
       "frequency": "counted from data/injuries.json — the official NFL injury reports for this pool",
       "recovery": "from data/injury-curves.json, derived from those same reports",
@@ -12,7 +12,7 @@
       "A named condition without a research entry is listed because it genuinely occurs at that region, NOT because we have data on it. The page says so rather than printing a timeline nobody can check.",
       "Recovery figures are the median across this pool over three seasons, not a prognosis for any individual. Sample sizes are stated and several are small."
     ],
-    "totalEpisodes": 1375,
+    "totalEpisodes": 1379,
     "unmappedParts": [
       {
         "part": "Undisclosed",
@@ -48,8 +48,8 @@
       }
     ],
     "coverage": {
-      "mappedEpisodes": 1181,
-      "totalEpisodes": 1375,
+      "mappedEpisodes": 1185,
+      "totalEpisodes": 1379,
       "pct": 85.9
     }
   },
@@ -183,14 +183,14 @@
     },
     "shoulder": {
       "label": "Shoulder",
-      "episodes": 100,
-      "players": 76,
+      "episodes": 101,
+      "players": 77,
       "shareOfAll": 7.3,
       "reportedAs": [
         {
           "part": "Shoulder",
-          "episodes": 92,
-          "players": 70
+          "episodes": 93,
+          "players": 71
         },
         {
           "part": "Right Shoulder",
@@ -593,14 +593,14 @@
     },
     "back": {
       "label": "Back",
-      "episodes": 40,
-      "players": 32,
-      "shareOfAll": 2.9,
+      "episodes": 42,
+      "players": 33,
+      "shareOfAll": 3,
       "reportedAs": [
         {
           "part": "Back",
-          "episodes": 40,
-          "players": 32
+          "episodes": 42,
+          "players": 33
         }
       ],
       "recovery": null,
@@ -760,9 +760,9 @@
     },
     "thigh": {
       "label": "Hamstring, quad & thigh",
-      "episodes": 158,
-      "players": 109,
-      "shareOfAll": 11.5,
+      "episodes": 157,
+      "players": 108,
+      "shareOfAll": 11.4,
       "reportedAs": [
         {
           "part": "Hamstring",
@@ -776,8 +776,8 @@
         },
         {
           "part": "Thigh",
-          "episodes": 6,
-          "players": 6
+          "episodes": 5,
+          "players": 5
         }
       ],
       "recovery": {
@@ -879,7 +879,7 @@
       "label": "Knee",
       "episodes": 188,
       "players": 116,
-      "shareOfAll": 13.7,
+      "shareOfAll": 13.6,
       "reportedAs": [
         {
           "part": "Knee",
@@ -1047,7 +1047,7 @@
       "label": "Calf & shin",
       "episodes": 53,
       "players": 45,
-      "shareOfAll": 3.9,
+      "shareOfAll": 3.8,
       "reportedAs": [
         {
           "part": "Calf",
@@ -1145,32 +1145,32 @@
     },
     "ankle": {
       "label": "Ankle",
-      "episodes": 186,
+      "episodes": 188,
       "players": 127,
-      "shareOfAll": 13.5,
+      "shareOfAll": 13.6,
       "reportedAs": [
         {
           "part": "Ankle",
-          "episodes": 186,
+          "episodes": 188,
           "players": 127
         }
       ],
       "recovery": {
         "source": "injury-curves.json",
         "bucket": "Ankle",
-        "absences": 15,
-        "players": 14,
+        "absences": 16,
+        "players": 15,
         "medianGamesMissed": 3,
-        "baselinePpg": 8.9,
+        "baselinePpg": 8,
         "returnCurve": [
           {
             "label": "Games 1–2 back",
-            "n": 15,
-            "pct": 81
+            "n": 16,
+            "pct": 80
           },
           {
             "label": "Games 3–5",
-            "n": 15,
+            "n": 16,
             "pct": 141
           },
           {
