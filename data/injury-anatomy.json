@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/build-injury-anatomy.js",
-    "builtAt": "2026-11-07T16:50:31.374Z",
+    "builtAt": "2026-11-08T17:01:32.453Z",
     "layers": {
       "frequency": "counted from data/injuries.json — the official NFL injury reports for this pool",
       "recovery": "from data/injury-curves.json, derived from those same reports",
@@ -12,7 +12,7 @@
       "A named condition without a research entry is listed because it genuinely occurs at that region, NOT because we have data on it. The page says so rather than printing a timeline nobody can check.",
       "Recovery figures are the median across this pool over three seasons, not a prognosis for any individual. Sample sizes are stated and several are small."
     ],
-    "totalEpisodes": 1430,
+    "totalEpisodes": 1424,
     "unmappedParts": [
       {
         "part": "Undisclosed",
@@ -48,22 +48,22 @@
       }
     ],
     "coverage": {
-      "mappedEpisodes": 1228,
-      "totalEpisodes": 1430,
-      "pct": 85.9
+      "mappedEpisodes": 1224,
+      "totalEpisodes": 1424,
+      "pct": 86
     }
   },
   "regions": {
     "head": {
       "label": "Head & neck",
-      "episodes": 87,
-      "players": 72,
-      "shareOfAll": 6.1,
+      "episodes": 86,
+      "players": 71,
+      "shareOfAll": 6,
       "reportedAs": [
         {
           "part": "Concussion",
-          "episodes": 60,
-          "players": 54
+          "episodes": 59,
+          "players": 53
         },
         {
           "part": "Neck",
@@ -334,7 +334,7 @@
       "label": "Arm, elbow & hand",
       "episodes": 92,
       "players": 75,
-      "shareOfAll": 6.4,
+      "shareOfAll": 6.5,
       "reportedAs": [
         {
           "part": "Wrist",
@@ -760,14 +760,14 @@
     },
     "thigh": {
       "label": "Hamstring, quad & thigh",
-      "episodes": 168,
-      "players": 116,
-      "shareOfAll": 11.7,
+      "episodes": 165,
+      "players": 115,
+      "shareOfAll": 11.6,
       "reportedAs": [
         {
           "part": "Hamstring",
-          "episodes": 124,
-          "players": 89
+          "episodes": 121,
+          "players": 88
         },
         {
           "part": "Quadricep",
@@ -879,7 +879,7 @@
       "label": "Knee",
       "episodes": 192,
       "players": 119,
-      "shareOfAll": 13.4,
+      "shareOfAll": 13.5,
       "reportedAs": [
         {
           "part": "Knee",
@@ -1147,7 +1147,7 @@
       "label": "Ankle",
       "episodes": 195,
       "players": 129,
-      "shareOfAll": 13.6,
+      "shareOfAll": 13.7,
       "reportedAs": [
         {
           "part": "Ankle",
