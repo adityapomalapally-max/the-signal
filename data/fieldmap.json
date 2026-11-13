@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-11-10T18:37:17.184Z",
+    "generated": "2026-11-13T18:32:16.745Z",
     "seasons": [
       2023,
       2024,
@@ -9,11 +9,11 @@
     ],
     "source": "nflverse pbp — pass_location x air_yards for throws, run_location x run_gap for carries",
     "coverage": {
-      "attempts": 9611,
-      "located": 8916,
+      "attempts": 9682,
+      "located": 8985,
       "locatedPct": 92.8,
-      "carries": 6578,
-      "gapped": 4603
+      "carries": 6626,
+      "gapped": 4639
     },
     "bands": [
       {
@@ -56435,6 +56435,180 @@
               "cpoe": 13.8
             }
           }
+        },
+        "00-0039910": {
+          "attempts": 210,
+          "cells": {
+            "left-behind": {
+              "n": 7,
+              "share": 3.3,
+              "thin": true
+            },
+            "left-short": {
+              "n": 42,
+              "share": 20,
+              "compPct": 71.4,
+              "ypa": 4.71,
+              "epa": -0.163,
+              "tdRate": 7.1,
+              "success": 47.6,
+              "cpoe": -0.3
+            },
+            "left-inter": {
+              "n": 9,
+              "share": 4.3,
+              "thin": true
+            },
+            "left-deep": {
+              "n": 9,
+              "share": 4.3,
+              "thin": true
+            },
+            "middle-behind": {
+              "n": 4,
+              "share": 1.9,
+              "thin": true
+            },
+            "middle-short": {
+              "n": 33,
+              "share": 15.7,
+              "compPct": 66.7,
+              "ypa": 6.73,
+              "epa": 0.101,
+              "tdRate": 12.1,
+              "success": 54.5,
+              "cpoe": -6.4
+            },
+            "middle-inter": {
+              "n": 13,
+              "share": 6.2,
+              "compPct": 92.3,
+              "ypa": 15.08,
+              "epa": 1.054,
+              "tdRate": 0,
+              "success": 92.3,
+              "cpoe": 23.6
+            },
+            "middle-deep": {
+              "n": 4,
+              "share": 1.9,
+              "thin": true
+            },
+            "right-behind": {
+              "n": 11,
+              "share": 5.2,
+              "compPct": 90.9,
+              "ypa": 7.91,
+              "epa": -0.296,
+              "tdRate": 0,
+              "success": 36.4,
+              "cpoe": 15.9
+            },
+            "right-short": {
+              "n": 47,
+              "share": 22.4,
+              "compPct": 76.6,
+              "ypa": 5.28,
+              "epa": 0.197,
+              "tdRate": 4.3,
+              "success": 53.2,
+              "cpoe": 15.4
+            },
+            "right-inter": {
+              "n": 16,
+              "share": 7.6,
+              "compPct": 50,
+              "ypa": 10.25,
+              "epa": 0.221,
+              "tdRate": 6.3,
+              "success": 50,
+              "cpoe": 20.3
+            },
+            "right-deep": {
+              "n": 15,
+              "share": 7.1,
+              "compPct": 40,
+              "ypa": 13.67,
+              "epa": 0.493,
+              "tdRate": 0,
+              "success": 40,
+              "cpoe": 5.8
+            }
+          },
+          "depth": {
+            "behind": {
+              "n": 22,
+              "share": 10.5,
+              "compPct": 72.7,
+              "ypa": 4.18,
+              "epa": -0.385,
+              "tdRate": 0,
+              "success": 27.3,
+              "cpoe": -2.3
+            },
+            "short": {
+              "n": 122,
+              "share": 58.1,
+              "compPct": 72.1,
+              "ypa": 5.48,
+              "epa": 0.047,
+              "tdRate": 7.4,
+              "success": 51.6,
+              "cpoe": 3.6
+            },
+            "inter": {
+              "n": 38,
+              "share": 18.1,
+              "compPct": 68.4,
+              "ypa": 12.39,
+              "epa": 0.716,
+              "tdRate": 2.6,
+              "success": 68.4,
+              "cpoe": 18.5
+            },
+            "deep": {
+              "n": 28,
+              "share": 13.3,
+              "compPct": 28.6,
+              "ypa": 9.57,
+              "epa": 0.097,
+              "tdRate": 0,
+              "success": 28.6,
+              "cpoe": -7
+            }
+          },
+          "side": {
+            "left": {
+              "n": 67,
+              "share": 31.9,
+              "compPct": 64.2,
+              "ypa": 5.6,
+              "epa": -0.029,
+              "tdRate": 4.5,
+              "success": 44.8,
+              "cpoe": -1.8
+            },
+            "middle": {
+              "n": 54,
+              "share": 25.7,
+              "compPct": 64.8,
+              "ypa": 7.78,
+              "epa": 0.227,
+              "tdRate": 7.4,
+              "success": 55.6,
+              "cpoe": -3.6
+            },
+            "right": {
+              "n": 89,
+              "share": 42.4,
+              "compPct": 67.4,
+              "ypa": 7.91,
+              "epa": 0.19,
+              "tdRate": 3.4,
+              "success": 48.3,
+              "cpoe": 14.4
+            }
+          }
         }
       },
       "receivers": {
@@ -57735,88 +57909,88 @@
           }
         },
         "00-0039337": {
-          "targets": 78,
+          "targets": 85,
           "depth": {
             "behind": {
-              "n": 9,
-              "share": 11.5,
-              "compPct": 88.9,
-              "ypa": 2,
-              "epa": -0.42,
+              "n": 11,
+              "share": 12.9,
+              "compPct": 90.9,
+              "ypa": 1.91,
+              "epa": -0.412,
               "tdRate": 0,
-              "success": 33.3,
-              "cpoe": 1.1
+              "success": 36.4,
+              "cpoe": 3.2
             },
             "short": {
-              "n": 33,
-              "share": 42.3,
-              "compPct": 81.8,
-              "ypa": 6.21,
-              "epa": 0.163,
+              "n": 35,
+              "share": 41.2,
+              "compPct": 82.9,
+              "ypa": 5.97,
+              "epa": 0.017,
               "tdRate": 0,
-              "success": 54.5,
-              "cpoe": 9.2
+              "success": 51.4,
+              "cpoe": 10.1
             },
             "inter": {
-              "n": 18,
-              "share": 23.1,
-              "compPct": 44.4,
-              "ypa": 6.72,
-              "epa": -0.155,
-              "tdRate": 5.6,
-              "success": 44.4,
-              "cpoe": -12.1
+              "n": 19,
+              "share": 22.4,
+              "compPct": 42.1,
+              "ypa": 6.37,
+              "epa": -0.182,
+              "tdRate": 5.3,
+              "success": 42.1,
+              "cpoe": -14.7
             },
             "deep": {
-              "n": 18,
-              "share": 23.1,
-              "compPct": 55.6,
-              "ypa": 16.89,
-              "epa": 1.074,
-              "tdRate": 5.6,
-              "success": 55.6,
-              "cpoe": 17.7
+              "n": 20,
+              "share": 23.5,
+              "compPct": 55,
+              "ypa": 17.05,
+              "epa": 1.026,
+              "tdRate": 5,
+              "success": 55,
+              "cpoe": 17.1
             }
           },
           "side": {
             "left": {
-              "n": 30,
-              "share": 38.5,
-              "compPct": 73.3,
-              "ypa": 6.87,
-              "epa": 0.083,
+              "n": 32,
+              "share": 37.6,
+              "compPct": 75,
+              "ypa": 7.5,
+              "epa": 0.119,
               "tdRate": 0,
-              "success": 43.3,
-              "cpoe": 6.4
+              "success": 43.8,
+              "cpoe": 8.1
             },
             "middle": {
-              "n": 17,
-              "share": 21.8,
-              "compPct": 76.5,
-              "ypa": 13.88,
-              "epa": 0.806,
-              "tdRate": 11.8,
-              "success": 76.5,
-              "cpoe": 16.2
+              "n": 18,
+              "share": 21.2,
+              "compPct": 77.8,
+              "ypa": 13.39,
+              "epa": 0.746,
+              "tdRate": 11.1,
+              "success": 72.2,
+              "cpoe": 16.8
             },
             "right": {
-              "n": 31,
-              "share": 39.7,
-              "compPct": 58.1,
-              "ypa": 6.65,
-              "epa": 0.063,
+              "n": 35,
+              "share": 41.2,
+              "compPct": 57.1,
+              "ypa": 6.03,
+              "epa": -0.118,
               "tdRate": 0,
-              "success": 41.9,
-              "cpoe": -1.8
+              "success": 40,
+              "cpoe": -3.1
             }
           }
         },
         "00-0037838": {
-          "targets": 69,
+          "targets": 80,
           "depth": {
             "behind": {
               "n": 10,
-              "share": 14.5,
+              "share": 12.5,
               "compPct": 70,
               "ypa": 3.7,
               "epa": -0.239,
@@ -57825,61 +57999,61 @@
               "cpoe": -13.7
             },
             "short": {
-              "n": 33,
-              "share": 47.8,
-              "compPct": 75.8,
-              "ypa": 4.76,
-              "epa": 0.28,
-              "tdRate": 9.1,
-              "success": 54.5,
-              "cpoe": 0.7
+              "n": 43,
+              "share": 53.8,
+              "compPct": 76.7,
+              "ypa": 5.07,
+              "epa": 0.244,
+              "tdRate": 7,
+              "success": 55.8,
+              "cpoe": 1
             },
             "inter": {
-              "n": 20,
-              "share": 29,
-              "compPct": 60,
-              "ypa": 9.8,
-              "epa": 0.299,
-              "tdRate": 5,
-              "success": 60,
-              "cpoe": 3.6
+              "n": 21,
+              "share": 26.3,
+              "compPct": 61.9,
+              "ypa": 12.48,
+              "epa": 0.594,
+              "tdRate": 9.5,
+              "success": 61.9,
+              "cpoe": 5.2
             },
             "deep": {
               "n": 6,
-              "share": 8.7,
+              "share": 7.5,
               "thin": true
             }
           },
           "side": {
             "left": {
-              "n": 25,
-              "share": 36.2,
-              "compPct": 68,
-              "ypa": 7.2,
-              "epa": 0.144,
-              "tdRate": 4,
-              "success": 44,
-              "cpoe": -1
+              "n": 27,
+              "share": 33.8,
+              "compPct": 66.7,
+              "ypa": 6.89,
+              "epa": 0.114,
+              "tdRate": 3.7,
+              "success": 40.7,
+              "cpoe": -2.9
             },
             "middle": {
-              "n": 21,
-              "share": 30.4,
-              "compPct": 66.7,
-              "ypa": 5.57,
-              "epa": 0.216,
-              "tdRate": 9.5,
-              "success": 66.7,
-              "cpoe": -2.3
+              "n": 28,
+              "share": 35,
+              "compPct": 75,
+              "ypa": 8.29,
+              "epa": 0.511,
+              "tdRate": 10.7,
+              "success": 71.4,
+              "cpoe": 4
             },
             "right": {
-              "n": 23,
-              "share": 33.3,
-              "compPct": 65.2,
-              "ypa": 6.57,
-              "epa": 0.393,
-              "tdRate": 13,
-              "success": 47.8,
-              "cpoe": 0.4
+              "n": 25,
+              "share": 31.3,
+              "compPct": 64,
+              "ypa": 6.28,
+              "epa": 0.301,
+              "tdRate": 12,
+              "success": 48,
+              "cpoe": -1.6
             }
           }
         },
@@ -59231,6 +59405,73 @@
             }
           }
         },
+        "00-0031588": {
+          "targets": 59,
+          "depth": {
+            "behind": {
+              "n": 1,
+              "share": 1.7,
+              "thin": true
+            },
+            "short": {
+              "n": 42,
+              "share": 71.2,
+              "compPct": 69,
+              "ypa": 5.69,
+              "epa": 0.187,
+              "tdRate": 11.9,
+              "success": 52.4,
+              "cpoe": -1.9
+            },
+            "inter": {
+              "n": 9,
+              "share": 15.3,
+              "compPct": 55.6,
+              "ypa": 9.44,
+              "epa": 0.318,
+              "tdRate": 0,
+              "success": 55.6,
+              "cpoe": -3.5
+            },
+            "deep": {
+              "n": 7,
+              "share": 11.9,
+              "thin": true
+            }
+          },
+          "side": {
+            "left": {
+              "n": 19,
+              "share": 32.2,
+              "compPct": 73.7,
+              "ypa": 4.89,
+              "epa": -0.039,
+              "tdRate": 10.5,
+              "success": 57.9,
+              "cpoe": 6.8
+            },
+            "middle": {
+              "n": 15,
+              "share": 25.4,
+              "compPct": 53.3,
+              "ypa": 7.4,
+              "epa": 0.314,
+              "tdRate": 13.3,
+              "success": 46.7,
+              "cpoe": -17.2
+            },
+            "right": {
+              "n": 25,
+              "share": 42.4,
+              "compPct": 56,
+              "ypa": 7.28,
+              "epa": 0.215,
+              "tdRate": 8,
+              "success": 44,
+              "cpoe": -2.6
+            }
+          }
+        },
         "00-0040867": {
           "targets": 54,
           "depth": {
@@ -60480,6 +60721,108 @@
               "success": 43.5,
               "stuffPct": 12.2,
               "tenPct": 10.4,
+              "td": 0
+            }
+          }
+        },
+        "00-0040715": {
+          "carries": 116,
+          "gaps": {
+            "left-end": {
+              "n": 9,
+              "share": 7.8,
+              "ypc": 5.89,
+              "epa": 0.387,
+              "success": 66.7,
+              "stuffPct": 0,
+              "tenPct": 22.2,
+              "td": 1
+            },
+            "left-tackle": {
+              "n": 11,
+              "share": 9.5,
+              "ypc": 3.45,
+              "epa": -0.216,
+              "success": 27.3,
+              "stuffPct": 9.1,
+              "tenPct": 0,
+              "td": 0
+            },
+            "left-guard": {
+              "n": 19,
+              "share": 16.4,
+              "ypc": 5.42,
+              "epa": 0.046,
+              "success": 42.1,
+              "stuffPct": 0,
+              "tenPct": 10.5,
+              "td": 0
+            },
+            "middle": {
+              "n": 37,
+              "share": 31.9,
+              "ypc": 3.92,
+              "epa": -0.187,
+              "success": 32.4,
+              "stuffPct": 13.5,
+              "tenPct": 5.4,
+              "td": 0
+            },
+            "right-guard": {
+              "n": 18,
+              "share": 15.5,
+              "ypc": 4.72,
+              "epa": 0.096,
+              "success": 44.4,
+              "stuffPct": 11.1,
+              "tenPct": 11.1,
+              "td": 2
+            },
+            "right-tackle": {
+              "n": 12,
+              "share": 10.3,
+              "ypc": 1.92,
+              "epa": -0.545,
+              "success": 25,
+              "stuffPct": 33.3,
+              "tenPct": 0,
+              "td": 0
+            },
+            "right-end": {
+              "n": 10,
+              "share": 8.6,
+              "ypc": 4.9,
+              "epa": 0.112,
+              "success": 40,
+              "stuffPct": 40,
+              "tenPct": 30,
+              "td": 1
+            }
+          },
+          "situations": {
+            "goalline": {
+              "n": 4,
+              "share": 3.4,
+              "thin": true
+            },
+            "shortYardage": {
+              "n": 8,
+              "share": 6.9,
+              "ypc": 6.38,
+              "epa": 0.248,
+              "success": 75,
+              "stuffPct": 25,
+              "tenPct": 25,
+              "td": 0
+            },
+            "openField": {
+              "n": 98,
+              "share": 84.5,
+              "ypc": 4.47,
+              "epa": -0.082,
+              "success": 37.8,
+              "stuffPct": 11.2,
+              "tenPct": 9.2,
               "td": 0
             }
           }
