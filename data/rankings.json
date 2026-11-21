@@ -134,9 +134,9 @@
       "caveats": "Three seasons of game logs, and only players who played 8+ games in consecutive seasons. That is survivorship: a player who lost his job or his season entirely leaves the sample, so the real downside is likely worse than the floor shown."
     },
     "builtBy": "scripts/build-rankings.js",
-    "builtAt": "2026-11-20T19:04:02.323Z",
+    "builtAt": "2026-11-21T17:58:43.113Z",
     "overallMethod": "Derived from the hand-ordered positional tabs. Each player inherits the projected median of the slot he was ranked into, then VORP is taken against replacement level. Ordering is the analyst's; the replacement math is the model's.",
-    "availabilityMethod": "The missed-time case is a different downside from the floor beside it. The floor is a cold season played out in full; this is a normal season cut short. It holds the projected per-game rate flat and applies it to a low-availability year. League-wide that year is 11 of 17 games — the 15th percentile of 209 player-seasons across 2024–2025, the same percentile the projection set uses for its floor — then scaled by how available the player himself has been against the league average of 86%. It counts every missed game regardless of cause, suspensions included, because the question is how often he was not in your lineup. The per-game rate is deliberately NOT reduced: this prices availability only, never diminished play on return. Ordering is untouched — it moves the downside, never the rank.",
+    "availabilityMethod": "The missed-time case is a different downside from the floor beside it. The floor is a cold season played out in full; this is a normal season cut short. It holds the projected per-game rate flat and applies it to a low-availability year. League-wide that year is 12 of 17 games — the 15th percentile of 207 player-seasons across 2024–2025, the same percentile the projection set uses for its floor — then scaled by how available the player himself has been against the league average of 86%. It counts every missed game regardless of cause, suspensions included, because the question is how often he was not in your lineup. The per-game rate is deliberately NOT reduced: this prices availability only, never diminished play on return. Ordering is untouched — it moves the downside, never the rank.",
     "availabilityCaveat": "A record of one or two seasons is too short to read a player-specific floor from, so those fall back to the league figure. A player who is not currently healthy is flagged, not adjusted: history cannot see the knock he is carrying now, and a games-missed number inferred from a one-word status would be invented.",
     "baselines": {
       "qb": {
@@ -195,9 +195,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 268,
+        "floor": 291,
         "statusFlag": null
       }
     },
@@ -222,9 +222,9 @@
           13
         ],
         "worst": 13,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league",
-        "floor": 242,
+        "floor": 264,
         "statusFlag": "IR (Thumb)"
       }
     },
@@ -249,9 +249,9 @@
           7
         ],
         "worst": 7,
-        "floorGames": 9,
+        "floorGames": 10,
         "basis": "below-league",
-        "floor": 190,
+        "floor": 211,
         "statusFlag": null
       }
     },
@@ -276,9 +276,9 @@
           17
         ],
         "worst": 13,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league",
-        "floor": 226,
+        "floor": 246,
         "statusFlag": "Out (Ankle)"
       }
     },
@@ -303,9 +303,9 @@
           8
         ],
         "worst": 8,
-        "floorGames": 9,
+        "floorGames": 10,
         "basis": "below-league",
-        "floor": 184,
+        "floor": 204,
         "statusFlag": null
       }
     },
@@ -330,9 +330,9 @@
           16
         ],
         "worst": 15,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 248,
+        "floor": 269,
         "statusFlag": "IR (Calf)"
       }
     },
@@ -357,9 +357,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 227,
+        "floor": 246,
         "statusFlag": null
       }
     },
@@ -384,9 +384,9 @@
           17
         ],
         "worst": 10,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 193,
+        "floor": 212,
         "statusFlag": null
       }
     },
@@ -411,9 +411,9 @@
           5
         ],
         "worst": 5,
-        "floorGames": 8,
+        "floorGames": 9,
         "basis": "below-league",
-        "floor": 151,
+        "floor": 169,
         "statusFlag": "Out (Hamstring)"
       }
     },
@@ -438,9 +438,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 246,
+        "floor": 265,
         "statusFlag": null
       }
     },
@@ -465,9 +465,9 @@
           17
         ],
         "worst": 8,
-        "floorGames": 9,
+        "floorGames": 10,
         "basis": "below-league",
-        "floor": 169,
+        "floor": 188,
         "statusFlag": null
       }
     },
@@ -490,9 +490,9 @@
           14
         ],
         "worst": 14,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league-short-record",
-        "floor": 230,
+        "floor": 251,
         "statusFlag": "IR (Knee - Meniscus)"
       }
     },
@@ -517,9 +517,9 @@
           9
         ],
         "worst": 9,
-        "floorGames": 9,
+        "floorGames": 10,
         "basis": "below-league",
-        "floor": 166,
+        "floor": 185,
         "statusFlag": null
       }
     },
@@ -544,9 +544,9 @@
           17
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 202,
+        "floor": 219,
         "statusFlag": null
       }
     },
@@ -571,9 +571,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 226,
+        "floor": 244,
         "statusFlag": null
       }
     },
@@ -598,9 +598,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 240,
+        "floor": 259,
         "statusFlag": "Questionable (Lower Leg)"
       }
     },
@@ -625,9 +625,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 219,
+        "floor": 236,
         "statusFlag": null
       }
     },
@@ -652,9 +652,9 @@
           14
         ],
         "worst": 14,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league",
-        "floor": 201,
+        "floor": 220,
         "statusFlag": null
       }
     },
@@ -679,9 +679,9 @@
           15
         ],
         "worst": 15,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league",
-        "floor": 175,
+        "floor": 191,
         "statusFlag": null
       }
     },
@@ -714,9 +714,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 241,
+        "floor": 259,
         "statusFlag": null
       }
     },
@@ -741,9 +741,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 238,
+        "floor": 256,
         "statusFlag": null
       }
     },
@@ -768,9 +768,9 @@
           17
         ],
         "worst": 4,
-        "floorGames": 8,
+        "floorGames": 9,
         "basis": "below-league",
-        "floor": 141,
+        "floor": 159,
         "statusFlag": null
       }
     },
@@ -795,9 +795,9 @@
           17
         ],
         "worst": 14,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 210,
+        "floor": 228,
         "statusFlag": null
       }
     },
@@ -822,9 +822,9 @@
           17
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 179,
+        "floor": 194,
         "statusFlag": null
       }
     },
@@ -849,9 +849,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 201,
+        "floor": 218,
         "statusFlag": null
       }
     },
@@ -874,9 +874,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league-short-record",
-        "floor": 172,
+        "floor": 188,
         "statusFlag": null
       }
     },
@@ -901,10 +901,10 @@
           17
         ],
         "worst": 11,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 148,
-        "statusFlag": "Questionable (Groin)"
+        "floor": 162,
+        "statusFlag": "Out (Groin)"
       }
     },
     {
@@ -928,9 +928,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 205,
+        "floor": 222,
         "statusFlag": "IR (Knee - ACL)"
       }
     },
@@ -955,9 +955,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 189,
+        "floor": 203,
         "statusFlag": null
       }
     },
@@ -980,9 +980,9 @@
           9
         ],
         "worst": 9,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league-short-record",
-        "floor": 162,
+        "floor": 176,
         "statusFlag": null
       }
     },
@@ -1007,9 +1007,9 @@
           17
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 169,
+        "floor": 183,
         "statusFlag": null
       }
     },
@@ -1034,9 +1034,9 @@
           15
         ],
         "worst": 15,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 169,
+        "floor": 183,
         "statusFlag": "Out (Finger)"
       }
     },
@@ -1061,9 +1061,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 144,
+        "floor": 156,
         "statusFlag": null
       }
     },
@@ -1088,9 +1088,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 154,
+        "floor": 167,
         "statusFlag": null
       }
     },
@@ -1126,9 +1126,9 @@
           10
         ],
         "worst": 10,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 126,
+        "floor": 138,
         "statusFlag": null
       }
     },
@@ -1151,9 +1151,9 @@
           8
         ],
         "worst": 8,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league-short-record",
-        "floor": 146,
+        "floor": 160,
         "statusFlag": null
       }
     },
@@ -1176,10 +1176,10 @@
           15
         ],
         "worst": 15,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league-short-record",
-        "floor": 127,
-        "statusFlag": "Questionable (Ankle)"
+        "floor": 138,
+        "statusFlag": null
       }
     },
     {
@@ -1203,9 +1203,9 @@
           17
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 151,
+        "floor": 164,
         "statusFlag": null
       }
     },
@@ -1228,9 +1228,9 @@
           14
         ],
         "worst": 14,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league-short-record",
-        "floor": 128,
+        "floor": 140,
         "statusFlag": null
       }
     },
@@ -1255,9 +1255,9 @@
           17
         ],
         "worst": 15,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 161,
+        "floor": 174,
         "statusFlag": null
       }
     },
@@ -1282,9 +1282,9 @@
           17
         ],
         "worst": 14,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 150,
+        "floor": 162,
         "statusFlag": null
       }
     },
@@ -1309,9 +1309,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 160,
+        "floor": 173,
         "statusFlag": null
       }
     }
@@ -1338,9 +1338,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 186,
+        "floor": 202,
         "statusFlag": null
       }
     },
@@ -1365,9 +1365,9 @@
           16
         ],
         "worst": 11,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 150,
+        "floor": 165,
         "statusFlag": "IR (Knee - MCL)"
       }
     },
@@ -1392,9 +1392,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 190,
+        "floor": 204,
         "statusFlag": null
       }
     },
@@ -1419,9 +1419,9 @@
           13
         ],
         "worst": 13,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 148,
+        "floor": 163,
         "statusFlag": null
       }
     },
@@ -1446,9 +1446,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 187,
+        "floor": 202,
         "statusFlag": null
       }
     },
@@ -1473,9 +1473,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 184,
+        "floor": 198,
         "statusFlag": null
       }
     },
@@ -1500,9 +1500,9 @@
           15
         ],
         "worst": 13,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 135,
+        "floor": 149,
         "statusFlag": "Out (Hamstring)"
       }
     },
@@ -1527,9 +1527,9 @@
           17
         ],
         "worst": 14,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 162,
+        "floor": 176,
         "statusFlag": null
       }
     },
@@ -1554,9 +1554,9 @@
           15
         ],
         "worst": 12,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 131,
+        "floor": 144,
         "statusFlag": null
       }
     },
@@ -1581,9 +1581,9 @@
           12
         ],
         "worst": 12,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league",
-        "floor": 153,
+        "floor": 167,
         "statusFlag": "Questionable (Head)"
       }
     },
@@ -1608,9 +1608,9 @@
           4
         ],
         "worst": 4,
-        "floorGames": 7,
+        "floorGames": 8,
         "basis": "below-league",
-        "floor": 95,
+        "floor": 108,
         "statusFlag": null
       }
     },
@@ -1635,9 +1635,9 @@
           17
         ],
         "worst": 13,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league",
-        "floor": 135,
+        "floor": 148,
         "statusFlag": null
       }
     },
@@ -1662,9 +1662,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 158,
+        "floor": 170,
         "statusFlag": null
       }
     },
@@ -1687,9 +1687,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league-short-record",
-        "floor": 135,
+        "floor": 148,
         "statusFlag": null
       }
     },
@@ -1714,9 +1714,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 143,
+        "floor": 154,
         "statusFlag": "Questionable (Back)"
       }
     },
@@ -1741,9 +1741,9 @@
           16
         ],
         "worst": 8,
-        "floorGames": 9,
+        "floorGames": 10,
         "basis": "below-league",
-        "floor": 110,
+        "floor": 122,
         "statusFlag": null
       }
     },
@@ -1768,10 +1768,10 @@
           16
         ],
         "worst": 15,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 140,
-        "statusFlag": "Questionable (Concussion)"
+        "floor": 151,
+        "statusFlag": null
       }
     },
     {
@@ -1822,9 +1822,9 @@
           15
         ],
         "worst": 12,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 126,
+        "floor": 138,
         "statusFlag": null
       }
     },
@@ -1849,9 +1849,9 @@
           7
         ],
         "worst": 7,
-        "floorGames": 9,
+        "floorGames": 10,
         "basis": "below-league",
-        "floor": 107,
+        "floor": 119,
         "statusFlag": null
       }
     },
@@ -1876,9 +1876,9 @@
           10
         ],
         "worst": 10,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 118,
+        "floor": 130,
         "statusFlag": "IR (Knee)"
       }
     },
@@ -1903,9 +1903,9 @@
           8
         ],
         "worst": 8,
-        "floorGames": 8,
+        "floorGames": 9,
         "basis": "below-league",
-        "floor": 89,
+        "floor": 101,
         "statusFlag": "Questionable (Achilles)"
       }
     },
@@ -1928,9 +1928,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league-short-record",
-        "floor": 127,
+        "floor": 138,
         "statusFlag": null
       }
     },
@@ -1955,9 +1955,9 @@
           17
         ],
         "worst": 15,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 136,
+        "floor": 147,
         "statusFlag": null
       }
     },
@@ -1982,9 +1982,9 @@
           10
         ],
         "worst": 10,
-        "floorGames": 9,
+        "floorGames": 10,
         "basis": "below-league",
-        "floor": 103,
+        "floor": 114,
         "statusFlag": null
       }
     },
@@ -2007,9 +2007,9 @@
           15
         ],
         "worst": 15,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league-short-record",
-        "floor": 126,
+        "floor": 137,
         "statusFlag": null
       }
     },
@@ -2034,9 +2034,9 @@
           14
         ],
         "worst": 14,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 111,
+        "floor": 122,
         "statusFlag": "IR (Hamstring)"
       }
     },
@@ -2061,9 +2061,9 @@
           15
         ],
         "worst": 12,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 109,
+        "floor": 120,
         "statusFlag": null
       }
     },
@@ -2088,9 +2088,9 @@
           15
         ],
         "worst": 15,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league",
-        "floor": 124,
+        "floor": 136,
         "statusFlag": null
       }
     },
@@ -2130,9 +2130,9 @@
           12
         ],
         "worst": 12,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league",
-        "floor": 136,
+        "floor": 148,
         "statusFlag": null
       }
     }
@@ -2159,9 +2159,9 @@
           12
         ],
         "worst": 12,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league",
-        "floor": 135,
+        "floor": 147,
         "statusFlag": "Questionable (Ankle)"
       }
     },
@@ -2186,9 +2186,9 @@
           17
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 150,
+        "floor": 163,
         "statusFlag": null
       }
     },
@@ -2211,9 +2211,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league-short-record",
-        "floor": 120,
+        "floor": 131,
         "statusFlag": null
       }
     },
@@ -2238,9 +2238,9 @@
           8
         ],
         "worst": 8,
-        "floorGames": 9,
+        "floorGames": 10,
         "basis": "below-league",
-        "floor": 96,
+        "floor": 107,
         "statusFlag": null
       }
     },
@@ -2263,9 +2263,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league-short-record",
-        "floor": 114,
+        "floor": 124,
         "statusFlag": null
       }
     },
@@ -2290,9 +2290,9 @@
           9
         ],
         "worst": 9,
-        "floorGames": 9,
+        "floorGames": 10,
         "basis": "below-league",
-        "floor": 89,
+        "floor": 99,
         "statusFlag": null
       }
     },
@@ -2315,9 +2315,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league-short-record",
-        "floor": 100,
+        "floor": 109,
         "statusFlag": null
       }
     },
@@ -2342,9 +2342,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 131,
+        "floor": 141,
         "statusFlag": null
       }
     },
@@ -2369,9 +2369,9 @@
           11
         ],
         "worst": 11,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 94,
+        "floor": 103,
         "statusFlag": null
       }
     },
@@ -2396,9 +2396,9 @@
           12
         ],
         "worst": 12,
-        "floorGames": 9,
+        "floorGames": 10,
         "basis": "below-league",
-        "floor": 82,
+        "floor": 91,
         "statusFlag": "Doubtful (Thumb)"
       }
     },
@@ -2421,10 +2421,10 @@
           15
         ],
         "worst": 10,
-        "floorGames": 9,
+        "floorGames": 10,
         "basis": "below-league",
-        "floor": 64,
-        "statusFlag": "Questionable (Wrist)"
+        "floor": 71,
+        "statusFlag": null
       }
     },
     {
@@ -2448,9 +2448,9 @@
           17
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 105,
+        "floor": 114,
         "statusFlag": null
       }
     },
@@ -2473,9 +2473,9 @@
           12
         ],
         "worst": 12,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 65,
+        "floor": 71,
         "statusFlag": null
       }
     },
@@ -2506,9 +2506,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 99,
+        "floor": 106,
         "statusFlag": null
       }
     },
@@ -2541,9 +2541,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 241,
+        "floor": 259,
         "statusFlag": null
       },
       "ownPpg": 18.5,
@@ -2570,9 +2570,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 238,
+        "floor": 256,
         "statusFlag": null
       },
       "ownPpg": 18.3,
@@ -2599,9 +2599,9 @@
           17
         ],
         "worst": 4,
-        "floorGames": 8,
+        "floorGames": 9,
         "basis": "below-league",
-        "floor": 141,
+        "floor": 159,
         "statusFlag": null
       },
       "ownPpg": 17.6,
@@ -2628,9 +2628,9 @@
           17
         ],
         "worst": 14,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 210,
+        "floor": 228,
         "statusFlag": null
       },
       "ownPpg": 17.5,
@@ -2657,9 +2657,9 @@
           17
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 179,
+        "floor": 194,
         "statusFlag": null
       },
       "ownPpg": 14.9,
@@ -2686,9 +2686,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 186,
+        "floor": 202,
         "statusFlag": null
       },
       "ownPpg": 15.5,
@@ -2715,9 +2715,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 201,
+        "floor": 218,
         "statusFlag": null
       },
       "ownPpg": 16.8,
@@ -2744,9 +2744,9 @@
           16
         ],
         "worst": 11,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 150,
+        "floor": 165,
         "statusFlag": "IR (Knee - MCL)"
       },
       "ownPpg": 15,
@@ -2773,9 +2773,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 190,
+        "floor": 204,
         "statusFlag": null
       },
       "ownPpg": 14.6,
@@ -2802,9 +2802,9 @@
           13
         ],
         "worst": 13,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 148,
+        "floor": 163,
         "statusFlag": null
       },
       "ownPpg": 14.8,
@@ -2831,9 +2831,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 187,
+        "floor": 202,
         "statusFlag": null
       },
       "ownPpg": 14.4,
@@ -2858,9 +2858,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league-short-record",
-        "floor": 172,
+        "floor": 188,
         "statusFlag": null
       },
       "ownPpg": 15.6,
@@ -2887,9 +2887,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 184,
+        "floor": 198,
         "statusFlag": null
       },
       "ownPpg": 14.1,
@@ -2916,9 +2916,9 @@
           15
         ],
         "worst": 13,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 135,
+        "floor": 149,
         "statusFlag": "Out (Hamstring)"
       },
       "ownPpg": 13.5,
@@ -2945,10 +2945,10 @@
           17
         ],
         "worst": 11,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 148,
-        "statusFlag": "Questionable (Groin)"
+        "floor": 162,
+        "statusFlag": "Out (Groin)"
       },
       "ownPpg": 14.8,
       "ownMedian": 251
@@ -2974,9 +2974,9 @@
           17
         ],
         "worst": 14,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 162,
+        "floor": 176,
         "statusFlag": null
       },
       "ownPpg": 13.5,
@@ -3003,9 +3003,9 @@
           15
         ],
         "worst": 12,
-        "floorGames": 10,
+        "floorGames": 11,
         "basis": "below-league",
-        "floor": 131,
+        "floor": 144,
         "statusFlag": null
       },
       "ownPpg": 13.1,
@@ -3032,9 +3032,9 @@
           12
         ],
         "worst": 12,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league",
-        "floor": 153,
+        "floor": 167,
         "statusFlag": "Questionable (Head)"
       },
       "ownPpg": 13.9,
@@ -3061,9 +3061,9 @@
           16
         ],
         "worst": 16,
-        "floorGames": 12,
+        "floorGames": 13,
         "basis": "above-league",
-        "floor": 205,
+        "floor": 222,
         "statusFlag": "IR (Knee - ACL)"
       },
       "ownPpg": 17.1,
@@ -3090,9 +3090,9 @@
           17
         ],
         "worst": 17,
-        "floorGames": 13,
+        "floorGames": 14,
         "basis": "above-league",
-        "floor": 189,
+        "floor": 203,
         "statusFlag": null
       },
       "ownPpg": 14.5,
@@ -3117,9 +3117,9 @@
           9
         ],
         "worst": 9,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league-short-record",
-        "floor": 162,
+        "floor": 176,
         "statusFlag": null
       },
       "ownPpg": 14.7,
@@ -3146,9 +3146,9 @@
           4
         ],
         "worst": 4,
-        "floorGames": 7,
+        "floorGames": 8,
         "basis": "below-league",
-        "floor": 95,
+        "floor": 108,
         "statusFlag": null
       },
       "ownPpg": 13.5,
@@ -3175,9 +3175,9 @@
           17
         ],
         "worst": 13,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league",
-        "floor": 135,
+        "floor": 148,
         "statusFlag": null
       },
       "ownPpg": 12.3,
@@ -3204,9 +3204,9 @@
           12
         ],
         "worst": 12,
-        "floorGames": 11,
+        "floorGames": 12,
         "basis": "league",
-        "floor": 135,
+        "floor": 147,
         "statusFlag": "Questionable (Ankle)"
       },
       "ownPpg": 12.2,
