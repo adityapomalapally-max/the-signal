@@ -1,7 +1,7 @@
 {
   "meta": {
     "builtBy": "scripts/fetch-advstats.js",
-    "builtAt": "2026-11-22T18:23:51.986Z",
+    "builtAt": "2026-11-23T22:31:59.869Z",
     "seasons": [
       2024,
       2025,
@@ -16,7 +16,7 @@
     ],
     "defenseNote": "aggregated across every charted defender on the team; rates recomputed from totals rather than averaged across players, so a nickel corner's 12 targets do not weigh the same as a No.1 corner's season",
     "coverage": {
-      "players": 318,
+      "players": 317,
       "of": 351
     }
   },
@@ -5539,6 +5539,85 @@
         }
       }
     },
+    "legette": {
+      "name": "Xavier Legette",
+      "pos": "WR",
+      "seasons": {
+        "2024": {
+          "receiving": {
+            "targets": 84,
+            "rec": 49,
+            "yards": 497,
+            "firstDowns": 27,
+            "yardsBeforeCatch": 385,
+            "ybcPerRec": 7.9,
+            "yardsAfterCatch": 112,
+            "yacPerRec": 2.3,
+            "aDOT": 12.3,
+            "brokenTackles": 2,
+            "recPerBrokenTackle": 24.5,
+            "drops": 7,
+            "dropPct": 0.083,
+            "passerRatingWhenTargeted": 86.3
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 24,
+            "firstDowns": 2,
+            "yardsBeforeContact": 18,
+            "ybcPerAttempt": 3,
+            "yardsAfterContact": 6,
+            "yacPerAttempt": 1,
+            "brokenTackles": 1,
+            "attPerBrokenTackle": 6
+          }
+        },
+        "2025": {
+          "receiving": {
+            "targets": 64,
+            "rec": 35,
+            "yards": 363,
+            "firstDowns": 18,
+            "yardsBeforeCatch": 288,
+            "ybcPerRec": 8.2,
+            "yardsAfterCatch": 75,
+            "yacPerRec": 2.1,
+            "aDOT": 9.6,
+            "brokenTackles": 0,
+            "drops": 2,
+            "dropPct": 0.031,
+            "passerRatingWhenTargeted": 67.4
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 0,
+            "firstDowns": 0,
+            "yardsBeforeContact": 0,
+            "ybcPerAttempt": 0,
+            "yardsAfterContact": 0,
+            "yacPerAttempt": 0,
+            "brokenTackles": 0
+          }
+        },
+        "2026": {
+          "receiving": {
+            "targets": 6,
+            "rec": 2,
+            "yards": 64,
+            "firstDowns": 1,
+            "yardsBeforeCatch": 54,
+            "ybcPerRec": 27,
+            "yardsAfterCatch": 10,
+            "yacPerRec": 5,
+            "aDOT": 16.2,
+            "brokenTackles": 0,
+            "drops": 1,
+            "dropPct": 0.167,
+            "passerRatingWhenTargeted": 74.3
+          }
+        }
+      }
+    },
     "conner": {
       "name": "James Conner",
       "pos": "RB",
@@ -8774,86 +8853,6 @@
         }
       }
     },
-    "shepard": {
-      "name": "Sterling Shepard",
-      "pos": "WR",
-      "seasons": {
-        "2024": {
-          "receiving": {
-            "targets": 51,
-            "rec": 32,
-            "yards": 334,
-            "firstDowns": 16,
-            "yardsBeforeCatch": 235,
-            "ybcPerRec": 7.3,
-            "yardsAfterCatch": 99,
-            "yacPerRec": 3.1,
-            "aDOT": 9.3,
-            "brokenTackles": 1,
-            "recPerBrokenTackle": 32,
-            "drops": 4,
-            "dropPct": 0.078,
-            "passerRatingWhenTargeted": 88.2
-          },
-          "rushing": {
-            "attempts": 8,
-            "yards": 69,
-            "firstDowns": 4,
-            "yardsBeforeContact": 48,
-            "ybcPerAttempt": 6,
-            "yardsAfterContact": 21,
-            "yacPerAttempt": 2.6,
-            "brokenTackles": 1,
-            "attPerBrokenTackle": 8
-          }
-        },
-        "2025": {
-          "receiving": {
-            "targets": 53,
-            "rec": 39,
-            "yards": 371,
-            "firstDowns": 18,
-            "yardsBeforeCatch": 222,
-            "ybcPerRec": 5.7,
-            "yardsAfterCatch": 149,
-            "yacPerRec": 3.8,
-            "aDOT": 8.5,
-            "brokenTackles": 2,
-            "recPerBrokenTackle": 19.5,
-            "drops": 0,
-            "dropPct": 0,
-            "passerRatingWhenTargeted": 98.9
-          },
-          "rushing": {
-            "attempts": 4,
-            "yards": 19,
-            "firstDowns": 1,
-            "yardsBeforeContact": 17,
-            "ybcPerAttempt": 4.3,
-            "yardsAfterContact": 2,
-            "yacPerAttempt": 0.5,
-            "brokenTackles": 0
-          }
-        },
-        "2026": {
-          "receiving": {
-            "targets": 1,
-            "rec": 1,
-            "yards": 3,
-            "firstDowns": 0,
-            "yardsBeforeCatch": 2,
-            "ybcPerRec": 2,
-            "yardsAfterCatch": 1,
-            "yacPerRec": 1,
-            "aDOT": 2,
-            "brokenTackles": 0,
-            "drops": 0,
-            "dropPct": 0,
-            "passerRatingWhenTargeted": 79.2
-          }
-        }
-      }
-    },
     "washington": {
       "name": "Parker Washington",
       "pos": "WR",
@@ -9922,30 +9921,6 @@
         }
       }
     },
-    "aiyuk": {
-      "name": "Brandon Aiyuk",
-      "pos": "WR",
-      "seasons": {
-        "2024": {
-          "receiving": {
-            "targets": 47,
-            "rec": 25,
-            "yards": 374,
-            "firstDowns": 19,
-            "yardsBeforeCatch": 267,
-            "ybcPerRec": 10.7,
-            "yardsAfterCatch": 107,
-            "yacPerRec": 4.3,
-            "aDOT": 11.9,
-            "brokenTackles": 2,
-            "recPerBrokenTackle": 12.5,
-            "drops": 4,
-            "dropPct": 0.085,
-            "passerRatingWhenTargeted": 61.8
-          }
-        }
-      }
-    },
     "rice": {
       "name": "Rashee Rice",
       "pos": "WR",
@@ -10855,29 +10830,6 @@
             "yardsAfterContact": 1,
             "yacPerAttempt": 1,
             "brokenTackles": 0
-          }
-        }
-      }
-    },
-    "vannett": {
-      "name": "Nick Vannett",
-      "pos": "TE",
-      "seasons": {
-        "2024": {
-          "receiving": {
-            "targets": 20,
-            "rec": 17,
-            "yards": 135,
-            "firstDowns": 7,
-            "yardsBeforeCatch": 25,
-            "ybcPerRec": 1.5,
-            "yardsAfterCatch": 110,
-            "yacPerRec": 6.5,
-            "aDOT": 1.1,
-            "brokenTackles": 0,
-            "drops": 0,
-            "dropPct": 0,
-            "passerRatingWhenTargeted": 113.5
           }
         }
       }
@@ -13089,6 +13041,79 @@
             "drops": 0,
             "dropPct": 0,
             "passerRatingWhenTargeted": 112.5
+          }
+        }
+      }
+    },
+    "vaki": {
+      "name": "Sione Vaki",
+      "pos": "RB",
+      "seasons": {
+        "2024": {
+          "receiving": {
+            "targets": 3,
+            "rec": 3,
+            "yards": 37,
+            "firstDowns": 2,
+            "yardsBeforeCatch": 17,
+            "ybcPerRec": 5.7,
+            "yardsAfterCatch": 20,
+            "yacPerRec": 6.7,
+            "aDOT": 5.7,
+            "brokenTackles": 0,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 118.1
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 14,
+            "firstDowns": 0,
+            "yardsBeforeContact": 8,
+            "ybcPerAttempt": 1.3,
+            "yardsAfterContact": 6,
+            "yacPerAttempt": 1,
+            "brokenTackles": 0
+          }
+        },
+        "2025": {
+          "rushing": {
+            "attempts": 1,
+            "yards": 4,
+            "firstDowns": 0,
+            "yardsBeforeContact": 2,
+            "ybcPerAttempt": 2,
+            "yardsAfterContact": 2,
+            "yacPerAttempt": 2,
+            "brokenTackles": 0
+          }
+        },
+        "2026": {
+          "receiving": {
+            "targets": 3,
+            "rec": 3,
+            "yards": 35,
+            "firstDowns": 2,
+            "yardsBeforeCatch": 8,
+            "ybcPerRec": 2.7,
+            "yardsAfterCatch": 27,
+            "yacPerRec": 9,
+            "aDOT": 2.7,
+            "brokenTackles": 1,
+            "recPerBrokenTackle": 3,
+            "drops": 0,
+            "dropPct": 0,
+            "passerRatingWhenTargeted": 115.3
+          },
+          "rushing": {
+            "attempts": 9,
+            "yards": 40,
+            "firstDowns": 2,
+            "yardsBeforeContact": 27,
+            "ybcPerAttempt": 3,
+            "yardsAfterContact": 13,
+            "yacPerAttempt": 1.4,
+            "brokenTackles": 0
           }
         }
       }
@@ -17039,29 +17064,6 @@
         }
       }
     },
-    "runyon": {
-      "name": "Carter Runyon",
-      "pos": "TE",
-      "seasons": {
-        "2025": {
-          "receiving": {
-            "targets": 1,
-            "rec": 1,
-            "yards": 3,
-            "firstDowns": 0,
-            "yardsBeforeCatch": -3,
-            "ybcPerRec": -3,
-            "yardsAfterCatch": 6,
-            "yacPerRec": 6,
-            "aDOT": -3,
-            "brokenTackles": 0,
-            "drops": 0,
-            "dropPct": 0,
-            "passerRatingWhenTargeted": 79.2
-          }
-        }
-      }
-    },
     "winston": {
       "name": "Jameis Winston",
       "pos": "QB",
@@ -17976,6 +17978,29 @@
             "yardsAfterContact": 1,
             "yacPerAttempt": 0.3,
             "brokenTackles": 0
+          }
+        }
+      }
+    },
+    "coleman-kevin": {
+      "name": "Kevin Coleman Jr.",
+      "pos": "WR",
+      "seasons": {
+        "2026": {
+          "receiving": {
+            "targets": 6,
+            "rec": 1,
+            "yards": 3,
+            "firstDowns": 0,
+            "yardsBeforeCatch": 4,
+            "ybcPerRec": 4,
+            "yardsAfterCatch": -1,
+            "yacPerRec": -1,
+            "aDOT": 16.5,
+            "brokenTackles": 0,
+            "drops": 1,
+            "dropPct": 0.167,
+            "passerRatingWhenTargeted": 39.6
           }
         }
       }
