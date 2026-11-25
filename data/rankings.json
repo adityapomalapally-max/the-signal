@@ -134,7 +134,7 @@
       "caveats": "Three seasons of game logs, and only players who played 8+ games in consecutive seasons. That is survivorship: a player who lost his job or his season entirely leaves the sample, so the real downside is likely worse than the floor shown."
     },
     "builtBy": "scripts/build-rankings.js",
-    "builtAt": "2026-11-24T21:05:32.500Z",
+    "builtAt": "2026-11-25T20:28:36.300Z",
     "overallMethod": "Derived from the hand-ordered positional tabs. Each player inherits the projected median of the slot he was ranked into, then VORP is taken against replacement level. Ordering is the analyst's; the replacement math is the model's.",
     "availabilityMethod": "The missed-time case is a different downside from the floor beside it. The floor is a cold season played out in full; this is a normal season cut short. It holds the projected per-game rate flat and applies it to a low-availability year. League-wide that year is 12 of 17 games — the 15th percentile of 207 player-seasons across 2024–2025, the same percentile the projection set uses for its floor — then scaled by how available the player himself has been against the league average of 86%. It counts every missed game regardless of cause, suspensions included, because the question is how often he was not in your lineup. The per-game rate is deliberately NOT reduced: this prices availability only, never diminished play on return. Ordering is untouched — it moves the downside, never the rank.",
     "availabilityCaveat": "A record of one or two seasons is too short to read a player-specific floor from, so those fall back to the league figure. A player who is not currently healthy is flagged, not adjusted: history cannot see the knock he is carrying now, and a games-missed number inferred from a one-word status would be invented.",
@@ -414,7 +414,7 @@
         "floorGames": 9,
         "basis": "below-league",
         "floor": 169,
-        "statusFlag": "Out (Hamstring)"
+        "statusFlag": "Questionable (Hamstring)"
       }
     },
     {
@@ -520,7 +520,7 @@
         "floorGames": 10,
         "basis": "below-league",
         "floor": 185,
-        "statusFlag": null
+        "statusFlag": "Questionable (Ankle)"
       }
     },
     {
@@ -852,7 +852,7 @@
         "floorGames": 13,
         "basis": "above-league",
         "floor": 218,
-        "statusFlag": "Questionable (Arm)"
+        "statusFlag": null
       }
     },
     {
@@ -1037,7 +1037,7 @@
         "floorGames": 13,
         "basis": "above-league",
         "floor": 183,
-        "statusFlag": "Out (Finger)"
+        "statusFlag": "Questionable (Finger)"
       }
     },
     {
@@ -1206,7 +1206,7 @@
         "floorGames": 13,
         "basis": "above-league",
         "floor": 164,
-        "statusFlag": "Questionable (Toe)"
+        "statusFlag": null
       }
     },
     {
@@ -1503,7 +1503,7 @@
         "floorGames": 11,
         "basis": "below-league",
         "floor": 149,
-        "statusFlag": "Out (Hamstring)"
+        "statusFlag": "Doubtful (Hamstring)"
       }
     },
     {
@@ -1584,7 +1584,7 @@
         "floorGames": 12,
         "basis": "league",
         "floor": 167,
-        "statusFlag": "Questionable (Head)"
+        "statusFlag": null
       }
     },
     {
@@ -1906,7 +1906,7 @@
         "floorGames": 9,
         "basis": "below-league",
         "floor": 101,
-        "statusFlag": null
+        "statusFlag": "Questionable (Achilles)"
       }
     },
     {
@@ -1931,7 +1931,7 @@
         "floorGames": 12,
         "basis": "league-short-record",
         "floor": 138,
-        "statusFlag": null
+        "statusFlag": "Questionable (Foot)"
       }
     },
     {
@@ -2162,7 +2162,7 @@
         "floorGames": 12,
         "basis": "league",
         "floor": 147,
-        "statusFlag": "Out (Ankle)"
+        "statusFlag": "Questionable (Ankle)"
       }
     },
     {
@@ -2293,7 +2293,7 @@
         "floorGames": 10,
         "basis": "below-league",
         "floor": 99,
-        "statusFlag": "Questionable (Ankle)"
+        "statusFlag": null
       }
     },
     {
@@ -2399,7 +2399,7 @@
         "floorGames": 10,
         "basis": "below-league",
         "floor": 91,
-        "statusFlag": "Out (Thumb)"
+        "statusFlag": "Questionable (Thumb)"
       }
     },
     {
@@ -2718,7 +2718,7 @@
         "floorGames": 13,
         "basis": "above-league",
         "floor": 218,
-        "statusFlag": "Questionable (Arm)"
+        "statusFlag": null
       },
       "ownPpg": 16.8,
       "ownMedian": 285
@@ -2919,7 +2919,7 @@
         "floorGames": 11,
         "basis": "below-league",
         "floor": 149,
-        "statusFlag": "Out (Hamstring)"
+        "statusFlag": "Doubtful (Hamstring)"
       },
       "ownPpg": 13.5,
       "ownMedian": 230
@@ -3035,7 +3035,7 @@
         "floorGames": 12,
         "basis": "league",
         "floor": 167,
-        "statusFlag": "Questionable (Head)"
+        "statusFlag": null
       },
       "ownPpg": 13.9,
       "ownMedian": 236
@@ -3207,7 +3207,7 @@
         "floorGames": 12,
         "basis": "league",
         "floor": 147,
-        "statusFlag": "Out (Ankle)"
+        "statusFlag": "Questionable (Ankle)"
       },
       "ownPpg": 12.2,
       "ownMedian": 208
