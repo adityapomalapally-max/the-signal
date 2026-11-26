@@ -30,38 +30,6 @@
     "statusSource": "sleeper"
   },
   {
-    "id": "allen",
-    "name": "Josh Allen",
-    "pos": "QB",
-    "team": "BUF",
-    "age": 30,
-    "fRank": "QB1",
-    "sleeperId": "4984",
-    "gsisId": "00-0034857",
-    "experience": "8th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-10-01T17:19:10.665Z",
-    "manualOverride": false
-  },
-  {
-    "id": "chase",
-    "name": "Ja'Marr Chase",
-    "pos": "WR",
-    "team": "CIN",
-    "age": 26,
-    "fRank": "WR1",
-    "sleeperId": "7564",
-    "gsisId": "00-0036900",
-    "experience": "5th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-10-30T02:27:26.785Z",
-    "manualOverride": false
-  },
-  {
     "id": "cmc",
     "name": "Christian McCaffrey",
     "pos": "RB",
@@ -78,6 +46,22 @@
     "manualOverride": false
   },
   {
+    "id": "allen",
+    "name": "Josh Allen",
+    "pos": "QB",
+    "team": "BUF",
+    "age": 30,
+    "fRank": "QB1",
+    "sleeperId": "4984",
+    "gsisId": "00-0034857",
+    "experience": "8th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-10-01T17:19:10.665Z",
+    "manualOverride": false
+  },
+  {
     "id": "taylor",
     "name": "Jonathan Taylor",
     "pos": "RB",
@@ -90,6 +74,22 @@
     "status": "Healthy",
     "statusClass": "status-healthy",
     "statusSource": "sleeper"
+  },
+  {
+    "id": "chase",
+    "name": "Ja'Marr Chase",
+    "pos": "WR",
+    "team": "CIN",
+    "age": 26,
+    "fRank": "WR1",
+    "sleeperId": "7564",
+    "gsisId": "00-0036900",
+    "experience": "5th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-10-30T02:27:26.785Z",
+    "manualOverride": false
   },
   {
     "id": "nacua",
@@ -133,10 +133,10 @@
     "sleeperId": "9488",
     "gsisId": "00-0038543",
     "experience": "3rd Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
+    "status": "Questionable (Ankle)",
+    "statusClass": "status-quest",
     "statusSource": "sleeper",
-    "statusUpdated": "2026-10-15T15:32:32.096Z",
+    "statusUpdated": "2026-11-26T20:02:06.688Z",
     "manualOverride": false
   },
   {
@@ -433,11 +433,25 @@
     "sleeperId": "5850",
     "gsisId": "00-0035700",
     "experience": "8th Year",
-    "status": "Questionable (Finger)",
-    "statusClass": "status-quest",
+    "status": "Out (Finger)",
+    "statusClass": "status-out",
     "statusSource": "sleeper",
-    "statusUpdated": "2026-11-25T20:25:08.047Z",
+    "statusUpdated": "2026-11-26T20:02:06.688Z",
     "manualOverride": false
+  },
+  {
+    "id": "mcbride",
+    "name": "Trey McBride",
+    "pos": "TE",
+    "team": "ARI",
+    "age": 27,
+    "fRank": "TE2",
+    "sleeperId": "8130",
+    "gsisId": "00-0037744",
+    "experience": "4th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
   },
   {
     "id": "daniels",
@@ -454,20 +468,6 @@
     "statusSource": "sleeper",
     "statusUpdated": "2026-10-08T17:47:56.351Z",
     "manualOverride": false
-  },
-  {
-    "id": "mcbride",
-    "name": "Trey McBride",
-    "pos": "TE",
-    "team": "ARI",
-    "age": 27,
-    "fRank": "TE2",
-    "sleeperId": "8130",
-    "gsisId": "00-0037744",
-    "experience": "4th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
   },
   {
     "id": "collins",
@@ -518,22 +518,6 @@
     "manualOverride": false
   },
   {
-    "id": "hurts",
-    "name": "Jalen Hurts",
-    "pos": "QB",
-    "team": "PHI",
-    "age": 28,
-    "fRank": "QB6",
-    "sleeperId": "6904",
-    "gsisId": "00-0036389",
-    "experience": "6th Year",
-    "status": "IR (Calf)",
-    "statusClass": "status-out",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-10-18T14:24:04.872Z",
-    "manualOverride": false
-  },
-  {
     "id": "hall",
     "name": "Breece Hall",
     "pos": "RB",
@@ -563,6 +547,22 @@
     "statusClass": "status-healthy",
     "statusSource": "sleeper",
     "statusUpdated": "2026-11-07T16:47:02.300Z",
+    "manualOverride": false
+  },
+  {
+    "id": "hurts",
+    "name": "Jalen Hurts",
+    "pos": "QB",
+    "team": "PHI",
+    "age": 28,
+    "fRank": "QB6",
+    "sleeperId": "6904",
+    "gsisId": "00-0036389",
+    "experience": "6th Year",
+    "status": "IR (Calf)",
+    "statusClass": "status-out",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-10-18T14:24:04.872Z",
     "manualOverride": false
   },
   {
@@ -628,22 +628,6 @@
     "manualOverride": false
   },
   {
-    "id": "herbert",
-    "name": "Justin Herbert",
-    "pos": "QB",
-    "team": "LAC",
-    "age": 28,
-    "fRank": "QB7",
-    "sleeperId": "6797",
-    "gsisId": "00-0036355",
-    "experience": "7th Year",
-    "status": "Questionable (Concussion)",
-    "statusClass": "status-quest",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-11-23T02:56:46.653Z",
-    "manualOverride": false
-  },
-  {
     "id": "smith",
     "name": "DeVonta Smith",
     "pos": "WR",
@@ -657,6 +641,22 @@
     "statusClass": "status-healthy",
     "statusSource": "sleeper",
     "statusUpdated": "2026-11-20T03:54:04.346Z",
+    "manualOverride": false
+  },
+  {
+    "id": "herbert",
+    "name": "Justin Herbert",
+    "pos": "QB",
+    "team": "LAC",
+    "age": 28,
+    "fRank": "QB7",
+    "sleeperId": "6797",
+    "gsisId": "00-0036355",
+    "experience": "7th Year",
+    "status": "Questionable (Concussion)",
+    "statusClass": "status-quest",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-11-23T02:56:46.653Z",
     "manualOverride": false
   },
   {
@@ -717,10 +717,10 @@
     "sleeperId": "12517",
     "gsisId": "00-0040126",
     "experience": "2nd Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
+    "status": "Out (Knee)",
+    "statusClass": "status-out",
     "statusSource": "sleeper",
-    "statusUpdated": "2026-11-01T17:03:29.599Z",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
     "manualOverride": false
   },
   {
@@ -738,6 +738,20 @@
     "statusSource": "sleeper",
     "statusUpdated": "2026-11-11T18:30:03.031Z",
     "manualOverride": false
+  },
+  {
+    "id": "prescott",
+    "name": "Dak Prescott",
+    "pos": "QB",
+    "team": "DAL",
+    "age": 33,
+    "fRank": "QB11",
+    "sleeperId": "3294",
+    "gsisId": "00-0033077",
+    "experience": "11th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
   },
   {
     "id": "wilson",
@@ -788,20 +802,6 @@
     "manualOverride": false
   },
   {
-    "id": "prescott",
-    "name": "Dak Prescott",
-    "pos": "QB",
-    "team": "DAL",
-    "age": 33,
-    "fRank": "QB11",
-    "sleeperId": "3294",
-    "gsisId": "00-0033077",
-    "experience": "11th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
-  },
-  {
     "id": "mahomes",
     "name": "Patrick Mahomes",
     "pos": "QB",
@@ -843,10 +843,10 @@
     "sleeperId": "9997",
     "gsisId": "00-0039064",
     "experience": "4th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
+    "status": "Questionable (Ankle)",
+    "statusClass": "status-quest",
     "statusSource": "sleeper",
-    "statusUpdated": "2026-10-17T14:07:13.315Z",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
     "manualOverride": false
   },
   {
@@ -866,20 +866,6 @@
     "manualOverride": false
   },
   {
-    "id": "lawrence",
-    "name": "Trevor Lawrence",
-    "pos": "QB",
-    "team": "JAX",
-    "age": 27,
-    "fRank": "QB8",
-    "sleeperId": "7523",
-    "gsisId": "00-0036971",
-    "experience": "6th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
-  },
-  {
     "id": "montgomery",
     "name": "David Montgomery",
     "pos": "RB",
@@ -894,6 +880,20 @@
     "statusSource": "sleeper",
     "statusUpdated": "2026-11-18T19:18:00.276Z",
     "manualOverride": false
+  },
+  {
+    "id": "lawrence",
+    "name": "Trevor Lawrence",
+    "pos": "QB",
+    "team": "JAX",
+    "age": 27,
+    "fRank": "QB8",
+    "sleeperId": "7523",
+    "gsisId": "00-0036971",
+    "experience": "6th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
   },
   {
     "id": "waddle",
@@ -944,6 +944,20 @@
     "manualOverride": false
   },
   {
+    "id": "nix",
+    "name": "Bo Nix",
+    "pos": "QB",
+    "team": "DEN",
+    "age": 26,
+    "fRank": "QB15",
+    "sleeperId": "11563",
+    "gsisId": "00-0039732",
+    "experience": "3rd Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
     "id": "judkins",
     "name": "Quinshon Judkins",
     "pos": "RB",
@@ -992,18 +1006,20 @@
     "manualOverride": false
   },
   {
-    "id": "nix",
-    "name": "Bo Nix",
-    "pos": "QB",
-    "team": "DEN",
-    "age": 26,
-    "fRank": "QB15",
-    "sleeperId": "11563",
-    "gsisId": "00-0039732",
-    "experience": "3rd Year",
+    "id": "warren",
+    "name": "Tyler Warren",
+    "pos": "TE",
+    "team": "IND",
+    "age": 24,
+    "fRank": "TE5",
+    "sleeperId": "12518",
+    "gsisId": "00-0040128",
+    "experience": "2nd Year",
     "status": "Healthy",
     "statusClass": "status-healthy",
-    "statusSource": "sleeper"
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-10-31T15:59:43.375Z",
+    "manualOverride": false
   },
   {
     "id": "moore",
@@ -1019,22 +1035,6 @@
     "statusClass": "status-healthy",
     "statusSource": "sleeper",
     "statusUpdated": "2026-11-25T20:25:08.048Z",
-    "manualOverride": false
-  },
-  {
-    "id": "warren",
-    "name": "Tyler Warren",
-    "pos": "TE",
-    "team": "IND",
-    "age": 24,
-    "fRank": "TE5",
-    "sleeperId": "12518",
-    "gsisId": "00-0040128",
-    "experience": "2nd Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-10-31T15:59:43.375Z",
     "manualOverride": false
   },
   {
@@ -1262,54 +1262,6 @@
     "manualOverride": false
   },
   {
-    "id": "fannin",
-    "name": "Harold Fannin Jr.",
-    "pos": "TE",
-    "team": "CLE",
-    "age": 22,
-    "fRank": "TE7",
-    "sleeperId": "12506",
-    "gsisId": "00-0040663",
-    "experience": "2nd Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-11-14T16:54:48.536Z",
-    "manualOverride": false
-  },
-  {
-    "id": "watson",
-    "name": "Christian Watson",
-    "pos": "WR",
-    "team": "GB",
-    "age": 27,
-    "fRank": "WR25",
-    "sleeperId": "8167",
-    "gsisId": "00-0038124",
-    "experience": "5th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-11-07T16:47:02.301Z",
-    "manualOverride": false
-  },
-  {
-    "id": "dowdle",
-    "name": "Rico Dowdle",
-    "pos": "RB",
-    "team": "PIT",
-    "age": 28,
-    "fRank": null,
-    "sleeperId": "7021",
-    "gsisId": "00-0036139",
-    "experience": "7th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-10-25T14:55:04.626Z",
-    "manualOverride": false
-  },
-  {
     "id": "kraft",
     "name": "Tucker Kraft",
     "pos": "TE",
@@ -1342,6 +1294,38 @@
     "manualOverride": false
   },
   {
+    "id": "fannin",
+    "name": "Harold Fannin Jr.",
+    "pos": "TE",
+    "team": "CLE",
+    "age": 22,
+    "fRank": "TE7",
+    "sleeperId": "12506",
+    "gsisId": "00-0040663",
+    "experience": "2nd Year",
+    "status": "Questionable (Groin)",
+    "statusClass": "status-quest",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
+    "manualOverride": false
+  },
+  {
+    "id": "watson",
+    "name": "Christian Watson",
+    "pos": "WR",
+    "team": "GB",
+    "age": 27,
+    "fRank": "WR25",
+    "sleeperId": "8167",
+    "gsisId": "00-0038124",
+    "experience": "5th Year",
+    "status": "Out (Concussion)",
+    "statusClass": "status-out",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
+    "manualOverride": false
+  },
+  {
     "id": "stafford",
     "name": "Matthew Stafford",
     "pos": "QB",
@@ -1355,6 +1339,22 @@
     "statusClass": "status-healthy",
     "statusSource": "sleeper",
     "statusUpdated": "2026-11-05T18:37:03.771Z",
+    "manualOverride": false
+  },
+  {
+    "id": "dowdle",
+    "name": "Rico Dowdle",
+    "pos": "RB",
+    "team": "PIT",
+    "age": 28,
+    "fRank": null,
+    "sleeperId": "7021",
+    "gsisId": "00-0036139",
+    "experience": "7th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-10-25T14:55:04.626Z",
     "manualOverride": false
   },
   {
@@ -1413,10 +1413,10 @@
     "sleeperId": "6806",
     "gsisId": "00-0036158",
     "experience": "7th Year",
-    "status": "Out (Personal)",
-    "statusClass": "status-out",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
     "statusSource": "sleeper",
-    "statusUpdated": "2026-11-25T05:16:47.872Z",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
     "manualOverride": false
   },
   {
@@ -1553,10 +1553,10 @@
     "sleeperId": "5947",
     "gsisId": "00-0034960",
     "experience": "8th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
+    "status": "Questionable (Ankle)",
+    "statusClass": "status-quest",
     "statusSource": "sleeper",
-    "statusUpdated": "2026-11-21T17:55:13.714Z",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
     "manualOverride": false
   },
   {
@@ -1656,6 +1656,22 @@
     "manualOverride": false
   },
   {
+    "id": "shough",
+    "name": "Tyler Shough",
+    "pos": "QB",
+    "team": "NO",
+    "age": 27,
+    "fRank": null,
+    "sleeperId": "12545",
+    "gsisId": "00-0040743",
+    "experience": "2nd Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-10-09T02:50:42.883Z",
+    "manualOverride": false
+  },
+  {
     "id": "godwin",
     "name": "Chris Godwin Jr.",
     "pos": "WR",
@@ -1669,6 +1685,22 @@
     "statusClass": "status-healthy",
     "statusSource": "sleeper",
     "statusUpdated": "2026-10-02T02:03:53.657Z",
+    "manualOverride": false
+  },
+  {
+    "id": "murray",
+    "name": "Kyler Murray",
+    "pos": "QB",
+    "team": "MIN",
+    "age": 29,
+    "fRank": "QB9",
+    "sleeperId": "5849",
+    "gsisId": "00-0035228",
+    "experience": "8th Year",
+    "status": "Questionable (Hamstring)",
+    "statusClass": "status-quest",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-11-25T20:25:08.048Z",
     "manualOverride": false
   },
   {
@@ -1688,22 +1720,6 @@
     "manualOverride": false
   },
   {
-    "id": "shough",
-    "name": "Tyler Shough",
-    "pos": "QB",
-    "team": "NO",
-    "age": 27,
-    "fRank": null,
-    "sleeperId": "12545",
-    "gsisId": "00-0040743",
-    "experience": "2nd Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-10-09T02:50:42.883Z",
-    "manualOverride": false
-  },
-  {
     "id": "kelce",
     "name": "Travis Kelce",
     "pos": "TE",
@@ -1717,22 +1733,6 @@
     "statusClass": "status-healthy",
     "statusSource": "sleeper",
     "statusUpdated": "2026-11-18T19:18:00.276Z",
-    "manualOverride": false
-  },
-  {
-    "id": "murray",
-    "name": "Kyler Murray",
-    "pos": "QB",
-    "team": "MIN",
-    "age": 29,
-    "fRank": "QB9",
-    "sleeperId": "5849",
-    "gsisId": "00-0035228",
-    "experience": "8th Year",
-    "status": "Questionable (Hamstring)",
-    "statusClass": "status-quest",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-11-25T20:25:08.048Z",
     "manualOverride": false
   },
   {
@@ -1825,10 +1825,10 @@
     "sleeperId": "4943",
     "gsisId": "00-0034869",
     "experience": "9th Year",
-    "status": "Questionable (Quadriceps)",
-    "statusClass": "status-quest",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
     "statusSource": "sleeper",
-    "statusUpdated": "2026-11-25T20:25:08.048Z",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
     "manualOverride": false
   },
   {
@@ -2022,6 +2022,36 @@
     "manualOverride": false
   },
   {
+    "id": "hunter",
+    "name": "Travis Hunter",
+    "pos": "WR",
+    "team": "JAX",
+    "age": 23,
+    "fRank": null,
+    "sleeperId": "12530",
+    "gsisId": "00-0040718",
+    "experience": "2nd Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
+    "id": "diggs",
+    "name": "Stefon Diggs",
+    "pos": "WR",
+    "team": "WAS",
+    "age": 32,
+    "fRank": null,
+    "sleeperId": "2449",
+    "gsisId": "00-0031588",
+    "experience": "12th Year",
+    "status": "Questionable (Personal)",
+    "statusClass": "status-quest",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
+    "manualOverride": false
+  },
+  {
     "id": "strange",
     "name": "Brenton Strange",
     "pos": "TE",
@@ -2052,36 +2082,6 @@
     "manualOverride": false
   },
   {
-    "id": "hunter",
-    "name": "Travis Hunter",
-    "pos": "WR",
-    "team": "JAX",
-    "age": 23,
-    "fRank": null,
-    "sleeperId": "12530",
-    "gsisId": "00-0040718",
-    "experience": "2nd Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
-  },
-  {
-    "id": "diggs",
-    "name": "Stefon Diggs",
-    "pos": "WR",
-    "team": "WAS",
-    "age": 32,
-    "fRank": null,
-    "sleeperId": "2449",
-    "gsisId": "00-0031588",
-    "experience": "12th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-10-30T02:27:26.786Z",
-    "manualOverride": false
-  },
-  {
     "id": "robinson-w",
     "name": "Wan'Dale Robinson",
     "pos": "WR",
@@ -2107,10 +2107,10 @@
     "sleeperId": "8131",
     "gsisId": "00-0037838",
     "experience": "5th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
+    "status": "Questionable (Groin)",
+    "statusClass": "status-quest",
     "statusSource": "sleeper",
-    "statusUpdated": "2026-11-21T17:55:13.714Z",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
     "manualOverride": false
   },
   {
@@ -2139,10 +2139,10 @@
     "sleeperId": "6819",
     "gsisId": "00-0036252",
     "experience": "7th Year",
-    "status": "IR (Foot)",
-    "statusClass": "status-out",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
     "statusSource": "sleeper",
-    "statusUpdated": "2026-10-11T16:35:59.761Z",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
     "manualOverride": false
   },
   {
@@ -2362,6 +2362,22 @@
     "manualOverride": false
   },
   {
+    "id": "willis",
+    "name": "Malik Willis",
+    "pos": "QB",
+    "team": "MIA",
+    "age": 27,
+    "fRank": "QB20",
+    "sleeperId": "8161",
+    "gsisId": "00-0038128",
+    "experience": "5th Year",
+    "status": "IR (Groin)",
+    "statusClass": "status-out",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-11-11T02:35:45.874Z",
+    "manualOverride": false
+  },
+  {
     "id": "spears",
     "name": "Tyjae Spears",
     "pos": "RB",
@@ -2410,22 +2426,6 @@
     "manualOverride": false
   },
   {
-    "id": "willis",
-    "name": "Malik Willis",
-    "pos": "QB",
-    "team": "MIA",
-    "age": 27,
-    "fRank": "QB20",
-    "sleeperId": "8161",
-    "gsisId": "00-0038128",
-    "experience": "5th Year",
-    "status": "IR (Groin)",
-    "statusClass": "status-out",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-11-11T02:35:45.874Z",
-    "manualOverride": false
-  },
-  {
     "id": "washington-m",
     "name": "Mike Washington Jr.",
     "pos": "RB",
@@ -2458,22 +2458,6 @@
     "manualOverride": false
   },
   {
-    "id": "rodriguez",
-    "name": "Chris Rodriguez Jr.",
-    "pos": "RB",
-    "team": "JAX",
-    "age": 27,
-    "fRank": null,
-    "sleeperId": "10219",
-    "gsisId": "00-0038611",
-    "experience": "4th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-11-21T17:55:13.714Z",
-    "manualOverride": false
-  },
-  {
     "id": "barner",
     "name": "AJ Barner",
     "pos": "TE",
@@ -2501,6 +2485,22 @@
     "statusClass": "status-out",
     "statusSource": "sleeper",
     "statusUpdated": "2026-08-20T11:31:52.207Z",
+    "manualOverride": false
+  },
+  {
+    "id": "rodriguez",
+    "name": "Chris Rodriguez Jr.",
+    "pos": "RB",
+    "team": "JAX",
+    "age": 27,
+    "fRank": null,
+    "sleeperId": "10219",
+    "gsisId": "00-0038611",
+    "experience": "4th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-11-21T17:55:13.714Z",
     "manualOverride": false
   },
   {
@@ -2552,6 +2552,22 @@
     "manualOverride": false
   },
   {
+    "id": "njoku",
+    "name": "David Njoku",
+    "pos": "TE",
+    "team": "LAC",
+    "age": 30,
+    "fRank": null,
+    "sleeperId": "4033",
+    "gsisId": "00-0033885",
+    "experience": "10th Year",
+    "status": "Questionable (Shoulder)",
+    "statusClass": "status-quest",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
+    "manualOverride": false
+  },
+  {
     "id": "young",
     "name": "Bryce Young",
     "pos": "QB",
@@ -2564,22 +2580,6 @@
     "status": "Healthy",
     "statusClass": "status-healthy",
     "statusSource": "sleeper"
-  },
-  {
-    "id": "njoku",
-    "name": "David Njoku",
-    "pos": "TE",
-    "team": "LAC",
-    "age": 30,
-    "fRank": null,
-    "sleeperId": "4033",
-    "gsisId": "00-0033885",
-    "experience": "10th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-11-25T20:25:08.048Z",
-    "manualOverride": false
   },
   {
     "id": "coker",
@@ -2944,22 +2944,6 @@
     "manualOverride": false
   },
   {
-    "id": "black",
-    "name": "Kaelon Black",
-    "pos": "RB",
-    "team": "SF",
-    "age": 25,
-    "fRank": null,
-    "sleeperId": "13414",
-    "gsisId": "00-0041052",
-    "experience": "Rookie",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-10-09T02:50:42.883Z",
-    "manualOverride": false
-  },
-  {
     "id": "mitchell-a",
     "name": "Adonai Mitchell",
     "pos": "WR",
@@ -2973,6 +2957,22 @@
     "statusClass": "status-healthy",
     "statusSource": "sleeper",
     "statusUpdated": "2026-11-15T17:37:56.516Z",
+    "manualOverride": false
+  },
+  {
+    "id": "black",
+    "name": "Kaelon Black",
+    "pos": "RB",
+    "team": "SF",
+    "age": 25,
+    "fRank": null,
+    "sleeperId": "13414",
+    "gsisId": "00-0041052",
+    "experience": "Rookie",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-10-09T02:50:42.883Z",
     "manualOverride": false
   },
   {
@@ -3132,22 +3132,6 @@
     "statusSource": "sleeper"
   },
   {
-    "id": "claiborne",
-    "name": "Demond Claiborne",
-    "pos": "RB",
-    "team": "MIN",
-    "age": 23,
-    "fRank": null,
-    "sleeperId": "13347",
-    "gsisId": "00-0041104",
-    "experience": "Rookie",
-    "status": "IR (Knee)",
-    "statusClass": "status-out",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-11-10T18:32:12.491Z",
-    "manualOverride": false
-  },
-  {
     "id": "washington-malik",
     "name": "Malik Washington",
     "pos": "WR",
@@ -3161,6 +3145,22 @@
     "statusClass": "status-healthy",
     "statusSource": "sleeper",
     "statusUpdated": "2026-10-31T15:59:43.376Z",
+    "manualOverride": false
+  },
+  {
+    "id": "claiborne",
+    "name": "Demond Claiborne",
+    "pos": "RB",
+    "team": "MIN",
+    "age": 23,
+    "fRank": null,
+    "sleeperId": "13347",
+    "gsisId": "00-0041104",
+    "experience": "Rookie",
+    "status": "IR (Knee)",
+    "statusClass": "status-out",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-11-10T18:32:12.491Z",
     "manualOverride": false
   },
   {
@@ -3314,20 +3314,6 @@
     "statusSource": "sleeper",
     "statusUpdated": "2026-11-25T20:25:08.048Z",
     "manualOverride": false
-  },
-  {
-    "id": "rodgers",
-    "name": "Aaron Rodgers",
-    "pos": "QB",
-    "team": "PIT",
-    "age": 42,
-    "fRank": null,
-    "sleeperId": "96",
-    "gsisId": "00-0023459",
-    "experience": "22nd Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
   },
   {
     "id": "dell",
@@ -3528,6 +3514,20 @@
     "manualOverride": false
   },
   {
+    "id": "fields",
+    "name": "Malachi Fields",
+    "pos": "WR",
+    "team": "NYG",
+    "age": 23,
+    "fRank": null,
+    "sleeperId": "13285",
+    "gsisId": "00-0041042",
+    "experience": "Rookie",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
     "id": "douglas",
     "name": "Caleb Douglas",
     "pos": "WR",
@@ -3560,20 +3560,6 @@
     "manualOverride": false
   },
   {
-    "id": "fields",
-    "name": "Malachi Fields",
-    "pos": "WR",
-    "team": "NYG",
-    "age": 23,
-    "fRank": null,
-    "sleeperId": "13285",
-    "gsisId": "00-0041042",
-    "experience": "Rookie",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
-  },
-  {
     "id": "brissett",
     "name": "Jacoby Brissett",
     "pos": "QB",
@@ -3597,10 +3583,10 @@
     "sleeperId": "7571",
     "gsisId": "00-0036550",
     "experience": "6th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
+    "status": "Questionable (Groin)",
+    "statusClass": "status-quest",
     "statusSource": "sleeper",
-    "statusUpdated": "2026-11-14T16:54:48.536Z",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
     "manualOverride": false
   },
   {
@@ -3879,10 +3865,10 @@
     "sleeperId": "13275",
     "gsisId": "00-0041568",
     "experience": "Rookie",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
+    "status": "Out (Coach's Decision)",
+    "statusClass": "status-out",
     "statusSource": "sleeper",
-    "statusUpdated": "2026-11-25T20:25:08.048Z",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
     "manualOverride": false
   },
   {
@@ -3946,6 +3932,22 @@
     "statusSource": "sleeper"
   },
   {
+    "id": "kallerup",
+    "name": "Nick Kallerup",
+    "pos": "TE",
+    "team": "SEA",
+    "age": 25,
+    "fRank": null,
+    "sleeperId": "13151",
+    "gsisId": "00-0040058",
+    "experience": "2nd Year",
+    "status": "Questionable (Ankle)",
+    "statusClass": "status-quest",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
+    "manualOverride": false
+  },
+  {
     "id": "beck",
     "name": "Carson Beck",
     "pos": "QB",
@@ -3959,22 +3961,6 @@
     "statusClass": "status-quest",
     "statusSource": "sleeper",
     "statusUpdated": "2026-11-25T20:25:08.048Z",
-    "manualOverride": false
-  },
-  {
-    "id": "kallerup",
-    "name": "Nick Kallerup",
-    "pos": "TE",
-    "team": "SEA",
-    "age": 25,
-    "fRank": null,
-    "sleeperId": "13151",
-    "gsisId": "00-0040058",
-    "experience": "2nd Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-10-14T15:45:41.562Z",
     "manualOverride": false
   },
   {
@@ -4234,22 +4220,6 @@
     "manualOverride": false
   },
   {
-    "id": "thomas-i",
-    "name": "Ian Thomas",
-    "pos": "TE",
-    "team": "LV",
-    "age": 30,
-    "fRank": null,
-    "sleeperId": "4995",
-    "gsisId": "00-0034365",
-    "experience": "9th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-11-21T17:55:13.714Z",
-    "manualOverride": false
-  },
-  {
     "id": "gordon",
     "name": "Ollie Gordon II",
     "pos": "RB",
@@ -4263,6 +4233,22 @@
     "statusClass": "status-healthy",
     "statusSource": "sleeper",
     "statusUpdated": "2026-10-21T15:53:14.436Z",
+    "manualOverride": false
+  },
+  {
+    "id": "thomas-i",
+    "name": "Ian Thomas",
+    "pos": "TE",
+    "team": "LV",
+    "age": 30,
+    "fRank": null,
+    "sleeperId": "4995",
+    "gsisId": "00-0034365",
+    "experience": "9th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-11-21T17:55:13.714Z",
     "manualOverride": false
   },
   {
@@ -4298,20 +4284,6 @@
     "manualOverride": false
   },
   {
-    "id": "klubnik",
-    "name": "Cade Klubnik",
-    "pos": "QB",
-    "team": "NYJ",
-    "age": 23,
-    "fRank": null,
-    "sleeperId": "13303",
-    "gsisId": "00-0041056",
-    "experience": "Rookie",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
-  },
-  {
     "id": "gesicki",
     "name": "Mike Gesicki",
     "pos": "TE",
@@ -4321,6 +4293,20 @@
     "sleeperId": "4993",
     "gsisId": "00-0034829",
     "experience": "9th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
+    "id": "klubnik",
+    "name": "Cade Klubnik",
+    "pos": "QB",
+    "team": "NYJ",
+    "age": 23,
+    "fRank": null,
+    "sleeperId": "13303",
+    "gsisId": "00-0041056",
+    "experience": "Rookie",
     "status": "Healthy",
     "statusClass": "status-healthy",
     "statusSource": "sleeper"
@@ -4413,6 +4399,22 @@
     "sleeperId": "11201",
     "gsisId": "00-0038710",
     "experience": "4th Year",
+    "status": "Questionable (Hip)",
+    "statusClass": "status-quest",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
+    "manualOverride": false
+  },
+  {
+    "id": "presley",
+    "name": "Brennan Presley",
+    "pos": "WR",
+    "team": "LAR",
+    "age": 24,
+    "fRank": null,
+    "sleeperId": "13011",
+    "gsisId": "00-0040597",
+    "experience": "2nd Year",
     "status": "Healthy",
     "statusClass": "status-healthy",
     "statusSource": "sleeper"
@@ -4480,7 +4482,7 @@
     "name": "Malik Davis",
     "pos": "RB",
     "team": "DAL",
-    "age": 27,
+    "age": 28,
     "fRank": null,
     "sleeperId": "8800",
     "gsisId": "00-0037563",
@@ -4570,22 +4572,6 @@
     "statusSource": "sleeper"
   },
   {
-    "id": "jordan",
-    "name": "Brevin Jordan",
-    "pos": "TE",
-    "team": "HOU",
-    "age": 26,
-    "fRank": null,
-    "sleeperId": "7568",
-    "gsisId": "00-0036556",
-    "experience": "6th Year",
-    "status": "Questionable (Foot)",
-    "statusClass": "status-quest",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-11-25T20:25:08.048Z",
-    "manualOverride": false
-  },
-  {
     "id": "holani",
     "name": "George Holani",
     "pos": "RB",
@@ -4634,6 +4620,22 @@
     "manualOverride": false
   },
   {
+    "id": "jordan",
+    "name": "Brevin Jordan",
+    "pos": "TE",
+    "team": "HOU",
+    "age": 26,
+    "fRank": null,
+    "sleeperId": "7568",
+    "gsisId": "00-0036556",
+    "experience": "6th Year",
+    "status": "Questionable (Foot)",
+    "statusClass": "status-quest",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-11-25T20:25:08.048Z",
+    "manualOverride": false
+  },
+  {
     "id": "arroyo",
     "name": "Elijah Arroyo",
     "pos": "TE",
@@ -4650,20 +4652,6 @@
     "manualOverride": false
   },
   {
-    "id": "engram",
-    "name": "Evan Engram",
-    "pos": "TE",
-    "team": "DEN",
-    "age": 32,
-    "fRank": null,
-    "sleeperId": "4066",
-    "gsisId": "00-0033881",
-    "experience": "10th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
-  },
-  {
     "id": "hill-j",
     "name": "Julian Hill",
     "pos": "TE",
@@ -4675,6 +4663,20 @@
     "experience": "4th Year",
     "status": "IR (Knee)",
     "statusClass": "status-out",
+    "statusSource": "sleeper"
+  },
+  {
+    "id": "engram",
+    "name": "Evan Engram",
+    "pos": "TE",
+    "team": "DEN",
+    "age": 32,
+    "fRank": null,
+    "sleeperId": "4066",
+    "gsisId": "00-0033881",
+    "experience": "10th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
     "statusSource": "sleeper"
   },
   {
@@ -4796,6 +4798,20 @@
     "manualOverride": false
   },
   {
+    "id": "douglas-d",
+    "name": "DeMario Douglas",
+    "pos": "WR",
+    "team": "NE",
+    "age": 25,
+    "fRank": null,
+    "sleeperId": "9501",
+    "gsisId": "00-0038621",
+    "experience": "4th Year",
+    "status": "Healthy",
+    "statusClass": "status-healthy",
+    "statusSource": "sleeper"
+  },
+  {
     "id": "joly",
     "name": "Justin Joly",
     "pos": "TE",
@@ -4810,20 +4826,6 @@
     "statusSource": "sleeper",
     "statusUpdated": "2026-11-25T20:25:08.048Z",
     "manualOverride": false
-  },
-  {
-    "id": "douglas-d",
-    "name": "DeMario Douglas",
-    "pos": "WR",
-    "team": "NE",
-    "age": 25,
-    "fRank": null,
-    "sleeperId": "9501",
-    "gsisId": "00-0038621",
-    "experience": "4th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
   },
   {
     "id": "martin-robinson",
@@ -4972,6 +4974,22 @@
     "statusSource": "sleeper"
   },
   {
+    "id": "milroe",
+    "name": "Jalen Milroe",
+    "pos": "QB",
+    "team": "SEA",
+    "age": 23,
+    "fRank": null,
+    "sleeperId": "12510",
+    "gsisId": "00-0040673",
+    "experience": "2nd Year",
+    "status": "Questionable (Illness)",
+    "statusClass": "status-quest",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
+    "manualOverride": false
+  },
+  {
     "id": "jones-j",
     "name": "Jeshaun Jones",
     "pos": "WR",
@@ -4984,22 +5002,6 @@
     "status": "Healthy",
     "statusClass": "status-healthy",
     "statusSource": "sleeper"
-  },
-  {
-    "id": "milroe",
-    "name": "Jalen Milroe",
-    "pos": "QB",
-    "team": "SEA",
-    "age": 23,
-    "fRank": null,
-    "sleeperId": "12510",
-    "gsisId": "00-0040673",
-    "experience": "2nd Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper",
-    "statusUpdated": "2026-10-21T15:53:14.436Z",
-    "manualOverride": false
   },
   {
     "id": "howard",
@@ -5239,9 +5241,11 @@
     "sleeperId": "8119",
     "gsisId": "00-0037741",
     "experience": "5th Year",
-    "status": "Healthy",
-    "statusClass": "status-healthy",
-    "statusSource": "sleeper"
+    "status": "Questionable (Hamstring)",
+    "statusClass": "status-quest",
+    "statusSource": "sleeper",
+    "statusUpdated": "2026-11-26T20:02:06.689Z",
+    "manualOverride": false
   },
   {
     "id": "endries",
